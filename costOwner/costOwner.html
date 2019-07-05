@@ -1,0 +1,152 @@
+<div can-view="CT_COWN_02" style="margin-top: 10px;">
+	<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+	</loading-spinner>
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert"
+				      ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+				      role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div ng-show="!$ctrl.isWaitingForResponse">
+		<button type="button" class="inline-block btn btn-primary btn-sm pull-right"
+		        style="margin-bottom: 10px;" data-ng-click="$ctrl.clearFilter()"
+		        data-ng-disabled="$ctrl.isFilterCleared()">
+			Clear Filter
+		</button>
+		<form name="addEditForm" id="addEditForm" novalidate>
+			<table ng-table="$ctrl.tableParams" show-filter="true"
+			       class="table-heb table-bordered table-striped" style="width: 100%" current-page="currentPage">
+				<tr ng-repeat="item in $data track by $index">
+					<td data-title="'ID'" filter="{'id' : 'text'}" style="width: 20%">
+						<span>{{item.costOwnerId}}</span>
+					</td>
+					<td data-title="'Cost Owner'" filter="{'name' : 'text'}" style="width: 70%">
+						<span data-ng-if="!item.isEditing" style="white-space: pre-wrap">{{item.costOwnerName}}</span>
+						<input data-ng-if="item.isEditing"
+						       id="name" type="text" auto-focus
+						       style="width: 100%;height: 26px;" maxlength="30"
+						       ng-model="item.costOwnerName" minlength="1"
+						       required disable-enter-begin-with-space-char
+						       title="{{$ctrl.validationModel.costOwnerName.length == 0 ? $ctrl.COST_OWNER_NAME_MANDATORY_FIELD_ERROR : ''}}"
+						       empty-valid="{{$ctrl.COST_OWNER_NAME_MANDATORY_FIELD_ERROR}}" data-ng-change="$ctrl.onCostOwnerNameChange()"
+						       validation-model="$ctrl.validationModel.costOwnerName">
+					</td>
+					<td style="width:7%;text-align: center" can-edit="CT_COWN_02" data-title="'Action'" style="width: 10%">
+						<button data-ng-click="$ctrl.editCostOwner(item)" class="glyphicon glyphicon-edit pointer"  ng-if="!item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.costOwnerId)}}color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Edit" data-ng-disabled="$ctrl.isDisabledButton(item.costOwnerId)"></button>
+						<button data-ng-click="$ctrl.deleteCostOwner(item)" class="glyphicon glyphicon-remove pointer"  ng-if="!item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.costOwnerId)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Delete"  data-ng-disabled="$ctrl.isDisabledButton(item.costOwnerId)"></button>
+						<button data-ng-click="$ctrl.updateCostOwner()" class="glyphicon glyphicon-floppy-disk pointer"  ng-if="item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.costOwnerId)}}color: green; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Save"  data-ng-disabled="$ctrl.isDisabledButton(item.costOwnerId)"></button>
+						<button data-ng-click="$ctrl.resetCostOwner($index)" class="glyphicon glyphicon-ban-circle pointer" ng-if="item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.costOwnerId)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Reset"  data-ng-disabled="$ctrl.isDisabledButton(item.costOwnerId)"></button>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div ng-show="!$ctrl.isWaiting" class="inline-block pull-right"  style="padding-top: 10px;">
+			<button view-only="CT_COWN_02" type="button" class="btn btn-primary" disabled="disabled" ng-style="$ctrl.totalRecords > 20 && {'margin-top': '-64px'}">Add</button>
+			<button can-edit="CT_COWN_02" type="button" class="btn btn-primary" ng-click="$ctrl.addNewCostOwner()" ng-style="$ctrl.totalRecords > 20 && {'margin-top': '-64px'}">Add</button>
+		</div>
+	</div>
+</div>
+
+<div id="addCostOwnerModal" class="modal fade" role="dialog" maxlength="200px;">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					Add New Cost Owner
+				</h5>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addForm" id="addForm" novalidate>
+					<table ng-table="$ctrl.tableModalParams" class="table-heb table-bordered table-striped" style="width: 100%;">
+						<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="width: 90%;">Cost Owner</th>
+								<th style="width: 10%;"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="costOwner in $data track by $index">
+								<td class="has-error-popup">
+									<input type="text" ng-model="costOwner.costOwnerName"
+									       maxlength="30"
+									       trim-space auto-focus
+									       style="width: 100%;height: 26px;"
+									       empty-valid="Cost Owner Name is a mandatory field."
+									       title="{{costOwner.costOwnerName.length==0?$ctrl.COST_OWNER_NAME_MANDATORY_FIELD_ERROR:''}}"
+									       id = "costOwnerName{{$ctrl.newCostOwners.indexOf(costOwner)}}"
+									       class="{{costOwner.addClass}}"
+									       data-ng-change="costOwner.addClass = ''"
+									       >
+								</td>
+								<td class="text-center">
+									<i data-ng-click="$ctrl.deleteRow($ctrl.newCostOwners.indexOf(costOwner))" class="glyphicon glyphicon-remove pointer text-center" style="color: red; font-size: large" title="Delete"></i>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+				        ng-click="$ctrl.addRow()">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+				        ng-click="$ctrl.saveNewCostOwners()" data-ng-disabled="$ctrl.isPermitAdd()">Save
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+				        ng-click="$ctrl.closeModalUnsavedData()">Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.titleConfirm}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<div ng-if="!$ctrl.allowDeleteCostOwner">
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+					        ng-show="$ctrl.isAddingCostOwner" ng-click="$ctrl.saveNewCostOwners()">
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+					        ng-show="!$ctrl.isAddingCostOwner" ng-click="$ctrl.updateCostOwner()">
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+					        ng-click="$ctrl.doCloseModal()">
+						No
+					</button>
+					<button type="button"class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+					        ng-click="$ctrl.closeConfirmPopup()">
+						Cancel
+					</button>
+				</div>
+				<div ng-if="$ctrl.allowDeleteCostOwner">
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+					        ng-click="$ctrl.doDeleteCostOwner()">
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+					        ng-click="$ctrl.doCloseModal()">
+						No
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
