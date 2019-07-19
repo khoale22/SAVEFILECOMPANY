@@ -1,0 +1,49 @@
+<!--
+batchUploadConfirmation.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div class="batchUploadConfirmation"
+	 ng-init=batchUploadConfirmationController.init() data-ng-cloak="true">
+	<!-- The title modal -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+				ng-click="batchUploadConfirmationController.close()">&times;
+		</button>
+		<h5>
+			Upload
+		</h5>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<h5><b>Would you like to continue with the upload?</b></h5>
+				<div class="col-md-3">
+					<span class="control-label" for="batchUploadDescription">Excel Upload
+					Description:</span>
+				</div>
+				<div class="col-md-9">
+					<div class="input-group-sm">
+						<input class="form-control" id="batchUploadDescription"  placeholder="Type a name to identify this Update request" maxlength="150" type="text" ng-model="batchUploadConfirmationController.description"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- The modal footer -->
+	<div class="modal-footer">
+		<button class="btn btn-primary"
+				data-ng-click="batchUploadConfirmationController.ok()">Ok
+		</button>
+		<button class="btn btn-primary"
+				data-ng-click="batchUploadConfirmationController.close()">Cancel
+		</button>
+	</div>
+</div>

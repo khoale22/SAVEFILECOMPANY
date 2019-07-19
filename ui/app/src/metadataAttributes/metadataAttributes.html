@@ -1,0 +1,32 @@
+<div can-view="CT_MTDA_01" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="MetadataAttributesController as metadataAttributesController"
+	 ng-init="metadataAttributesController.init()">
+	<loading-spinner ng-show="metadataAttributesController.isWaiting">
+	</loading-spinner>
+	<div class="col-md-12" ng-show="!metadataAttributesController.isWaiting && !metadataAttributesController.isAttributeSelected">
+		<div class="panel-group">
+			<div class="panel panel-primary" >
+				<div class="panel-heading">
+					<h4 class="panel-title inline-block"><b>Metadata Attributes</b> ({{metadataAttributesController.resultMessage}})</h4>
+				</div>
+				<div class="panel-body">
+					<div class="col-md-12">
+						<table ng-table="metadataAttributesController.metadataAttributeTableParams" show-filter="true" class="table table-heb table-bordered table-striped">
+							<tr ng-repeat="attribute in $data">
+								<td data-title="'Attribute Name'"  filter="{'name': 'text'}">
+									<a class="pointer" ng-click="metadataAttributesController.selectAttribute(attribute)">{{attribute.name}}</a>
+								</td>
+								<td data-title="'Attribute Description'">{{attribute.description}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<metadata-attribute-details-directive
+		ng-if="metadataAttributesController.isAttributeSelected"
+		attribute="metadataAttributesController.selectedAttribute"
+		on-return="metadataAttributesController.returnFromDirective()"></metadata-attribute-details-directive>
+
+</div>

@@ -1,0 +1,82 @@
+<!-- Left Pane of Product Details page - Starts -->
+<div id="pdTabsContainer" style="padding: 0%"
+	 data-ng-show="$ctrl.selectedProduct">
+	<ul class="nav nav-pills nav-stacked" >
+		<!-- Product tabs -- starts -->
+		<label>Product</label>
+		<li ng-class="$ctrl.activeProductInfoTabClass">
+			<a data-toggle="pill" href="productDetails/#productInfo" id="productInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Product Info</a>
+		</li>
+		<li>
+			<a data-toggle="pill" href="productDetails/#productShelfAttributes" id="productShelfAttributesTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Shelf Attributes</a></li>
+		<li>
+			<a data-toggle="pill" href="codeTable/#specialAttributes" id="specialAttributesTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Special Attributes</a></li>
+		<li ng-class="$ctrl.activeOnlineAttributeTabClass">
+			<a data-toggle="pill" href="productDetails/#onlineAttributes" id="onlineAttributesTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Online Attributes</a></li>
+		<li>
+			<a data-toggle="pill" href="productDetails/#breakPack" id="breakPackTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">{{$ctrl.breakPackLabel}}</a>
+		</li>
+		<li ng-class="$ctrl.activeEcommerceViewTabClass">
+			<a data-toggle="pill" href="codeTable/#ecommerceView" id="ecommerceViewTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">eCommerce View</a></li>
+		<li ng-class="$ctrl.activeNutritionFactTabClass">
+			<a data-toggle="pill" href="codeTable/#nutritionFacts" id="nutritionFactsTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Nutrition Facts</a></li>
+		<li ng-class="$ctrl.activeVariantsTabClass"  ng-if="!$ctrl.isKit">
+			<a data-toggle="pill" href="productDetails/#variantsTab" id="variantsTab"
+			data-ng-click="$ctrl.confirmTabChange(this)">Variants</a></li>
+		<li ng-if="$ctrl.isKit || $ctrl.isPartOfKit">
+			<a data-toggle="pill" href="codeTable/#kitsPane" id="kitsTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Kits</a></li>
+		<li can-view="PD_TXNMY_00">
+			<a id="taxonomyTab"
+			data-ng-click="$ctrl.confirmTabChange(this)">Taxonomy</a>
+		</li>
+		<!-- Product tabs -- Ends -->
+		<!-- Case Pack tabs -- starts -->
+		<label>Case Pack</label>
+		<li ng-class="$ctrl.activeCasePackInfoTabClass">
+			<a data-toggle="pill" href="codeTable/#casePackInfo" id="casePackInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Case Pack Info</a></li>
+		<li>
+			<a data-toggle="pill" href="codeTable/#warehouse" id="warehouseTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Warehouse</a></li>
+		<li>
+			<a data-toggle="pill" href="codeTable/#vendorInfo" id="vendorInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Vendor</a></li>
+		<li ng-if="!$ctrl.isKit">
+			<a data-toggle="pill" href="codeTable/#itemSubstitution" id="itemSubstitutionTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)"
+			   ng-class="{'linkDisabled': $ctrl.selectedCasePack.isCandidated}">Item Substitution</a></li>
+		<li>
+			<a data-toggle="pill" href="codeTable/#department" id="departmentTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)"
+			   ng-class="{'linkDisabled': $ctrl.selectedCasePack.isCandidated}">Department</a></li>
+		<li ng-if="!$ctrl.isKit">
+			<a data-toggle="pill" href="codeTable/#dru" id="druTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)"
+			   ng-class="{'linkDisabled': $ctrl.selectedCasePack.isCandidated}">DRU</a></li>
+		<li ng-if="!$ctrl.isKit">
+			<a data-toggle="pill" href="codeTable/#casePackImport" id="casePackImportTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Import</a></li>
+		<li ng-if="!$ctrl.isKit">
+			<a data-toggle="pill" href="codeTable/#mrtInfo" id="mrtInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)"
+			   ng-class="{'linkDisabled': $ctrl.selectedCasePack.isCandidated}">MRT</a></li>
+		<!-- Case Pack tabs -- ends -->
+		<!-- Selling Unit tabs -- starts -->
+		<label>Selling Unit</label>
+		<li ng-class="$ctrl.activeUPCTabClass">
+			<a data-toggle="pill" href="codeTable/#upcInfo" id="upcInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">UPC Info</a></li>
+		<li ng-class="$ctrl.activeSelectedImageTabClass">
+			<a data-toggle="pill" href="codeTable/#imageInfo" id="imageInfoTab"
+			   data-ng-click="$ctrl.confirmTabChange(this)">Image Info</a></li>
+		<!-- Selling Unit tabs -- Ends -->
+	</ul>
+</div>

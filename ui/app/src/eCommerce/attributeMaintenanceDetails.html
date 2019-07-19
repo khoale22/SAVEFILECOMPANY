@@ -1,0 +1,307 @@
+<!--
+  ~ attributeMaintenanceDetails.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author a786878
+  @since 2.16.0
+  -->
+<div class="row">
+	<div id="attributeMaintenanceDetails" can-view="EC_AMAN_01" class="col-md-12 container-fluid" ng-cloak="true">
+		<div class="row" data-ng-if="attributeMaintenanceDetailsDirective.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+			<p ng-repeat="e in attributeMaintenanceDetailsDirective.error">
+				{{e}}
+			</p>
+		</span>
+		</div>
+		<div class="row" data-ng-if="attributeMaintenanceDetailsDirective.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{attributeMaintenanceDetailsDirective.success}}</span>
+		</div>
+		<loading-spinner ng-show="attributeMaintenanceDetailsDirective.isWaiting">
+		</loading-spinner>
+		<div class="col-md-12" style="margin-bottom: 30px" ng-show="!attributeMaintenanceDetailsDirective.isWaiting">
+			<div class="panel-group" >
+				<div class="panel panel-primary" >
+					<div class="panel-heading" >
+						<h4 class="panel-title inline-block"><b>Attribute Details</b></h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-11">
+								<div class="row ">
+									<div class="col-md-2 narrow-left-column">
+										<label>Attribute Name:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										<div>
+											<input type="text" class="form-control" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.attributeName">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.attributeName}}
+									</div>
+									<div class="col-md-2 narrow-left-column">
+										<label>Maximum Length:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										<div >
+											<input type="number" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' ng-disabled="!attributeMaintenanceDetailsDirective.isMaximumLengthFieldEnabled" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.maximumLength">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.maximumLength}}
+									</div>
+									<div class="col-md-2 narrow-left-column">
+										<label>Precision:</label>
+									</div>
+									<div can-edit="EC_AMAN_01"  class="col-md-1 narrow-right-column">
+										<div>
+											<input type="number" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' ng-disabled="!attributeMaintenanceDetailsDirective.isPrecisionFieldEnabled" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.precision">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01"  class="col-md-1 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.precision}}
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Description:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										<div>
+											<input type="text" class="form-control" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.attributeDescription">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.attributeDescription}}
+									</div>
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Tag:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										<div>
+											<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.tag">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.tag" disabled>
+									</div>
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Multiple Values:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-2 narrow-right-column">
+										<div>
+											<input  type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.multipleValueSwitch">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-2 narrow-right-column">
+										<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.multipleValueSwitch" disabled>
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Domain Code:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										<div>
+											<select class="form-control" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.selectedDomain" ng-change="attributeMaintenanceDetailsDirective.changeSelectedDomain()" ng-options="domain.attributeDomainDescription for domain in attributeMaintenanceDetailsDirective.attributeDomains">
+												<option value="">--Select--</option>
+											</select>
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-3 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.selectedDomain.attributeDomainDescription}}
+									</div>
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Specification:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										<div>
+											<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.specification">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-1 narrow-right-column">
+										<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.specification" disabled>
+									</div>
+
+									<div class="col-md-2 narrow-left-column">
+										<label>Code:</label>
+									</div>
+									<div can-edit="EC_AMAN_01" class="col-md-2 narrow-right-column" ng-click="attributeMaintenanceDetailsDirective.clickCodeCheckbox()">
+										<div>
+											<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.attributeValueList">
+										</div>
+									</div>
+									<div view-only="EC_AMAN_01" class="col-md-2 narrow-right-column" ng-click="attributeMaintenanceDetailsDirective.clickCodeCheckbox()">
+										<input type="checkbox" ng-model="attributeMaintenanceDetailsDirective.changedAttribute.attributeValueList" disabled>
+									</div>
+								</div>
+
+								<div class="row  margin-top-10">
+                                    <div class="col-md-2 narrow-left-column">
+                                        <label>Attribute Id: </label>
+                                    </div>
+                                    <div class="col-md-1 narrow-right-column">
+                                        {{attributeMaintenanceDetailsDirective.changedAttribute.attributeId}}
+                                    </div>
+									<div class="col-md-1 narrow-left-column">
+										<label>Source: </label>
+									</div>
+									<div class="col-md-3 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.sourceSystem.displayName}}
+									</div>
+
+									<div class="col-md-1 narrow-left-column">
+										<label>External Source Id: </label>
+									</div>
+									<div class="col-md-1 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.externalId}}
+									</div>
+									<div class="col-md-1 narrow-left-column">
+										<label>Applicable to:</label>
+									</div>
+									<div can-view="EC_AMAN_01" class="col-md-2 narrow-right-column">
+										{{attributeMaintenanceDetailsDirective.changedAttribute.applicableType.description || "-- Unassigned --"}}
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+							</div>
+						</div>
+					</div>
+
+					<div class="panel-heading" >
+						<h4 class="panel-title inline-block"><b>Attribute Values</b></h4>
+					</div>
+					<div class="panel-body">
+						<div class="col-md-8">
+							<div ng-show="attributeMaintenanceDetailsDirective.changedAttributeValues.length === 0">
+								<h6 class="col-md-offset-1">There aren't any attribute values.</h6>
+								<button can-edit="EC_AMAN_01" class="btn btn-primary pull-left" ng-click="attributeMaintenanceDetailsDirective.add()">
+									<label style="margin-bottom: 0px">Add</label>
+								</button>
+							</div>
+							<div ng-show="attributeMaintenanceDetailsDirective.changedAttributeValues.length > 0">
+								<table ng-table="attributeMaintenanceDetailsDirective.attributeMaintenanceValuesTableParams" class="table table-heb table-bordered table-striped">
+									<thead>
+									<div can-edit="EC_AMAN_01">
+										<th can-edit="EC_AMAN_01" style="width: 15px">
+											<div>
+												<input  type="checkbox" ng-model="attributeMaintenanceDetailsDirective.allChecked" ng-click="attributeMaintenanceDetailsDirective.toggleAllChecked()">
+											</div>
+										</th>
+									</div>
+									<th style="vertical-align: center">Attribute Value Code</th>
+									<th>Attribute Description</th>
+									<th>Hierarchy Locations</th>
+									<th>Source Id</th>
+									</thead>
+									<tr ng-repeat="attributeValue in attributeMaintenanceDetailsDirective.currentAttributeValues | notDeleted">
+										<td can-edit="EC_AMAN_01">
+											<div>
+												<input style="margin-top: 5px; margin-bottom: 5px" type="checkbox" ng-model="attributeValue.isChecked">
+											</div>
+										</td>
+
+										<td>{{attributeValue.attributeCode.attributeCodeId}}</td>
+
+										<td ng-if="attributeValue.toBeAdded === true"><input type="text" ng-model="attributeValue.attributeCode.attributeValueText"></td>
+										<td ng-if="attributeValue.toBeAdded !== true">{{attributeValue.attributeCode.attributeValueText}}</td>
+										<td>{{attributeValue.entityDescription}}</td>
+										<td>{{attributeValue.attributeCode.attributeValueXtrnlId}}</td>
+									</tr>
+								</table>
+								<div can-edit="EC_AMAN_01" class="col-md-12">
+									<div>
+										<div class="divider-horizontal"></div>
+										<div class="inline-block pull-right">
+											<button class="btn btn-primary" ng-click="attributeMaintenanceDetailsDirective.add()">
+												Add
+											</button>
+
+											<button class="btn btn-primary" ng-disabled="!attributeMaintenanceDetailsDirective.atLeastOneChecked()" ng-click="attributeMaintenanceDetailsDirective.delete()">
+												Delete
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="pull-right" style="padding-top:0px;">
+				<button can-edit="EC_AMAN_01" class="btn btn-primary" ng-click="attributeMaintenanceDetailsDirective.save()" ng-disabled="!attributeMaintenanceDetailsDirective.isDifference()">
+					<label style="margin-bottom: 0px">Save</label>
+				</button>
+
+				<button can-edit="EC_AMAN_01" class="btn btn-primary" ng-click="attributeMaintenanceDetailsDirective.reset()" ng-disabled="!attributeMaintenanceDetailsDirective.isDifference()">
+					<label style="margin-bottom: 0px">Reset</label>
+				</button>
+				<button
+					class="btn btn-primary"
+					ng-click="attributeMaintenanceDetailsDirective.returnToList()">Return to List
+					<!--<label style="margin-bottom: 0px">Return to List</label>-->
+				</button>
+			</div>
+
+			<!-- Attribute Maintenance delete modal -->
+			<div id="deleteAttributeValuesTypeModal" class="modal fade" role="dialog" style="z-index: 999999;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header" style="background-color: #337ab7">
+							<h5 class="modal-title inline-block" style="color:#ffffff;">Delete Attribute Values</h5>
+						</div>
+						<div class="modal-body">
+							<h5>Are you sure you want to delete all the attribute values?</h5>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="inline-block btn btn-success btn-sm" ng-click="attributeMaintenanceDetailsDirective.continueDelete()">
+								Continue
+							</button>
+							<button type="button" class="inline-block btn btn-success btn-sm btn-danger" data-dismiss="modal" ng-click="attributeMaintenanceDetailsDirective.cancelDelete()">
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Confirm message--->
+			<div id="confirmSaveModal" class="modal fade" role="dialog" style="z-index: 999999;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header" style="background-color: #337ab7">
+							<h5 class="modal-title inline-block" style="color:#ffffff;">{{attributeMaintenanceDetailsDirective.confirmTitle}}</h5>
+						</div>
+						<div class="modal-body">
+							<h5 class="text-center" ng-bind-html="attributeMaintenanceDetailsDirective.confirmMessage"></h5>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="inline-block btn btn-success btn-sm" ng-click="attributeMaintenanceDetailsDirective.agreeSave()">
+								Yes
+							</button>
+							<button type="button" class="inline-block btn btn-success btn-sm btn-danger" data-dismiss="modal" ng-click="attributeMaintenanceDetailsDirective.cancelSave()" >
+								No
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+

@@ -1,0 +1,144 @@
+<div can-view="SM_MAINT_02" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="ScaleMaintenanceStatusCheckController as scaleMaintenanceStatusCheckController">
+	<div class="row" data-ng-if="scaleMaintenanceStatusCheckController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{scaleMaintenanceStatusCheckController.error}}</span>
+	</div>
+	<div class="panel-group"  ng-show="!scaleMaintenanceStatusCheckController.isDisplayingStoreUpcInfo">
+		<div class="panel panel-primary" >
+			<div class="panel-heading" >
+				<h4 class="panel-title inline-block">
+					<b>Scale Maintenance - Check Status</b></h4>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline form-horizontal">
+					<loading-spinner ng-show="scaleMaintenanceStatusCheckController.isWaiting">
+					</loading-spinner>
+					<div ng-show="!scaleMaintenanceStatusCheckController.isWaiting">
+						<label>
+							<input id="auto-refresh" type="checkbox" ng-model="scaleMaintenanceStatusCheckController.autoRefreshData"
+								   ng-click="scaleMaintenanceStatusCheckController.checkAutoRefresh()"> Auto Refresh
+						</label>
+						<button ng-click="scaleMaintenanceStatusCheckController.clearResult()" class=" btn btn-primary ">Clear Result</button>
+						<button ng-click="scaleMaintenanceStatusCheckController.refreshData()" class=" btn btn-primary ">Manual Refresh</button>
+
+						<table ng-table="scaleMaintenanceStatusCheckController.transactionTableParams"
+							   show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%; margin-top: 5px;">
+							<thead>
+							<tr>
+								<th ng-repeat="column in scaleMaintenanceStatusCheckController.columns">{{column.title}}</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat = "attribute in scaleMaintenanceStatusCheckController.data ">
+								<td>
+									<a ng-click="scaleMaintenanceStatusCheckController.selectTrackingId(attribute)"
+									   style="cursor: pointer;"> {{attribute.transactionId}}</a>
+								</td>
+								<td>{{attribute.scaleTransactionType.description}}</td>
+								<td>{{attribute.createTime | date : 'MM/dd/yyyy HH:mm:ss'}}</td>
+								<td>{{attribute.status.description}}</td>
+								<td>{{attribute.result}}</td>
+								<td>{{attribute.userId}}</td>
+							</tr>
+							</tbody>
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-primary" ng-show="scaleMaintenanceStatusCheckController.selectedTransactionId">
+			<div class="panel-heading" >
+				<h4 class="panel-title inline-block">
+					<b>Scale Maintenance - EPlum Batches for Transaction ID: {{scaleMaintenanceStatusCheckController.selectedTransactionId}}</b></h4>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline form-horizontal">
+					<loading-spinner ng-show="scaleMaintenanceStatusCheckController.isTransmitWaiting">
+					</loading-spinner>
+					<div ng-show="!scaleMaintenanceStatusCheckController.isTransmitWaiting">
+
+						<table ng-table="scaleMaintenanceStatusCheckController.transmitTableParams"
+							   show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%; margin-top: 5px;">
+							<thead>
+							<tr>
+								<th ng-repeat="column in scaleMaintenanceStatusCheckController.transmitColumns">{{column.title}}</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat = "transmit in scaleMaintenanceStatusCheckController.transmitData ">
+								<td>
+									<a ng-click="scaleMaintenanceStatusCheckController.selectStoreId(transmit)"
+									   style="cursor: pointer;"> {{transmit.key.store}}</a>
+								</td>
+								<td>{{transmit.ePlumBatchId}}</td>
+								<td>{{transmit.status.description}}</td>
+								<td>{{transmit.result}}</td>
+								<td>{{transmit.responseMessage}}</td>
+							</tr>
+							</tbody>
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-primary" ng-show="scaleMaintenanceStatusCheckController.selectedStoreId">
+			<div class="panel-heading" >
+				<h4 class="panel-title inline-block">
+					<b>Scale Maintenance - Retail Information for Store: {{scaleMaintenanceStatusCheckController.selectedStoreId}}</b></h4>
+				<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+					 ng-click="scaleMaintenanceStatusCheckController.export()"
+					 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium"
+					 data-toggle="tooltip" title="Export to Excel"></div>
+				<div class="inline-block pull-right"
+					 ng-show="scaleMaintenanceStatusCheckController.downloading" style="color: orange">
+					Downloading...
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline form-horizontal">
+					<loading-spinner ng-show="scaleMaintenanceStatusCheckController.isRetailWaiting">
+					</loading-spinner>
+					<div ng-show="!scaleMaintenanceStatusCheckController.isRetailWaiting">
+
+						<table ng-table="scaleMaintenanceStatusCheckController.retailTableParams"
+							   show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%; margin-top: 5px;">
+							<thead>
+							<tr>
+								<th ng-repeat="column in scaleMaintenanceStatusCheckController.retailColumns">{{column.title}}</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat = "scaleMaintenance in scaleMaintenanceStatusCheckController.retailData ">
+								<td>
+									<a ng-click="scaleMaintenanceStatusCheckController.selectScaleMaintenance(scaleMaintenance)"
+									   style="cursor: pointer;"> {{scaleMaintenance.authorizeRetail.key.upc}}
+									</a>
+								</td>
+								<td>
+									<input type="checkbox" ng-model="scaleMaintenance.authorizeRetail.authorized" disabled>
+								</td>
+								<td>{{scaleMaintenance.authorizeRetail.byCountQuantity}} for {{scaleMaintenance.authorizeRetail.retail | currency}}</td>
+								<td>{{retail.message}}</td>
+							</tr>
+							</tbody>
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+	<scale-maintenance-store-upc-information-directive ng-if="scaleMaintenanceStatusCheckController.isDisplayingStoreUpcInfo"
+													   scale-maintenance="scaleMaintenanceStatusCheckController.selectedScaleMaintenance"
+													   on-return="scaleMaintenanceStatusCheckController.onReturn()">
+
+	</scale-maintenance-store-upc-information-directive>
+</div>

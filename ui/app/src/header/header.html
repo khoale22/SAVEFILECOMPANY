@@ -1,0 +1,24 @@
+<div ng-controller="HeaderController as headerController" ng-init = "headerController.init()" id="headerRow" class="row header">
+	<div class="navbar-header">
+		<a id="navbar-header-link" class="navbar-brand" data-ui-sref="landing">
+			<img data-tooltip="H-E-B" data-tooltip-placement="right" data-ng-src="images/heb-logo.gif"/>
+			<span>{{headerController.appName}} {{headerController.version}}</span>
+		</a>
+	</div>
+	<div class="navbar-text" style="float: right; padding-top: 10px;">
+		<div style="text-align: right; padding-right: 15px">
+			{{headerController.applicationServerName}}
+		</div>
+		<div style="padding-top: 5px;" id="userSection" class="navbar-text navbar-right" data-ng-show="currentUser" data-ng-controller="AuthenticationLogoutController as vm">
+			{{ vm.loggedInAs }}
+			{{ currentUser.name || currentUser.id | uppercase }}
+			{{ vm.separator }}
+			<a id="headerLogoutLink" data-ng-click="vm.logout()" class="navbar-link pointer">{{ vm.logoutLink }}</a>
+			{{ vm.separator }}
+			<a id="headerHelpLink" data-ui-sref="landing" class="navbar-link">{{ vm.helpLink }}</a>
+		</div>
+	</div>
+
+	<warning-modal></warning-modal>
+</div>
+

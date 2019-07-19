@@ -1,0 +1,74 @@
+<!--
+  ~ productInfo.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div can-view="PD_INFO_01" class="row" ng-controller="ProductInfoController as productInfoController"
+	 ng-init="productInfoController.init()">
+	<div class="col-md-12">
+		<loading-spinner id="productInfoSpinner" ng-show="productInfoController.isWaiting">
+		</loading-spinner>
+		<div class="panel-group" ng-show="!productInfoController.isWaiting">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div class="row">
+
+						<div class="panel-title inline-block col-md-6">
+							<strong class="inline-block">[{{productInfoController.prodId}}]
+								{{productInfoController.description}}</strong>
+
+							<div can-view="IN_STOR_01"> Store Inventory: {{productInfoController.inventoryData | number}}
+							</div>
+						</div>
+						<div class="panel-title inline-block col-md-6">
+							<div class="row">
+								<div class="col-md-11">
+									<div ng-if="productInfoController.comparisonProductId != null">
+										<strong class="inline-block">[{{productInfoController.comparisonProductId}}]
+											{{productInfoController.comparisonDescription}}</strong>
+
+										<div can-view="IN_STOR_01"> Store Inventory:
+											{{productInfoController.comparisonInventoryData | number}}
+										</div>
+
+									</div>
+								</div>
+								<div ng-click="productInfoController.closePage()"
+									 class="glyphicon glyphicon-remove pointer pull-right col-md-1"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel-body">
+					<div class="row">
+						<!-- If there is a comparison product to show, then make the main product take up half the page -->
+						<!-- and the comparison product the other half. -->
+						<div ng-if="productInfoController.comparisonProductId != null">
+							<div class="col-md-6">
+								<div class="panel panel-default" ng-repeat="item in productInfoController.data"
+									 ng-include="'src/productInfo/fullDetailPanel.html'"></div>
+							</div>
+							<div class="col-md-6">
+								<div class="panel panel-default" ng-repeat="item in productInfoController.comparisonData"
+									 ng-include="'src/productInfo/fullDetailPanel.html'"></div>
+							</div>
+						</div>
+						<!-- If there is no comparison product, make the main product take up the full page. -->
+						<div ng-if="productInfoController.comparisonProductId == null">
+							<div class="col-md-12">
+								<div class="panel panel-default" ng-repeat="item in productInfoController.data"
+									 ng-include="'src/productInfo/fullDetailPanel.html'"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

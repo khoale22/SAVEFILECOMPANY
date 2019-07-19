@@ -1,0 +1,45 @@
+<div ng-controller="DiscontinueParametersAuditController as parametersAuditController">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<div class="panel-title">
+				<strong class="inline-block"> {{parametersAuditController.auditTitle}}</strong>
+				<div class="inline-block" ng-show="parametersAuditController.isViewingException || parametersAuditController.isViewingDeletedException"> &nbsp Exception Type: {{parametersAuditController.data.exceptionType}} &nbsp &nbsp &nbsp Exception Name: {{parametersAuditController.data.exceptionName}} </div>
+				<div class="glyphicon glyphicon-remove pull-right inline-block pointer" ng-click="parametersAuditController.close()"></div>
+			</div>
+		</div>
+		<div class="panel-body">
+			<table class="table-heb table-bordered table-striped table-hover" style="width: 100%"  id="parametersAuditTable">
+				<thead>
+				<tr>
+					<th style="width: 10%" ng-show="parametersAuditController.isViewingDeletedException">Exception Type</th>
+					<th style="width: 10%" ng-show="parametersAuditController.isViewingDeletedException">Exception Description</th>
+					<th style="width: 10%">Attribute</th>
+					<th style="width: 10%">Action</th>
+					<th style="width: 10%">Changed On</th>
+					<th style="width: 10%">Changed By</th>
+					<th style="width: 10%">Previous Value</th>
+					<th style="width: 10%">New Value</th>
+					<th style="width: 10%">Previous Active Flag</th>
+					<th style="width: 10%">New Active Flag</th>
+					<th style="width: 10%" ng-show="parametersAuditController.isViewingException">Previous Never Discontinue Flag</th>
+					<th style="width: 10%" ng-show="parametersAuditController.isViewingException">New Never Discontinue Flag</th>
+				</tr>
+				</thead>
+				<tr ng-repeat="audit in parametersAuditController.audits">
+					<td style="text-align: center" ng-show="parametersAuditController.isViewingDeletedException">{{audit.exceptionType}}</td>
+					<td style="text-align: center" ng-show="parametersAuditController.isViewingDeletedException">{{audit.exceptionDescription}}</td>
+					<td>{{audit.attributeName}}</td>
+					<td style="text-align: center">{{audit.action}}</td>
+					<td style="text-align: center">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+					<td style="text-align: center">{{audit.changedBy}}</td>
+					<td style="text-align: center">{{audit.previousAttributeValue}}</td>
+					<td style="text-align: center">{{audit.newAttributeValue}}</td>
+					<td style="text-align: center">{{audit.previouslyActive}}</td>
+					<td style="text-align: center">{{audit.newActive}}</td>
+					<td style="text-align: center" ng-show="parametersAuditController.isViewingException">{{audit.previouslyNeverDiscontinue}}</td>
+					<td style="text-align: center" ng-show="parametersAuditController.isViewingException">{{audit.newNeverDiscontinue}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

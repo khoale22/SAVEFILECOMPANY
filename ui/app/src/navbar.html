@@ -1,0 +1,348 @@
+<div id="menuRow" class="row">
+	<div class="navbar-header">
+		<button
+			data-ng-if="currentUser"
+			id="navbarToggleCollapsed"
+			type="button"
+			class="navbar-toggle collapsed"
+			data-toggle="collapse"
+			data-target="#menuBar">
+			<span class="sr-only">Toggle Menu</span>
+			<span class="icon-bar"></span>
+		</button>
+		<div data-ng-else class="navbar-nav">
+			<p class="navbar-text">&nbsp;</p>
+		</div>
+	</div>
+	<div class="collapse navbar-collapse col-md-10" id="menuBar">
+		<ul data-ng-if="currentUser" class="nav navbar-nav">
+			<li id="navbarHomeTab" class="dropdown">
+				<a
+					data-tooltip=""
+					data-ui-sref="home" data-ui-sref-opts="{reload: true}">Home
+				</a>
+			</li>
+			<!-- Menu options for hierarchy. -->
+			<li id="navbarHierarchyTab" class="dropdown">
+				<a
+					class="dropdown-toggle"
+					data-toggle="dropdown" can-view="PH_VIEW_00">Hierarchy
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarProductHierarchyDropdown">
+						<a data-tooltip="" data-ui-sref="productHierarchyDefaults"
+						   can-view="PH_VIEW_00" class="dropdown-header">Product Hierarchy
+						</a>
+					</li>
+					<li id="navbarMasterAttributeTaxonomy">
+						<a data-tooltip="" data-ui-sref="masterAttributeTaxonomyHierarchy"
+						   can-view="TX_HIERARCHY" class="dropdown-header">Master Attribute
+							Taxonomy</a></li>
+					<li id="navbarCustomHierarchyDropdown"><a data-tooltip="" data-ui-sref="customHierarchyAdmin"
+															  can-view="CH_HIER_01" class="dropdown-header">Custom
+						Hierarchy</a></li>
+				</ul>
+			</li>
+			<!--Menu options for Product Group.-->
+			<li class="dropdown" can-view="PG_MENU_00">
+				<a class="dropdown-toggle" data-ui-sref="productGroup" ui-sref-opts="{reload: true}"
+				   data-toggle="dropdown">Product Group
+				</a>
+			</li>
+			<!-- Menu options for product discontinue. -->
+			<li id="navbarDiscontinueAndDeleteTab" class="dropdown" can-view="PD_MENU_01">
+				<a
+					class="dropdown-toggle"
+					data-toggle="dropdown">Discontinue & Delete
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarDiscontinueAndDeleteAdminRules"><a data-tooltip="" can_view="PD_DSCO_02"
+																	 data-ui-sref="discontinueAdminRules"
+																	 class="dropdown-header">Admin Rules</a></li>
+					<li id="navbarDiscontinueAndDeleteExceptionRules"><a data-tooltip="" can-view="PD_DSCO_03"
+																		 data-ui-sref="discontinueExceptionRules"
+																		 class="dropdown-header">Exception Rules</a>
+					</li>
+					<li id="navbarDiscontinueAndDeleteReport"><a data-tooltip="" can-view="PD_DSCO_01"
+																 data-ui-sref="productDiscontinue"
+																 class="dropdown-header">Report</a></li>
+				</ul>
+			</li>
+			<!--Menu options for UPC-Swap.-->
+			<li class="dropdown" can-view="PD_MENU_02">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">UPC Maintenance
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarUPCMaintenanceWarehouseToWarehouseMove"><a data-tooltip="" can-edit="PD_SWAP_01"
+																			 data-ui-sref="warehouseToWarehouse"
+																			 class="dropdown-header">Warehouse to
+						Warehouse Move</a></li>
+					<li id="navbarUPCMaintenanceWarehouseToWarehouseSwap"><a data-tooltip="" can-edit="PD_SWAP_04"
+																			 data-ui-sref="warehouseToWarehouseSwap"
+																			 class="dropdown-header">Warehouse to
+						Warehouse Swap</a></li>
+					<li id="navbarUPCMaintenanceDSDToBoth"><a data-tooltip="" can-edit="PD_SWAP_02"
+															  data-ui-sref="dsdToBoth" class="dropdown-header">DSD to
+						Both</a></li>
+					<li id="navbarUPCMaintenanceBothToDSD"><a data-tooltip="" can-edit="PD_SWAP_03"
+															  data-ui-sref="bothToDsd" class="dropdown-header">Both to
+						DSD</a></li>
+					<li id="navbarUPCMaintenanceAddAssociate"><a data-tooltip="" can-edit="PD_SWAP_05"
+																 data-ui-sref="addAssociate" class="dropdown-header">Add
+						Associate</a></li>
+				</ul>
+			</li>
+			<!-- The menu options for SMS. -->
+			<li id="navbarScaleManagementTab" class="menu-item dropdown" can-view="SM_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">Scale Management
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarScaleManagementPLUMaintenance"><a data-tooltip="" can-view="SM_UPCM_01"
+																	data-ui-sref="scaleManagementUpcMaintenance"
+																	class="dropdown-header">PLU Maintenance</a></li>
+					<li id="navbarScaleManagementIngredients"><a data-tooltip="" can-view="SM_INGR_01"
+																 data-ui-sref="scaleManagementIngredients"
+																 class="dropdown-header">Ingredients</a></li>
+					<li id="navbarScaleManagementIngredientStatements"><a data-tooltip="" can-view="SM_INGR_02"
+																		  data-ui-sref="scaleManagementIngredientStatements"
+																		  class="dropdown-header">Ingredient
+						Statements</a></li>
+					<li id="navbarScaleManagementNutrients"><a data-tooltip="" can-view="SM_NTRN_01"
+															   data-ui-sref="scaleManagementNutrients"
+															   class="dropdown-header">Nutrients</a></li>
+					<li id="navbarScaleManagementNutrientStatements"><a data-tooltip="" can-view="SM_NTRN_02"
+																		data-ui-sref="scaleManagementNutrientStatement"
+																		class="dropdown-header">Nutrient Statement</a>
+					</li>
+					<li id="navbarNLEAMaintenance"><a data-tooltip="" can-view="SM_NLEA_01"
+													  data-ui-sref="scaleManagementNLEA16NutrientStatement"
+													  class="dropdown-header">NLEA 2016 Nutrient Statements</a></li>
+					<li id="navbarScaleManagementIngredientsReport"><a data-tooltip="" can-view="SM_MENU_01"
+																	   data-ui-sref="scaleManagementReports"
+																	   class = "dropdown-header">Reports</a></li>
+					<li id="navBarScaleMaintenance" class="menu-item dropdown dropdown-submenu"
+						can-view="SM_MAINT_00">
+						<a class="dropdown-toggle" data-toggle="dropdown">Scale Maintenance</a>
+						<ul class="dropdown-menu">
+							<li id="navBarScaleMaintenanceLoad">
+								<a can-view="SM_MAINT_01"
+								   data-ui-sref="scaleMaintenanceLoad"
+								   class="dropdown-header">Send Load</a>
+							</li>
+							<li id="navBarScaleMaintenanceStatus">
+								<a can-view="SM_MAINT_02"
+								   data-ui-sref="scaleMaintenanceCheckStatus"
+								   class="dropdown-header">Check Status</a>
+							</li>
+							<li id="navBarScaleMaintenanceStoreDept">
+								<a can-view="SM_MAINT_02"
+								   data-ui-sref="scaleMaintenanceStoreDept"
+								   class="dropdown-header">Add/Delete Store/Dept </a>
+							</li>
+							<li id="navBarScaleMaintenancePantryStores">
+								<a can-view="SM_MAINT_02"
+								   data-ui-sref="scaleMaintenancePantryStores"
+								   class="dropdown-header">Add/Delete Pantry Stores</a>
+							</li>
+						</ul>
+					</li>
+					<li id="navbarScaleManagementCodes" class="menu-item dropdown dropdown-submenu"
+						can-view="SM_CODE_00">
+						<a class="dropdown-toggle" data-toggle="dropdown">Codes</a>
+						<ul class="dropdown-menu">
+							<li id="navbarScaleManagementActionCodes"><a can-view="SM_CODE_01"
+																		 data-ui-sref="scaleManagementActionCodes"
+																		 class="dropdown-header">Action Codes</a></li>
+							<li id="navbarScaleManagementLabelFormats"><a can-view="SM_CODE_02"
+																		  data-ui-sref="scaleManagementLabelFormats"
+																		  class="dropdown-header">Label Formats</a></li>
+							<li id="navbarScaleManagementGraphicCodes"><a can-view="SM_CODE_03"
+																		  data-ui-sref="scaleManagementGraphicCodes"
+																		  class="dropdown-header">Graphic Codes</a></li>
+							<li id="navbarScaleManagementIngredientCategoryCodes"><a can-view="SM_CODE_03"
+																					 data-ui-sref="scaleManagementIngredientCategoryCodes"
+																					 class="dropdown-header">Ingredient
+								Category Codes</a></li>
+							<li id="navbarNutrientUomCodes"><a can-view="SM_CODE_04"
+															   data-ui-sref="NutrientUomCode"
+															   class="dropdown-header">Units of Measure</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<!-- The menu options for production support. -->
+			<li id="navbarProductionSupportTab" class="dropdown" can-view="IS_MENU_00">
+				<a class="dropdown-toggle" data-toggle="dropdown">Production Support</a>
+				<ul class="dropdown-menu">
+					<li id="navbarProductionSupport"><a data-tooltip="" can-view="IS_MENU_00"
+														data-ui-sref="productionSupport" class="dropdown-header">Production
+						Support</a></li>
+				</ul>
+			</li>
+			<li id="navbarReportsTab" class="dropdown" can-view="RP_MENU_00">
+				<a class="dropdown-toggle" data-toggle="dropdown">Reports</a>
+				<ul class="dropdown-menu">
+					<li id="navbarReportsIngredients"><a data-tooltip="" data-ui-sref="reportIngredients"
+														 can-view="RP_INGR_01" class="dropdown-header">Ingredients</a>
+					</li>
+				</ul>
+			</li>
+			<li id="navbareCommerceTab" class="dropdown" can-view="EC_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">eCommerce
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbareCommerce" data-tooltip="" can-view="EC_SRCP_01" data-ui-sref="sourcePriority" class="dropdown-header">Source Priority
+					</li>
+					<li id="navbareCommerce" data-tooltip="" can-view="EC_AMAN_01" data-ui-sref="attributeMaintenance" class="dropdown-header">Attribute Maintenance
+					</li>
+				</ul>
+			</li>
+			<!--Menu options for Utilities.-->
+			<li class="dropdown" can-view="UT_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">Utilities
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarUtilitiesDictionary"><a data-tooltip="" can-view="UT_DICT_01"
+														  data-ui-sref="dictionary"
+														  class="dropdown-header">Dictionary</a></li>
+					<li id="navbarCheckStatus">
+						<a data-tooltip="" can-view="UT_DICT_01" data-ui-sref="checkstatus" class="dropdown-header">Check
+							Status</a>
+					</li>
+					<li id="navbarCaseUPCGenerator">
+						<a data-tooltip="" can-view="UT_CUPC_01" data-ui-sref="caseUPCGenerator" class="dropdown-header">
+							Case UPC Generator</a>
+					</li>
+					<li id="navbarCheckDigit">
+						<a data-tooltip="" can-view="UT_CKDG_01" data-ui-sref="checkDigitCalculator" class="dropdown-header">Check
+							Digit Calculator</a>
+					</li>
+					<li id="navbarFindMyAttribute">
+						<a data-tooltip="" data-ui-sref="findMyAttribute" class="dropdown-header">
+							Find My Attribute</a>
+					</li>
+				</ul>
+			</li>
+			<!--Menu options for Data Management.-->
+			<li class="dropdown" can-view="DM_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">Data Management
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="codeTable">
+						<a data-tooltip="" can-view="CT_CODE_01" class="dropdown-header"
+						   data-ui-sref="code-table">Code Table
+						</a>
+					</li>
+					<li id="metaDataAttributes">
+						<a data-tooltip="" can-view="CT_MTDA_01" class="dropdown-header"
+						   data-ui-sref="metadataAttributes">Metadata Attributes
+						</a>
+					</li>
+					<li id="gdsn">
+						<a data-tooltip="" can-view="GD_VEND_01" class="dropdown-header"
+						   data-ui-sref="gdsnVendorSubscription">GDSN
+						</a>
+					</li>
+				</ul>
+			</li>
+			<!--Menu options for Image.-->
+			<li class="dropdown" can-view="PI_MENU_00">
+				<a class="dropdown-toggle" data-ui-sref="image-upload"
+				   data-toggle="dropdown">Image Upload
+				</a>
+			</li>
+			<!--Menu options for eCommerce Attribute.-->
+			<li class="dropdown" can-view="BU_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">Batch Upload
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarBatchUploadAssortment">
+						<a data-tooltip="" can-edit="BU_ASRT_01" data-ui-sref="batchUploadByAssortment" class="dropdown-header">Assortment</a>
+					</li>
+					<li id="navbarBatchUploadByCategorySpecificAttributes">
+						<a data-tooltip="" can-edit="BU_CSAT_01" data-ui-sref="batchUploadByCategorySpecificAttributes"
+						   class="dropdown-header">Category Specific Attributes</a>
+					</li>
+					<li id="navbarBatchUploadeCommerce">
+						<a data-tooltip="" can-edit="BU_ECOM_01" data-ui-sref="eCommerceAttribute"
+						   class="dropdown-header">eCommerce Attributes</a>
+					</li>
+					<li id="navbarBatchUploadByNutritionAndIngredients">
+						<a data-tooltip="" can-edit="BU_NUDT_01" data-ui-sref="batchUploadByNutritionAndIngredients"
+						   class="dropdown-header">Nutrition / Ingredients</a>
+					</li>
+					<li id="navbarBatchUploadByPrimoPick">
+						<a data-tooltip="" can-edit="BU_PRPK_01" data-ui-sref="batchUploadByPrimoPick"
+						   class="dropdown-header">Primo Pick</a>
+					</li>
+					<li id="navbarBatchUploadeServiceCaseSigns">
+						<a data-tooltip="" can-edit="BU_SCST_01" data-ui-sref="serviceCaseSigns"
+						   class="dropdown-header">Service Case Signs</a>
+					</li>
+					<li id="navbarBatchUploadEarley">
+						<a data-tooltip="" can-view="BU_EARL_00" data-ui-sref="batchUploadEarley"
+						   class="dropdown-header">Earley</a>
+					</li>
+					<li id="navbarBatchUploadRelatedProducts">
+						<a data-tooltip="" can-edit="BU_RELP_01" data-ui-sref="batchUploadRelatedProducts"
+						   class="dropdown-header">Related Products</a>
+					</li>
+					<li id="navbarBatchUploadMatAttributeValues">
+						<a data-tooltip="" can-edit="BU_MAT_01" data-ui-sref="batchUploadMatAttributeValues"
+						   class="dropdown-header">MAT Attribute Values</a>
+					</li>
+					<li id="navbarBatchUploadEBMBDA">
+						<a data-tooltip="" can-edit="BU_EBM_BDA" data-ui-sref="batchUploadEBMBDA"
+						   class="dropdown-header">eBM_BDA</a>
+					</li>
+				</ul>
+			</li>
+			<!--Menu options for Authorizations.-->
+			<li class="dropdown" can-view="AS_MENU_00">
+				<a class="dropdown-toggle"
+				   data-toggle="dropdown">Authorizations
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li id="navbarAuthorization"><a data-tooltip="" can-view="AS_JOEV_00"
+													data-ui-sref="authorization"
+													class="dropdown-header">Joe V.'s</a></li>
+				</ul>
+			</li>
+			<!-- Keep as an example for creating a dropdown nav bar option -->
+			<!--             <li class="dropdown"> -->
+			<!--                 <a  -->
+			<!--                 	data-tooltip=""  -->
+			<!--                 	data-ui-sref=""  -->
+			<!--                 	class="dropdown-toggle"  -->
+			<!--                 	data-toggle="dropdown" -->
+			<!--                    	role="button"  -->
+			<!--                    	aria-expanded="false">Menu Item -->
+			<!--                 	<span class="caret"></span> -->
+			<!--                 </a> -->
+			<!--                 <ul class="dropdown-menu" role="menu"> -->
+			<!--                		<li class="divider"></li> -->
+			<!--                		<li class="dropdown-header">Option Separator</li> -->
+			<!--                     <li><a data-tooltip="" href="#">Option #1</a></li> -->
+			<!--                 </ul> -->
+			<!--             </li> -->
+		</ul>
+		<ul data-ng-else class="nav navbar-nav">
+			<p class="navbar-text">&nbsp;</p>
+		</ul>
+	</div>
+</div>

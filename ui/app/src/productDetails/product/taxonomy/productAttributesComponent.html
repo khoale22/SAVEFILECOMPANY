@@ -1,0 +1,277 @@
+<h5>{{$ctrl.displayName}}</h5>
+<loading-spinner ng-if="$ctrl.waitingForAttributes"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.success">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<div ng-if="!$ctrl.waitingForAttributes">
+	<table class="table-heb table-bordered table-striped" style="width: 100%">
+		<thead>
+		<tr>
+			<th style="text-align: center; width: 10%">{{$ctrl.getDisplayName()}}</th>
+			<th style="text-align: center; width: 10%">Attribute ID</th>
+			<th style="text-align: center; width: 10%">Attribute Name</th>
+			<th style="text-align: center; width: 10%" can-edit="PD_TXNMY_02">Attribute Type</th>
+			<th style="text-align: center; width: 45%">Attribute Values</th>
+			<th style="text-align: center; width: 15%">Level of Hierarchy</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="attribute in $ctrl.data">
+			<td>
+				{{attribute.keyId}}
+			</td>
+			<td>
+				{{attribute.attributeId}}
+			</td>
+			<td>
+				{{attribute.attributeName}}
+			</td>
+			<td can-edit="PD_TXNMY_02">
+				{{$ctrl.getAttributeType(attribute)}}
+			</td>
+			<td>
+				<div view-only="PD_TXNMY_02">{{$ctrl.getDisplayNamesForValues(attribute.values)}}</div>
+				<div can-edit="PD_TXNMY_02">
+					<div ng-show="attribute.error">
+						<span class="alert alert-danger text-center myfade" role="alert" style="padding: .5%">{{attribute.error}}</span>
+					</div>
+					<div ng-switch="attribute.listOfValues">
+						<!--LOV-->
+						<div ng-switch-when="true">
+							<div ng-switch="attribute.multipleAllowed">
+								<!--MULTIPLE-->
+								<div ng-switch-when="true">
+									<ui-select
+										ng-model="attribute.values"
+										ng-click="$ctrl.getAttributeValues(attribute)"
+										theme="bootstrap"
+										data-ng-change="$ctrl.updateHasChanges()"
+										multiple>
+										<ui-select-match placeholder="Choose attribute value(s).">{{$item.displayName}}
+										</ui-select-match>
+										<ui-select-choices
+											refresh-delay="0"
+											repeat="element in attribute.codes | filter: $select.search">
+											<div ng-bind-html="element.displayName | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+								<!--NOT MULTIPLE-->
+								<div ng-switch-when="false">
+									<ui-select
+										ng-model="attribute.values[0]"
+										ng-click="$ctrl.getAttributeValues(attribute)"
+										theme="bootstrap"
+										data-ng-change="$ctrl.updateHasChanges()">
+										<ui-select-match placeholder="Choose attribute value." allow-clear="true">{{$select.selected.displayName}}
+										</ui-select-match>
+										<ui-select-choices
+											refresh-delay="0"
+											repeat="element in attribute.codes | filter: $select.search">
+											<div ng-bind-html="element.displayName | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+								</div>
+								<a ng-click="$ctrl.sendRequestForAttributeValues(attribute)" class="pointer pull-right">Request New Value</a>
+							</div>
+						</div>
+						<!--NOT LOV-->
+						<div ng-switch-when="false">
+							<div ng-switch="attribute.multipleAllowed">
+								<!--MULTIPLE-->
+								<div ng-switch-when="true">
+									<div ng-if="!$ctrl.isAttributeDateType(attribute) && !$ctrl.isAttributeTimeStampType(attribute)">
+										<ui-select
+											ng-model="attribute.values"
+											multiple
+											ng-click="$ctrl.setSelectedAttribute(attribute)"
+											data-ng-change="$ctrl.updateHasChanges()"
+											tagging="$ctrl.transformValueFunction">
+											<ui-select-match placeholder="Type in attribute value.">{{$item.displayName}}
+											</ui-select-match>
+											<ui-select-choices
+												repeat="element in attribute.values">{{element.displayName}}
+										</ui-select>
+									</div>
+									<div ng-if="$ctrl.isAttributeDateType(attribute)">
+										<div class="input-group">
+											<ui-select
+												class="form-control"
+												ng-model="attribute.values"
+												multiple
+												data-ng-change="$ctrl.updateHasChanges()">
+												<ui-select-match placeholder="Select date(s).">{{$item.displayName}}
+												</ui-select-match>
+												<ui-select-choices
+													repeat="element in attribute.values">{{element.displayName}}
+											</ui-select>
+											<span class="input-group-btn">
+											<button type="button" class="btn btn-default"
+													ng-click="$ctrl.toggleDatePicker(attribute)">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+										</div>
+										<input id="attributeValueDateMultiple"
+											   type="text"
+											   ng-hide="true"
+											   uib-datepicker-popup="MM/dd/yyyy"
+											   is-open="attribute.attributeValueDateOpened"
+											   ng-change="$ctrl.addDateToValues(attribute)"
+											   ng-model="attribute.value"
+											   close-text="Close"/>
+
+									</div>
+									<div  ng-if="$ctrl.isAttributeTimeStampType(attribute)">
+										<div class="input-group">
+											<ui-select
+													class="form-control"
+													ng-model="attribute.values"
+													multiple
+													data-ng-change="$ctrl.updateHasChanges()">
+												<ui-select-match placeholder="Select date(s).">{{$item.timestamp}}
+												</ui-select-match>
+												<ui-select-choices
+														repeat="element in attribute.values">{{element.timestamp}}
+											</ui-select>
+											<span class="input-group-btn">
+											<button type="button" class="btn btn-default"
+													ng-click="$ctrl.toggleDatePicker(attribute)">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+										</div>
+										<input id="attributeValueTimeStampMultiple"
+											   type="text"
+											   ng-hide="true"
+											   uib-datepicker-popup="MM/dd/yyyy"
+											   is-open="attribute.attributeValueDateOpened"
+											   ng-change="$ctrl.addDateToValues(attribute)"
+											   ng-model="attribute.value"
+											   close-text="Close"/>
+									</div>
+								</div>
+								<!--NOT MULTIPLE-->
+								<div ng-switch-when="false">
+									<div
+										class="glyphicon glyphicon-warning-sign pointer"
+										style="color: orange"
+										ng-click="attribute.multipleAllowed = true"
+										title="{{$ctrl.MORE_THAN_ONE_VALUE_WARNING_MESSAGE}}"
+										ng-if="attribute.values && attribute.values.length > 1">
+									</div>
+									<div ng-switch="attribute.domain">
+										<div ng-switch-when="S">
+											<input type="text" maxlength="attribute.maximumLength"
+												   ng-blur="$ctrl.addStringToValues(attribute)"
+												   placeholder="Type in new value."
+												   class="form-control" ng-model="attribute.values[0].text">
+										</div>
+										<div ng-switch-when="DEC">
+											<input type="text"
+												   ng-blur="$ctrl.addNumberToValues(attribute)"
+												   pattern="{{$ctrl.getNumberPatternForAttribute(attribute, false)}}"
+												   placeholder="Type in new decimal value."
+												   class="form-control" ng-model="attribute.values[0].number">
+										</div>
+										<div ng-switch-when="I">
+											<input type="text"
+												   ng-blur="$ctrl.addNumberToValues(attribute)"
+												   pattern="{{$ctrl.getNumberPatternForAttribute(attribute, true)}}"
+												   placeholder="Type in new integer value."
+												   class="form-control" ng-model="attribute.values[0].number">
+										</div>
+										<div ng-switch-when="DT" class="input-group pull-right">
+											<input id="attributeValueDateSingle" class="form-control date-picker"
+												   readonly="true"
+												   type="text"
+												   placeholder="Select date."
+												   uib-datepicker-popup="MM/dd/yyyy"
+												   ng-change="$ctrl.addSingleDateToValues(attribute)"
+												   is-open="attribute.attributeValueDateOpened"
+												   ng-model="attribute.value"
+												   close-text="Close"/>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+														ng-click="$ctrl.toggleDatePicker(attribute)">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-sm btn-danger"
+														ng-disabled="!attribute.value"
+														ng-click="$ctrl.clearSingleDate(attribute)">Clear</button>
+											</span>
+										</div>
+										<div ng-switch-when="TS" class="input-group pull-right">
+											<input id="attributeValueTimeStampSingle" class="form-control date-picker"
+												   readonly="true"
+												   type="text"
+												   placeholder="Select date."
+												   uib-datepicker-popup="MM/dd/yyyy"
+												   ng-change="$ctrl.addSingleDateToValues(attribute)"
+												   is-open="attribute.attributeValueDateOpened"
+												   ng-model="attribute.value"
+												   close-text="Close"/>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+														ng-click="$ctrl.toggleDatePicker(attribute)">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-sm btn-danger"
+														ng-disabled="!attribute.value"
+														ng-click="$ctrl.clearSingleDate(attribute)">Clear</button>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</td>
+			<td>
+				<div ng-repeat="hierarchyLevel in attribute.hierarchyLevels"
+					 uib-tooltip-template="'src/productDetails/product/taxonomy/currentPaths.html'"
+					 class="pointer">
+					{{hierarchyLevel.entityDescription.shortDescription}}
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- Send request for new attribute values -->
+<div id="{{$ctrl.newAttributesModalId}}" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color:#ffffff;">{{$ctrl.confirmSendTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5 class="text-left" ng-bind="$ctrl.confirmSendMessage"></h5>
+				<p>Name: {{$ctrl.selectedAttribute.attributeName}}</p>
+
+				<label for="newValue">Values:</label>
+				<input type="text" id="newValue" class="form-control" ng-model="$ctrl.selectedAttribute.newValues"/>
+				<p></p>
+				<label for="noteValue">Note:</label>
+				<input type="text" id="noteValue" class="form-control" ng-model="$ctrl.selectedAttribute.note"/>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.agreeSend()" data-ng-disabled="$ctrl.selectedAttribute.newValues === null || $ctrl.selectedAttribute.newValues === ''">
+					Send
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal" ng-click="$ctrl.cancelSend()" >
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

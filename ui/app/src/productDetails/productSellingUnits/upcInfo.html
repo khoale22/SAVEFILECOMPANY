@@ -1,0 +1,689 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div ng-show="!$ctrl.isLoading">
+	<div can-view="UP_INFO_01">
+		<div class="row" data-ng-if="$ctrl.error !== null">
+			<span ng-bind-html="$ctrl.error" class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="text-align: left">{{$ctrl.error}}</span>
+		</div>
+		<div class="row" data-ng-if="$ctrl.success !== null">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+		</div>
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-body panel-collapse">
+					<div ng-if="$ctrl.showAuditFolder()" class="row col-md-offset-11 col-md-1 pull-right" >
+						<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showUPCInfoAuditInfo()"></div>
+					</div>
+					<ul class="nav nav-tabs nav-pills">
+						<li class="active"><a data-toggle="tab" data-target="#upcInfo" ng-click="$ctrl.chooseTab('upcInfo')">UPC Info</a></li>
+						<li><a data-toggle="tab" data-target="#dimensions" ng-click="$ctrl.chooseTab('dimensions')">Dimensions</a></li>
+						<li><a data-toggle="tab" data-target="#wic" ng-click="$ctrl.chooseTab('wic')">WIC</a></li>
+					</ul>
+					<div class="tab-content">
+						<!--Begins the UPC info tab section-->
+						<div id="upcInfo" class="tab-pane active">
+							<div class="well">
+								<div class="row">
+									<div class="col-md-12">
+										<!--First row of upcInfo: contains dates important to upc info-->
+										<div class="row">
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column">UPC </label>
+													<div class="col-md-6 narrow-right-column narrow-middle-column">{{$ctrl.currentSellingUnit.upc}}</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column">First Scanned on</label>
+													<div class="col-md-6 narrow-right-column narrow-middle-column">{{$ctrl.currentSellingUnit.firstScanDate | date}}</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-5 narrow-left-column">Last Scan Date</label>
+													<div class="col-md-7  narrow-right-column  narrow-middle-column">{{$ctrl.currentSellingUnit.lastScanDate | date}}</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column">Discontinued on</label>
+													<div class="col-md-6  narrow-right-column">{{$ctrl.currentSellingUnit.discontinueDate | date}}</div>
+												</div>
+											</div>
+										</div>
+										<!--Second row information for upc info.  Including Size, Quanity, UOM, and Sub-Brand.-->
+										<div class="row">
+											<div class="col-md-3">
+												<div class="row"  can-view="UP_INFO_02">
+													<label class="col-md-6 narrow-left-column" for="productSize">Size</label>
+													<div class="col-md-6 narrow-right-column narrow-middle-column">
+														<div view-only="UP_INFO_02">{{$ctrl.currentSellingUnit.tagSize | uppercase}}</div>
+														<input type="text"
+															   class="form-control"
+															   name="productSize"
+															   can-edit="UP_INFO_02"
+															   maxlength="6"
+															   id="productSize"
+															   ng-change="$ctrl.currentSellingUnit.tagSize = ($ctrl.currentSellingUnit.tagSize | uppercase)"
+															   ng-model="$ctrl.currentSellingUnit.tagSize">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row" can-view="UP_INFO_03">
+													<label for="quantity" class="col-md-6 narrow-left-column">Quantity</label>
+													<div class="col-md-6 narrow-right-column narrow-middle-column">
+														<div view-only="UP_INFO_03">{{$ctrl.doubleValueQuantity}}</div>
+														<input id="quantity" type="text"
+															   class="form-control"
+															   name="quantity"
+															   can-edit="UP_INFO_03"
+															   maxlength="6"
+															   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+															   id="quantity"
+															   ng-change="$ctrl.updateSellingUnitQuantity()"
+															   ng-model="$ctrl.doubleValueQuantity">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<label class="col-md-5 narrow-left-column" for="UomCode">UOM</label>
+												<div class="col-md-7 narrow-right-column narrow-middle-column">
+													<div view-only="UP_INFO_04">{{$ctrl.selectedRetailUnitOfMeasure.displayName}}</div>
+													<div can-edit="UP_INFO_04">
+														<select data-ng-change="$ctrl.updateSellingUnitRetailUnitOfMeasureCode()" class="form-control" ng-model="$ctrl.selectedRetailUnitOfMeasure.id">
+															<option ng-repeat="element in $ctrl.retailUnitOfMeasures"
+
+																	value="{{element.id}}">
+																{{element.description}}[{{element.abbreviation}}]
+															</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column">Sub Brand</label>
+													<div class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.subBrand.prodSubBrandName}}[{{$ctrl.currentSellingUnit.subBrand.prodSubBrandId}}]</div>
+												</div>
+											</div>
+										</div>
+										<div class="divider-horizontal"></div>
+										<!--Third row in UPC info page below horizontal line separator.  Nestable is only checked when Max Nestable is greater than 0-->
+										<div class="row">
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column">Retail Weight</label>
+													<div view-only="UP_INFO_08" class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.retailWeight}}</div>
+													<div class="col-md-6 narrow-right-column" can-edit="UP_INFO_08">
+														<input id="retailWeight" type="text"
+															   class="form-control"
+															   name="quantity"
+															   can-edit="UP_INFO_08"
+															   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+															   ng-model="$ctrl.currentSellingUnit.retailWeight">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column" for="nestable">Nestable</label>
+													<input class="col-md-1 narrow-right-column" type="checkbox" ng-checked="{{$ctrl.currentSellingUnit.goodsProduct.maxNestCount > 0}}" id="nestable" disabled>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column" for="testScanned">Test Scanned?</label>
+													<input class="col-md-1 narrow-right-column" type="checkbox" ng-model="$ctrl.currentSellingUnit.testScanned" id="testScanned" disabled>
+												</div>
+											</div>
+										</div>
+										<!--Fourth row in UPC info page.  Includes switches Special Handling Size, DSD override, Bonus, and Stackable.-->
+										<div class="row">
+											<div class="col-md-3">
+												<div class="row" style="margin-top: 10px">
+													<label class="col-md-6 narrow-left-column">Special Handling Size</label>
+													<div class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.productShippingHandling.productShippingHandlingType.productShippingHandlingDescription || "NONE"}}</div>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="row">
+													<div ng-show="$ctrl.currentSellingUnit.goodsProduct.maxNestCount > 0">
+														<label class="col-md-6 narrow-left-column">Max Nestable</label>
+														<div style="padding-left: 0" class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.goodsProduct.maxNestCount}}</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3" style="margin-top: 10px">
+												<div class="row" can-view="UP_INFO_06">
+													<label class="col-md-6 narrow-left-column" for="dsdDelete">DSD Delete</label>
+													<input type="checkbox"
+														   ng-class="{'pointer': $ctrl.canUserEditResource('UP_INFO_05')}"
+														   ng-model="$ctrl.currentSellingUnit.dsdDeleteSwitch"
+														   ng-disabled="!$ctrl.canUserEditResource('UP_INFO_05')"
+														   class="col-md-1 narrow-right-column"
+														   id="dsdDelete">
+												</div>
+											</div>
+										</div>
+										<!--Fifth row in UPC info page.  Includes incremental sizes including retail(length, width, and height), Special handing is NONE when null from backend. -->
+										<div class="row" style="margin-top: 10px">
+											<div class="col-md-3 col-md-push-3">
+												<div class="row">
+													<div ng-show="$ctrl.currentSellingUnit.goodsProduct.maxNestCount > 0">
+														<label class="col-md-6 narrow-left-column">Retail Incremental Length</label>
+														<div class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.goodsProduct.retailIncrLength | number:4}}</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3 col-md-push-3">
+												<div class="row" style="margin-top: 10px" can-view="UP_INFO_05">
+													<label class="col-md-6 narrow-left-column" for="dsdOverride">DSD Override</label>
+													<input type="checkbox"
+														   ng-class="{'pointer': $ctrl.canUserEditResource('UP_INFO_06')}"
+														   ng-model="$ctrl.currentSellingUnit.dsdDeptOverideSwitch"
+														   ng-disabled="!$ctrl.canUserEditResource('UP_INFO_06')"
+														   class="col-md-1 narrow-right-column"
+														   id="dsdOverride">
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3 col-md-push-3">
+												<div class="row">
+													<div ng-show="$ctrl.currentSellingUnit.goodsProduct.maxNestCount > 0">
+														<label class="col-md-6 narrow-left-column">Retail Incremental Width</label>
+														<div class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.goodsProduct.retailIncrWidth | number:4}}</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-3 col-md-push-3" style="margin-top: 10px">
+												<div class="row" can-view="UP_INFO_07">
+													<label class="col-md-6 narrow-left-column" for="bonus">Bonus</label>
+													<input type="checkbox"
+														   ng-class="{'pointer': $ctrl.canUserEditResource('UP_INFO_07')}"
+														   ng-model="$ctrl.currentSellingUnit.bonusSwitch"
+														   id="bonus"
+														   class="col-md-1 narrow-right-column"
+														   ng-disabled="!$ctrl.canUserEditResource('UP_INFO_07')">
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3 col-md-push-3">
+												<div class="row">
+													<div ng-show="$ctrl.currentSellingUnit.goodsProduct.maxNestCount > 0">
+														<label class="col-md-6 narrow-left-column">Retail Incremental Height</label>
+														<div class="col-md-6 narrow-right-column">{{$ctrl.currentSellingUnit.goodsProduct.retailIncrHeight | number:4}}</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row" style="margin-top: 10px">
+											<div class="col-md-3 col-md-push-3">
+												<div class="row">
+													<label class="col-md-6 narrow-left-column" for="stackable">Stackable</label>
+													<input class="col-md-1 narrow-right-column" type="checkbox" ng-model="$ctrl.currentSellingUnit.goodsProduct.stackableSwitch" id="stackable" disabled>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="pull-right clearfix">
+											<button type="button" class="btn  btn-primary btn-default btn-sm"
+													can-edit="CP_MRT_01"
+													ng-disabled="$ctrl.isDifferent()" ng-click="$ctrl.reset()">Reset</button>
+											<button type="button" class="btn  btn-primary btn-default btn-sm"
+													style="padding-right: 10px" ng-click="$ctrl.saveUpcInfo()"
+													can-edit="CP_MRT_01"
+													ng-disabled="$ctrl.isDifferent()">Save</button>
+											<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+													data-ng-click="$ctrl.returnToList()">Return To List</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--Begins the selling unit dimensions tab section -->
+						<div id="dimensions" class="tab-pane">
+							<div class="row">
+								<loading-spinner ng-show="$ctrl.isDimensionsLoading"></loading-spinner>
+								<div ng-show="!$ctrl.isDimensionsLoading" class="col-md-12">
+									<table ng-table="defaultConfigTableParams"
+										   class="table-heb table-bordered table-striped"
+										   width="100%">
+										<thead>
+										<!-- Data that populates the header row -->
+										<tr>
+											<th>Dimension Source</th>
+											<th>Retail Length</th>
+											<th>Retail Width</th>
+											<th>Retail Height</th>
+											<th>Retail Weight</th>
+											<th>Last Updated On</th>
+											<th>Last Updated By</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<!-- The Real dimensions section that is then filtered to set the correct length -->
+											<td>Retail Dimensions</td>
+											<td>
+												<input class="form-control"
+													   style="font-weight: normal; width: 100%"
+													   can-edit="UP_INFO_DIM"
+													   ng-disabled="$ctrl.currentProductMaster.goodsProduct === null"
+													   ng-model="$ctrl.currentProductMaster.goodsProduct.retailLength"
+													   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+													   decimal-only
+													   maxlength="8"/>
+												<label style="font-weight: normal"
+													   view-only="UP_INFO_DIM">
+													{{$ctrl.currentProductMaster.goodsProduct.retailLength | number:2}}</label>
+											</td>
+											<td>
+												<input class="form-control"
+													   style="font-weight: normal; width: 100%"
+													   can-edit="UP_INFO_DIM"
+													   ng-disabled="$ctrl.currentProductMaster.goodsProduct === null"
+													   ng-model="$ctrl.currentProductMaster.goodsProduct.retailWidth"
+													   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+													   decimal-only
+													   maxlength="8"/>
+												<label style="font-weight: normal"
+													   view-only="UP_INFO_DIM">
+													{{$ctrl.currentProductMaster.goodsProduct.retailWidth | number:2}}</label>
+											</td>
+											<td>
+												<input class="form-control"
+													   style="font-weight: normal; width: 100%"
+													   can-edit="UP_INFO_DIM"
+													   ng-disabled="$ctrl.currentProductMaster.goodsProduct === null"
+													   ng-model="$ctrl.currentProductMaster.goodsProduct.retailHeight"
+													   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+													   decimal-only
+													   maxlength="8"/>
+												<label style="font-weight: normal"
+													   view-only="UP_INFO_DIM">
+													{{$ctrl.currentProductMaster.goodsProduct.retailHeight | number:2}}</label>
+											</td>
+											<td>
+												<input class="form-control"
+													   style="font-weight: normal; width: 100%"
+													   can-edit="UP_INFO_DIM"
+													   ng-disabled="$ctrl.currentProductMaster.goodsProduct === null"
+													   ng-model="$ctrl.currentProductMaster.goodsProduct.retailWeight"
+													   onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+													   decimal-only
+													   maxlength="10"/>
+												<label style="font-weight: normal" view-only="UP_INFO_DIM">
+													{{$ctrl.currentProductMaster.goodsProduct.retailWeight | number:4}}</label>
+											</td>
+											<td>{{$ctrl.currentProductMaster.goodsProduct.lastUpdatedOn | date:"MM/dd/yyyy 'at' h:mma"}}</td>
+											<td>{{$ctrl.currentProductMaster.goodsProduct.lastUpdateBy}}</td>
+										</tr>
+										<tr>
+											<!-- The Cubiscan section that is then filtered to set the correct length -->
+											<td>Cubiscan</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.productMaster.productCubiscan[0].retailLength | number:4}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.productMaster.productCubiscan[0].retailWidth | number:4}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.productMaster.productCubiscan[0].retailHeight | number:4}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.productMaster.productCubiscan[0].retailWeight | number:4}}</label>
+											</td>
+											<td>{{$ctrl.productMaster.productCubiscan[0].lastUpdatedTimestamp | date:"MM/dd/yyyy 'at' h:mma"}}</td>
+											<td>{{$ctrl.productMaster.productCubiscan[0].lastUpdatedBy}}</td>
+										</tr>
+										<tr>
+											<!-- The Gladson section that is then filtered to set the correct length -->
+											<td>Gladson</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.gladson[0].prodDescriptionText}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.gladson[3].prodDescriptionText}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.gladson[1].prodDescriptionText}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.gladson[2].prodDescriptionText}}</label>
+											</td>
+											<td>Gladson</td>
+											<td>Gladson</td>
+										</tr>
+										<tr>
+											<!-- The Core product setup section that is then filtered to set the correct length -->
+											<td>CPS</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.currentSellingUnit.retailLength}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.currentSellingUnit.retailWidth}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.currentSellingUnit.retailHeight}}</label>
+											</td>
+											<td>
+												<label style="font-weight: normal">{{$ctrl.currentSellingUnit.retailWeight}}</label>
+											</td>
+											<td>{{$ctrl.sellingUnit.lastUpdatedOn | date:"MM/dd/yyyy 'at' h:mma"}}</td>
+											<td>{{$ctrl.sellingUnit.lastUpdatedBy}}</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="row" style="margin-top: 20px">
+								<div class="col-md-12">
+									<div class="pull-right clearfix">
+										<button type="button" class="btn  btn-primary btn-default btn-sm" view-only="UP_INFO_DIM"
+											disabled>Reset</button>
+										<button type="button" class="btn  btn-primary btn-default btn-sm" style="padding-right: 10px"
+											view-only="UP_INFO_DIM" disabled>Save</button>
+										<button type="button" class="btn  btn-primary btn-default btn-sm" can-edit="UP_INFO_DIM"
+											ng-click="$ctrl.resetDimensions()" ng-disabled="$ctrl.isDimensionChanged()">Reset</button>
+										<button type="button" class="btn  btn-primary btn-default btn-sm" style="padding-right: 10px"
+											ng-click="$ctrl.saveDimensions()" can-edit="UP_INFO_DIM" ng-disabled="$ctrl.isDimensionChanged()">Save</button>
+										<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+											data-ng-click="$ctrl.returnToList()">Return To List</button>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<!--Begins the WIC tab section-->
+						<div id="wic" class="tab-pane">
+							<div class="row">
+								<div class="col-md-12">
+									<div ng-show="!$ctrl.noWicData">
+										<table ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+											<tr ng-repeat="wic in $data">
+												<td data-title="'Link to WIC APL'">{{wic.key.wicApprovedProductListId}}</td>
+												<td data-title="'WIC UPC Description'">{{wic.wicDescription}}</td>
+												<td data-title="'WIC Category'">{{wic.wicCategory.displayName}}</td>
+												<td data-title="'WIC Sub-Category'">{{wic.wicSubCategory.displayName}}</td>
+												<td data-title="'Size of WIC UPC'">{{wic.wicPackageSize}}</td>
+												<td data-title="'LEB'">
+													<input type="checkbox"
+														   title="{{$ctrl.getLEBCheckboxTitle(wic)}}"
+														   ng-checked="wic.lebSwitch"
+														   ng-model="wic.lebSwitch"
+														   ng-disabled="$ctrl.isLebSwitchDisabled(wic)"></td>
+												<td data-title="'Cross Linked UPCs'">
+													<button data-toggle="modal" data-target="#crossLinkedUPCsModal" ng-click="$ctrl.retrieveCrossLinkedListOfUPCs(wic)"
+															class="btn btn-block btn-primary">Cross Linked UPCs</button>
+												</td>
+												<td data-title="'LEB UPCs'">
+													<button data-toggle="modal" data-target="#lebUPCsModal"
+															ng-click="$ctrl.retrieveLEBUPCs(wic)"
+															class="btn btn-block btn-primary"
+															ng-disabled="!wic.wicSubCategory.lebSwitch">LEB UPCs</button>
+												</td>
+												<td data-title="'LEB Sizes'">
+													<button data-toggle="modal" data-target="#lebSizesModal"
+															class="btn btn-block btn-primary"
+															ng-click="$ctrl.retrieveLEBSizes(wic)"
+															ng-disabled="!wic.wicSubCategory.lebSwitch">LEB Sizes</button>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div style="text-align: center;">
+										<label ng-show="$ctrl.noWicData">There is no WIC data for this UPC.</label>
+										<div class="inline-block pull-right">
+											<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+													data-ng-click="$ctrl.returnToList()">Return To List</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<div id="crossLinkedUPCsModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						<label>List of Cross Linked UPCs</label>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div style="padding-bottom: 10px">
+						<div style="border: 1px solid; padding: 5px;">
+							<div class="row" style="padding-bottom: 10px;">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<label>WIC UPC</label>
+										</div>
+										<div class="col-md-8">
+											<div class="pull-left">{{$ctrl.currentModalWic.key.upc}}</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-3">
+											<label>Description</label>
+										</div>
+										<div class="col-md-9">
+											<div class="pull-left">{{$ctrl.currentModalWic.wicDescription}}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<label>WIC Category</label>
+										</div>
+										<div class="col-md-8">
+											<div class="pull-left">{{$ctrl.currentModalWic.wicCategory.displayName}}</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-3">
+											<label>WIC Sub-Category</label>
+										</div>
+										<div class="col-md-9">
+											<div class="pull-left">{{$ctrl.currentModalWic.wicSubCategory.displayName}}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isCrossLinkedModalLoading"></loading-spinner>
+					<div style="text-align: center">
+						<label ng-show="$ctrl.emptyCrossLinkedList">There are no Cross Linked UPCs for this WIC APL ID.</label>
+					</div>
+					<div ng-show="!$ctrl.emptyCrossLinkedList && !$ctrl.isCrossLinkedModalLoading">
+						<table ng-table="$ctrl.crossLinkedUPCTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr ng-repeat="wic in $data">
+								<td data-title="'Linked UPC'">{{wic.sellingUnit.upc}}</td>
+								<td data-title="'Description'">{{wic.sellingUnit.productMaster.description}}</td>
+								<td data-title="'Size'">{{wic.sellingUnit.tagSizeDescription}}</td>
+								<td data-title="'Quantity'">{{wic.sellingUnit.quantity}}</td>
+								<td data-title="'UOM'">{{wic.sellingUnit.retailUnitOfMeasure.description}}</td>
+								<td data-title="'Class'">{{wic.sellingUnit.productMaster.itemClass.displayName}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block pull-right btn btn-default btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="lebUPCsModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						<label>LEB UPCs</label>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div style="padding-bottom: 10px">
+						<div style="border: 1px solid; padding: 5px;">
+							<div class="row" style="padding-bottom: 10px;">
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-4">
+											<label>WIC Category</label>
+										</div>
+										<div class="col-md-8">
+											<div class="pull-left">{{$ctrl.currentModalWic.wicCategory.displayName}}</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-3">
+											<label>WIC Sub-Category</label>
+										</div>
+										<div class="col-md-9">
+											<div class="pull-left">{{$ctrl.currentModalWic.wicSubCategory.displayName}}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isLEBUPCModalLoading"></loading-spinner>
+					<div style="text-align: center">
+						<label ng-show="$ctrl.emptyLEBUPCList">There are no LEB UPCs for this WIC.</label>
+					</div>
+					<div ng-if="!$ctrl.emptyLEBUPCList && !$ctrl.isLEBUPCModalLoading">
+						<table ng-table="$ctrl.LEBUPCsTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr ng-repeat="leb in $data">
+								<td data-title="'UPC'">{{leb.sellingUnit.upc}}</td>
+								<td data-title="'Description'">{{leb.sellingUnit.productMaster.description}}</td>
+								<td data-title="'Size'">{{leb.sellingUnit.tagSizeDescription}}</td>
+								<td data-title="'Quantity'">{{leb.sellingUnit.quantity}}</td>
+								<td data-title="'UOM'">{{leb.sellingUnit.retailUnitOfMeasure.description}}</td>
+								<td data-title="'LEB'">
+									<input type="checkbox"
+										   title="{{$ctrl.getLEBCheckboxTitle(leb)}}"
+										   ng-checked="leb.lebSwitch"
+										   ng-model="leb.lebSwitch"
+										   ng-disabled="$ctrl.isLebSwitchDisabled(leb)"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block pull-right btn btn-default btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="lebSizesModal" class="modal fade" role="dialog">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						<label>LEB Sizes</label>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div style="padding-bottom: 10px">
+						<div style="border: 1px solid; padding: 5px;">
+							<div class="row" style="padding-bottom: 10px;">
+								<div class="col-md-3">
+									<label>WIC Category</label>
+								</div>
+								<div class="col-md-9">
+									<div class="pull-left">{{$ctrl.currentModalWic.wicCategory.displayName}}</div>
+								</div>
+							</div>
+							<div class="row" style="padding-bottom: 10px;">
+								<div class="col-md-3">
+									<label>WIC Sub-Category</label>
+								</div>
+								<div class="col-md-9">
+									<div class="pull-left">{{$ctrl.currentModalWic.wicSubCategory.displayName}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isLEBSizesModalLoading"></loading-spinner>
+					<div style="text-align: center">
+						<label ng-show="$ctrl.emptyLEBSizeList">There are no allowed LEB Sizes for this WIC.</label>
+					</div>
+					<div ng-if="!$ctrl.emptyLEBSizeList && !$ctrl.isLEBSizesModalLoading">
+						<table ng-table="$ctrl.LEBSizesTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr ng-repeat="leb in $data">
+								<td data-title="'Allowed LEB Sizes'">{{leb.retailSellingUnit.description}}</td>
+								<td data-title="'Retail Unit Sell Size'">{{leb.key.retailUnitSellSize}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block pull-right btn btn-default btn-primary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<loading-spinner ng-show="$ctrl.isItemMasterDataLoading"></loading-spinner>
+<div ng-show="!$ctrl.isItemMasterDataLoading && !$ctrl.isLoading" can-view="UP_INFO_01">
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-heading">UPC-Item</div>
+			<div class="row">
+				<div class="col-md-12">
+					<table ng-table="defaultConfigTableParams"
+						   class="table-heb table-bordered table-striped"
+						   width="100%">
+						<thead>
+						<tr>
+							<th>Item ID</th>
+							<th>Description</th>
+							<th>Pack</th>
+							<th>Channel</th>
+							<th>UPC</th>
+							<th>MRT/Alt Pack?</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="prodItem in $ctrl.itemMasterLinkedtoUPC">
+							<td>{{prodItem.key.itemCode}}</td>
+							<td>{{prodItem.description}}</td>
+							<td>{{prodItem.pack}}</td>
+							<td>{{$ctrl.isDsdOrWhs(prodItem.key.dsd, prodItem.key.warehouse)}}</td>
+							<td>{{prodItem.caseUpc}}</td>
+							<td>{{$ctrl.isAltPkOrMrt(prodItem.primaryUpc.shipper, prodItem.mrt)}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="inline-block pull-left">
+	Created On <b>{{$ctrl.getAddedDate()}}</b>
+	Created By <b>{{$ctrl.getCreateUser()}}</b>
+</div>

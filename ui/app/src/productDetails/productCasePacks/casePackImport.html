@@ -1,0 +1,685 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+</div>
+<div class="row" data-ng-if="$ctrl.success">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<div ng-show="!$ctrl.isLoading && !$ctrl.isImportItem">
+	<div class="row">
+	    <span class="alert col-md-4 col-md-push-4 text-center myfade" role="alert">Item is not an Import Item</span>
+    </div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="inline-block pull-right">
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+						data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-show="!$ctrl.isLoading  && $ctrl.isImportItem" style="height: 250px">
+	<div class="row col-md-offset-11 col-md-1 pull-right">
+		<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showImportAuditInfo()"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<label>Item Code: </label><span>{{$ctrl.itemMaster.key.itemCode}}</span>
+		</div>
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-md-4" style="text-align: right;">
+					<label class="pull-right">Bicep Vendor #</label>
+				</div>
+				<div class="col-md-8">
+					<div class="dropdown">
+						<button ng-disabled="$ctrl.noBicepVendor"
+								class="btn btn-default dropdown-toggle"
+								data-toggle="dropdown"
+								style="text-align: left; align-content: center; margin-bottom: 10px">
+							{{$ctrl.currentImport.displayName}}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" style="padding: 4px; font-size: 10px">
+							<li ng-repeat="vendor in $ctrl.vendorList track by $index"
+								ng-click="$ctrl.handleVendorListChange($index)" class="pointer">
+								<a>{{vendor.displayName}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divider-horizontal"></div>
+	<br>
+	<form novalidate name="$ctrl.casepackImportForm">
+		<div class="row">
+
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-4">
+						<label>HTS1</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.hts1}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   ng-pattern="/^[0-9]{1,10}?$/"
+							   maxlength="10"
+							   oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							   ng-model="$ctrl.currentImport.hts1"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-4">
+						<label>HTS2</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.hts2}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   ng-pattern="/^[0-9]{1,10}?$/"
+							   maxlength="10"
+							   oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							   ng-model="$ctrl.currentImport.hts2"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-4">
+						<label>HTS3</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.hts3}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   ng-pattern="/^[0-9]{1,10}?$/"
+							   maxlength="10"
+							   oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							   ng-model="$ctrl.currentImport.hts3"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Min. Order Description</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.minOrderDescription}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   maxlength="20"
+							   ng-model="$ctrl.currentImport.minOrderDescription"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Min. Order Quantity</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.minOrderQuantity}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   ng-pattern="/^[0-9]{1,7}?$/"
+							   maxlength="7"
+							   oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							   ng-model="$ctrl.currentImport.minOrderQuantity"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="divider-horizontal"></div>
+		<br>
+
+		<div class="row">
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Pickup Point</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.pickupPoint}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   maxlength="20"
+							   ng-model="$ctrl.currentImport.pickupPoint"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-4">
+						<label>Country of Origin</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentCountry.countryName}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<div class="dropdown" style="width: 100%">
+							<button ng-disabled="$ctrl.noBicepVendor" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: left; align-content: center; margin-bottom: 10px">{{$ctrl.currentCountry.countryName}}
+								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+							</button>
+							<ul class="dropdown-menu" style="overflow-y:Scroll; height: 176px;">
+								<li class="pointer" ng-repeat="country in $ctrl.countryList" ng-click="$ctrl.handleCountryListChange(country)"><a>{{country.countryName}}</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-4" style="text-align: right;">
+						<label>Container Size</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentContainerSize}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<div class="dropdown" style="width: 100%">
+							<button ng-disabled="$ctrl.noBicepVendor" class="btn btn-default dropdown-toggle" data-toggle="dropdown"style="width: 100%; text-align: left; align-content: center; margin-bottom: 10px">{{$ctrl.currentContainerSize}}
+								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li class="pointer" ng-repeat="size in $ctrl.containerSizes" ng-click="$ctrl.handleContainerSizeListChange(size)"><a>{{size}}</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-4" style="text-align: right;">
+						<label>Inco Terms</label>
+					</div>
+
+					<div class="col-md-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentIncoTerms}}</label>
+					</div>
+
+					<div class="col-md-8" can-edit="CP_IMPRT_01">
+						<div class="dropdown" style="width: 100%">
+							<button ng-disabled="$ctrl.noBicepVendor" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width: 100%; text-align: left; align-content: center; margin-bottom: 10px">{{$ctrl.currentIncoTerms}}
+								<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li class="pointer" ng-repeat="incoTerms in $ctrl.incoTerms" ng-click="$ctrl.handleIncoTermsListChange(incoTerms)"><a>{{incoTerms}}</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="divider-horizontal"></div>
+		<br>
+
+		<div class="row">
+			<div class="col-md-8">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="row form-group">
+							<label class="col-md-3 col-sm-3" for="prorationDate">Proration Date</label>
+
+							<div class="col-md-9 col-sm-9" view-only="CP_IMPRT_01">
+								<label style="width: 100%">{{$ctrl.currentImport.prorationDate}}</label>
+							</div>
+
+							<div class="col-md-9 col-sm-9" can-edit="CP_IMPRT_01">
+								<div class="input-group pull-right">
+									<input ng-disabled="$ctrl.noBicepVendor" id="prorationDate" class="form-control date-picker" type="text" readonly="true"
+										   uib-datepicker-popup="MM/dd/yyyy"
+										   datepicker-options="$ctrl.options"
+										   is-open="$ctrl.prorationDatePickerOpened"
+										   ng-model="$ctrl.currentProrationDate"
+										   ng-required="false" close-text="Close"/>
+									<span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+									ng-click="$ctrl.openProrationDatePicker()"
+									ng-disabled="!$ctrl.isEditing && !$ctrl.noBicepVendor">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="row form-group">
+							<label class="col-md-3 col-sm-3" for="inStoreDate">In Store</label>
+
+							<div class="col-md-9 col-sm-9" view-only="CP_IMPRT_01">
+								<label style="width: 100%">{{$ctrl.currentImport.inStoreDate}}</label>
+							</div>
+
+							<div class="col-md-9 col-sm-9" can-edit="CP_IMPRT_01">
+
+								<div class="input-group pull-right" can-edit="CP_IMPRT_01">
+									<input ng-disabled="$ctrl.noBicepVendor" id="inStoreDate" class="form-control date-picker" type="text" readonly="true"
+										   uib-datepicker-popup="MM/dd/yyyy"
+										   datepicker-options="$ctrl.options"
+										   is-open="$ctrl.inStoreDatePickerOpened"
+										   ng-model="$ctrl.currentInStoreDate"
+										   ng-required="false" close-text="Close"/>
+									<span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+									ng-click="$ctrl.openInStoreDatePicker()"
+									ng-disabled="!$ctrl.isEditing && !$ctrl.noBicepVendor">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="row form-group">
+							<label class="col-md-3 col-sm-3" for="warehouseFlushDate">Whs Flush</label>
+
+							<div class="input-group pull-right" view-only="CP_IMPRT_01">
+								<label style="width: 100%">{{$ctrl.currentImport.warehouseFlushDate}}</label>
+							</div>
+
+							<div class="col-md-9 col-sm-9" can-edit="CP_IMPRT_01">
+								<div class="input-group pull-right" >
+									<input ng-disabled="$ctrl.noBicepVendor" id="warehouseFlushDate" class="form-control date-picker" type="text" readonly="true"
+										   uib-datepicker-popup="MM/dd/yyyy"
+										   datepicker-options="$ctrl.options"
+										   is-open="$ctrl.warehouseFlushDatePickerOpened"
+										   ng-model="$ctrl.currentWarehouseFlushDate"
+										   ng-required="false" close-text="Close"/>
+									<span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+									ng-click="$ctrl.openWarehouseFlushDatePicker()"
+									ng-disabled="!$ctrl.isEditing && !$ctrl.noBicepVendor">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="row">
+							<div class="col-md-3">
+								<label>Season</label>
+							</div>
+
+							<div class="col-md-9" view-only="CP_IMPRT_01">
+								<label style="width: 100%">{{$ctrl.currentImport.season}}</label>
+							</div>
+
+							<div class="col-md-9" can-edit="CP_IMPRT_01">
+								<input class="form-control" type="text" ng-disabled="$ctrl.noBicepVendor" maxlength="20" ng-model="$ctrl.currentImport.season" style="width: 100%">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="row">
+							<div class="col-md-3">
+								<label>Sell By</label>
+							</div>
+
+							<div class="col-md-9" view-only="CP_IMPRT_01">
+								<label style="width: 100%">{{$ctrl.currentImport.sellByYear}}</label>
+							</div>
+
+							<div class="col-md-9" can-edit="CP_IMPRT_01">
+								<input ng-disabled="$ctrl.noBicepVendor"
+									   class="form-control"
+									   type="text"
+									   maxlength="9"
+									   ng-pattern="/^[0-9]{1,9}?$/"
+									   ng-model="$ctrl.currentImport.sellByYear"
+									   style="width: 100%"
+									   name="sellByYear"
+									   oninput="this.value=this.value.replace(/[^0-9.]/g,'');">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="divider-horizontal"></div>
+
+		<br>
+		<div class="row">
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-3">
+						<label>Color</label>
+					</div>
+
+					<div class="col-md-9" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.color}}</label>
+					</div>
+
+					<div class="col-md-9" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   maxlength="50"
+							   ng-model="$ctrl.currentImport.color"
+							   style="width: 100%"
+							   ng-trim="false">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-3">
+						<label>Carton Marking</label>
+					</div>
+
+					<div class="col-md-9" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.cartonMarking}}</label>
+					</div>
+
+					<div class="col-md-9" can-edit="CP_IMPRT_01">
+						<input type="text"
+							   class="form-control"
+							   ng-disabled="$ctrl.noBicepVendor"
+							   maxlength="30"
+							   ng-model="$ctrl.currentImport.cartonMarking"
+							   style="width: 100%"
+							   ng-trim="false">
+					</div>
+				</div>
+			</div>
+
+
+			<div class="col-md-3">
+				<div class="row form-group">
+					<div class="col-md-3">
+						<label>Agent %</label>
+					</div>
+
+					<div class="col-md-4" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.agentCommissionPercent}}</label>
+					</div>
+
+					<div class="col-md-4" can-edit="CP_IMPRT_01">
+						<input ng-disabled="$ctrl.noBicepVendor"
+							   class="form-control"
+							   type="text"
+							   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+							   maxlength="8"
+							   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+							   ng-model="$ctrl.currentImport.agentCommissionPercent"
+							   id="agentCommissionPercent"
+							   name="agentCommissionPercent"
+							   style="width: 100%">
+					</div>
+					<!-- <div class="col-md-5" can-edit="CP_IMPRT_01">
+						<span ng-show="percentageForm.agentCommissionPercent.$error.pattern" style="color: red">Agent % must be a decimal with 4 places or less</span>
+					</div> -->
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row  form-group">
+					<div class="col-md-3">
+						<label>Duty %</label>
+					</div>
+
+					<div class="col-md-4" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.dutyPercent}}</label>
+					</div>
+
+					<div class="col-md-4" can-edit="CP_IMPRT_01">
+						<input ng-disabled="$ctrl.noBicepVendor"
+							   class="form-control"
+							   type="text"
+							   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+							   maxlength="8"
+							   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+							   ng-model="$ctrl.currentImport.dutyPercent"
+							   id="dutyPercent"
+							   name="dutyPercent"
+							   style="width: 100%">
+					</div>
+					<!-- <div class="col-md-5" can-edit="CP_IMPRT_01">
+						<span ng-show="percentageForm.dutyPercent.$error.pattern" style="color: red">Duty % must be a decimal with 4 places or less</span>
+					</div> -->
+				</div>
+			</div>
+
+		</div>
+
+		<br>
+		<div class="row">
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-5">
+						<label>Duty Information</label>
+					</div>
+
+					<div class="col-md-4" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.dutyInformation}}</label>
+					</div>
+
+					<div class="col-md-7" can-edit="CP_IMPRT_01">
+						<input class="form-control" type="text" ng-disabled="$ctrl.noBicepVendor" maxlength="20" ng-model="$ctrl.currentImport.dutyInformation" style="width: 100%" ng-trim="false">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row form-group">
+					<label class="col-md-4 col-sm-4" for="dutyConfirmationDate">Duty Confirmation</label>
+
+					<div class="col-md-8 col-sm-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.dutyConfirmationDate}}</label>
+					</div>
+
+					<div class="col-md-8 col-sm-8" can-edit="CP_IMPRT_01">
+
+						<div class="input-group pull-right">
+							<input ng-disabled="$ctrl.noBicepVendor" id="dutyConfirmationDate" class="form-control date-picker" type="text" readonly="true"
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.dutyConfirmationDatePickerOpened"
+								   ng-model="$ctrl.currentDutyConfirmationDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+					<button type="button" class="btn btn-default"
+							ng-click="$ctrl.openDutyConfirmationDatePicker()"
+							ng-disabled="!$ctrl.isEditing && !$ctrl.noBicepVendor">
+						<i class="glyphicon glyphicon-calendar"></i>
+					</button>
+				</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="row form-group">
+					<label class="col-md-4 col-sm-4" for="freightConfirmedDate">Freight Confirmed</label>
+
+					<div class="col-md-8 col-sm-8" view-only="CP_IMPRT_01">
+						<label style="width: 100%">{{$ctrl.currentImport.freightConfirmationDate}}</label>
+					</div>
+
+					<div class="col-md-8 col-sm-8" can-edit="CP_IMPRT_01">
+
+						<div class="input-group pull-right">
+							<input ng-disabled="$ctrl.noBicepVendor" id="freightConfirmedDate" class="form-control date-picker" type="text" readonly="true"
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.freightConfirmationDatePickerOpened"
+								   ng-model="$ctrl.currentFreightConfirmationDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+					<button type="button" class="btn btn-default"
+							ng-click="$ctrl.openFreightConfirmationDatePicker()"
+							ng-disabled="!$ctrl.isEditing && !$ctrl.noBicepVendor">
+						<i class="glyphicon glyphicon-calendar"></i>
+					</button>
+				</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="divider-horizontal"></div>
+	<div class="panel-body">
+		<table class="table-heb table-bordered table-striped table-hover" style="width: 50%" align="center">
+			<thead>
+			<tr>
+				<th>Factory ID</th>
+				<th>Factory Name</th>
+			</tr>
+			</thead>
+			<tr ng-repeat="importFactory in $ctrl.currentImport.vendorItemFactory track by $index">
+				<td>{{importFactory.factory.factoryId}}</td>
+				<td>{{importFactory.factory.factoryName}}</td>
+			</tr>
+
+		</table>
+	</div>
+	<div class="divider-horizontal"></div>
+
+	<div class="inline-block pull-right" view-only="CP_IMPRT_01">
+		<button class="btn btn-primary" data-toggle="modal" data-target="#importFactoryModal">
+			Import Factory
+		</button>
+		<button class="btn btn-primary" disabled>
+			Reset
+		</button>
+		<button class="btn btn-primary" disabled>
+			Save
+		</button>
+		<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+				data-ng-click="$ctrl.returnToList()">Return To List</button>
+	</div>
+
+	<div class="inline-block pull-right" can-edit="CP_IMPRT_01">
+
+		<button class="btn btn-primary"
+				data-toggle="modal" data-target="#importFactoryModal">
+			Import Factory
+		</button>
+		<button class="btn btn-primary"
+				ng-click="$ctrl.reset()">
+			Reset
+		</button>
+		<button class="btn btn-primary" data-ng-disabled="!$ctrl.isDifference()"
+				ng-click="$ctrl.update()">
+			Save
+		</button>
+		<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+				data-ng-click="$ctrl.returnToList()">Return To List</button>
+	</div>
+	<div id="importFactoryModal" class="modal fade" role="dialog" data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7; height: 70%">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						<h5>Import Factory</h5>
+					</div>
+				</div>
+				<div class="modal-body">
+					<table ng-table="$ctrl.factoryTableParams" show-filter="true" class="table-heb table-bordered table-striped table-hover">
+						<tr ng-repeat="factory in $data">
+							<td>
+								<input type="checkbox" sortable="'activeSwitch'" ng-model="factory.activeSwitch" data-ng-disabled="!$ctrl.canEditImportFactory()">
+							</td>
+							<td data-title="'Factory ID'" filter = "{factoryId: 'text'}">{{factory.factoryId}}</td>
+							<td data-title="'Factory Name'" filter = "{factoryName: 'text'}">{{factory.factoryName}}</td>
+							<td data-title="'Factory Country'" filter = "{country: 'text'}">{{factory.country}}</td>
+							<td data-title="'Factory City'" filter = "{city: 'text'}">{{factory.city}}</td>
+						</tr>
+						<tr ng-show="$ctrl.isLoadingFactory">
+							<td colspan="5">
+								<loading-spinner ng-show="$ctrl.isLoadingFactory"></loading-spinner>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<div class="inline-block pull-right" view-only="CP_IMPRT_02">
+						<button class="btn btn-primary" disabled>
+							Save
+						</button>
+						<button class="btn btn-primary" disabled>
+							Reset
+						</button>
+						<button class="btn btn-primary" data-dismiss="modal" data-ng-click="$ctrl.closeImportFactoryPopup()">
+							Close
+						</button>
+
+					</div>
+
+					<div class="inline-block pull-right" can-edit="CP_IMPRT_02">
+						<button class="btn btn-primary" ng-click="$ctrl.saveFactories()" data-dismiss="modal"
+								ng-disabled="!$ctrl.checkImportFactoryDifferent()">
+							Save
+						</button>
+						<button class="btn btn-primary" ng-click="$ctrl.resetFactories()"
+								ng-disabled="$ctrl.isDisabledImportFactory">
+							Reset
+						</button>
+						<button class="btn btn-primary" data-dismiss="modal" data-ng-click="$ctrl.closeImportFactoryPopup()">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="inline-block pull-left" style="position: absolute; bottom: 2px; left: 10px;">
+	Created On <b>{{$ctrl.getAddedDate()}}</b>
+	Created By <b>{{$ctrl.getCreateUser()}}</b>
+</div>

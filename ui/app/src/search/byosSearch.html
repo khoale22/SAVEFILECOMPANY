@@ -1,0 +1,166 @@
+<!--
+  ~ byosSearch.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div>
+	<!-- Show all the selections-->
+	<div class="col-md-8">
+
+		<div class="row">
+
+			<div style="padding-bottom: 10px;">
+				<label for="byosTypes">Field</label>
+				<ui-select ng-model = "$ctrl.selectedType"
+						   theme = "bootstrap"
+						   id="byosTypes"
+						   title = "Choose a type of search">
+					<ui-select-match>{{$select.selected.name}}</ui-select-match>
+					<ui-select-choices
+						repeat="element in $ctrl.searchTypes"
+						refresh="$ctrl.autoFilterForSearchField($select.search)"
+						refresh-delay="400">{{element.name}}</ui-select-choices>
+				</ui-select>
+
+			</div>
+
+			<!-- Sections to show the different criteria selectors (equals, less than, etc). -->
+			<div ng-if="$ctrl.selectedType.operator == $ctrl.GT_LT_EQUAL" style="padding-bottom: 10px;">
+				<label for="ltGtEqOperand">Operand</label>
+				<select class="form-control" id="ltGtEqOperand"
+						ng-options="operand.description for operand in $ctrl.ltGtEqOperands track by operand.id"
+						ng-model="$ctrl.ltGtEqOperand"></select>
+			</div>
+
+			<div ng-if="$ctrl.selectedType.operator == $ctrl.NO_SELECTION">
+				<p><strong>{{$ctrl.selectedType.responseLabel}}</strong></p>
+			</div>
+
+			<!-- Sections to list what the user can pick for a particular type (yes/no, dates, etc.). -->
+
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.INTEGER">
+				<label for="responseInteger">{{$ctrl.selectedType.responseLabel}}</label>
+				<input type="number" class="form-control" ng-model="$ctrl.responseInteger" min="0" id="responseInteger">
+			</div>
+
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.WORKFLOW">
+				<label for="responseWorkflow">{{$ctrl.selectedType.responseLabel}}</label>
+				<select class="form-control" ng-model="$ctrl.responseWorkflow" id="responseWorkflow"
+					ng-options="workflow.description for workflow in $ctrl.workflowOptions track by workflow.id">
+				</select>
+			</div>
+
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.YES_NO">
+				<label for="responseYesNo">{{$ctrl.selectedType.responseLabel}}</label>
+				<select class="form-control" ng-model="$ctrl.responseYesNo" id="responseYesNo"
+						ng-options="yesNo.description for yesNo in $ctrl.yesNoOptions track by yesNo.id">
+				</select>
+			</div>
+
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.STRING">
+				<label for="responseString">{{$ctrl.selectedType.responseLabel}}</label>
+				<input class="form-control" id="responseString" type="text" ng-model="$ctrl.responseString" />
+			</div>
+
+			<!-- Date resonse types -->
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.DATE &&
+				$ctrl.ltGtEqOperand.id != $ctrl.ONE_WEEK">
+				<label for="responseTypeDate">Date</label>
+				<div class="input-group pull-right" id="responseTypeDate">
+					<input class="form-control date-picker" readonly="true"
+						   type="text"
+						   uib-datepicker-popup="MM/dd/yyyy"
+						   is-open="$ctrl.effectiveDatePickerOpened"
+						   ng-model-options="{timezone:'UTC-6'}"
+						   datepicker-options="$ctrl.datePickerOptions"
+						   ng-model="$ctrl.responseDate"
+						   ng-required="true" close-text="Close"/>
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default"
+								ng-click="$ctrl.openEffectiveDatePicker()">
+							<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+					</span>
+				</div>
+			</div>
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.DATE &&
+				$ctrl.ltGtEqOperand.id == $ctrl.BETWEEN">
+				<label for="responseTypeEndDate">And</label>
+				<div class="input-group pull-right" id="responseTypeEndDate">
+					<input class="form-control date-picker" readonly="true"
+						   type="text"
+						   uib-datepicker-popup="MM/dd/yyyy"
+						   is-open="$ctrl.endDatePickerOpened"
+						   ng-model-options="{timezone:'UTC-6'}"
+						   datepicker-options="$ctrl.datePickerOptions"
+						   ng-model="$ctrl.responseEndDate"
+						   ng-required="true" close-text="Close"/>
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default"
+								ng-click="$ctrl.openEndDatePicker()">
+							<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+					</span>
+				</div>
+			</div>
+
+			<!-- Tax Categories. -->
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.TAX_CATEGORY">
+				<label for="taxCategorySelect">Tax Category is</label>
+				<select class="form-control" id="taxCategorySelect"
+						ng-options="taxCategory.displayName for taxCategory in $ctrl.taxCategories"
+						ng-model="$ctrl.responseTaxCategory"></select>
+			</div>
+
+			<!-- Tag Type. -->
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.TAG_TYPE">
+				<label for="tagTypeSelect">Tag Type is</label>
+				<select class="form-control" id="tagTypeSelect"
+						ng-options="tagType.tagTypeDescription for tagType in $ctrl.tagTypes"
+						ng-model="$ctrl.responseTagType"></select>
+			</div>
+
+			<!-- Qualifying Conditions  -->
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.TAX_QUALIFYING_CONDITION">
+				<label for="qualifyingConditionSelect">Tax Qualifying Condition is</label>
+				<select class="form-control" id="qualifyingConditionSelect"
+						ng-options="qualifyingCondition.displayName for qualifyingCondition in $ctrl.qualifyingConditions"
+						ng-model="$ctrl.responseQualifyingCondition"></select>
+			</div>
+
+			<!-- Qualifying Conditions  -->
+			<div ng-if="$ctrl.selectedType.responseType == $ctrl.FULFILMENT_CHANNEL">
+				<label for="fulfilmentChannelSelect">Fulfillment Program is</label>
+				<select class="form-control" id="fulfilmentChannelSelect"
+						ng-options="fulfilmentChannel.displayName for fulfilmentChannel in $ctrl.fulfilmentChannels"
+						ng-model="$ctrl.responseFulfilmentChannel"></select>
+			</div>
+
+			<!-- End date response types -->
+
+		</div>
+
+	</div>
+
+	<!-- Buttons -->
+	<div class="col-md-4">
+		<!--Search -->
+		<button id="productSearchBasicSearch"
+				data-ng-click="$ctrl.search()"
+				class="btn btn-primary btn-block"
+				data-ng-disabled="!$ctrl.userCanSearch()">
+			Search
+		</button>
+		<!-- Add to complex search -->
+		<button	id="productSearchBasicAdd"
+				data-ng-click="$ctrl.addComplexSearch()"
+				class="btn btn-primary btn-block"
+				data-ng-disabled="!$ctrl.userCanSearch()">
+			Add
+		</button>
+	</div>
+</div>

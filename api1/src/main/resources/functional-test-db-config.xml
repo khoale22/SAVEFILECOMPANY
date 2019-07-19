@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ functional-test-db-config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<!-- This file should be in the ftest/resources directory, but it cannot be found on the classpath in IntelliJ if it is. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jbbc="http://www.springframework.org/schema/jdbc"
+
+
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		"
+		>
+
+	<!-- Data source to connect to ARBAF -->
+	<bean id="arbafDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+		<property name="driverClassName" value="${arbaf.driver-class-name}" />
+		<property name="url" value="${arbaf.url}" />
+		<property name="username" value="${arbaf.username}" />
+		<property name="password" value="${arbaf.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from appl_nm" />
+	</bean>
+
+	<!-- Data source to connect to TIM -->
+	<bean id="timDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+		<property name="driverClassName" value="${tim.driver-class-name}" />
+		<property name="url" value="${tim.url}" />
+		<property name="username" value="${tim.username}" />
+		<property name="password" value="${tim.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from dual" />
+	</bean>
+
+	<jdbc:embedded-database id="h2Db" type="H2" >
+		<jdbc:script location="classpath*:db/createTables.sql" />
+		<jdbc:script location="classpath*:db/loadProdDel.sql" />
+		<jdbc:script location="classpath*:db/loadItemMaster.sql" />
+		<jdbc:script location="classpath*:db/loadWhseLocItm.sql" />
+		<jdbc:script location="classpath*:db/loadProdScnCodes.sql" />
+		<jdbc:script location="classpath*:db/loadProductMaster.sql" />
+		<jdbc:script location="classpath*:db/loadProdItem.sql" />
+		<jdbc:script location="classpath*:db/loadPdAssociatedUpc.sql" />
+		<jdbc:script location="classpath*:db/loadPdShipper.sql" />
+		<jdbc:script location="classpath*:db/loadPdUpc.sql" />
+		<jdbc:script location="classpath*:db/loadProductDeletesControlParameters.sql" />
+		<jdbc:script location="classpath*:db/loadProductDeletesExceptionRule.sql" />
+		<jdbc:script location="classpath*:db/loadStrDept.sql" />
+		<jdbc:script location="classpath*:db/loadPdClassCommodity.sql" />
+		<jdbc:script location="classpath*:db/loadPdClsComSubCom.sql" />
+		<jdbc:script location="classpath*:db/loadMstDtaExtnAttr.sql" />
+		<jdbc:script location="classpath*:db/loadSrcSystem.sql" />
+		<jdbc:script location="classpath*:db/loadSlScalescan" />
+		<jdbc:script location="classpath*:db/loadSlLabelFormat.sql" />
+	</jdbc:embedded-database>
+
+	<bean id="db2DataSource" class="org.apache.tomcat.jdbc.pool.DataSource" primary="true">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:mem:h2Db" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1" />
+	</bean>
+
+	<!-- Data source to connect to GDSN Stagin DB -->
+	<bean id="gdsnDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+		<property name="driverClassName" value="${gdsn.driver-class-name}" />
+		<property name="url" value="${gdsn.url}" />
+		<property name="username" value="${gdsn.username}" />
+		<property name="password" value="${gdsn.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from dual" />
+	</bean>
+</beans>

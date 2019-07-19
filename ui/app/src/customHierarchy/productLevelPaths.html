@@ -1,0 +1,17 @@
+<table style="width: 100%">
+	<thead>
+	<tr>
+		<th style="width: 15%;text-align: center">Primary Path</th>
+		<th style="width: 85%">Custom Hierarchy Path</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="data in $ctrl.pathList track by $index">
+		<td style="text-align: center">
+			<input type="radio"
+				   ng-model="$ctrl.changedPrimaryPath" value="{{$index}}">
+		</td>
+		<td><div ng-include="'src/customHierarchy/pathRendererNoStyle.html'"></div></td>
+	</tr>
+	</tbody>
+</table>

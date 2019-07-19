@@ -1,0 +1,56 @@
+<!--
+  ~ attributeMaintenance.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author a786878
+  -->
+<div can-view="EC_AMAN_01" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="AttributeMaintenanceController as attributeMaintenanceController"
+	 ng-init="attributeMaintenanceController.init()">
+	<loading-spinner ng-show="attributeMaintenanceController.isWaiting">
+	</loading-spinner>
+	<div class="col-md-12" ng-show="!attributeMaintenanceController.isWaiting && !attributeMaintenanceController.isCreateNewAttributeSelected">
+		<div class="panel-group" >
+			<div class="panel panel-primary" >
+					<div class="panel-heading" >
+						<h4 class="panel-title inline-block"><b>Attribute Maintenance</b> ({{attributeMaintenanceController.resultMessage}})</h4>
+					</div>
+					<div class="panel-body">
+						<div class="col-md-12">
+						<table ng-table="attributeMaintenanceController.attributeMaintenanceTableParams" show-filter="true" class="table table-heb table-bordered table-striped">
+							<tr ng-repeat="attribute in $data">
+								<td data-title="'Attribute Id'" filter="{'attributeId' : 'text'}">
+									<a class="pointer" ng-click="attributeMaintenanceController.selectAttribute(attribute.attributeId)">{{attribute.attributeId}}</a>
+								</td>
+								<td data-title="'Attribute Name'" filter="{'attributeName': 'text'}">
+									<a class="pointer" ng-click="attributeMaintenanceController.selectAttribute(attribute.attributeId)">{{attribute.attributeName}}</a>
+								</td>
+								<td data-title="'Attribute Description'">{{attribute.attributeDescription}}</td>
+								<td data-title="'Hierarchy Locations'">{{attribute.entityAbbreviation}}</td>
+								<td data-title="'External ID'">{{attribute.externalId}}</td>
+								<td data-title="'Tag'"><input type="checkbox" disabled ng-checked="attribute.tag"></td>
+								<td data-title="'Specification'"><input type="checkbox" disabled ng-checked="attribute.specification"></td>
+								<td data-title="'Source ID'" filter="{'sourceSystemId': 'select'}" filter-data="attributeMaintenanceController.sourceSystems" style="width: 10%">
+									{{attribute.sourceSystemId}}
+								</td>
+							</tr>
+						</table>
+						</div>
+						<div can-edit="EC_AMAN_01" class="col-md-12">
+						<h5><a class="pointer glyphicon-plus" ng-click="attributeMaintenanceController.selectAttribute(null)"> Create New Attribute</a></h5>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	<attribute-maintenance-details-directive
+		ng-if="attributeMaintenanceController.isCreateNewAttributeSelected"
+		attribute-id="attributeMaintenanceController.selectedAttributeId"
+		on-return="attributeMaintenanceController.returnFromDirective()"></attribute-maintenance-details-directive>
+</div>
+
+

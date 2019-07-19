@@ -1,0 +1,183 @@
+<div id="pdRightPanel" style="padding-left: 1.5%">
+	<!-- Product Components - case packs and selling units tables -- Starts -->
+	<div id="productComponents" ng-if="$ctrl.selectedTab.id != 'ecommerceViewTab'">
+		<div ng-include="'src/productDetails/productComponents.html'"></div>
+	</div>
+	<!-- Product Components - case packs and selling units tables -- Ends -->
+	<!-- Selected Tab Content -- Starts -->
+	<div id="pdWorkArea">
+		<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+		<div class="panel panel-primary" data-ng-show="$ctrl.selectedProduct && !$ctrl.loadingData">
+			<div class="panel-heading">{{$ctrl.selectedTab.name}}
+				<div class="row pull-right" style="margin-bottom: 5px;margin-right: 5px">
+					<div ng-if="$ctrl.selectedTab.id == 'ecommerceViewTab'" class="glyphicon glyphicon-folder-open pointer" style="color: white; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showPublishedAttributeLog()"></div>
+				</div></div>
+
+			<div class="panel-body">
+				<variants product-master="$ctrl.selectedProduct" item-master="$ctrl.selectedCasePack"
+						  list-of-products="$ctrl.listOfProducts"
+						  ng-if="$ctrl.selectedTab.id == 'variantsTab'"></variants>
+				<!-- Product Info screen -->
+				<product-info product-master="$ctrl.selectedProduct"
+							  ng-if="$ctrl.selectedTab.id == 'productInfoTab'"></product-info>
+
+				<kits product-master="$ctrl.selectedProduct" list-of-products="$ctrl.listOfProducts"
+					  ng-if="$ctrl.selectedTab.id == 'kitsTab'"></kits>
+
+				<product-shelf-attributes product-master="$ctrl.selectedProduct"
+										  ng-if="$ctrl.selectedTab.id == 'productShelfAttributesTab'"></product-shelf-attributes>
+
+				<!-- break pack screen -->
+				<break-pack ng-if="$ctrl.selectedTab.id == 'breakPackTab'" product-master="$ctrl.selectedProduct"
+							break-pack-label="$ctrl.breakPackLabel"></break-pack>
+
+				<!-- eCommerce View screen-->
+				<e-commerce-view ng-if="$ctrl.selectedTab.id == 'ecommerceViewTab'"
+								 product-master="$ctrl.selectedProduct"
+								 is-last-product="$ctrl.disableRightArrow()"></e-commerce-view>
+
+				<!-- nutrition facts screen-->
+				<nutrition-facts ng-if="$ctrl.selectedTab.id == 'nutritionFactsTab'"
+								 product-master="$ctrl.selectedProduct"
+								 is-last-product="$ctrl.disableRightArrow()"></nutrition-facts>
+
+				<!-- Online Attributes screen -->
+				<online-attributes product-master="$ctrl.selectedProduct" selling-unit="$ctrl.selectedSellingUnit"
+								   list-of-products="$ctrl.listOfProducts"
+								   ng-if="$ctrl.selectedTab.id == 'onlineAttributesTab'"></online-attributes>
+				<product-special-attribute product-master="$ctrl.selectedProduct"
+										   ng-if="$ctrl.selectedTab.id=='specialAttributesTab'"></product-special-attribute>
+				<!-- Case Pack Info screen -->
+				<case-pack-info item-master="$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+								ng-if="$ctrl.selectedTab.id == 'casePackInfoTab' && $ctrl.selectedCasePack &&  !$ctrl.selectedCasePack.isCandidated"
+								on-case-pack-change="$ctrl.handleUpdatedCasePack(casePack)"></case-pack-info>
+				<case-pack-info-candidate item-master="$ctrl.selectedCasePack" selling-units="$ctrl.selectedProduct.sellingUnits"
+										  ps-item-Masters="$ctrl.psItemMasters"
+										  on-candidate-tab-change="$ctrl.handleCandidateTabChange(tabId)"
+										  ng-if="$ctrl.selectedTab.id == 'casePackInfoTab' && $ctrl.selectedCasePack  && $ctrl.selectedCasePack.isCandidated"></case-pack-info-candidate>
+
+				<!-- Item Substitution screen -->
+				<item-substitution item-master="$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+								   ng-if="$ctrl.selectedTab.id == 'itemSubstitutionTab' && $ctrl.selectedCasePack"></item-substitution>
+
+				<!-- Case Pack Import screen -->
+				<case-pack-import item-master="$ctrl.selectedCasePack"
+								  ng-if="$ctrl.selectedTab.id == 'casePackImportTab' && $ctrl.selectedCasePack && !$ctrl.selectedCasePack.isCandidated"></case-pack-import>
+				<case-pack-import-candidate item-master="$ctrl.selectedCasePack"
+											ps-item-Masters="$ctrl.psItemMasters"
+											on-candidate-tab-change="$ctrl.handleCandidateTabChange(tabId)"
+											ng-if="$ctrl.selectedTab.id == 'casePackImportTab' && $ctrl.selectedCasePack && $ctrl.selectedCasePack.isCandidated"></case-pack-import-candidate>
+				<!-- Vendor Info Screen -->
+				<vendor-info item-master="$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+							 on-candidate-status-change="$ctrl.handleCandidateStatusChange(psItemMasters)"
+							 ng-if="$ctrl.selectedTab.id == 'vendorInfoTab' && $ctrl.selectedCasePack && !$ctrl.selectedCasePack.isCandidated"></vendor-info>
+				<vendor-info-candidate item-master="$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+									   on-candidate-status-change="$ctrl.handleCandidateStatusChange(psItemMasters)"
+									   ps-item-Masters="$ctrl.psItemMasters"
+									   on-candidate-tab-change="$ctrl.handleCandidateTabChange(tabId)"
+									   ng-if="$ctrl.selectedTab.id == 'vendorInfoTab' && $ctrl.selectedCasePack && $ctrl.selectedCasePack.isCandidated"></vendor-info-candidate>
+				<!-- Department Screen -->
+				<department item-master="$ctrl.selectedCasePack"
+							product-master="$ctrl.selectedProduct"
+							ng-if="$ctrl.selectedTab.id == 'departmentTab' && $ctrl.selectedCasePack"></department>
+
+				<mrt-info item-master="$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+						  ng-if="$ctrl.selectedTab.id == 'mrtInfoTab' && $ctrl.selectedCasePack"></mrt-info>
+				<!-- Upc Info screen -->
+				<upc-info selling-unit="$ctrl.selectedSellingUnit" product-master="$ctrl.selectedProduct"
+						  is_collapse_selling_unit ="$ctrl.isCollapseSellingUnit"
+						  is_collapse_case_pack = "$ctrl.isCollapseCasePack"
+						  on-product-master-change="$ctrl.handleProductMasterUpdate(product)"
+						  on-selling-unit-change="$ctrl.handleUpdatedSellingUnit(sellingUnit)"
+						  ng-if="$ctrl.selectedTab.id == 'upcInfoTab' && $ctrl.selectedSellingUnit"></upc-info>
+				<!-- DRU Info screen -->
+				<dru-info item-master="$ctrl.selectedCasePack"
+						  ng-if="$ctrl.selectedTab.id == 'druTab' && $ctrl.selectedCasePack"></dru-info>
+				<!--Warehouse Screen-->
+				<warehouse item-master="$ctrl.selectedCasePack"
+						   ng-if="$ctrl.selectedTab.id == 'warehouseTab' && $ctrl.selectedCasePack && !$ctrl.selectedCasePack.isCandidated"></warehouse>
+				<warehouse-candidate item-master="$ctrl.selectedCasePack"
+									 ps-item-Masters="$ctrl.psItemMasters"
+									 on-candidate-tab-change="$ctrl.handleCandidateTabChange(tabId)"
+									 ng-if="$ctrl.selectedTab.id == 'warehouseTab' && $ctrl.selectedCasePack && $ctrl.selectedCasePack.isCandidated"></warehouse-candidate>
+				<!-- Return button to Kits tab -->
+				<button class="inline-block pull-right btn btn-primary btn-sm" ng-click="$ctrl.returnToKitList()"
+						ng-if="$ctrl.isReturnEnabled()">Return</button>
+
+				<!--Selling Unit Section-->
+				<image-info item-master = "$ctrl.selectedCasePack" product-master="$ctrl.selectedProduct"
+							selling-unit="$ctrl.selectedSellingUnit"
+							ng-if="$ctrl.selectedTab.id == 'imageInfoTab' && $ctrl.selectedCasePack"></image-info>
+
+				<!--Taxonomy Section-->
+				<taxonomy product-master="$ctrl.selectedProduct"
+						  ng-if="$ctrl.selectedTab.id === 'taxonomyTab'"></taxonomy>
+			</div>
+		</div>
+	</div>
+	<!-- Selected Tab Content -- Ends -->
+</div>
+<div id="published-attribute-log">
+	<div id="published-attribute-log-modal" class="modal fade">
+		<div class="modal-dialog" style="min-width: 800px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Published Attributes: Change Log</h5>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Product ID   <b>&nbsp; &nbsp;{{$ctrl.selectedProduct.prodId}}</b>
+							</div>
+
+						</div>
+						<div class="col-md-8">
+							<div class="col-md-3">Display Name</div>
+							<div class="col-md-9" style="font-weight: bold;" ng-bind-html="$ctrl.displayName.content"></div>
+						</div>
+					</div>
+					<!--<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Product ID <b>{{$ctrl.productMaster.prodId}}</b> Product Description <b>{{$ctrl.productMaster.description}}</b></div>-->
+					<div class="row" ng-show="$ctrl.isWaitingGetPublishedAttributeAudit">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div class="ecommerce-view-log-table" ng-show="!$ctrl.isWaitingGetPublishedAttributeAudit">
+						<table ng-table="publishedAttributeAuditTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+							<thead>
+							<tr style="min-height:25px">
+								<th style="width:15%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+									Attribute Name
+									<input type="text" ng-model="filter.attributeName"
+										   class="form-control" style="height:20px; margin-top:5px">
+								</th>
+								<th style="width:15%; vertical-align: middle;">Attribute Value</th>
+								<!--<th style="width:15%; vertical-align: middle;">Changed To</th>-->
+								<th style="width:15%; vertical-align: middle;">Action Code</th>
+								<th style="width:15%; vertical-align: middle;" ng-click="$ctrl.changeSort()">
+									Changed On
+									<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+									<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+								</th>
+								<th style="width:25%; vertical-align: middle;">Changed By</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr data-ng-repeat="audit in $data track by $index">
+								<td style="width:15%; padding: 5px;">{{audit.attributeName}}</td>
+								<td style="width:15%; padding: 5px;">{{audit.attributeValue}}</td>
+								<td style="width:15%">{{audit.action}}</td>
+								<td style="width:15%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+								<td style="width:25%">{{audit.changedBy}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button" class="btn btn-primary" ng-show="!$ctrl.isWaitingGetPublishedAttributeAudit && filter.attributeName !==''" ng-click="filter.attributeName=''">Clear Filter</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

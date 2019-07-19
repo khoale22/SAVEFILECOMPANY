@@ -1,0 +1,52 @@
+.btn {
+	font-size: 10px;
+}
+
+.form-control {
+	font-size: 10px;
+	padding: 0px 6px;
+	height: 25px;
+}
+
+.navbar-nav > li > a {
+	padding: 5px 10px;
+}
+
+.navbar-text {
+	margin: 0px 0px;
+}
+
+.panel-heading {
+	font-size: 12px;
+}
+
+.search-button {
+	font-size: 10px;
+}
+
+.panel-body {
+	padding: 5px 15px;
+}
+
+.nav-pills {
+	padding-bottom: 10px;
+}
+
+/*Change the font-size of dropdown menus to 10px*/
+.dropdown-menu {
+	font-size: 10px;
+}
+
+input[type=checkbox] {
+
+	vertical-align: middle;
+
+	position: relative;
+
+	bottom: 1px;
+
+}
+
+div[id="attributeMaintenanceDetails"] input {
+	margin:4px;
+}

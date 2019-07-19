@@ -1,0 +1,157 @@
+<div style="padding: 10px">
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert" >{{$ctrl.success}}</span>
+	</div>
+	<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+	</loading-spinner>
+	<div class="row pull-right" style="margin-bottom: 5px;margin-right: 5px" ng-show="!($ctrl.isWaitingForResponse)">
+		<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showBreakPackAttributeLog()"></div>
+	</div>
+	<div class="row" ng-show="!($ctrl.isWaitingForResponse)">
+		<div class="col-md-12" style="padding-bottom: 5px; font-weight: bold">Outers</div>
+		<div class="col-md-12" >
+			<tree-grid tree-data="$ctrl.breakPackData" col-defs="$ctrl.col_defs" expand-on="$ctrl.expanding_property"></tree-grid>
+		</div>
+		<div class="col-md-12" style="padding-bottom: 5px; font-weight: bold">Inners</div>
+		<div class="col-md-12" >
+			<table class="table-heb table-bordered table-striped" style="width: 100%">
+				<thead>
+					<tr>
+						<th style="text-align: center;width: 30px">
+							<input view-only="PD_BKPK_01" type="checkbox" disabled="disabled">
+							<input can-edit="PD_BKPK_01" type="checkbox" ng-checked="$ctrl.checkAllFlag"
+								   ng-model="$ctrl.checkAllFlag" data-ng-change="$ctrl.checkAllHandle()">
+						</th>
+						<th style="text-align: center;min-width: 100px">UPC</th>
+						<th style="text-align: center;min-width: 100px">Product ID</th>
+						<th style="text-align: center;min-width: 100px">Description</th>
+						<th style="text-align: center;min-width: 100px">Size</th>
+						<th style="text-align: center;min-width: 100px">Selling Units</th>
+					</tr>
+				</thead>
+				<tr ng-repeat="breakPack in $ctrl.innersBreakPackData track by $index">
+					<td style="text-align: center; width: 30px">
+						<input view-only="PD_BKPK_01" type="checkbox" disabled="disabled">
+						<input can-edit="PD_BKPK_01" type="checkbox" ng-checked="breakPack.selected"
+							   ng-model="breakPack.selected">
+					</td>
+					<td style="width: 150px;">
+						<div view-only="PD_BKPK_01">
+							{{breakPack.upc}}
+						</div>
+						<input can-edit="PD_BKPK_01" style="width: 95%; padding-bottom: 2px; padding-top: 2px;"
+							   class="form-control"
+							   data-ng-model="breakPack.upc" ng-blur="$ctrl.checkUPCNumber(breakPack, $index)"
+							   number-validator="^\d{1,19}?$" maxlength="{{$ctrl.MAX_LENGTH_LONG}}">
+					</td>
+					<td>{{breakPack.productId}}</td>
+					<td>{{breakPack.description}}</td>
+					<td>{{breakPack.size}}</td>
+					<td style="width: 100px;">
+						<div view-only="PD_BKPK_01">
+							{{breakPack.productQuantity}}
+						</div>
+						<input can-edit="PD_BKPK_01" style="width: 95%; padding-bottom: 2px; padding-top: 2px;"
+							   class="form-control"
+							   data-ng-model="breakPack.productQuantity" number-validator="^\d{1,5}?$"
+							   maxlength="{{$ctrl.MAX_LENGTH_QUANTITY}}">
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- Footer-->
+		<div class="col-md-12">
+			<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+				<button can-edit="PD_BKPK_01" type="button" class="btn btn-primary"
+						ng-click="$ctrl.addInnerProductBreakPack()">Add
+				</button>
+				<button can-edit="PD_BKPK_01" type="button" class="btn btn-primary"
+						ng-click="$ctrl.deleteInnerProductBreakPack()">Delete
+				</button>
+				<button can-edit="PD_BKPK_01" type="button" class="btn btn-primary"
+				        ng-disabled="$ctrl.isSaveDisabled()"
+						ng-click="$ctrl.saveInnerProductBreakPack()">Save
+				</button>
+				<button can-edit="PD_BKPK_01" type="button" class="btn btn-primary"
+						ng-click="$ctrl.resetInnerProductBreakPack()">Reset
+				</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="break-pack-attribute-log">
+	<div id="break-pack-attribute-log-modal" class="modal fade">
+		<div class="modal-dialog" style="min-width: 800px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Break Pack: Change Log</h5>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Product ID   <b>&nbsp; &nbsp;{{$ctrl.productMaster.prodId}}</b>
+							</div>
+						</div>
+						<div class="col-md-8">
+							<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Product Description   <b>&nbsp; &nbsp;{{$ctrl.productMaster.description}}</b>
+							</div>
+						</div>
+					</div>
+					<div class="row" ng-show="$ctrl.isWaitingGetBreakPackAttributeAudit">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div  ng-show="!$ctrl.isWaitingGetBreakPackAttributeAudit">
+						<table ng-table="breakPackAttributeAuditTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+							<thead>
+							<tr style="min-height:25px">
+								<th style="width:15%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+									Attribute Name
+									<input type="text" ng-model="filter.attributeName"
+										   class="form-control" style="height:20px; margin-top:5px">
+								</th>
+								<th style="width:15%; vertical-align: middle;">UPC</th>
+								<th style="width:15%; vertical-align: middle;">Product ID</th>
+								<th style="width:15%; vertical-align: middle;">Changed From</th>
+								<th style="width:15%; vertical-align: middle;">Changed To</th>
+								<th style="width:15%; vertical-align: middle;">Action Code</th>
+								<th style="width:15%; vertical-align: middle;" ng-click="$ctrl.changeSort()">
+									Changed On
+									<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+									<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+								</th>
+								<th style="width:25%; vertical-align: middle;">Changed By</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr data-ng-repeat="audit in $data track by $index">
+								<td style="width:15%; padding: 5px;">{{audit.attributeName}}</td>
+								<td style="width:15%; padding: 5px;">{{audit.upcText}}</td>
+								<td style="width:15%; padding: 5px;">{{audit.productIdText}}</td>
+								<td style="width:15%; padding: 5px;">{{audit.changedFrom}}</td>
+								<td style="width:15%; padding: 5px;">{{audit.changedTo}}</td>
+								<td style="width:15%">{{audit.action}}</td>
+								<td style="width:15%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+								<td style="width:25%">{{audit.changedBy}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button" class="btn btn-primary" ng-show="!$ctrl.isWaitingGetBreakPackAttributeAudit && filter.attributeName !==''" ng-click="filter.attributeName=''">Clear Filter</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="inline-block pull-left">
+	Created On <b>{{$ctrl.getAddedDate()}}</b>
+	Created By <b>{{$ctrl.getCreateUser()}}</b>
+</div>

@@ -1,0 +1,57 @@
+<div  ng-show="$ctrl.isCollapseCasePack" data-ng-click="$ctrl.expandCasePack()"  >
+	<canvas id="casePackCanvas" width="25" height="100%" class="case-pack-collapse-button" ></canvas>
+</div>
+<div  ng-show="!$ctrl.isCollapseCasePack" ng-class="!$ctrl.isCollapseSellingUnit?'col-md-6':'col-md-12'" style="padding-right:30px;">
+	<div style="display: inline-block; padding-right: 4px">Case Packs</div>
+	<div data-ng-click="$ctrl.collapseCasePack()" class="case-pack-arrow-button">
+	</div>
+	<div style="padding-top: 10px"  ng-style="$ctrl.getHeaderStyle()">
+		<table class="table-heb table-bordered table-striped table-hover"
+		   width="100%">
+		<colgroup>
+				<col width="15%" />
+				<col width="12%" />
+				<col width="35%" />
+				<col width="6%" />
+				<col data-ng-if="$ctrl.isCollapseSellingUnit" width="16%" />
+				<col width="6%" />
+		</colgroup>
+		<thead>
+		<tr style="border-bottom: hidden !important;">
+				<th style="text-align: center;">Item Code</th>
+			<th style="text-align: center">Channel</th>
+			<th style="text-align: center">Case Pack Description</th>
+			<th style="text-align: center">Pack</th>
+				<th data-ng-if="$ctrl.isCollapseSellingUnit" style="text-align: center">Selling Unit UPC</th>
+			<th style="text-align: center">MRT</th>
+		</tr>
+		</thead>
+	</table>
+</div>
+	<div style="height: 65px" ng-style="$ctrl.getGridStyles()">
+		<table class="table-heb table-bordered table-striped table-hover"  id="casePackTable"
+			   style="width:100%;" >
+		<colgroup>
+				<col width="15%" />
+				<col width="12%" />
+				<col width="35%" />
+				<col width="6%" />
+				<col data-ng-if="$ctrl.isCollapseSellingUnit" width="16%" />
+				<col width="6%" />
+		</colgroup>
+		<tbody>
+		<tr ng-repeat="prodItem in $ctrl.prodItems"
+			ng-class="{'bg-primary row-selected': prodItem.isSelected && !prodItem.itemMaster.isCandidated, 'row-candidated': prodItem.itemMaster.isCandidated}"
+			data-ng-click="$ctrl.confirmRowSelect(prodItem)">
+
+				<td style="text-align: center;width: 15%;">{{prodItem.itemMaster.key.itemCode}}</td>
+				<td style="text-align: center;width: 12%;">{{checkEdcChannel(prodItem)}}</td>
+				<td style="text-align: center;width: 35%;">{{prodItem.itemMaster.description}}</td>
+				<td style="text-align: center;width: 6%;">{{prodItem.itemMaster.pack}}</td>
+				<td data-ng-if="$ctrl.isCollapseSellingUnit" style="text-align: center;width: 16%;">{{prodItem.itemMaster.primaryUpc.upc}}</td>
+				<td style="text-align: center;width: 6%;">{{prodItem.itemMaster.mrt | boolean_yn}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</div>

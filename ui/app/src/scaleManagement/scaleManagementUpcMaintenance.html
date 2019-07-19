@@ -1,0 +1,228 @@
+<div class="col-md-12 container-fluid"
+	 ng-controller="ScaleManagementUpcMaintenanceController as scaleManagementUpcMaintenanceController"
+	 ng-init="scaleManagementUpcMaintenanceController.init()">
+	<div class="row" data-ng-if="scaleManagementUpcMaintenanceController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{scaleManagementUpcMaintenanceController.success}}
+		</span>
+	</div>
+	<div class="row" data-ng-if="scaleManagementUpcMaintenanceController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{scaleManagementUpcMaintenanceController.error}}
+		</span>
+	</div>
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">PLU Maintenance
+					<i ng-click="scaleManagementUpcMaintenanceController.dataSearchToggle = !scaleManagementUpcMaintenanceController.dataSearchToggle"
+					   ng-class="{'glyphicon glyphicon-minus': scaleManagementUpcMaintenanceController.dataSearchToggle, 'glyphicon glyphicon-plus': !scaleManagementUpcMaintenanceController.dataSearchToggle}"
+					   class="pull-right pointer">
+					</i>
+				</div>
+
+				<div ng-hide="!scaleManagementUpcMaintenanceController.dataSearchToggle">
+					<div class="panel-heading">
+						<ul class="nav nav-pills">
+							<li class="active">
+								<a data-target="#tabBasic" data-toggle="tab"
+								   ng-click="scaleManagementUpcMaintenanceController.initItemSearch()">PLU Search
+								</a>
+							</li>
+							<li>
+								<a data-target="#tabDescription" data-toggle="tab"
+								   ng-click="scaleManagementUpcMaintenanceController.initDescriptionSearch()">Description Search
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="panel-body">
+						<div class="tab-content">
+							<div class="tab-pane active" id="tabBasic">
+								<div class="row">
+									<div class="col-md-8">
+										<label for="itemSearch">PLU(s) to search for:</label>
+										<textarea data-ng-model="scaleManagementUpcMaintenanceController.searchText"
+												  placeholder="Please enter PLU(s) to search for..." id="itemSearch"
+												  class="noresize" rows="8" style="width: 100%">
+											</textarea>
+									</div>
+									<div class="col-md-4">
+										<label></label>
+										<button data-ng-click="scaleManagementUpcMaintenanceController.newSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementUpcMaintenanceController.searchText == null">Search</button>
+										<button data-ng-click="scaleManagementUpcMaintenanceController.initItemSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementUpcMaintenanceController.searchText == null">Clear</button>
+									</div>
+								</div>
+
+							</div>
+							<div class="tab-pane" id="tabDescription">
+								<div class="row">
+									<div class="col-md-8">
+										<label for="descriptionSearch">Description to search for:</label>
+										<input type="text" id="descriptionSearch" style="width: 100%"
+											   placeholder="Please enter description to search for..."
+											   ng-model="scaleManagementUpcMaintenanceController.searchText">
+									</div>
+									<div class="col-md-4">
+										<label></label>
+										<button data-ng-click="scaleManagementUpcMaintenanceController.newSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementUpcMaintenanceController.searchText == null">Search</button>
+										<button data-ng-click="scaleManagementUpcMaintenanceController.initDescriptionSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementUpcMaintenanceController.searchText == null">Clear</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<loading-spinner ng-show="scaleManagementUpcMaintenanceController.isWaiting">
+	</loading-spinner>
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">These are the PLUs that weren't found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="item in scaleManagementUpcMaintenanceController.missingValues.noMatchList">{{item}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12 col-sm-12">
+		<div class="row" data-ng-if="!scaleManagementUpcMaintenanceController.isWaiting && scaleManagementUpcMaintenanceController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementUpcMaintenanceController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="!scaleManagementUpcMaintenanceController.isWaiting && scaleManagementUpcMaintenanceController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementUpcMaintenanceController.modifyError}}</span>
+		</div>
+		<div class="panel-group"
+			 ng-show="scaleManagementUpcMaintenanceController.isViewingMultipleRecords()">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4 class="panel-title inline-block"><b>Results</b></h4>
+					<h5 class="panel-title inline-block">{{scaleManagementUpcMaintenanceController.resultMessage}}</h5>
+					<div class="inline-block pull-right">
+						<h5 ng-if="scaleManagementUpcMaintenanceController.missingValues.matchCount > 0"
+							class="green-text panel-title inline-block">
+							{{scaleManagementUpcMaintenanceController.missingValues.matchCount}}
+							<span ng-if="scaleManagementUpcMaintenanceController.missingValues.matchCount ==  1">PLU</span>
+							<span ng-if="scaleManagementUpcMaintenanceController.missingValues.matchCount >  1">PLUs</span>
+							found</h5>
+						<h5 ng-if="scaleManagementUpcMaintenanceController.missingValues.noMatchCount > 0"
+							data-toggle="modal" data-target="#notFoundModal"
+							class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+							{{scaleManagementUpcMaintenanceController.missingValues.noMatchCount}}
+							<span ng-if="scaleManagementUpcMaintenanceController.missingValues.noMatchCount ==  1">PLU</span>
+							<span ng-if="scaleManagementUpcMaintenanceController.missingValues.noMatchCount >  1">PLUs</span>
+							not	found</h5>
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+							 ng-click="scaleManagementUpcMaintenanceController.export()"
+							 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel"></div>
+						<div class="inline-block pull-right" ng-show="scaleManagementUpcMaintenanceController.downloading"
+							 style="color: orange">Downloading...</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-8 form-group">
+							<table ng-table="scaleManagementUpcMaintenanceController.tableParams"
+								   class="table table-heb table-bordered table-striped">
+								<script type="text/ng-template" id="checkBoxHeader">
+									<input type="checkbox" ng-model="scaleManagementUpcMaintenanceController.selectAll" ng-change="scaleManagementUpcMaintenanceController.updateAllBulkUpdate(scaleManagementUpcMaintenanceController.selectAll)">
+								</script>
+								<tr ng-repeat="scaleUpc in scaleManagementUpcMaintenanceController.data track by $index">
+									<td data-header="'checkBoxHeader'">
+										<input type="checkbox" ng-model="scaleUpc.isBulkUpdateSelected" ng-change="scaleManagementUpcMaintenanceController.updateSelectAllSwitch(scaleUpc.isBulkUpdateSelected)">
+									</td>
+									<td data-title="'PLU'"><a ng-click="scaleManagementUpcMaintenanceController.getSingleView(scaleUpc, $index)"
+															  class="pointer">{{scaleUpc.plu}}</a>
+									</td>
+									<td data-title="'UPC'">{{scaleUpc.upc}}</td>
+									<td data-title="'Description 1'">{{scaleUpc.englishDescriptionOne}}</td>
+									<td data-title="'Description 2'">{{scaleUpc.englishDescriptionTwo}}</td>
+									<td data-title="'Description 3'">{{scaleUpc.englishDescriptionThree}}</td>
+									<td data-title="'Description 4'">{{scaleUpc.englishDescriptionFour}}</td>
+									<td data-title="'Department'">{{scaleUpc.associateUpc.sellingUnit.productMaster.subDepartment.displayName}}</td>
+									<td data-title="'Effective Date'">{{scaleUpc.effectiveDate | date : 'MM/dd/yyyy'}}</td>
+									<td data-title="'Ingredient Statement Number'">
+										<a class="pointer"
+										   ng-show="scaleManagementUpcMaintenanceController.isFakeIngredientStatement(scaleUpc.ingredientStatement)"
+										   ng-click="scaleManagementUpcMaintenanceController.navigateToIngredientStatements(scaleUpc.ingredientStatement)">
+											{{scaleUpc.ingredientStatement}}
+										</a>
+										<span
+											ng-show="!scaleManagementUpcMaintenanceController.isFakeIngredientStatement(scaleUpc.ingredientStatement)">
+											{{scaleUpc.ingredientStatement}}
+										</span>
+									</td>
+									<td data-title="'Nutrient Statement Number'">
+										<a class="pointer"
+										   ng-show="scaleManagementUpcMaintenanceController.isFakeNutrientStatement(scaleUpc.nutrientStatement)"
+										   ng-click="scaleManagementUpcMaintenanceController.navigateToNutrientStatement(scaleUpc.nutrientStatement)">
+											{{scaleUpc.nutrientStatement}}
+										</a>
+										<span
+											ng-show="!scaleManagementUpcMaintenanceController.isFakeNutrientStatement(scaleUpc.nutrientStatement)">
+											{{scaleUpc.nutrientStatement}}
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-md-4 form-group" id="bulkUpdateSection" can-edit="SM_UPCM_01">
+							<div class="row">
+								<div class="col-md-6 form-group">
+									<label for="bulkUpdateSelected">Bulk Update Attribute:</label>
+									<select class="form-control" id="bulkUpdateSelected"
+											ng-model="scaleManagementUpcMaintenanceController.bulkUpdateOptionSelected">
+										<option
+											ng-repeat="bulkOption in scaleManagementUpcMaintenanceController.bulkUpdateOptionList"
+											value="{{bulkOption.id}}">{{bulkOption.name}}
+										</option>
+									</select>
+								</div>
+								<div class="col-md-6 form-group">
+									<label for="newBulkUpdateValue">New Bulk Update Value:</label>
+									<input type="text" id="newBulkUpdateValue" style="text-align: right; width: 100%"
+										   ng-show="scaleManagementUpcMaintenanceController.bulkUpdateOptionSelected != 'FORCE_TARE'"
+										   ng-model="scaleManagementUpcMaintenanceController.bulkUpdateValue"
+										   data-ng-disabled="scaleManagementUpcMaintenanceController.bulkUpdateOptionSelected == 'MAINTENANCE'">
+									<div class="btn-group" ng-show="scaleManagementUpcMaintenanceController.bulkUpdateOptionSelected == 'FORCE_TARE'">
+										<label class="btn btn-primary" ng-model="scaleManagementUpcMaintenanceController.bulkUpdateValue" uib-btn-radio="'True'">Yes</label>
+										<label class="btn btn-primary" ng-model="scaleManagementUpcMaintenanceController.bulkUpdateValue" uib-btn-radio="'False'">No</label>
+									</div>
+								</div>
+								<div class="col-md-12 form-group">
+									<button class="btn btn-primary pull-right"
+											ng-click="scaleManagementUpcMaintenanceController.submitBulkUpdate()"
+											data-ng-disabled="scaleManagementUpcMaintenanceController.isAttributeNotSelected()">
+										Submit
+									</button>
+								</div>
+								<div class="col-md-12 form-group" style="text-align: right">
+									<strong ng-style="{'color': scaleManagementUpcMaintenanceController.bulkUpdateCount != scaleManagementUpcMaintenanceController.bulkUpdateTotal ?  'darkorange': 'black'}">
+										Update: {{scaleManagementUpcMaintenanceController.bulkUpdateCount}} / {{scaleManagementUpcMaintenanceController.bulkUpdateTotal}}
+									</strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<single-Plu-Panel ng-if="scaleManagementUpcMaintenanceController.isViewingSingleRecord()"></single-Plu-Panel>
+	</div>
+</div>

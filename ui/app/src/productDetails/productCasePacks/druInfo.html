@@ -1,0 +1,141 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div ng-show="!$ctrl.isWaitingForResponse" can-view="CP_DRU_01">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row">
+		<div class="col-md-12 pull-right">
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showDruAuditInfo()"></div>
+		</div>
+	</div>
+	<div class="row">
+		<!--This col will hold the Display Ready Unit checkbox and type display along with the Always sub when out checkbox-->
+		<!--these are all separate rows in a column so that when the screen is compressed they would be kept together.-->
+		<!--padding was added to try to center the text with the check boxes-->
+		<div class="col-md-4 col-md-offset-1">
+			<!--This row states if an item is a DRU-->
+			<div class="row">
+				<div class="col-md-6">
+					<label style="padding-top: 4px">Display Ready Unit</label>
+				</div>
+				<div class="col-md-2" view-only="CP_DRU_01">
+					<input type="checkbox" ng-model="$ctrl.currentDRU.displayReadyUnit" ng-disabled="true">
+				</div>
+				<div class="col-md-2" can-edit="CP_DRU_01">
+					<input type="checkbox" ng-model="$ctrl.currentDRU.displayReadyUnit" ng-change="$ctrl.toggleDisplayReadyUnit()">
+				</div>
+			</div>
+			<!--If the item is a DRU this row defines what type-->
+			<div class="row" style="padding-top: 4px">
+				<div class="col-md-6">
+					<label>Type of DRU</label>
+				</div>
+				<div class="col-md-6">
+					<div view-only="CP_DRU_01">{{$ctrl.currentDRU.typeOfDRU}}</div>
+					<div can-edit="CP_DRU_01">
+						<select ng-model="$ctrl.currentDRU.typeOfDRU" ng-show="$ctrl.currentDRU.displayReadyUnit" ng-change="$ctrl.checkChange()">
+							<option value="" disabled>--Select Type of DRU--</option>
+							<option value="Display Ready Pallet">Display Ready Pallet</option>
+							<option value="Retail Ready Packaging">Retail Ready Packaging</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<!--This row states if the item is always subbed out when out-->
+			<div class="row">
+				<div class="col-md-6" style="padding-top: 4px">
+					<label>Always Sub when Out</label>
+				</div>
+				<div class="col-md-2" view-only="CP_DRU_01">
+					<input type="checkbox" ng-model="$ctrl.currentDRU.alwaysSubWhenOut" ng-disabled="true" >
+				</div>
+				<div class="col-md-2" can-edit="CP_DRU_01">
+					<input type="checkbox" ng-model="$ctrl.currentDRU.alwaysSubWhenOut" ng-change="$ctrl.checkChange()">
+				</div>
+			</div>
+		</div>
+		<!--The clearfix tag sets the break point when the screen gets too small also the next column holds all of the rows-->
+		<!--attributes(Facing, Deep, and High) and the orientation flag.-->
+		<div class="clearfix visible-md"></div>
+		<div class="col-md-4 col-md-offset-1">
+			<!--This holds the number of facings in a row for an item-->
+			<div class="row">
+				<div class="col-md-6" style="padding-top: 4px">
+					<label>Rows Facing in Retail Units</label>
+				</div>
+				<div class="col-md-2" style="padding-top: 4px">
+					<div view-only="CP_DRU_01">{{$ctrl.currentDRU.rowsFacing}}</div>
+					<div can-edit="CP_DRU_01">
+						<input class="form-control" type="number" ng-model="$ctrl.currentDRU.rowsFacing" min="0" ng-change="$ctrl.checkChange()" style="width: 150%">
+					</div>
+				</div>
+			</div>
+			<!--This holds how many items deep can fit on a shelf-->
+			<div class="row">
+				<div class="col-md-6" style="padding-top: 4px">
+					<label>Rows Deep in Retail Units</label>
+				</div>
+				<div class="col-md-2" style="padding-top: 4px">
+					<div view-only="CP_DRU_01">{{$ctrl.currentDRU.rowsDeep}}</div>
+					<div can-edit="CP_DRU_01">
+						<input class="form-control" type="number" ng-model="$ctrl.currentDRU.rowsDeep" min="0" ng-change="$ctrl.checkChange()" style="width: 150%">
+					</div>
+				</div>
+			</div>
+			<!--This row holds how many items you can stack on top of each other in an shelf-->
+			<div class="row">
+				<div class="col-md-6" style="padding-top: 4px">
+					<label>Rows High in Retail Units</label>
+				</div>
+				<div class="col-md-2" style="padding-top: 4px">
+					<div view-only="CP_DRU_01">{{$ctrl.currentDRU.rowsHigh}}</div>
+					<div can-edit="CP_DRU_01">
+						<input class="form-control" type="number" ng-model="$ctrl.currentDRU.rowsHigh" min="0" ng-change="$ctrl.checkChange()" style="width: 150%">
+					</div>
+				</div>
+			</div>
+			<!--This row tells you how many orientations an item can have and still be accessible to the customer-->
+			<div class="row">
+				<div class="col-md-6" style="padding-top: 4px">
+					<label>Orientation</label>
+					<label ng-show="$ctrl.currentDRU.typeOfDRU=='Display Ready Pallet'"> of DRP</label>
+					<label ng-show="$ctrl.currentDRU.typeOfDRU=='Retail Ready Packaging'"> of RRP on Shelf</label>
+				</div>
+				<div class="col-md-2" style="padding-top: 4px">
+					<div view-only="CP_DRU_01">{{$ctrl.currentDRU.orientation}}</div>
+					<div can-edit="CP_DRU_01">
+						<select class="form-control" ng-model="$ctrl.currentDRU.orientation" ng-change="$ctrl.checkChange()" style="width: 160%">
+							<option value="0" disabled>--Select Orientation--</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" >
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+			<div class="pull-right" >
+				<button class="btn btn-primary" can-edit="CP_DRU_01"
+						ng-click="$ctrl.saveDRUInfo()" data-toggle="tooltip"  title="Save"
+						ng-disabled="!$ctrl.enableSave">Save
+				</button>
+				<button class="btn btn-primary"   can-edit="CP_DRU_01"
+						ng-click="$ctrl.reset()" data-toggle="tooltip" title="Reset">Reset</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+						data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+	<div class="inline-block pull-left">
+		Created On <b>{{$ctrl.getAddedDate()}}</b>
+		Created By <b>{{$ctrl.getCreateUser()}}</b>
+	</div>
+</div>

@@ -1,0 +1,47 @@
+<!--
+  ~ notificationModal.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div
+	 ng-init=notificationModalController.init() data-ng-cloak="true">
+	<!--Modal Header-->
+	<div class="modal-header" style="background-color: #337ab7;">
+		<button type="button" class="close" data-dismiss="modal"
+				ng-click="notificationModalController.close()">&times;
+		</button>
+	 	<h5 class="modal-title" style="color: #ffffff;">{{notificationModalController.title}}</h5>
+	</div>
+	<!--Modal Body-->
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<p data-ng-bind-html="notificationModalController.message"></p>
+			</div>
+		</div>
+	</div>
+	<!--Modal Footer-->
+	<div class="modal-footer">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-6 col-md-offset-7">
+					<button class="btn btn-primary btn-block" data-ng-hide="notificationModalController.isShowConfirmDialog"
+							data-ng-click="notificationModalController.close()">Close</button>
+
+					<button class="btn btn-primary btn-sm" data-ng-show="notificationModalController.isShowConfirmDialog"
+							data-ng-click="notificationModalController.yes()">Yes</button>
+
+					<button class="btn btn-primary  btn-sm"  data-ng-show="notificationModalController.isShowConfirmDialog"
+							data-ng-click="notificationModalController.close()">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

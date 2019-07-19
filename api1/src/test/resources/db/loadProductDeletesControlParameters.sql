@@ -1,0 +1,8 @@
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (1, 1, 'LST_SCN_DT                    ', '540                                               ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (2, 1, 'ADDED_DT                      ', '360                                               ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (3, 1, 'WHSE_INVEN.ON_HAND_QTY        ', '0                                                 ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (4, 1, 'STR_INVEN.ON_HAND_QTY         ', '0                                                 ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (5, 1, 'LST_RECD_TS                   ', '540                                               ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (6, 1, 'PO_STATUS_CD                  ', 'A                                                 ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (6, 2, 'ORDERED_DT                    ', '540                                               ', 0, 'Y');
+INSERT INTO PROD_DEL_CNTL_PARM (SYS_GEND_ID, SEQ_NBR, PARM_NM, PARM_VAL_TXT, PRTY_NBR, ACTV_SW) VALUES (7, 2, 'ORDERED_DTE                   ', '541                                              ', 1, 'N');

@@ -1,0 +1,14 @@
+<div class="container-fluid" ng-cloak="true" id="jobsDiv" ng-controller="JobsController as jobsController" tabindex="0" ng-keypress="jobsController.showJobInfo($event);">
+	<table class="table-heb table-bordered table-striped table-hover">
+		<thead>
+			<th>Shortcut</th>
+			<th>Job Name</th>
+		</thead>
+		<tbody>
+			<tr ng-repeat="job in jobsController.data">
+				<td><a ui-sref="execution({ jobName: {{ job.id }} })">{{ $index }}</a></td>
+				<td>{{ job.name }}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

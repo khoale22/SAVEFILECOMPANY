@@ -1,0 +1,29 @@
+<!-- This page comprises of the  data tables of product components - case packs and selling units-->
+<div id="pdSummary">
+	<div class="panel panel-primary" data-ng-show="$ctrl.selectedProduct">
+		<div class="panel-heading">Product Summary</div>
+		<div class="panel-body">
+			<div class="row" style="padding-left: 0%;padding-right: 0%;margin-right: 0; position: relative;">
+				<!--Case Pack Grid Starts -->
+				<div id="casePack"  style="padding-left:0%;  ">
+					<pd-case-packs prod-items="$ctrl.selectedProduct.prodItems"
+								   remove-c-s-s-classes ="$ctrl.removeCSSClasses()"
+								   on-item-change="$ctrl.handleCasePackChange(item.itemMaster)"
+								   is-collapse-case-pack="$ctrl.isCollapseCasePack"
+								   is-collapse-selling-unit="$ctrl.isCollapseSellingUnit"
+					></pd-case-packs>
+				</div>
+				<!--Case Pack Grid Ends -->
+				<!--Selling Unit Grid Starts -->
+				<div id="sellingUnit"   style="padding-left: 0.5%;padding-right: 0%;">
+					<pd-selling-units selling-units="$ctrl.selectedProduct.sellingUnits"
+									  remove-c-s-s-classes ="$ctrl.removeCSSClasses()"
+									  on-selling-unit-change="$ctrl.handleSellingUnitChange(upc)"
+									  is-collapse-case-pack="$ctrl.isCollapseCasePack"
+									  is-collapse-selling-unit="$ctrl.isCollapseSellingUnit"></pd-selling-units>
+				</div>
+				<!--Selling Unit Grid Ends -->
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,11 @@
+<div class="row">
+	<div class="col-md-12 container-fluid" ng-cloak="true" can-view="PG_MENU_00"
+		 ng-controller="ProductGroupSearchController as productGroupSearchController" ng-init=productGroupSearchController.init()>
+		<div ng-if="productGroupSearchController.mode=='search-mode'">
+			<div data-ng-include="'src/productGroup/productGroupSearch/productGroupSearch.html'"></div>
+		</div>
+		<div ng-if="productGroupSearchController.mode=='detail-mode'">
+			<product-group-detail item-received="productGroupSearchController.dataSent"></product-group-detail>
+		</div>
+	</div>
+</div>

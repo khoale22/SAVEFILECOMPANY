@@ -1,0 +1,244 @@
+<!--
+ eCommerceViewHierarchyAssignment.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn55306
+  ~  @since 2.14.0
+  -->
+<button type="button" class="btn btn-link" style="padding:0px; margin-top: -2px;" ng-click="$ctrl.showHierarchyAssignment()" >Change</button>
+<div id="customerProductGroupHierarchyAssigmentModel" class="modal fade" role="dialog" ng-style="$ctrl.styleDisplay2Modal" style="overflow-y: auto;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					Customer Hierarchy Assignment
+				</h5>
+			</div>
+			<div class="modal-body" style="min-height: 450px;max-height: 600px;overflow-y: auto">
+				<loading-spinner ng-show="$ctrl.isWaitingForResponse"></loading-spinner>
+				<!--Error span-->
+				<div class="row" data-ng-if="$ctrl.error">
+					<span class="alert alert-danger col-md-6 col-md-push-3 text-left myfade" role="alert"
+						  ng-bind-html="$ctrl.error"></span>
+				</div>
+				<!--Success span-->
+				<div class="row" data-ng-if="$ctrl.success">
+					<span class="alert alert-success col-md-6 col-md-push-3 text-center myfade"
+						  role="alert">{{$ctrl.success}}</span>
+				</div>
+				<div id="currentHierachyId" class="panel panel-primary" ng-show="!$ctrl.isWaitingForResponse" style="min-height: 150px;">
+					<div class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Current Hierarchy</b></h4>
+					</div>
+					<div class="panel-body" style="overflow-y: auto;max-height: 200px;min-height: 150px">
+						<table class="table-heb table-bordered table-striped"  style="min-width: 70%;">
+							<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="min-width: 100px;text-align: center;">Hierarchy Path</th>
+								<th style="min-width: 100px;text-align: center;">Primary/Alternate</th>
+								<th style="min-width: 100px;text-align: center;">Remove </th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-show="$ctrl.hierarchyContextCurrentPath.length ==0" style="!important;height: 25px;">
+								<td></td><td></td><td></td>
+							</tr>
+							<tr ng-show="$ctrl.hierarchyContextCurrentPath.length ==0" style="!important;height: 25px;">
+								<td></td><td></td><td></td>
+							</tr>
+							<tr ng-show="$ctrl.hierarchyContextCurrentPath.length ==0" style="!important;height: 25px;">
+								<td></td><td></td><td></td>
+							</tr>
+							<tr ng-repeat="currentPath in $ctrl.hierarchyContextCurrentPath" ng-show="currentPath.action !='D'" style="!important;height: 25px;">
+								<td>
+									<span style="margin-right: 10px" ng-bind-html="currentPath.pathStyle"></span>
+								</td>
+								<td can-edit="PD_ECOM_01">
+									<ui-select ng-model="currentPath.defaultParentValue"
+											   theme="bootstrap" ng-disabled="!currentPath.allowPrimaryPath">
+										<ui-select-match>
+											{{$select.selected}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="primary in $ctrl.primaryList"
+											refresh-delay="0" style="z-index: 2000">{{primary}}
+										</ui-select-choices>
+									</ui-select>
+								</td>
+								<td view-only="PD_ECOM_01">
+									<ui-select ng-model="currentPath.defaultParentValue"
+											   theme="bootstrap" ng-disabled="true">
+										<ui-select-match>
+											{{$select.selected}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="primary in $ctrl.primaryList"
+											refresh-delay="0" style="z-index: 2000">{{primary}}
+										</ui-select-choices>
+									</ui-select>
+								</td>
+
+								<td style="text-align: center" can-edit="PD_ECOM_01">
+									<a  class="pointer" ng-click="$ctrl.removeHierarchyContextCurrentPath(currentPath)">Remove</a>
+								</td>
+								<td style="text-align: center" view-only="PD_ECOM_01">
+									<a class="pointer" disabled="disabled">Remove</a>
+								</td>
+
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div id="customerHierachyId" class="panel panel-primary" ng-show="!$ctrl.isWaitingForResponse" style="min-height: 150px;">
+					<div class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Select from existing hierarchy</b></h4>
+					</div>
+					<div class="panel-body" style="overflow-y: auto;max-height: 250px;" >
+						<div class="panel-heading">
+							<h4 class="panel-title" ng-click="$ctrl.changeExpandHierarchy($ctrl.hierarchyContext)">
+								<strong ng-if="!$ctrl.isHierarchyLevelCollapsed($ctrl.hierarchyContext)">[-]</strong>
+								<strong ng-if="$ctrl.isHierarchyLevelCollapsed($ctrl.hierarchyContext)">[+]</strong>
+								<a><strong>{{$ctrl.hierarchyContext.description}}</strong></a>
+							</h4>
+						</div>
+						<div ng-show="!$ctrl.isHierarchyLevelCollapsed($ctrl.hierarchyContext)" style="padding-left: 30px">
+							<div ng-repeat="(firstIndex, firstLevel) in $ctrl.hierarchyContext.childRelationships">
+								<div ng-click="$ctrl.selectCustomHierarchyLevel(hierarchyContext, firstLevel, null, null, null, null); $ctrl.highlightCurrentSelectedHierarchyLevel(firstIndex, null, null, null, null)"
+									 style="padding-left: 15px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(firstIndex, null, null, null, null)}}">
+									<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(firstLevel) && !$ctrl.isHierarchyLevelCollapsed(firstLevel)">[-]</strong>
+									<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(firstLevel) && $ctrl.isHierarchyLevelCollapsed(firstLevel)">[+]</strong>
+									<strong ng-if="$ctrl.isLowestBranchOrHasNoRelationships(firstLevel)">&emsp;&nbsp;</strong>
+									<strong>{{firstLevel.childDescription.shortDescription}}
+										<span can-edit="PD_ECOM_01">
+											<a class="pointer" ng-show="$ctrl.isChildRelationshipOfProductEntityType(firstLevel)" ng-click="$ctrl.addHierarchyContextCurrentPathRootHierarchy(firstLevel)">Add</a>
+										</span>
+									</strong>
+								</div>
+								<div ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(firstLevel) && !$ctrl.isHierarchyLevelCollapsed(firstLevel)">
+									<div ng-repeat="(secondIndex, secondLevel) in firstLevel.childRelationships">
+										<div ng-click="$ctrl.selectCustomHierarchyLevel(hierarchyContext, firstLevel, secondLevel, null, null, null);$ctrl.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, null, null, null)"
+											 style="padding-left: 30px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(firstIndex, secondIndex, null, null, null)}}">
+											<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(secondLevel) && !$ctrl.isHierarchyLevelCollapsed(secondLevel)">[-]</strong>
+											<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(secondLevel) && $ctrl.isHierarchyLevelCollapsed(secondLevel)">[+]</strong>
+											<strong ng-if="$ctrl.isLowestBranchOrHasNoRelationships(secondLevel)">&emsp;&nbsp;</strong>
+											<strong>{{secondLevel.childDescription.shortDescription}}
+												<span can-edit="PD_ECOM_01">
+														<a class="pointer" ng-show="$ctrl.isChildRelationshipOfProductEntityType(secondLevel)" ng-click="$ctrl.addHierarchyContextCurrentPathRootHierarchy(secondLevel)">Add</a>
+													</span>
+											</strong>
+										</div>
+										<div ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(secondLevel) && !$ctrl.isHierarchyLevelCollapsed(secondLevel)">
+											<div ng-repeat="(thirdIndex, thirdLevel) in secondLevel.childRelationships">
+												<div ng-click="$ctrl.selectCustomHierarchyLevel(hierarchyContext, firstLevel, secondLevel, thirdLevel, null, null);$ctrl.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, null, null)"
+													 style="padding-left: 45px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, null, null)}}">
+													<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(thirdLevel) && !$ctrl.isHierarchyLevelCollapsed(thirdLevel)">[-]</strong>
+													<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(thirdLevel) && $ctrl.isHierarchyLevelCollapsed(thirdLevel)">[+]</strong>
+													<strong ng-if="$ctrl.isLowestBranchOrHasNoRelationships(thirdLevel)">&emsp;&nbsp;</strong>
+													<strong>{{thirdLevel.childDescription.shortDescription}}
+														<span can-edit="PD_ECOM_01">
+																<a class="pointer" ng-show="$ctrl.isChildRelationshipOfProductEntityType(thirdLevel)" ng-click="$ctrl.addHierarchyContextCurrentPathRootHierarchy(thirdLevel)">Add</a>
+															</span>
+													</strong>
+												</div>
+												<div ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(thirdLevel) && !$ctrl.isHierarchyLevelCollapsed(thirdLevel)">
+													<div ng-repeat="(fourthIndex, fourthLevel) in thirdLevel.childRelationships">
+														<div ng-click="$ctrl.selectCustomHierarchyLevel(hierarchyContext, firstLevel, secondLevel, thirdLevel, fourthLevel, null);$ctrl.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, fourthIndex, null)"
+															 style="padding-left: 60px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, fourthIndex, null)}}">
+															<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(fourthLevel) && !$ctrl.isHierarchyLevelCollapsed(fourthLevel)">[-]</strong>
+															<strong ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(fourthLevel) && $ctrl.isHierarchyLevelCollapsed(fourthLevel)">[+]</strong>
+															<strong ng-if="$ctrl.isLowestBranchOrHasNoRelationships(fourthLevel)">&emsp;&nbsp;</strong>
+															<strong>{{fourthLevel.childDescription.shortDescription}}
+																<span can-edit="PD_ECOM_01">
+																		<a class="pointer" ng-show="$ctrl.isChildRelationshipOfProductEntityType(fourthLevel)" ng-click="$ctrl.addHierarchyContextCurrentPathRootHierarchy(fourthLevel)">Add</a>
+																	</span>
+															</strong>
+														</div>
+														<div ng-if="!$ctrl.isLowestBranchOrHasNoRelationships(fourthLevel) && !$ctrl.isHierarchyLevelCollapsed(fourthLevel)">
+															<div ng-repeat="(fifthIndex, fifthLevel) in fourthLevel.childRelationships">
+																<div ng-click="$ctrl.selectCustomHierarchyLevel(hierarchyContext, firstLevel, secondLevel, thirdLevel, fourthLevel, fifthLevel);$ctrl.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex)"
+																	 style="padding-left: 75px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex)}}">
+																	<strong>{{fifthLevel.childDescription.shortDescription}}
+																		<span can-edit="PD_ECOM_01">
+																				<a class="pointer" ng-show="$ctrl.isChildRelationshipOfProductEntityType(fifthLevel)" ng-click="$ctrl.addHierarchyContextCurrentPathRootHierarchy(fifthLevel)">Add</a>
+																			</span>
+																	</strong>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--</div>-->
+				</div>
+			</div>
+			<div class="modal-footer" ng-show="!$ctrl.isWaitingForResponse">
+				<div class="text-right">
+					<!--Buttons for the edit-->
+					<button view-only="PD_ECOM_01" class="btn btn-primary" disabled="true" >{{$ctrl.saveLabel}}</button>
+					<button can-edit="PD_ECOM_01" class="btn btn-primary" ng-click="$ctrl.saveData()">{{$ctrl.saveLabel}}</button>
+					<button view-only="PD_ECOM_01" class="btn btn-primary" disabled="true" >Reset</button>
+					<button can-edit="PD_ECOM_01" class="btn btn-primary" ng-click="$ctrl.resetData()">Reset</button>
+					<button class="btn btn-primary" ng-click="$ctrl.closePopupHandle()">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg" style="!important; max-width: 600px">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.confirmMessage}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.confirmActionHandle()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.noConfirmActionHandle()">
+					No
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.closeConfirmPopupHandle()">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Alert message--->
+<div id="alertModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg"  style="!important;max-width: 550px">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.confirmMessage}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal" ng-click="$ctrl.closePopupWarning()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

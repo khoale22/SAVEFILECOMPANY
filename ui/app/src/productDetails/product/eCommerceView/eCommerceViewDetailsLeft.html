@@ -1,0 +1,284 @@
+<div class="row card" style="margin-left:0px; margin-right:0px;">
+	<div class="card-body">
+		<div class="col-md-12">
+			<div class="col-md-5 pull-left">
+				<img data-ng-src="{{$ctrl.currentTab.logo}}" style="max-width:100%; max-height: 90%; margin-bottom :2px;">
+			</div>
+			<div class="col-md-7 pull-left" style="text-align: left">
+				<div class="row">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="col-md-5 ecom-box-title">Customer Hierarchy</div>
+							<div class="col-md-7">
+								<div class="row pull-right" style="margin-bottom: 5px;">
+									<e-commerce-view-hierachy-assigement
+										current-tab="$ctrl.currentTab" product-master="$ctrl.productMaster"
+										e-commerce-view-details="$ctrl.eCommerceViewDetails"
+										validation-e-commerce-view="$ctrl.validationECommerceView()">
+									</e-commerce-view-hierachy-assigement>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="margin-bottom: 5px;">
+						<span ng-bind-html="$ctrl.eCommerceViewDetails.customerHierarchyPrimaryPath"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row card" style="margin-left:0px; margin-right:0px;">
+		<div class="col-md-12" style="margin-top:5px">
+			<div class="col-md-5" style="padding-left: 0px;">
+				<div class="vcenter">
+					<div class="col-md-12" style="padding: 0px">
+						<div class="col-md-8" style="text-align: center">Primary</div>
+						<div class="col-md-4" style="text-align: center">Alternate</div>
+					</div>
+					<!--Favor tab show no image-->
+					<div class="col-md-12" style="padding: 0px" ng-if="$ctrl.currentTab.id == 'Favor'">
+						<div class="col-md-8 ecom-img-pri" >
+							<div class="img-zoom-container">
+								<img  data-ng-src="images/no_image.png" style="max-width:100%; max-height: 90%;">
+							</div>
+						</div>
+					</div>
+					<!--Other tab show product image-->
+					<div class="col-md-12" style="padding: 0px" ng-if="$ctrl.currentTab.id != 'Favor'">
+						<div class="col-md-8 ecom-img-pri" >
+							<div class="img-zoom-container">
+								<div class="img-zoom-lens" id="lens" style="visibility: hidden"
+									 ng-click="$ctrl.showFullPrimaryImage()"></div>
+								<img id="primaryImage" data-ng-show="$ctrl.eCommerceViewDetails.imagePrimary"
+									 data-ng-src="{{$ctrl.eCommerceViewDetails.imagePrimary}}"
+									 ng-mousemove="$ctrl.moveMouseOnImage('primaryImage', 'imageZoomResult', 'lens', 'imageZoomFrame')"
+									 style="max-width:100%; max-height: 90%;">
+								<img data-ng-show="!$ctrl.eCommerceViewDetails.imagePrimary"
+									 data-ng-src="images/no_image.png"
+									 style="max-width:100%; max-height: 90%;">
+							</div>
+						</div>
+						<div class="col-md-4 ecom-img-alt" data-ng-show="$ctrl.eCommerceViewDetails.imageAlternates">
+							<div class="row" ng-repeat="imageAlternate in $ctrl.eCommerceViewDetails.imageAlternates">
+								<div class="col-md-12" ng-show="imageAlternate.image" style="margin: 5px;">
+									<img data-ng-show="imageAlternate.image != ' '" data-ng-src="{{imageAlternate.image}}"
+										 ng-click="$ctrl.showFullAlternateImage(imageAlternate)" style="max-width:95%;
+										 max-height: 70px;">
+								</div>
+							</div>
+							<div class="img-zoom-frame" id="imageZoomFrame">
+								<div id="imageZoomResult" class="img-zoom-result"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7" ng-show="$ctrl.isWaitingForResponse">
+				<loading-spinner></loading-spinner>
+			</div>
+			<div class="col-md-7" ng-show="!$ctrl.isWaitingForResponse">
+				<div class="row" style="margin-bottom: 5px;font-weight: bold; padding-top: 50px;"
+					 data-ng-show="$ctrl.currentTab.id=='Google'">
+					{{$ctrl.eCommerceViewDetails.brand.content + ' ' + $ctrl.eCommerceViewDetails.displayName.content
+					+ ' '+  $ctrl.eCommerceViewDetails.size.content}}
+				</div>
+				<div class="row ecom-box" data-ng-show="$ctrl.currentTab.id!='Google'">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="col-md-7 ecom-box-title"
+								 style="{{$ctrl.eCommerceViewDetails.brand.differentWithDefaultValue?'color:blue;':''}}">
+								 <div class="col-md-9" style="padding-left: 0px;">
+									 Brand
+									 <div class="btn-group" ng-show="$ctrl.brandEditMode" can-edit="PD_ECOM_01">
+										 <button type="button" class="btn btn-default active"
+												 ng-click="$ctrl.showFormatBrandField(false)"
+												 button-spell-check="!$ctrl.htmlShowBrand">Text</button>
+										 <button type="button" class="btn btn-default"
+												 ng-mousedown="$ctrl.htmlBrandTabClick()"
+												 button-spell-check="$ctrl.htmlShowBrand"
+												 data-ng-disabled="$ctrl.isWaitingForCheckSpellingResponseBrand"
+												 ng-click="$ctrl.showFormatBrandField(true)">HTML</button>
+									 </div>
+								 </div>
+								 <div class="col-md-4" ng-show="$ctrl.isWaitingForCheckSpellingResponseBrand">
+								 	<small-loading-spinner></small-loading-spinner>
+								 </div>
+							</div>
+							<div class="col-md-5">
+								<div class="row pull-right" style="margin-bottom: 5px;" data-ng-show="$ctrl.currentTab.id!='Google'">
+									<a view-only="PD_ECOM_01"
+									   class="pointer margin-right-10 linkDisabled"
+									   style="{{$ctrl.eCommerceViewDetails.brand.differentWithDefaultValue?'color:blue;':''}}" >Edit Text</a>
+									<a can-edit="PD_ECOM_01"
+									   class="pointer margin-right-10"
+									   style="{{$ctrl.eCommerceViewDetails.brand.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.turnOnEditMode('brand')" >Edit Text</a>
+									<a class="pointer"
+									   style="{{$ctrl.eCommerceViewDetails.brand.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.editSourceHandle($ctrl.BRAND_ATTRIBUTE_ID, 'Brand')">Edit Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="margin-bottom: 5px;" data-ng-show="$ctrl.currentTab.id!='Google'">
+						<div ng-show="!$ctrl.brandEditMode"
+							 ng-bind-html="$ctrl.brandContent"></div>
+						<div ng-show="$ctrl.brandEditMode" class="brandDisplayNameRomancy">
+							<div can-edit="PD_ECOM_01" ng-show="!$ctrl.htmlShowBrand"
+								 contenteditable="true"
+								 contenteditable-model
+								 maxlength="{{$ctrl.MAX_LENGTH}}"
+								 style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+								 data-ng-model="$ctrl.eCommerceViewDetails.brand.content"
+								 class="form-control"
+								 spellcheck="false"
+								 ng-disabled="$ctrl.isWaitingForCheckSpellingResponseBrand"
+								 ng-blur="$ctrl.validateSpellCheckBrand()"></div>
+							<textarea can-edit="PD_ECOM_01" ng-show="$ctrl.htmlShowBrand"
+									  class="form-control"
+									  style="height:90px;"
+									  data-ng-model="$ctrl.eCommerceViewDetails.brand.htmlContent"></textarea>
+							<div view-only="PD_ECOM_01" ng-bind-html="$ctrl.eCommerceViewDetails.brand.content"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row ecom-box" data-ng-show="$ctrl.currentTab.id!='Google'">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="col-md-7 ecom-box-title"
+								 style="{{$ctrl.eCommerceViewDetails.displayName.differentWithDefaultValue?'color:blue;':''}}">
+								 <div class="col-md-9" style="padding-left: 0px;">
+								 	Display Name <img style="width: 15px;padding-bottom: 5px;" src="images/aa.png"
+								 					  ng-click="$ctrl.doValidateCamelCaseDisplayName()"
+								 					  ng-show="!$ctrl.htmlShowDispName">
+									 <div class="btn-group" ng-show="$ctrl.displayNameEditMode" can-edit="PD_ECOM_01">
+										 <button type="button" class="btn btn-default active"
+												 button-spell-check="!$ctrl.htmlShowDispName"
+												 ng-click="$ctrl.showFormatDisplayNameField(false)">Text</button>
+										 <button type="button" class="btn btn-default"
+												 ng-mousedown="$ctrl.htmlDisplNmTabClick()"
+												 button-spell-check="$ctrl.htmlShowDispName"
+												 data-ng-disabled="$ctrl.isWaitingForCheckSpellingResponseDisplayName"
+												 ng-click="$ctrl.showFormatDisplayNameField(true)">HTML</button>
+									 </div>
+					  			 </div>
+								 <div class="col-md-3" ng-show="$ctrl.isWaitingForCheckSpellingResponseDisplayName">
+								 	<small-loading-spinner></small-loading-spinner>
+								 </div>
+							</div>
+							<div class="col-md-5">
+								<div class="row pull-right" style="margin-bottom: 5px;" data-ng-show="$ctrl.currentTab.id!='Google'">
+									<a view-only="PD_ECOM_01"
+									   class="pointer margin-right-10 linkDisabled"
+									   style="{{$ctrl.eCommerceViewDetails.displayName.differentWithDefaultValue?'color:blue;':''}}" >Edit Text</a>
+									<a can-edit="PD_ECOM_01"
+									   class="pointer margin-right-10"
+									   style="{{$ctrl.eCommerceViewDetails.displayName.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.turnOnEditMode('displayName')" >Edit Text</a>
+									<a class="pointer"
+									   style="{{$ctrl.eCommerceViewDetails.displayName.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.editSourceHandle($ctrl.DISPLAY_NAME_ATTRIBUTE_ID, 'Display Name')">Edit Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="margin-bottom: 5px;align-content: center" data-ng-show="$ctrl.currentTab.id!='Google'">
+							<div ng-show="!$ctrl.displayNameEditMode"
+							 	 ng-bind-html="$ctrl.displayNameContent"></div>
+							<div ng-show="$ctrl.displayNameEditMode" class="brandDisplayNameRomancy">
+								<div can-edit="PD_ECOM_01" ng-show="!$ctrl.htmlShowDispName"
+									 contenteditable="true"
+									 contenteditable-model
+									 maxlength="{{$ctrl.MAX_LENGTH}}"
+									 style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+									 data-ng-model="$ctrl.eCommerceViewDetails.displayName.content"
+									 class="form-control"
+									 spellcheck="false"
+									 ng-disabled="$ctrl.isWaitingForCheckSpellingResponseDisplayName"
+									 ng-blur="$ctrl.validateSpellCheckDisplayName()"
+									 format-spell-check="$ctrl.htmlShowDispName"></div>
+								<textarea can-edit="PD_ECOM_01" ng-show="$ctrl.htmlShowDispName"
+										  class="form-control"
+										  style="height:90px;"
+										  data-ng-model="$ctrl.eCommerceViewDetails.displayName.htmlContent"></textarea>
+								<div view-only="PD_ECOM_01" ng-bind-html="$ctrl.eCommerceViewDetails.displayName.content"></div>
+							</div>
+					</div>
+				</div>
+				<div class="row ecom-box" data-ng-show="$ctrl.currentTab.id!='Google'">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="col-md-5 ecom-box-title"
+								 style="{{$ctrl.eCommerceViewDetails.size.differentWithDefaultValue?'color:blue;':''}}">Size</div>
+							<div class="col-md-7">
+								<div class="row pull-right" style="margin-bottom: 5px;" data-ng-show="$ctrl.currentTab.id!='Google'">
+									<a view-only="PD_ECOM_01"
+									   class="pointer margin-right-10 linkDisabled"
+									   style="{{$ctrl.eCommerceViewDetails.size.differentWithDefaultValue?'color:blue;':''}}" >Edit Text</a>
+									<a can-edit="PD_ECOM_01"
+									   class="pointer margin-right-10"
+									   style="{{$ctrl.eCommerceViewDetails.size.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.turnOnEditMode('size')" >Edit Text</a>
+									<a class="pointer"
+									   style="{{$ctrl.eCommerceViewDetails.size.differentWithDefaultValue?'color:blue;':''}}"
+									   ng-click="$ctrl.editSourceHandle($ctrl.SIZE_ATTRIBUTE_ID, 'Size')">Edit Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="margin-bottom: 5px;align-content: center" data-ng-show="$ctrl.currentTab.id!='Google'">
+						<div ng-show="!$ctrl.sizeEditMode"
+							 ng-bind-html="$ctrl.eCommerceViewDetails.size.content">
+						</div>
+						<textarea can-edit="PD_ECOM_01"
+								  style="width: 100%;text-align: justify;"
+								  maxlength="{{$ctrl.MAX_LENGTH}}"
+								  ng-show="$ctrl.sizeEditMode"
+								  data-ng-model="$ctrl.eCommerceViewDetails.size.content"
+								  ng-bind-html="$ctrl.trustAsHtml($ctrl.eCommerceViewDetails.size.content)"
+								  class="form-control"></textarea>
+						<textarea view-only="PD_ECOM_01"
+								  style="width: 100%;text-align: justify;"
+								  maxlength="{{$ctrl.MAX_LENGTH}}"
+								  ng-show="$ctrl.sizeEditMode"
+								  data-ng-model="$ctrl.eCommerceViewDetails.size.content"
+								  ng-bind-html="$ctrl.trustAsHtml($ctrl.eCommerceViewDetails.size.content)"
+								  class="form-control"
+								  disabled></textarea>
+					</div>
+				</div>
+				<div class="row" style="margin-bottom: 5px;" ng-show="$ctrl.currentTab.id!='Google'">
+					<div class="ecom-box-title">Snipes</div>
+					<div style="margin-right: 10px">{{$ctrl.eCommerceViewDetails.snipes}}</div>
+				</div>
+			</div>
+		</div>
+</div>
+
+<!-- Popup show and download image-->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" title="Delete"
+								data-dismiss="modal" aria-label="Close" >
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px" title="Download"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

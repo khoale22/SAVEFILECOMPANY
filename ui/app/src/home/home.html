@@ -1,0 +1,884 @@
+<div class="row">
+	<div class="col-md-12 container-fluid" ng-controller="HomeController as homeController"
+		 ng-init="homeController.init()">
+		<div class="col-md-12" style="margin-bottom: 10px;"><a ng-if="homeController.viewingProductDetails" class="pull-right" ng-click="homeController.findMyAttribute()" style="color: blue; cursor: pointer; text-decoration-line: underline;text-decoration-style: solid;">Find My Attribute</a></div>
+		<div class="row" data-ng-if="homeController.error">
+			<span id="homeErrorSpan" class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{homeController.error}}</span>
+		</div>
+		<div class="col-md-6" can-view="PD_INFO_01">
+			<div class="panel-group">
+				<div id="homeProductSearchPanel" ng-include="'src/search/productSearch.html'"></div>
+			</div>
+		</div>
+		<div class="col-md-6" can-view="TK_SUMY_01">
+			<div id="taskDashboardPanel" ng-include="'src/task/taskSummary.html'"></div>
+		</div>
+
+		<loading-spinner ng-show="homeController.isWaiting && !homeController.isPrevNextPageWaiting">
+		</loading-spinner>
+
+		<div class="col-md-12"
+			 ng-show="!homeController.isWaiting && homeController.data != null && !homeController.isViewingProductInfo() && !homeController.isViewingProductDetails()">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div id="homeSearchResultsPanel" class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 id="homeSearchResultsMessage" class="panel-title inline-block">
+							{{homeController.resultMessage}}
+						</h5>
+
+						<div class="inline-block pull-right">
+							<h5 id="homeDisplayMissingVales" ng-if="homeController.missingValues.matchCount > 0"
+								class="green-text panel-title inline-block">
+								{{homeController.missingValues.matchCount}}
+								<span ng-if="homeController.missingValues.matchCount ==  1">{{homeController.missingValues.hitsType}}</span>
+								<span ng-if="homeController.missingValues.matchCount >  1">{{homeController.missingValues.hitsTypePlural}}</span>
+								Found</h5>
+							<h5 id="homeDisplayMatchCount" ng-if="homeController.missingValues.noMatchCount > 0"
+								data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{homeController.missingValues.noMatchCount}}
+								<span ng-if="homeController.missingValues.noMatchCount ==  1">{{homeController.missingValues.hitsType}}</span>
+								<span ng-if="homeController.missingValues.noMatchCount >  1">{{homeController.missingValues.hitsTypePlural}}</span>
+								Not Found</h5>
+						</div>
+						<div class="inline-block pull-right" ng-if="homeController.downloading" style="color: orange">
+							Downloading...
+						</div>
+						<div id="chooseExportOptions" class="dropdown inline-block pull-right pointer"
+							 style="color: orange; padding-right: 10px; padding-bottom: 5px;  font-size: medium">
+							<span id="exportOptionsMenu" type="button" data-toggle="dropdown" aria-haspopup="true"
+								   aria-expanded="false" class="dropdown-toggle glyphicon glyphicon-download-alt pointer"
+								  data-toggle="tooltip" title="Export to Excel">
+							</span>
+							<ul class="dropdown-menu" aria-labelledby="exportOptionsMenu">
+								<form>
+									<li class="text-primary" style="margin: 0px 2%">
+										<input type="checkbox" class="form-check-input" disabled="disabled" checked="checked">
+										<label class="form-check-label">Regular</label>
+									</li>
+									<li ng-repeat="exportOption in homeController.displayExportOptions" class="text-primary" style="margin: 0px 2%">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" ng-model="exportOption.checked" id="{{exportOption.code}}">
+											<label class="form-check-label" for="{{exportOption.code}}">{{exportOption.desc}}</label>
+										</div>
+									</li>
+									<div style="text-align: center; margin-top: 10px">
+										<div class="btn-group" role="group" aria-label="...">
+											<button class="btn btn-sm btn-primary" ng-click="homeController.exportWithSelectedOptions()">Export</button>
+											<button class="btn btn-sm btn-primary" ng-click="homeController.resetExportOptionSelection()">Reset</button>
+											<button class="btn btn-sm btn-primary data-toggle" data-toggle='dropdown-role-name'
+													ng-click="homeController.cancelExportOptionSelection()">Cancel</button>
+										</div>
+									</div>
+								</form>
+							</ul>
+						</div>
+						<div can-view="MU_MENU_00" class="inline-block pull-right" style="padding-right: 10px;">
+
+							<i class="glyphicon glyphicon-upload" ng-click="homeController.toggleMassUpdate()"
+							   style="font-size: medium;" title = "Mass Update"></i>
+						</div>
+					</div>
+					<div class="panel-body">
+						<!-- Mass Update Panel. -->
+						<div ng-if="homeController.isShowingMassUpdate()">
+
+							<!-- Drop-down for all the types of mass-update. -->
+							<div class="row">
+								<div class="col-md-2">
+									<label for="selectMassUpdateType">Mass Update</label>
+									<select class="form-control" ng-model="homeController.massUpdateType"
+											id="selectMassUpdateType"
+											ng-change="homeController.resetMassUpdateValues()">
+										<option can-edit="MU_TRDP_01" value="{{homeController.THIRD_PARTY_SELLABLE}}">
+											Third Party Sellable
+										</option>
+										<option can-edit="MU_SING_01" value="{{homeController.SELECT_INGREDIENTS}}">
+											Select Ingredients
+										</option>
+										<option can-edit="MU_TOTX_01" value="{{homeController.TOTALLY_TEXAS}}">Totally
+											Texas
+										</option>
+										<option can-edit="MU_GOLC_01" value="{{homeController.GO_LOCAL}}">Go Local
+										</option>
+										<option can-edit="MU_FDST_01" value="{{homeController.FOOD_STAMP}}">Food Stamp
+										</option>
+										<option can-edit="MU_FSA_01" value="{{homeController.FSA}}">FSA</option>
+										<option can-edit="MU_TXFL_01" value="{{homeController.TAX_FLAG}}">Tax Flag
+										</option>
+										<option can-edit="MU_SFMF_01" value="{{homeController.SELF_MANUFACTURED}}">Self
+											Manufactured
+										</option>
+										<option can-edit="MU_TXCT_01" value="{{homeController.TAX_CATEGORY}}">Tax
+											Category
+										</option>
+										<option can-edit="MU_PRPK_02" value="{{homeController.PRIMO_PICK}}">Primo Pick
+										</option>
+										<option can-edit="PD_SHLF_04" value="{{homeController.DISTINCTIVE}}">Distinctive
+										</option>
+										<option can-edit="MU_TAGT_01" value="{{homeController.TAG_TYPE}}">Tag Type
+										</option>
+										<option can-edit="CH_HIER_01" value="{{homeController.FULFILLMENT_CHANNEL}}">Product Fulfillment
+										</option>
+										<option can-edit="CH_HIER_01" value="{{homeController.PDP_TEMPLATE}}">PDP Template
+										</option>
+										<option can-edit="MU_SOS_01"  value="{{homeController.SHOW_ON_SITE}}">Show On Site
+										</option>
+										<option can-edit="MU_PRORG_01"  value="{{homeController.PRODUCE_ORGANIC}}">Organic
+										</option>
+									</select>
+								</div>
+
+								<!-- Tax Category -->
+								<div ng-if="homeController.massUpdateType == homeController.TAX_CATEGORY">
+									<div class="col-md-4">
+										<label for="taxCategorySelect">Tax Category</label>
+										<select class="form-control" id="taxCategorySelect"
+												ng-model="homeController.massUpdateStringValue">
+											<option ng-repeat="taxCategory in homeController.vertexTaxCategories"
+													value="{{taxCategory.dvrCode}}">{{taxCategory.displayName}}
+											</option>
+										</select>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+
+								<!-- Tag Type -->
+								<div ng-if="homeController.massUpdateType == homeController.TAG_TYPE">
+									<div class="col-md-4">
+										<label for="tagTypeSelect">Tag Type Select</label>
+										<select class="form-control" id="tagTypeSelect"
+												ng-model="homeController.massUpdateStringValue">
+											<option ng-repeat="tagType in homeController.tagTypes"
+													value="{{tagType.tagTypeCode}}">{{tagType.tagTypeDescription}}
+											</option>
+										</select>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<!-- Third party sellable. -->
+								<div ng-if="homeController.massUpdateType == homeController.THIRD_PARTY_SELLABLE">
+									<div class="col-md-3">
+										<label for="thirdPartySellableSelect">3rd Party Sellable</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="thirdPartySellableSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="thirdPartySellableEffectiveDate">Effective Date</label>
+
+											<div class="input-group pull-right">
+												<input id="thirdPartySellableEffectiveDate" class="form-control date-picker" readonly="true"
+													   type="text"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   is-open="homeController.effectiveDatePickerOpened"
+													   datepicker-options="homeController.datePickerOptions"
+													   ng-model="homeController.massUpdateEffectdiveDate"
+													   ng-required="true" close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Produce Organic. -->
+								<div ng-if="homeController.massUpdateType == homeController.PRODUCE_ORGANIC">
+									<div class="col-md-3">
+										<label for="produceOrganicSelect">Produce Organic</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="produceOrganicSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+
+								<!-- Select Ingredients -->
+								<div ng-if="homeController.massUpdateType == homeController.SELECT_INGREDIENTS">
+									<div class="col-md-3">
+										<label for="selectIngredientsSelect">Select Ingredients</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="selectIngredientsSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+
+
+								<!-- Totally Texas -->
+								<div ng-if="homeController.massUpdateType == homeController.TOTALLY_TEXAS">
+									<div class="col-md-3">
+										<label for="totallyTexasSelect">Totally Texas</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="totallyTexasSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+
+								<!-- Go Local -->
+								<div ng-if="homeController.massUpdateType == homeController.GO_LOCAL">
+									<div class="col-md-3">
+										<label for="goLocalSelect">Go Local</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="goLocalSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+
+
+								<!-- Food Stamp. -->
+								<div ng-if="homeController.massUpdateType == homeController.FOOD_STAMP">
+									<div class="col-md-3">
+										<label for="foodStampSellableSelect">Food Stamp</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="foodStampSellableSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="foodStampEffectiveDate">Effective Date</label>
+
+											<div class="input-group pull-right">
+												<input id="foodStampEffectiveDate" class="form-control date-picker"  readonly="true"
+													   type="text"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   is-open="homeController.effectiveDatePickerOpened"
+													   datepicker-options="homeController.datePickerOptions"
+													   ng-model="homeController.massUpdateEffectdiveDate"
+													   ng-required="true" close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- FSA -->
+								<div ng-if="homeController.massUpdateType == homeController.FSA">
+									<div class="col-md-3">
+										<label for="fsaSelect">FSA</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="fsaSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="fsaEffectiveDate">Effective Date</label>
+
+											<div class="input-group pull-right">
+												<input id="fsaEffectiveDate" class="form-control date-picker"  readonly="true"
+													   type="text"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   is-open="homeController.effectiveDatePickerOpened"
+													   datepicker-options="homeController.datePickerOptions"
+													   ng-model="homeController.massUpdateEffectdiveDate"
+													   ng-required="true" close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Tax Flag -->
+								<div ng-if="homeController.massUpdateType == homeController.TAX_FLAG">
+									<div class="col-md-3">
+										<label for="taxFlagSelect">Tax Flag</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="taxFlagSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="taxFlagEffectiveDate">Effective Date</label>
+
+											<div class="input-group pull-right">
+												<input id="taxFlagEffectiveDate" class="form-control date-picker"  readonly="true"
+													   type="text"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   is-open="homeController.effectiveDatePickerOpened"
+													   datepicker-options="homeController.datePickerOptions"
+													   ng-model="homeController.massUpdateEffectdiveDate"
+													   ng-required="true" close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Self Manufactrured -->
+								<div ng-if="homeController.massUpdateType == homeController.SELF_MANUFACTURED">
+									<div class="col-md-3">
+										<label for="selfManufacturedSelect">Self Manufactured</label>
+										<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+												id="selfManufacturedSelect">
+											<option value="true">Yes</option>
+											<option value="false">No</option>
+										</select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+
+								<!-- Primo Pick -->
+								<div ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									<div can-edit="MU_PRPK_02">
+										<div class="col-md-3">
+											<label for="primoPickSubmitSelect">Function</label>
+											<select class="form-control" ng-model="homeController.primoPickType"
+													id="primoPickSubmitSelect">
+												<option can-edit="MU_PRPK_02" value="">--Select--</option>
+												<option can-edit="MU_PRPK_02" value="{{homeController.APPROVE_PRIMO_PICK}}">Approve Primo Pick Submission</option>
+												<option can-edit="MU_PRPK_02" value="{{homeController.REJECT_PRIMO_PICK}}">Reject Primo Pick Submission</option>
+												<option can-edit="MU_PRPK_02" value="{{homeController.TURN_ON_PRIMO_PICK}}">Make Primo Pick</option>
+												<option can-edit="MU_PRPK_02" value="{{homeController.TURN_OFF_PRIMO_PICK}}">End Primo Pick</option>
+											</select>
+										</div>
+									</div>
+									<div can-edit="MU_PRPK_02">
+										<div class="col-md-3">
+											<div class="form-group" ng-if="homeController.primoPickType == homeController.APPROVE_PRIMO_PICK ||
+													homeController.primoPickType == homeController.TURN_OFF_PRIMO_PICK ||
+													homeController.primoPickType == homeController.TURN_ON_PRIMO_PICK">
+
+												<label for="primoPickEffectiveDate" ng-if="homeController.primoPickType == homeController.APPROVE_PRIMO_PICK ||
+													homeController.primoPickType == homeController.TURN_ON_PRIMO_PICK">Effective Date</label>
+												<label for="primoPickEffectiveDate" ng-if="homeController.primoPickType == homeController.TURN_OFF_PRIMO_PICK">End Date</label>
+
+												<div class="input-group pull-right">
+													<input id="primoPickEffectiveDate" class="form-control date-picker"  readonly="true"
+														   type="text"
+														   uib-datepicker-popup="MM/dd/yyyy"
+														   is-open="homeController.effectiveDatePickerOpened"
+														   datepicker-options="homeController.datePickerOptions"
+														   ng-model="homeController.massUpdateEffectdiveDate"
+														   ng-required="true" close-text="Close"/>
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default"
+																ng-click="homeController.openEffectiveDatePicker()">
+															<i class="glyphicon glyphicon-calendar"></i>
+														</button>
+													</span>
+												</div>
+											</div>
+
+											<div ng-if="homeController.primoPickType == homeController.REJECT_PRIMO_PICK">
+												<label for="changeReason">Reason</label>
+												<select class="form-control" ng-model="homeController.reasonCode"
+														id="changeReason">
+													<option  value="{{homeController.NEED_MORE_INFO}}">Need more info</option>
+													<option value="{{homeController.DOES_NOT_MEET_PRIMO_PICK}}">Does not meet Primo Pick criteria</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Distinctive -->
+								<div ng-if="homeController.massUpdateType == homeController.DISTINCTIVE">
+									<div class="col-md-3">
+										<label for="distinctiveSubmitSelect">Function</label>
+										<select class="form-control" ng-model="homeController.distinctiveFunction"
+												id="distinctiveSubmitSelect">
+											<option can-edit="PD_SHLF_04" value="">--Select--</option>
+											<option can-edit="PD_SHLF_04" value="{{homeController.TURN_ON_DISTINCTIVE}}">Make Distinctive</option>
+											<option can-edit="PD_SHLF_04" value="{{homeController.TURN_OFF_DISTINCTIVE}}">End Distinctive</option>
+										</select>
+									</div>
+								</div>
+
+								<!--Fulfillment Program-->
+								<div ng-if="homeController.massUpdateType == homeController.FULFILLMENT_CHANNEL" >
+									<div class="col-md-6">
+										<table>
+											<thead>
+											<tr>
+												<td style="text-align: center; font-weight: bold" colspan="3">Fulfillment Program </td>
+												<td style="text-align: center; font-weight: bold" colspan="2">Effective Date</td>
+												<td style="text-align: center; font-weight: bold" colspan="2">End Date</td>
+											</tr>
+											</thead>
+											<tbody>
+											<tr style="vertical-align: top;">
+												<td style="text-align: center; width: 160px !important; padding-top: .8%">
+													<ui-select ng-model="homeController.currentSalesChannel" ng-change="homeController.filterFulfillmentChannels()" theme="bootstrap" style="width: 150px !important;">
+														<ui-select-match>
+															{{$select.selected.description}}
+														</ui-select-match>
+														<ui-select-choices repeat="salesChannel in homeController.salesChannels" refresh-delay="0">
+															{{salesChannel.description}}
+														</ui-select-choices>
+													</ui-select>
+												</td>
+												<td style="min-width: 200px; max-width: 300px; padding-top: .8%">
+													<ui-select ng-model="homeController.currentFulfillmentChannels" theme="bootstrap"  ng-disabled="homeController.currentSalesChannel === null"
+															   multiple>
+														<ui-select-match>
+															{{$item.description}}
+														</ui-select-match>
+														<ui-select-choices repeat="fulfillmentChannel in homeController.filteredFulfillmentChannels" refresh-delay="0">
+															{{fulfillmentChannel.description}}
+														</ui-select-choices>
+													</ui-select>
+												</td>
+												<td style="width: 60px !important; padding-left: 5px; padding-top: .8%">
+													<ui-select ng-model="homeController.currentSwitchValue" ng-change="homeController.activateDatePickers()" theme="bootstrap" style="width: 50px !important;"
+															   ng-disabled="(homeController.currentFulfillmentChannels.length === 0)">
+														<ui-select-match>
+															{{$select.selected.value}}
+														</ui-select-match>
+														<ui-select-choices repeat="switchYN in homeController.switchYN" refresh-delay="0">
+															{{switchYN.value}}
+														</ui-select-choices>
+													</ui-select>
+												</td>
+												<td style="text-align: center; margin: 2px; padding-left: 5px; padding-top: .7%" colspan="2">
+													<div class="input-group">
+														<input id="effectiveDateCanEdit" class="form-control date-picker" type="text" readonly="true" can-edit="CH_HIER_01"
+															   uib-datepicker-popup="MM/dd/yyyy"
+															   datepicker-options="homeController.effectiveOptions"
+															   is-open="homeController.effectiveDatePickerOpened"
+															   ng-model="homeController.massUpdateEffectdiveDate"
+															   ng-change=""
+															   close-text="Close"/>
+														<label view-only="CH_HIER_01" style="font-weight: normal">{{homeController.effectiveDate | date: 'MM/dd/yyyy'}}</label>
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-default" can-edit="CH_HIER_01"
+																	ng-click="homeController.openEffectiveDatePicker()">
+																<i class="glyphicon glyphicon-calendar"></i>
+															</button>
+														</span>
+													</div>
+												</td>
+												<td style="text-align: center; padding-left: 7px; padding-top: .7%" colspan="2">
+													<div class="input-group">
+														<input style="text-align: center;" id="endDateCanEdit" class="form-control date-picker" type="text" readonly="true" can-edit="CH_HIER_01"
+															   uib-datepicker-popup="MM/dd/yyyy"
+															   datepicker-options="homeController.endOptions"
+															   is-open="homeController.endDatePickerOpened"
+															   ng-model="homeController.massUpdateEndDate"
+															   ng-change=""
+															   close-text="Close"/>
+														<label view-only="CH_HIER_01" style="font-weight: normal">{{homeController.endDate | date: 'MM/dd/yyyy'}}</label>
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-default" can-edit="CH_HIER_01"
+																	ng-click="homeController.openEndDatePicker()">
+																<i class="glyphicon glyphicon-calendar"></i>
+															</button>
+														</span>
+													</div>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+
+								</div>
+								<!--PDP Template-->
+								<div ng-if="homeController.massUpdateType == homeController.PDP_TEMPLATE">
+									<div class="col-md-3">
+										<label>Select PDP Template</label>
+										<ui-select ng-model="homeController.currentPdpTemplate" theme="bootstrap">
+											<ui-select-match >
+												{{$select.selected.description}}
+											</ui-select-match>
+											<ui-select-choices repeat="pdpTemplate in homeController.pdpTemplates" refresh-delay="0">
+												{{pdpTemplate.description}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+									<div class="col-md-3"></div>
+								</div>
+								<!--Show On Site-->
+								<div ng-if="homeController.massUpdateType == homeController.SHOW_ON_SITE">
+									<div can-edit="MU_SOS_01" class="col-md-6">
+										<!--Show on site flag-->
+										<div class="col-md-4 row">
+											<label for="showOnSiteFlag">Show On Site Flag</label>
+											<select class="form-control" ng-model="homeController.massUpdateBooleanValue"
+													id="showOnSiteFlag" ng-change="homeController.onChangedShowOnSiteFlag()">
+												<option value="true">Yes</option>
+												<option value="false">No</option>
+											</select>
+										</div>
+										<div class="col-md-1"></div>
+										<!--Show on site: Effective Date-->
+										<div class="col-md-3" ng-if="homeController.massUpdateBooleanValue == 'true'">
+											<label for="showOnSiteEffectiveDate">Effective Date</label>
+											<div class="input-group">
+												<input id="showOnSiteEffectiveDate" class="form-control date-picker" type="text" readonly="true"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   datepicker-options="homeController.effectiveOptions"
+													   is-open="homeController.effectiveDatePickerOpened"
+													   ng-model="homeController.massUpdateEffectdiveDate"
+													   ng-change=""
+													   close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+										<!--Show on site: End date-->
+										<div class="col-md-3">
+											<label for="showOnSiteEndDate">End Date</label>
+											<div class="input-group">
+												<input style="text-align: center;" id="showOnSiteEndDate" class="form-control date-picker" type="text" readonly="true"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   datepicker-options="homeController.endOptions"
+													   is-open="homeController.endDatePickerOpened"
+													   ng-model="homeController.massUpdateEndDate"
+													   ng-change=""
+													   close-text="Close"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+															ng-click="homeController.openEndDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- The button to submit the mass update -->
+								<div class="col-md-4">
+									<div class="row">
+										<div class="col-md-6">
+											<label for="massUpdateDescription">Mass Update Description</label>
+											<input id="massUpdateDescription"
+												   ng-model="homeController.massUpdateDescription"
+												   class="form-control"/>
+										</div>
+										<div class="col-md-6">
+											<button ng-disabled="!homeController.hasMassUpdateProductsSelected()"
+													data-ng-click="homeController.showMassUpdateModal()"
+													class="pull-right btn btn-primary" style="margin-top: 10px;">Mass Update
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Show on site: Display the list of sale channels-->
+							<div can-edit="MU_SOS_01" class="row" style="margin-top: 10px;">
+								<div class="col-md-2" ng-if="homeController.massUpdateType == homeController.SHOW_ON_SITE">
+											<label for="showOnSite">Show On Site</label>
+											<div id="showOnSite" ng-dropdown-multiselect=""   options="homeController.showOnSiteSaleChannels"
+												 selected-model="homeController.selectedSaleChannels" extra-settings="showOnSiteDropdownMultiselectSettings"
+											></div>
+								</div>
+							</div>
+							<hr/>
+						</div>
+
+						<!-- The table with the list of products. -->
+						<table id="homeProductDetailTable" ng-table="homeController.tableParams" template-pagination="custom/pager"
+							   class="table-heb table-bordered table-striped" style="width: 100%">
+							<thead>
+							<tr>
+								<th ng-if="homeController.isShowingMassUpdate()" style="text-align: left">
+									<input class="active" type="checkbox" id="massUpdateSelectAll"
+										   ng-click="homeController.selectAll()" ng-model="homeController.allSelected">
+								</th>
+								<th ng-if="homeController.canSeeProductDetails()">Product Detail</th>
+
+								<th>Product Description</th>
+								<th>Size</th>
+								<th>Product Primary UPC</th>
+								<!--Show on site-->
+								<th ng-if="homeController.massUpdateType == homeController.SHOW_ON_SITE">
+									Show On Site
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.THIRD_PARTY_SELLABLE">Third
+									Party Sellable
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRODUCE_ORGANIC">Organic
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.SELECT_INGREDIENTS">Select
+									Ingredients
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.TOTALLY_TEXAS">Totally
+									Texas
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.GO_LOCAL">Go Local</th>
+								<th ng-if="homeController.massUpdateType == homeController.FOOD_STAMP">Food Stamp</th>
+								<th ng-if="homeController.massUpdateType == homeController.FSA">FSA</th>
+								<th ng-if="homeController.massUpdateType == homeController.TAX_FLAG">TAX_FLAG</th>
+								<th ng-if="homeController.massUpdateType == homeController.SELF_MANUFACTURED">Self
+									Manufactured
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.TAX_CATEGORY">Tax Category
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRIMO_PICK || homeController.massUpdateType == homeController.DISTINCTIVE">
+									Distinctive
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRIMO_PICK || homeController.massUpdateType == homeController.DISTINCTIVE">
+									Primo Pick
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									Primo Pick Status
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									Primo Pick Story
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									Primo Pick Shelf Tag
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.TAG_TYPE">
+									Tag Type
+								</th>
+								<th ng-if="homeController.massUpdateType == homeController.FULFILLMENT_CHANNEL">Fulfillment Programs</th>
+								<th ng-if="homeController.massUpdateType == homeController.PDP_TEMPLATE">PDP Template</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="product in homeController.data track by $index">
+								<td ng-if="homeController.isShowingMassUpdate()">
+									<input type="checkbox" id="{{'massUpdateSelect' + $index}}"
+										   ng-model="product.selected"
+										   ng-click="homeController.handleProductSelectChanged(product)">
+								</td>
+								<td ng-if="homeController.canSeeProductDetails()">
+									<a class="pointer" ng-click="homeController.navigateToProductInfo(product.prodId)">{{product.prodId}}</a>
+									<div class="glyphicon glyphicon-question-sign pull-right pointer"
+										 style="color: blue"
+										 ng-click="homeController.showProductInfo(product.prodId)"></div>
+								</td>
+
+								<td>{{product.description}}</td>
+								<td>{{product.productPrimarySellingUnit.tagSize}}</td>
+								<td>{{product.productPrimarySellingUnit.upc}}</td>
+								<!--Show on site-->
+								<td ng-if="homeController.massUpdateType == homeController.SHOW_ON_SITE">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.displayShowOnSite(product.productOnlines)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.THIRD_PARTY_SELLABLE">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.isThirdPartySellable(product)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRODUCE_ORGANIC">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.isProduceOrganic(product)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.SELECT_INGREDIENTS">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.checkClaimCode(product, homeController.SELECT_INGREDIENTS_CLAIM_CODE)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.TOTALLY_TEXAS">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.checkClaimCode(product, homeController.TOTALLY_TEXAS_CLAIM_CODE)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.GO_LOCAL">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.checkClaimCode(product, homeController.GO_LOCAL_CLAIM_CODE)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.FOOD_STAMP">
+									<input type="checkbox" disabled ng-model="product.goodsProduct.foodStampSwitch">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.FSA">
+									<input type="checkbox" disabled
+										   ng-checked="product.goodsProduct.fsaCode">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.TAX_FLAG">
+									<input type="checkbox" disabled ng-model="product.goodsProduct.retailTaxSwitch">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.SELF_MANUFACTURED">
+									<input type="checkbox" disabled
+										   ng-model="product.goodsProduct.selfManufactureSwitch">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.TAX_CATEGORY">
+									{{product.goodsProduct.vertexTaxCategory.displayName}}
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRIMO_PICK || homeController.massUpdateType == homeController.DISTINCTIVE">
+									<input type="checkbox" disabled
+										   ng-checked="homeController.checkClaimCode(product, homeController.DISTINCTIVE_CLAIM_CODE)">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRIMO_PICK || homeController.massUpdateType == homeController.DISTINCTIVE">
+									<input type="checkbox" disabled
+										   ng-checked="product.primoPick">
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									{{homeController.getPrimoPickStatus(product)}}
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									{{product.primoPickProposedDescription}}
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PRIMO_PICK">
+									<div data-ng-if="homeController.primoPickType == homeController.APPROVE_PRIMO_PICK ||
+									homeController.primoPickType == homeController.TURN_OFF_PRIMO_PICK ||
+									homeController.primoPickType == homeController.TURN_ON_PRIMO_PICK || homeController.primoPickType == homeController.REJECT_PRIMO_PICK">
+										<textarea rows="5" cols="80" ng-model="product.primoPickDescription"
+												  ng-change="homeController.primoPickDescriptionChange(product)"></textarea>
+									</div>
+									<div data-ng-if="!(homeController.primoPickType == homeController.APPROVE_PRIMO_PICK ||
+									homeController.primoPickType == homeController.TURN_OFF_PRIMO_PICK ||
+									homeController.primoPickType == homeController.TURN_ON_PRIMO_PICK || homeController.primoPickType == homeController.REJECT_PRIMO_PICK)">
+										{{product.primoPickDescription}}
+									</div>
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.TAG_TYPE">
+									{{product.goodsProduct.tagType}}
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.FULFILLMENT_CHANNEL">
+									{{product.fulfillmentProgramString}}
+								</td>
+								<td ng-if="homeController.massUpdateType == homeController.PDP_TEMPLATE">
+									{{product.pdpTemplateString}}
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<script type="text/ng-template" id="custom/pager">
+							<div class="bottom">
+								<div class="ng-cloak ng-table-pager" ng-if="params.data.length">
+									<ul class="pagination ng-table-pagination">
+										<li ng-class="{'disabled': !page.active && !page.current, 'active': page.current}" ng-repeat="page in pages"
+											ng-switch="page.type">
+											<a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a>
+											<a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+											<a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+											<a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a>
+											<a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+											<a ng-switch-when="next" ng-click="params.page(page.number)" href="" style="margin-right: 30px;">&raquo;</a>
+										</li>
+									</ul>
+									<ul class="pagination ng-table-pagination">
+										<div ng-class="{'disabled': !page.active && !page.current, 'active': page.current}"
+											ng-switch="page.type" >
+											<div class="pull-right">
+												<span>Page size:</span>
+												<select class="bottom" ng-param-directive ng-model="pageCount" style="padding: 6px;" ng-options ="count for count in params.settings().counts" ng-change="params.count(pageCount)" ng-init="pageCount=25">
+													<option value="" ng-show="false"></option>
+												</select>
+											</div>
+										</div>
+									</ul>
+								</div>
+							</div>
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if="homeController.isViewingProductInfo()">
+			<div id="homeProductInfoDiv" ng-include="'src/productInfo/productInfo.html'"></div>
+		</div>
+		<div class="row" ng-if="homeController.isViewingProductDetails() || homeController.isPrevNextPageWaiting">
+			<div class="col-md-12">
+				<product-detail id="homeListOfProducts" list-of-products="homeController.data"
+								selected-product="homeController.selectedProduct"
+								viewing-product-details="homeController.viewingProductDetails"
+								is-prev-next-page-waiting="homeController.isPrevNextPageWaiting"
+								page-count="homeController.totalPages"
+								current-page="homeController.tableParams.page()"
+								page-message="homeController.pageMessage"
+								get-product-master-by-product-id="homeController.getProductMasterByProductId(productId)"
+								is-needed-reset-search-params="homeController.isNeededResetSearchParams"></product-detail>
+			</div>
+		</div>
+		<div class="col-md-12" can-view="TK_SUMY_01">
+			<ecommerce-task-summary></ecommerce-task-summary>
+		</div>
+		<div id="notFoundModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<div id="homeNotFoundProductDetails" class="modal-title inline-block" style="color: #ffffff">
+							<h5>
+								<span ng-if="homeController.missingValues.matchCount ==  1">{{homeController.missingValues.hitsType}} Not Found</span>
+								<span ng-if="homeController.missingValues.matchCount >  1">{{homeController.missingValues.hitsTypePlural}} Not Found</span>
+							</h5>
+						</div>
+						<button id="homeProductDetailClose" type="button"
+								class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="homeMissingProductDetailList"
+							 ng-repeat="item in homeController.missingValues.noMatchList">{{item}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal for mass update. -->
+		<div id="massUpdateModal" class="modal fade" role="dialog">
+
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<h5 class="modal-title inline-block" style="color: #ffffff">
+							Mass Update</h5>
+					</div>
+					<div class="modal-body">
+						<div ng-if="!homeController.submittedMassUpdate && homeController.massUpdateTransactionMessage == null">
+							This will update {{homeController.getMassUpdateCount()}} products, are you sure you want to continue?
+						</div>
+						<div ng-if="!homeController.submittedMassUpdate && homeController.massUpdateTransactionMessage != null">
+							{{homeController.massUpdateTransactionMessage}}.
+						</div>
+						<loading-spinner ng-show="homeController.submittedMassUpdate">
+						</loading-spinner>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+								ng-if="homeController.massUpdateTransactionMessage == null">
+							Cancel
+						</button>
+						<button type="button" class="inline-block btn btn-success btn-sm"
+								ng-click="homeController.submitMassUpdate()"
+								ng-if="homeController.massUpdateTransactionMessage == null">OK
+						</button>
+						<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+								ng-if="homeController.massUpdateTransactionMessage != null"
+								ng-click="homeController.dismissMassUpdate()">
+							Close
+						</button>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</div>

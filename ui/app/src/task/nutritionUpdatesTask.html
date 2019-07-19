@@ -1,0 +1,311 @@
+<!--
+  ~ nutritionUpdatesTask.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div ng-controller="NutritionUpdatesTaskController as nutritionUpdatesTaskController"
+	 ng-init="nutritionUpdatesTaskController.init()" can-view="TK_NUDT_01">
+	<div class="row">
+		<span data-ng-if="nutritionUpdatesTaskController.error"
+			  class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+			{{nutritionUpdatesTaskController.error}}
+		</span>
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert"
+			  data-ng-if="!nutritionUpdatesTaskController.isError
+			  && nutritionUpdatesTaskController.message
+			  && nutritionUpdatesTaskController.message!==''">
+			{{nutritionUpdatesTaskController.message}}
+		</span>
+	</div>
+	<div class="row" style="padding: 1%">
+		<div class="col-md-6">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Nutrition Task Search
+						<i ng-click="nutritionUpdatesTaskController.searchPanelVisible = !nutritionUpdatesTaskController.searchPanelVisible"
+						   class="pull-right pointer"
+						   ng-class="{'glyphicon glyphicon-minus': nutritionUpdatesTaskController.searchPanelVisible, 'glyphicon glyphicon-plus': !nutritionUpdatesTaskController.searchPanelVisible}">
+						</i>
+					</div>
+					<div ng-show="nutritionUpdatesTaskController.searchPanelVisible"
+						 class="panel-body black-border">
+						<div class="row">
+							<!-- Radio buttons for list type (NutrientCode, Nutrient Statement, Description) . -->
+							<div class="col-md-12">
+								<label>
+									<input type="radio" ng-model="nutritionUpdatesTaskController.selectionType"
+										   value="UPC"
+										   ng-click="nutritionUpdatesTaskController.selectionTypeChanged()"/>
+									UPC
+								</label>
+								<label>
+									<input type="radio" ng-model="nutritionUpdatesTaskController.selectionType"
+										   value="Item Code"
+										   ng-click="nutritionUpdatesTaskController.selectionTypeChanged()"/>
+									Item Code
+								</label>
+								<label>
+									<input type="radio" ng-model="nutritionUpdatesTaskController.selectionType"
+										   value="Product ID"
+										   ng-click="nutritionUpdatesTaskController.selectionTypeChanged()"/>
+									Product ID
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-8" style="min-width: 349px">
+													<textarea
+														ng-model="nutritionUpdatesTaskController.searchSelection"
+														pattern="[0-9\s,]+"
+														rows="8" style="min-width: 334px"
+														placeholder="{{nutritionUpdatesTaskController.getTextPlaceHolder()}}"
+														ng-change="nutritionUpdatesTaskController.checkIfSearchSelectionIsNull()"
+														class="col-md-12 noresize">
+													</textarea>
+									</div>
+									<div class="col-md-4">
+										<div class="row">
+											<div class="col-md-12">
+												<button
+													ng-click="nutritionUpdatesTaskController.newSearch(false)"
+													class="btn btn-primary btn-block"
+													ng-disabled="!nutritionUpdatesTaskController.searchSelection">
+													Search
+												</button>
+												<button
+													ng-click="nutritionUpdatesTaskController.searchAll()"
+													class="btn btn-primary btn-block">Search All
+												</button>
+												<button
+													ng-click="nutritionUpdatesTaskController.clearSearch()"
+													class="btn btn-primary btn-block"
+													ng-disabled="nutritionUpdatesTaskController.searchSelectionIsNull">
+													Clear
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-2" style="margin-top: 13px;">
+			<label style="margin-right: 2%">Task Description</label> 	Nutrition Updates
+		</div>
+		<div class="col-md-2" style="margin-top: 13px;">
+			<label style="margin-right: 2%">Last Updated By</label> System
+		</div>
+		<div class="col-md-2" style="margin-top: 13px;">
+			<label style="margin-right: 2%">Task Status</label> Assigned
+		</div>
+	</div>
+	<loading-spinner ng-show="nutritionUpdatesTaskController.isWaiting"></loading-spinner>
+	<div class="panel-group" ng-show="!nutritionUpdatesTaskController.isWaiting">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block"><b>Displaying Results: </b></h4>
+				<h5 class="panel-title inline-block">{{nutritionUpdatesTaskController.resultMessage}}</h5>
+				<div class="inline-block pull-right" style="margin-left: 10px">
+					<h5 id="homeDisplayMissingVales" ng-if="nutritionUpdatesTaskController.missingValues.matchCount > 0"
+						class="green-text panel-title inline-block">
+						{{nutritionUpdatesTaskController.missingValues.matchCount}}
+						<span ng-if="nutritionUpdatesTaskController.missingValues.matchCount ==  1">{{nutritionUpdatesTaskController.missingValues.hitsType}}</span>
+						<span ng-if="nutritionUpdatesTaskController.missingValues.matchCount >  1">{{nutritionUpdatesTaskController.missingValues.hitsTypePlural}}</span>
+						Found</h5>
+					<h5 id="homeDisplayMatchCount" ng-if="nutritionUpdatesTaskController.missingValues.noMatchCount > 0"
+						data-toggle="modal" data-target="#notFoundModal"
+						class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+						{{nutritionUpdatesTaskController.missingValues.noMatchCount}}
+						<span ng-if="nutritionUpdatesTaskController.missingValues.noMatchCount ==  1">{{nutritionUpdatesTaskController.missingValues.hitsType}}</span>
+						<span ng-if="nutritionUpdatesTaskController.missingValues.noMatchCount >  1">{{nutritionUpdatesTaskController.missingValues.hitsTypePlural}}</span>
+						Not Found</h5>
+				</div>
+				<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+					 ng-click="nutritionUpdatesTaskController.export()"
+					 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium"
+					 data-toggle="tooltip" title="Export to Excel"></div>
+				<div class="inline-block pull-right"
+					 ng-show="nutritionUpdatesTaskController.downloading" style="color: orange">
+					Downloading...
+				</div>
+			</div>
+			<div class="panel-body" style="width: 100%">
+				<div class="row">
+					<div class="col-md-2" style="" ></div>
+
+					<div class="col-md-2 pull-right" style="margin-bottom: 0.5%;text-align: right">
+							<!-- Trigger the modal with a button -->
+						<button class="btn btn-danger"  ng-click="nutritionUpdatesTaskController.handleRejectAlert()" can-edit="TK_NUDT_01">
+								<i class="glyphicon glyphicon-remove"></i> Reject</button>
+						<button class="btn btn-info"  ng-click="nutritionUpdatesTaskController.refreshTable(1, true)">
+							<i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+					</div>
+				</div>
+
+				<table ng-table="nutritionUpdatesTaskController.tableParams" template-pagination="custom/pager"
+					   class="table-heb table-bordered table-striped" style="width: 100%">
+					<thead>
+						<tr style="text-align: center">
+							<th><input type="checkbox" ng-model="nutritionUpdatesTaskController.allAlerts"
+									   ng-click="nutritionUpdatesTaskController.resetAlertSelection(false)" ></th>
+							<th>Product ID</th>
+							<th>Product Name</th>
+							<th>Size</th>
+							<th>Primary UPC</th>
+							<th>Genesis Publish Date</th>
+							<th>Dept</th>
+						</tr>
+					</thead>
+					<tr ng-repeat="alert in nutritionUpdatesTaskController.alertStagings track by $index" ng-show="!nutritionUpdatesTaskController.isWaiting"
+						style="text-align: center">
+						<td width="3%">
+							<input type="checkbox" ng-checked="nutritionUpdatesTaskController.allAlerts" ng-model="alert.checked" can-edit="TK_NUDT_01"
+									   ng-click="nutritionUpdatesTaskController.toggleAlertSelection(alert)">
+						</td>
+						<td data-title="'Product ID'" width="15%">
+							<button class="btn-link"  data-ng-click="nutritionUpdatesTaskController.navigateToNutritionFact(alert.alertKey, alert.alertID, $index)" href="#home">
+								  {{ alert.alertKey | Integer}}</button>
+						</td>
+						<td data-title="'Product Name'" width="35%">
+						   <label>{{alert.productMaster.description}}</label>
+						</td>
+						<td data-title="'Size'" width="7%" style="text-align: center">
+							<label>{{alert.productMaster.productSizeText}}</label>
+						</td>
+						<td data-title="'Primary UPC'" width="15%">
+							<label>{{alert.productMaster.productPrimaryScanCodeId}}</label>
+						</td>
+						<td data-title="'Genesis Publish Date'" width="15%" style="text-align: center">
+							<label>{{alert.responseByDate | date:"MM/dd/yyyy"}}</label>
+						</td>
+						<td data-title="'Dept'" width="10%">
+							<label>{{alert.productMaster.departmentCode}}{{alert.productMaster.subDepartmentCode}}</label>
+						</td>
+					</tr>
+				</table>
+				<script type="text/ng-template" id="custom/pager">
+					<div class="bottom">
+						<div class="ng-cloak ng-table-pager" ng-if="params.data.length">
+							<ul class="pagination ng-table-pagination">
+								<li ng-class="{'disabled': !page.active && !page.current, 'active': page.current}" ng-repeat="page in pages"
+									ng-switch="page.type">
+									<a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a>
+									<a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a>
+									<a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="next" ng-click="params.page(page.number)" href="" style="margin-right: 30px;">&raquo;</a>
+								</li>
+							</ul>
+							<ul class="pagination ng-table-pagination">
+								<div ng-class="{'disabled': !page.active && !page.current, 'active': page.current}"
+									ng-switch="page.type" >
+									<div class="pull-right">
+										<span>Page size:</span>
+										<select class="bottom" ng-param-directive ng-model="pageCount" style="padding: 6px;" ng-options ="count for count in params.settings().counts" ng-change="params.count(pageCount)" ng-init="pageCount=25">
+											<option value="" ng-show="false"></option>
+										</select>
+									</div>
+								</div>
+							</ul>
+						</div>
+					</div>
+				</script>
+				<div data-ng-show="!nutritionUpdatesTaskController.isWaiting && nutritionUpdatesTaskController.isNoRecordsFound" style="text-align: center;">
+					<h5 class="text-warning">No Records found !!</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div id="homeNotFoundProductDetails" class="modal-title inline-block" style="color: #ffffff">
+						<h5>
+							<span ng-if="nutritionUpdatesTaskController.missingValues.matchCount ==  1">{{nutritionUpdatesTaskController.missingValues.hitsType}} Not Found</span>
+							<span ng-if="nutritionUpdatesTaskController.missingValues.matchCount >  1">{{nutritionUpdatesTaskController.missingValues.hitsTypePlural}} Not Found</span>
+						</h5>
+					</div>
+					<button id="homeProductDetailClose" type="button"
+							class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="homeMissingProductDetailList"
+						 ng-repeat="item in nutritionUpdatesTaskController.missingValues.noMatchList">{{item}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<form name="form" novalidate class="css-form">
+	<div class="modal fade" id="rejectReasonModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Reject Reason ?</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-2"></div>
+						<div class="col-lg-8">
+							<input type="text" class="form-control input-lg" id="productSearchTextArea"
+								   name="rejectReason" ng-model="rejectReason" maxlength="100" style="padding: 5%" required
+									  placeholder="Please enter here a reason for rejecting the selected updates." />
+						</div>
+						<div class="col-lg-2"></div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal" can-edit="TK_NUDT_01"
+							ng-disabled="form.rejectReason.$error.required"
+							ng-click="nutritionUpdatesTaskController.doRejectAlert(rejectReason)">Reject</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</form>
+
+	<!-- Modal - Confirm Select Alert- starts -->
+	<div id="confirmSelectAlertModal" class="modal fade">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Task Message</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>Please select at least one Product to reject.</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" tabindex="1" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm Select Alert - ends -->
+</div>

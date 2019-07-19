@@ -1,0 +1,586 @@
+<div class="row" data-ng-if="singlePluPanelDirective.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{singlePluPanelDirective.success}}
+		</span>
+</div>
+<div class="row" data-ng-if="singlePluPanelDirective.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{singlePluPanelDirective.error}}
+		</span>
+</div>
+
+<loading-spinner ng-show="singlePluPanelDirective.isWaiting">
+</loading-spinner>
+
+<div class="panel-group" ng-show="!singlePluPanelDirective.isWaiting" ng-init="singlePluPanelDirective.init()" can-view="SM_UPCM_01">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<div class="panel-title">
+				<strong>PLU:{{singlePluPanelDirective.selectedScaleUpc.plu}}</strong>
+				<div class="pull-right">
+					<div class="glyphicon glyphicon-download-alt inline-block pointer"
+						 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel"
+						 ng-click="singlePluPanelDirective.export()"></div>
+					<div class="inline-block"
+						 ng-show="singlePluPanelDirective.downloading"
+						 style="color: orange">Downloading...</div>
+					<div ng-click="singlePluPanelDirective.closeSingleView()"
+						 class="glyphicon glyphicon-remove inline-block pointer"></div>
+				</div>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-12" style="padding-bottom: 10px">
+					<label for="pluSelected">Selected PLU:</label>
+					<div id="pluSelected" class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+							{{singlePluPanelDirective.selectedScaleUpc.plu}}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li ng-repeat="scaleUpc in singlePluPanelDirective.data track by $index"
+								ng-click="singlePluPanelDirective.getSingleView(scaleUpc, $index)"
+								class="pointer">
+								{{scaleUpc.plu}}
+							</li>
+						</ul>
+					</div>
+				</div>
+				<form novalidate name="pluMaintenanceForm">
+					<div class="col-md-3">
+						<div class="well">
+							<div class="row form-group">
+								<label class="col-md-6" for="shelfLife">Shelf Life Days:</label>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input style="text-align: right; width: 100%" id="shelfLife" name="shelfLife" data-ng-required="true"
+										   ng-model="singlePluPanelDirective.selectedScaleUpc.shelfLifeDays"
+										   ng-pattern="/^[0-9]{1,3}$/"
+										   maxlength="3"
+										   can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01" style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.shelfLifeDays}}
+									</label>
+									<span ng-show="pluMaintenanceForm.shelfLife.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.shelfLife.$error.pattern">Must match the format (###)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-6" for="freezeBy">Freeze By Days:</label>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="freezeBy"
+										data-ng-required="true" name="freezeBy"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.freezeByDays"
+										ng-pattern="/^[0-9]{1,3}$/"
+										maxlength="3"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.freezeByDays}}
+									</label>
+									<span ng-show="pluMaintenanceForm.freezeBy.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.freezeBy.$error.pattern">Must match the format (###)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-6" for="serviceCounterTare">Service Counter Tare:</label>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="serviceCounterTare"
+										data-ng-required="true" name="serviceCounterTare"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.serviceCounterTare"
+										ng-pattern="/^[0-9]{1}(\.[0-9]{0,3})?$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.serviceCounterTare}}
+									</label>
+									<span ng-show="pluMaintenanceForm.serviceCounterTare.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.serviceCounterTare.$error.pattern">Must match the format (#.###)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-5 pointer ng-binding" for="ingredientStatement"
+									   ng-show="!singlePluPanelDirective.isIngredientStatementFake"
+									   ng-click="singlePluPanelDirective.navigateToIngredientStatements(singlePluPanelDirective.selectedScaleUpc.ingredientStatement)">
+									<a title="Navigate to Ingredient Statement Page">
+										Ingredient Statement Number:
+									</a>
+								</label>
+								<label class="col-md-5 ng-binding" for="ingredientStatement"
+									   ng-show="singlePluPanelDirective.isIngredientStatementFake">
+										Ingredient Statement Number:
+								</label>
+								<i class="col-md-1 pointer glyphicon glyphicon-modal-window"
+								   title="Open Ingredient Statement"
+								   ng-if="!singlePluPanelDirective.isIngredientStatementFake" data-toggle="modal"
+								   title="Open Ingredient Statement"
+								   data-target="#ingredientStatementModal" style="color: blue"
+								   data-ng-click="singlePluPanelDirective.getIngredientsByIngredientStatement(singlePluPanelDirective.selectedScaleUpc)">
+								</i>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="ingredientStatement"
+										data-ng-required="true" name="ingredientStatement"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.ingredientStatement"
+										ng-change="singlePluPanelDirective.updateIngredientStatement()"
+										ng-pattern="/^[0-9]{1,5}$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01" style="text-align: right; width: 100%">
+											{{singlePluPanelDirective.selectedScaleUpc.ingredientStatement}}
+									</label>
+									<span ng-show="pluMaintenanceForm.ingredientStatement.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.ingredientStatement.$error.pattern">Must match the format (#####)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-5 pointer ng-binding"
+									   ng-show="singlePluPanelDirective.isNutrientStatementReal"
+									   ng-click="singlePluPanelDirective.navigateToNutrientStatement(singlePluPanelDirective.selectedScaleUpc.nutrientStatement)">
+									<a title="Navigate to Nutrient Statement Page">
+										Nutrition Statement Number:
+									</a>
+								</label>
+								<label class="col-md-5 ng-binding"
+									   ng-show="!singlePluPanelDirective.isNutrientStatementReal">
+									Nutrition Statement Number:
+								</label>
+								<i class="col-md-1 pointer glyphicon glyphicon-modal-window"
+								   ng-if="singlePluPanelDirective.isNutrientStatementReal"
+								   data-toggle="modal"
+								   title="Open Nutrient Statement"
+								   data-target="#nutritionStatementModal" style="color: blue"
+								   data-ng-click="singlePluPanelDirective.getNutrientsByNutrientStatement(singlePluPanelDirective.selectedScaleUpc)">
+								</i>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input class="ng-binding"
+										   style="text-align: right; width: 100%" id="nutrientStatement"
+										   data-ng-required="true" name="nutrientStatement"
+										   ng-model="singlePluPanelDirective.selectedScaleUpc.nutrientStatement"
+										   ng-change="singlePluPanelDirective.updateNutrientStatement()"
+										   ng-pattern="/^[0-9]{1,7}$/"
+										   maxlength="7"
+										   can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01" style="text-align: right; width: 100%">
+											{{singlePluPanelDirective.selectedScaleUpc.nutrientStatement}}
+									</label>
+									<span ng-show="pluMaintenanceForm.nutrientStatement.$error.required">Field is required.</span>
+									<span ng-show="!singlePluPanelDirective.isNutrientStatementValid()">Nutrient Statement needs to be the same as the PLU.</span>
+									<span ng-show="pluMaintenanceForm.nutrientStatement.$error.pattern">Must match the format (#######)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-6" for="labelFormatOne">Label Format 1:</label>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="labelFormatOne"
+										data-ng-required="true" name="labelFormatOne"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.labelFormatOne"
+										ng-pattern="/^[0-9]{1,5}$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.labelFormatOne}}
+									</label>
+									<span ng-show="pluMaintenanceForm.labelFormatOne.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.labelFormatOne.$error.pattern">Must match the format (#####)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-6" for="labelFormatTwo">Label Format 2:</label>
+								<div class="col-md-6 col-sm-6 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="labelFormatTwo"
+										data-ng-required="true" name="labelFormatTwo"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.labelFormatTwo"
+										ng-pattern="/^[0-9]{1,5}$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.labelFormatTwo}}
+									</label>
+									<span ng-show="pluMaintenanceForm.labelFormatTwo.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.labelFormatTwo.$error.pattern">Must match the format (#####)</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="well">
+							<h4><strong>English Label</strong></h4>
+							<div class="row form-group">
+								<label class="col-md-2" for="englishDescriptionOne">Line 1:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="englishDescriptionOne" name="englishDescriptionOne"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.englishDescriptionOne"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.englishDescriptionOne}}
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-2" for="englishDescriptionTwo">Line 2:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="englishDescriptionTwo"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.englishDescriptionTwo"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.englishDescriptionTwo}}
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-2" for="englishDescriptionThree">Line 3:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="englishDescriptionThree"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.englishDescriptionThree"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.englishDescriptionThree}}
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-2" for="englishDescriptionFour">Line 4:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="englishDescriptionFour"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.englishDescriptionFour"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.englishDescriptionFour}}
+									</label>
+								</div>
+							</div>
+							<h4><strong>Bilingual Label</strong></h4>
+							<!-- English Lines. -->
+							<div class="row form-group">
+								<label class="col-md-2" for="spanishDescriptionOne">English Line 1:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="spanishDescriptionOne"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.spanishDescriptionOne"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.spanishDescriptionOne}}
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-2" for="spanishDescriptionThree">English Line 2:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="spanishDescriptionThree"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.spanishDescriptionThree"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.spanishDescriptionThree}}
+									</label>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-2" for="spanishDescriptionTwo">Spanish Line 1:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="spanishDescriptionTwo"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.spanishDescriptionTwo"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.spanishDescriptionTwo}}
+									</label>
+								</div>
+							</div>
+							<!-- Spanish lines. -->
+							<div class="row form-group">
+								<label class="col-md-2" for="spanishDescriptionFour">Spanish Line 2:</label>
+								<div class="col-md-10 col-sm-10 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="spanishDescriptionFour"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.spanishDescriptionFour"
+										maxlength="32"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.spanishDescriptionFour}}
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="well">
+							<div class="row form-group">
+								<label class="col-md-4 col-sm-4" for="effectiveDate">Effective date:</label>
+								<div class="col-md-8 col-sm-8">
+									<div class="input-group pull-right">
+										<input id="effectiveDate" class="form-control date-picker" type="text" readonly="true"
+											   uib-datepicker-popup="MM/dd/yyyy"
+											   datepicker-options="singlePluPanelDirective.options"
+											   is-open="singlePluPanelDirective.effectiveDatePickerOpened"
+											   ng-model="singlePluPanelDirective.selectedScaleUpc.effectiveDate"
+											   ng-required="true" close-text="Close"
+											   can-edit="SM_UPCM_01"/>
+										<span class="input-group-btn" can-edit="SM_UPCM_01">
+											<button type="button" class="btn btn-default"
+													ng-click="singlePluPanelDirective.openEffectiveDatePicker()">
+											<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+										<label view-only="SM_UPCM_01"
+											   style="text-align: right; width: 100%">
+											{{singlePluPanelDirective.currentPluDateString}}
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="eatByDays">Eat By Days:</label>
+								<div class="col-md-8 col-sm-8 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="eatByDays"
+										data-ng-required="true" name="eatByDays"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.eatByDays"
+										ng-pattern="/^[0-9]{1,3}$/"
+										maxlength="3"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.eatByDays}}
+									</label>
+									<span ng-show="pluMaintenanceForm.eatByDays.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.eatByDays.$error.pattern">Must match the format (###)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="prePackTare">Pre-pack Tare:</label>
+								<div class="col-md-8 col-sm-8 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="prePackTare"
+										data-ng-required="true" name="prePackTare"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.prePackTare"
+										ng-pattern="/^[0-9]{1}(\.[0-9]{0,3})?$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.prePackTare}}
+									</label>
+									<span ng-show="pluMaintenanceForm.prePackTare.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.prePackTare.$error.pattern">Must match the format (#.###)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="actionCode">Action Code:</label>
+								<div class="col-md-8 col-sm-8 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="actionCode"
+										data-ng-required="true" name="actionCode"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.actionCode"
+										ng-pattern="/^[0-9]{1,5}$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.actionCode}}
+									</label>
+									<span ng-show="pluMaintenanceForm.actionCode.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.actionCode.$error.pattern">Must match the format (#####)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="graphicsCode">Graphics Code:</label>
+								<div class="col-md-8 col-sm-8 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="graphicsCode"
+										data-ng-required="true" name="graphicsCode"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.graphicsCode"
+										ng-pattern="/^[0-9]{1,5}$/"
+										maxlength="5"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.graphicsCode}}
+									</label>
+									<span ng-show="pluMaintenanceForm.graphicsCode.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.graphicsCode.$error.pattern">Must match the format (#####)</span>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="forceTare">Force Tare:</label>
+								<div class="col-md-8 col-sm-8">
+									<input
+										type="checkbox" class="pull-left" id="forceTare"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.forceTare"
+										can-edit="SM_UPCM_01">
+									<input
+										type="checkbox" class="pull-left" id="forceTare"
+										ng-disabled="true"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.forceTare"
+										view-only="SM_UPCM_01">
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="priceOverride">Price Override:</label>
+								<div class="col-md-8 col-sm-8">
+									<input
+										type="checkbox" class="pull-left" id="priceOverride"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.priceOverride"
+										can-edit="SM_UPCM_01">
+									<input
+										type="checkbox" class="pull-left" id="priceOverride"
+										ng-disabled="true"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.priceOverride"
+										view-only="SM_UPCM_01">
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-4" for="netWeight">Net Weight:</label>
+								<div class="col-md-8 col-sm-8 pull-right">
+									<input
+										style="text-align: right; width: 100%" id="netWeight"
+										data-ng-required="true" name="netWeight"
+										ng-model="singlePluPanelDirective.selectedScaleUpc.netWeight"
+										ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,4})?$/"
+										maxlength="10"
+										can-edit="SM_UPCM_01">
+									<label view-only="SM_UPCM_01"
+										   style="text-align: right; width: 100%">
+										{{singlePluPanelDirective.selectedScaleUpc.netWeight}}
+									</label>
+									<span ng-show="pluMaintenanceForm.netWeight.$error.required">Field is required.</span>
+									<span ng-show="pluMaintenanceForm.netWeight.$error.pattern">Must match the format (#####.####)</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="col-md-12">
+					<table class="table table-heb table-bordered table-striped">
+						<tr>
+							<th>Item Code</th>
+							<th>Channel</th>
+							<th>Size</th>
+							<th>Pack</th>
+							<th>Description</th>
+							<th>Discontinued Date</th>
+							<th>Discontinued By</th>
+						</tr>
+						<tr ng-repeat="item in singlePluPanelDirective.selectedScaleUpc.associateUpc.primaryUpc.itemMasters">
+							<td>{{item.key.itemCode}}</td>
+							<td>
+								<span ng-if="item.key.dsd">DSD</span>
+								<span ng-if="item.key.warehouse">Warehouse</span>
+							</td>
+							<td>{{item.itemSize}}</td>
+							<td>{{item.pack}}</td>
+							<td>{{item.description}}</td>
+							<td>{{item.discontinueDate}}</td>
+							<td>{{item.discontinuedByUID}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="pull-right clearfix" can-edit="SM_UPCM_01">
+				<button type="button" class="btn  btn-primary btn-default btn-sm" ng-click="singlePluPanelDirective.sendScaleMaintenance()">Maintenance</button>
+				<button type="button" class="btn  btn-primary btn-default btn-sm" ng-click="singlePluPanelDirective.reset()">Reset</button>
+				<button ng-disabled = "pluMaintenanceForm.$invalid || !singlePluPanelDirective.isNutrientStatementValid()"
+						type="button" class="btn  btn-primary btn-default btn-sm" style="padding-right: 10px"
+						ng-click="singlePluPanelDirective.update()">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-if="singlePluPanelDirective.isNutrientStatementReal">
+	<div id="nutritionStatementModal"  class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Nutrient Statement: {{singlePluPanelDirective.loadedStatement.nutrientStatementNumber}}</h5>
+				</div>
+				<div class="modal-body">
+					<div class="row"  style="margin-bottom: 15px">
+					<div class="col-md-4"><strong>Measure Quantity:</strong>{{singlePluPanelDirective.loadedStatement.commonDisplayName}}</div>
+					<div class="col-md-4"><strong>Metric Qantity:</strong>{{singlePluPanelDirective.loadedStatement.metricDisplayName}}</div>
+					<div class="col-md-4"><strong>Servings per Container:</strong>
+						<span ng-if="singlePluPanelDirective.loadedStatement.servingSizeVariable">{{singlePluPanelDirective.loadedStatement.servingsPerContainer}} varies</span>
+						<span ng-if="!singlePluPanelDirective.loadedStatement.servingSizeVariable">{{singlePluPanelDirective.loadedStatement.servingsPerContainer}}</span>
+					</div>
+					</div>
+					<table  class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr style="color: white; background-color: #00476b">
+							<th style="min-width: 100px">Nutrient</th>
+							<th style="min-width: 100px">Amount</th>
+							<th style="min-width: 100px">% DV</th>
+						</tr>
+						<tr ng-repeat="detail in singlePluPanelDirective.loadedStatement.nutrientStatementDetailList">
+							<td>{{detail.nutrient.nutrientDescription}}</td>
+							<td>
+								<span ng-if="detail.nutrient.usePercentDailyValue == false">
+									{{detail.nutrientStatementQuantity}}
+									{{detail.nutrient.nutrientUom.nutrientUomDescription}}
+								</span>
+							</td>
+							<td>
+								<span ng-if="detail.nutrient.recommendedDailyAmount != 0.0">
+									{{detail.nutrientDailyValue | number}}%
+								</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal" ng-click="singlePluPanelDirective.closeModal()">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-if="singlePluPanelDirective.isIngredientFound">
+	<div id="ingredientStatementModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Ingredient Statement: {{singlePluPanelDirective.selectedScaleUpc.ingredientStatement}}</h5>
+				</div>
+				<loading-spinner ng-show="singlePluPanelDirective.isModalWaiting">
+				</loading-spinner>
+				<div class="modal-body" ng-show="!singlePluPanelDirective.isModalWaiting">
+					<div><Strong>Ingredients:
+					</Strong></div>
+					<div class="well" style="margin-bottom: 0; padding-top: 6px; padding-bottom: 6px">
+						<div class="row">
+							{{singlePluPanelDirective.loadedStatement.ingredientsText}}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal" ng-click="singlePluPanelDirective.closeModal()">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

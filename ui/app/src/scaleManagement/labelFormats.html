@@ -1,0 +1,208 @@
+<!--
+  ~ labelFormats.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+
+<div class="col-md-12 container-fluid" ng-controller="LabelFormatsController as labelFormatsController"
+	 ng-init="labelFormatsController.init()" can-view="SM_CODE_02">
+
+	<div class="row" data-ng-if="labelFormatsController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{labelFormatsController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="labelFormatsController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{labelFormatsController.error}}</span>
+	</div>
+
+	<!-- The search box. -->
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Label Format Search
+					<i ng-click="labelFormatsController.searchPanelVisible = !labelFormatsController.searchPanelVisible"
+					   class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': labelFormatsController.searchPanelVisible, 'glyphicon glyphicon-plus': !labelFormatsController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="labelFormatsController.searchPanelVisible">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="margin panel-collapse collapse in">
+								<div class="panel-body">
+									<!-- Radio buttons -->
+									<div class="row">
+										<div class="col-md-12">
+											<label>
+												<input type="radio" ng-model="labelFormatsController.filterType"
+													   value="{{labelFormatsController.FORMAT_CODE}}"/>Format Code
+											</label>
+											<label>
+												<input type="radio" ng-model="labelFormatsController.filterType"
+													   value="{{labelFormatsController.DESCRIPTION}}"/>Description
+											</label>
+										</div>
+									</div>
+									<!-- Search box -->
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<!-- The text box for the user input. -->
+												<div class="col-md-6">
+														<textarea data-ng-model="labelFormatsController.searchText"
+																  placeholder="{{labelFormatsController.emptySearchMessage()}}"
+																  id="formatCode"
+																  class="col-md-12 noresize" rows="8"></textarea>
+												</div>
+
+												<!-- buttons -->
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-6">
+															<button data-ng-click="labelFormatsController.initSearch(false)"
+																	class="btn btn-primary btn-block"
+																	data-ng-disabled="labelFormatsController.searchText == null">Search
+															</button>
+															<button data-ng-click="labelFormatsController.searchAll()"
+																	class="btn btn-primary btn-block">Search All
+															</button>
+														</div>
+														<div class="col-md-6">
+															<button data-ng-click="labelFormatsController.clearSearch()"
+																	class="btn btn-primary btn-block"
+																	data-ng-disabled="labelFormatsController.searchText == null">Clear
+															</button>
+															<button data-ng-click="labelFormatsController.addRow()"
+																	class="btn btn-primary btn-block" can-edit="SM_CODE_02">Add
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End search box. -->
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="labelFormatsController.isWaiting">
+	</loading-spinner>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						These are the {{labelFormatsController.filterType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="formatCodes in labelFormatsController.missingValues.noMatchList">{{formatCodes}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="!labelFormatsController.isWaiting && labelFormatsController.deleteMessage != null">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{labelFormatsController.deleteMessage}}</span>
+	</div>
+
+	<!-- Being label format list. -->
+	<div class="col-md-12" ng-show="!labelFormatsController.isWaiting && labelFormatsController.labelFormats != null">
+		<div class="row" data-ng-if="labelFormatsController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{labelFormatsController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="labelFormatsController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{labelFormatsController.modifyError}}</span>
+		</div>
+		<div class="panel-group">
+			<div class="panel panel-primary" ng-show="labelFormatsController.isNotViewingSinglePlu()">
+				<div class="panel-heading">
+					<div ng-if="!labelFormatsController.isAddingLabelFormat && labelFormatsController.resultMessage != null">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{labelFormatsController.resultMessage}}</h5>
+						<div class="inline-block pull-right" ng-if="labelFormatsController.showMatchCount()">
+							<h5 ng-if="labelFormatsController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{labelFormatsController.missingValues.matchCount}}
+								<span ng-if="labelFormatsController.missingValues.matchCount ==  1">{{labelFormatsController.filterType}}</span>
+								<span ng-if="labelFormatsController.missingValues.matchCount >  1">{{labelFormatsController.filterType}}s</span>
+								found</h5>
+							<h5 ng-if="labelFormatsController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{labelFormatsController.missingValues.noMatchCount}}
+								<span ng-if="labelFormatsController.missingValues.noMatchCount ==  1">{{labelFormatsController.filterType}}</span>
+								<span ng-if="labelFormatsController.missingValues.noMatchCount >  1">{{labelFormatsController.filterType}}s</span>
+								not	found</h5>
+						</div>
+					</div>
+					<div ng-if="labelFormatsController.isAddingLabelFormat || labelFormatsController.resultMessage == null">New Label Format Code</div>
+				</div>
+
+				<!-- The table with label formats -->
+				<div class="panel-body">
+					<table ng-table="labelFormatsController.labelFormatTableParams"
+						   class="table table-heb table-bordered table-striped">
+						<tr ng-repeat="labelFormat in labelFormatsController.labelFormats track by $index">
+							<td data-title="'Label Format Code'">
+								<div ng-if="!labelFormatsController.isAddingLabelFormat" ng-model="labelFormat.formatCode">{{labelFormat.formatCode}}</div>
+								<input type="text" ng-model="labelFormat.formatCode"
+									   ng-if="labelFormatsController.isAddingLabelFormat"
+									   ng-disabled="(!labelFormatsController.isAddingLabelFormat && !labelFormat.isEditing)" maxlength="5">
+							</td>
+							<td data-title="'Label Format Code Description'">
+								<input type="text" ng-model="labelFormat.description" ng-disabled="(!labelFormatsController.isAddingLabelFormat && !labelFormat.isEditing)">
+							</td>
+
+							<td data-title="'Label Format 1 PLUs'">
+								<div ng-if="labelFormat.countOfLabelFormatOneUpcs == 0">
+									{{labelFormat.countOfLabelFormatOneUpcs | number}}
+								</div>
+								<div ng-if="labelFormat.countOfLabelFormatOneUpcs != 0">
+									<a class="pointer" ng-click="labelFormatsController.formatOneSelect(labelFormat)">
+										{{labelFormat.countOfLabelFormatOneUpcs | number}}
+									</a>
+								</div>
+							</td>
+							<td data-title="'Label Format 2 PLUs'">
+								<div ng-if="labelFormat.countOfLabelFormatTwoUpcs == 0">
+									{{labelFormat.countOfLabelFormatTwoUpcs | number}}
+								</div>
+								<div ng-if="labelFormat.countOfLabelFormatTwoUpcs != 0">
+									<a class="pointer" ng-click="labelFormatsController.formatTwoSelect(labelFormat)">
+										{{labelFormat.countOfLabelFormatTwoUpcs | number}}
+									</a>
+								</div>
+							</td>
+							<td can-edit="SM_CODE_02">
+								<i data-ng-click="labelFormatsController.editFormatCode($index)" class="glyphicon glyphicon-edit pointer"  ng-if="!labelFormatsController.isAddingLabelFormat && !labelFormat.isEditing" style="color: orange; font-size: large"></i>
+								<i data-ng-click="labelFormatsController.removeFormatCode($index)" class="glyphicon glyphicon-remove pointer"  ng-if="!labelFormatsController.isAddingLabelFormat && !labelFormat.isEditing" style="color: red; font-size: large"></i>
+								<i data-ng-click="labelFormatsController.labelFormatCodeChanges()" class="glyphicon glyphicon-floppy-disk pointer" ng-if="labelFormatsController.isAddingLabelFormat || labelFormat.isEditing" style="color: green; font-size: large"></i>
+								<i data-ng-click="labelFormatsController.cancel($index)" class="glyphicon glyphicon-ban-circle pointer" ng-if="labelFormatsController.isAddingLabelFormat || labelFormat.isEditing" style="color: red; font-size: large"></i>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<plu-panel current-code="labelFormatsController.selectedLabelFormat" code-type="labelFormatsController.FORMAT_CODE"
+			   ng-show="labelFormatsController.selectedLabelFormat != null">
+	</plu-panel>
+</div>
+<!-- End label format list. -->
+
+

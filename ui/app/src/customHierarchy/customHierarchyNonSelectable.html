@@ -1,0 +1,10 @@
+<div ng-click="data.isCollapsed = !data.isCollapsed" class="add-hover-background">
+	<strong ng-if="data.childRelationships && data.childRelationships.length > 0 && !data.isCollapsed">[-]</strong>
+	<strong ng-if="data.childRelationships && data.childRelationships.length > 0 && data.isCollapsed">[+]</strong>
+	<strong ng-if="!data.childRelationships || data.childRelationships.length === 0">&emsp;&nbsp;</strong>
+	<strong>{{data.childDescription.shortDescription}}</strong>
+</div>
+<div ng-if="data.childRelationships && data.childRelationships.length > 0 && !data.isCollapsed">
+	<div ng-repeat="data in data.childRelationships" ng-include="'src/customHierarchy/customHierarchyNonSelectable.html'"
+		 style="padding-left: 15px"></div>
+</div>

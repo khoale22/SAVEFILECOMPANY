@@ -1,0 +1,671 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse" xmlns="http://www.w3.org/1999/html"></loading-spinner>
+<!--Success and Error spans-->
+<div class="row" data-ng-if="$ctrl.error && !$ctrl.isWaitingForResponse">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.invalidChange && !$ctrl.isWaitingForResponse">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.invalidChange}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.success && !$ctrl.isWaitingForResponse">
+	<span class="alert alert-success col-md-8 col-md-push-2 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<!--This div holds all the image info-->
+<div class ="row" ng-show="!$ctrl.isWaitingForResponse" style="margin-left: -10px; margin-right: -10px;" >
+	<!--No image span-->
+	<div ng-hide="$ctrl.submittedImages || $ctrl.activeOnlineImages || $ctrl.isWaitingForResponse">
+		<div class="row">
+		<span class="alert col-md-4 col-md-push-4 text-center myfade" role="alert">No Approved or Pending Images</span>
+	</div>
+		<!-- <div class="row">
+			<div class="col-md-12">
+				<div class="divider-horizontal"></div>
+				<div class="inline-block pull-right">
+					<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+							data-ng-click="$ctrl.returnToList()">Return To List</button>
+				</div>
+			</div>
+		</div>-->
+	</div>
+	<!--If images are present-->
+	<div ng-show="!$ctrl.isWaitingForResponse " style="padding: 5px">
+		<!--Image data-->
+		<div can-view="CP_IMG_01" class="data-table" style="min-height: 305px; overflow-x: auto;">
+			<!--This table holds all of the image information-->
+			<table ng-table="$ctrl.activeOnlineImageTable" class="table-heb table-bordered table-striped" style="width: 100%;">
+				<!--Header for the table-->
+				<thead style="font-size: 10px !important;">
+				<tr style="border-bottom: hidden !important;">
+					<th style="width: 3%;text-align: center;" can-edit="CP_IMG_01">
+						<input type="checkbox" ng-model="$ctrl.selectAllImages" ng-click="$ctrl.selectAll()">
+					</th>
+					<th style="width: 5%;text-align: center; min-width: 67px;">UPC</th>
+					<th style="width: 8%;text-align: center; min-width:110px;">Image</th>
+					<th style="width: 7%;text-align: center; min-width: 80px;">Size</th>
+					<th style="width: 8%;text-align: center; min-width: 138px;">Alt Tag</th>
+					<th style="width: 8%;text-align: center; min-width: 100px;">Category</th>
+					<th style="width: 8%;text-align: center; min-width: 100px;">Primary/Alternate</th>
+					<th style="width: 3%;text-align: center; min-width: 50px;">Active Online</th>
+					<th style="width: 7%;text-align: center; min-width: 106px;">Destination Domain</th>
+					<th style="width: 8%;text-align: center; min-width: 100px;">Status</th>
+					<th style="width: 4%;text-align: center; min-width: 62px;">Created Date</th>
+					<th style="width: 4%;text-align: center; min-width: 72px;">Application Source</th>
+					<th style="width: 4%;text-align: center; min-width: 71px;">Image Source</th>
+					<th style="width: 8%;text-align: center; min-width: 70px;">Reason Code</th>
+					<th style="width: 4%;text-align: center; min-width: 62px;">Last Modified</th>
+					<th style="width: 4%;text-align: center; min-width: 60px;">In Hierarchy</th>
+				</tr>
+				</thead>
+				<!--Active online Images-->
+				<tr style="border-right-color: white; border-left-color: white">
+					<td colspan="16">Active Online</td>
+				</tr>
+				<tr ng-repeat="approvedImage in $ctrl.activeOnlineImages track by $index">
+					<!--Active Select Div-->
+					<td style="width: 3%;text-align: center;" can-edit="CP_IMG_01">
+						<input type="checkbox"
+							   ng-model="approvedImage.selected"
+							   ng-checked="$ctrl.selectAllImages"
+							   ng-change="$ctrl.updateSelectedImage(approvedImage, approvedImage.selected)">
+					</td>
+					<!--Active UPC-->
+					<td style="width: 5%;text-align: center;">
+						{{approvedImage.key.id}}
+					</td>
+					<!--Active Image thumbnail-->
+					<td style="width: 8%; min-width:110px; text-align: center;padding: 2px 0px">
+						<div ng-show="$ctrl.isImageUndefined(approvedImage)">Loading Image please wait</div>
+						<div  ng-show="!$ctrl.isImageUndefined(approvedImage)">
+							<div ng-if="approvedImage.useImageData">
+								<image id="ActiveViewOnly[{{$index}}]" view-only="CP_IMG_01"
+									   ng-click="$ctrl.showFullImage(approvedImage)"
+									   ng-src="{{approvedImage.image}}" style="height: auto; width: 95px; max-width: 95px"></image>
+								<image
+									ng-src="{{approvedImage.image}}"
+									style="height: auto;
+								width: auto;
+								max-width: 95px; cursor: pointer"
+									ng-click="$ctrl.setImageToEdit(approvedImage)"
+									data-toggle="modal"
+									data-target="#editImageModal"
+									can-edit="CP_IMG_01">
+								</image>
+							</div>
+							<div>
+								<img ng-if="!approvedImage.useImageData" src='images/no_image.png'>
+							</div>
+						</div>
+					</td>
+					<!--Active Image size-->
+					<td style="width: 7%;min-width: 80px;text-align: center;">
+						{{approvedImage.dimensions}}
+					</td>
+					<!--Active Alt tag-->
+					<td style="width: 8%;text-align: center;padding:2px 0px;">
+						<input style="font-weight: normal;" can-edit="CP_IMG_01" ng-model="approvedImage.altTag" />
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{approvedImage.altTag}}</label>
+					</td>
+					<!--Active Image Category-->
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{approvedImage.imageCategory.description}}</label>
+						<select ng-model="approvedImage.imageCategoryCode" can-edit="CP_IMG_01" ng-change="$ctrl.checkCategory(approvedImage)">
+							<option ng-repeat="category in $ctrl.categories" value="{{category.id}}">{{category.description}}</option>
+						</select>
+					</td>
+					<!--Active Image Priority-->
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{approvedImage.imagePriority.description}}</label>
+						<div can-edit="CP_IMG_01">
+							<label ng-if="approvedImage.imageCategoryCode ==='SWAT'"
+								   style="font-weight: normal" ng-model="approvedImage.imageCategoryCode"
+								   value="'NA'">
+								Not Applicable
+							</label>
+							<select ng-model="approvedImage.imagePriorityCode" ng-if="approvedImage.imageCategoryCode !=='SWAT'">
+								<option ng-repeat="priority in $ctrl.priorities" value="{{priority.id}}">{{priority.description}}</option>
+							</select>
+						</div>
+					</td>
+					<!--Active Active Online-->
+					<td style="width: 3%;min-width:50px;text-align: center;">
+						<input type="checkbox" data-ng-click="$ctrl.switchImageBetweenActiveOnlineAndSubmitted(approvedImage)" ng-model= "approvedImage.activeOnline" can-edit="CP_IMG_01">
+						<input type="checkbox" data-ng-click="$ctrl.switchImageBetweenActiveOnlineAndSubmitted(approvedImage)" ng-model= "approvedImage.activeOnline" view-only="CP_IMG_01" disabled>
+					</td>
+					<!--Active Destination Domain-->
+					<td style="width: 7%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{$ctrl.getDestinations(approvedImage.destinations)}}</label>
+						<div can-edit="CP_IMG_01" style="width: 95px">
+							<ui-select class="multiple-destination-domains" ng-model="approvedImage.destinations" theme="bootstrap" multiple style="margin: 0px" >
+								<ui-select-match>
+									{{$item.description}}
+								</ui-select-match>
+								<ui-select-choices repeat="destination in $ctrl.destinations" refresh-delay="0">
+									{{destination.description}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+					</td>
+					<!--Active Image Status-->
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{approvedImage.imageStatus.description}}</label>
+						<select ng-model="approvedImage.imageStatusCode" can-edit="CP_IMG_01">
+							<option ng-repeat="status in $ctrl.statuses" value="{{status.id}}">{{status.description}}</option>
+						</select>
+					</td>
+					<!--Active Image Created Date-->
+					<td style="width: 4%;text-align: center;">{{approvedImage.createdDate | date: "MM/dd/yyyy"}}</td>
+					<!--Active Source System-->
+					<td style="width: 4%;text-align: center;">{{approvedImage.sourceSystem.description}}</td>
+					<!--Active Image Source-->
+					<td style="width: 4%;text-align: center;">{{approvedImage.imageSource.description}}</td>
+					<!--Active Image Status Reason for rejected-->
+					<td style="width: 8%;min-width:70px;text-align: center;">{{approvedImage.imageStatusReason}}</td>
+					<!--Active Last Modified on-->
+					<td style="width: 4%;text-align: center;">{{approvedImage.lastModifiedBy}}<br>{{approvedImage.lastModifiedOn | date: "MM/dd/yyyy"}}</td>
+					<!--Active in hierarchy link-->
+					<td style="width: 4%;min-width:60px;text-align: center;">
+						<label class="ng-binding" ng-click="$ctrl.navigateToCustomHierarchy(approvedImage.imageMetaDataList[0].entity.id)">
+							<a title="Navigate to Custom Hierarchy">
+								{{approvedImage.imageMetaDataList[0].entity.displayText}}
+							</a>
+						</label>
+					</td>
+				</tr>
+			</table>
+			<table ng-table="$ctrl.submittedImageTable" template-pagination="custom/pager" pagination-custom="paginationCustomArea" class="table-heb table-bordered table-striped" style="width: 100%;">
+				<thead style="display: none !important;">
+				<tr style="border-bottom: hidden !important;">
+					<th style="width:3%;text-align: center;" can-edit="CP_IMG_01">
+						<input type="checkbox" ng-model="$ctrl.selectAllImages" ng-click="$ctrl.selectAll()">
+					</th>
+					<th style="width: 5%;text-align: center;">UPC</th>
+					<th style="width: 8%;text-align: center;">Image</th>
+					<th style="width: 7%;text-align: center;">Size</th>
+					<th style="width: 8%;text-align: center;">Alt Tag</th>
+					<th style="width: 8%;text-align: center;">Category</th>
+					<th style="width: 8%;text-align: center;">Primary/Alternate</th>
+					<th style="width: 3%;text-align: center;">Active Online</th>
+					<th style="width: 7%;text-align: center;">Destination Domain</th>
+					<th style="width: 8%;text-align: center;">Status</th>
+					<th style="width: 4%;text-align: center;">Created Date</th>
+					<th style="width: 4%;text-align: center;">Application Source</th>
+					<th style="width: 4%;text-align: center;">Image Source</th>
+					<th style="width: 8%;text-align: center;">Reason Code</th>
+					<th style="width: 4%;text-align: center;">Last Modified</th>
+					<th style="width: 4%;text-align: center;">In Hierarchy</th>
+				</tr>
+				</thead>
+				<tr style="border-right-color: white; border-left-color: white">
+					<td colspan="16">Submitted Images</td>
+				</tr>
+				<tr ng-repeat="submittedImage in $ctrl.submittedImages">
+					<td style="width: 3%;text-align: center;" can-edit="CP_IMG_01">
+						<input type="checkbox"
+							   ng-model="submittedImage.selected"
+							   ng-checked="$ctrl.selectAllImages"
+							   ng-change="$ctrl.updateSelectedImage(submittedImage, submittedImage.selected)">
+					</td>
+					<td style="width: 5%;min-width:60px;text-align: center;">
+						{{submittedImage.key.id}}
+					</td>
+					<td style="width: 8%; min-width:110px;text-align: center;padding: 2px 0px">
+						<div ng-show="$ctrl.isImageUndefined(submittedImage)">Loading Image please wait</div>
+						<div  ng-show="!$ctrl.isImageUndefined(submittedImage)">
+							<div ng-if="submittedImage.useImageData">
+								<image id="ActiveViewOnly[{{$index}}]" view-only="CP_IMG_01"
+									   ng-click="$ctrl.showFullImage(submittedImage)"
+									   ng-src="{{submittedImage.image}}" style="height: auto; width: 95px; max-width: 95px"></image>
+								<image
+									ng-src="{{submittedImage.image}}"
+									style="height: auto;
+								width: auto;
+								max-width: 95px; cursor: pointer"
+									ng-click="$ctrl.setImageToEdit(submittedImage)"
+									data-toggle="modal"
+									data-target="#editImageModal"
+									can-edit="CP_IMG_01">
+								</image>
+							</div>
+							<div>
+								<img ng-if="!submittedImage.useImageData" src='images/no_image.png'>
+							</div>
+						</div>
+					</td>
+					<td style="width: 7%;min-width:80px;text-align: center;">
+						{{submittedImage.dimensions}}
+					</td>
+					<td style="width: 8%;text-align: center;padding: 2px 0px; min-width: 138px;">
+						<input style="font-weight: normal;" can-edit="CP_IMG_01" ng-model="submittedImage.altTag" />
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{submittedImage.altTag}}</label>
+					</td>
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{submittedImage.imageCategory.description}}</label>
+						<select ng-model="submittedImage.imageCategoryCode" can-edit="CP_IMG_01" ng-change="$ctrl.checkCategory(submittedImage)">
+							<option ng-repeat="category in $ctrl.categories" value="{{category.id}}">{{category.description}}</option>
+						</select>
+					</td>
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{submittedImage.imagePriority.description}}</label>
+						<div can-edit="CP_IMG_01">
+							<label ng-if="submittedImage.imageCategoryCode ==='SWAT'"
+								   style="font-weight: normal" ng-model="submittedImage.imageCategoryCode"
+								   value="'NA'">
+								Not Applicable
+							</label>
+							<select ng-model="submittedImage.imagePriorityCode" ng-if="submittedImage.imageCategoryCode !=='SWAT'">
+								<option ng-repeat="priority in $ctrl.priorities" value="{{priority.id}}">{{priority.description}}</option>
+							</select>
+						</div>
+					</td>
+					<td style="width: 3%;min-width:50px;text-align: center;">
+						<input type="checkbox" data-ng-click="$ctrl.switchImageBetweenActiveOnlineAndSubmitted(submittedImage)" ng-model= "submittedImage.activeOnline" can-edit="CP_IMG_01">
+						<input type="checkbox" data-ng-click="$ctrl.switchImageBetweenActiveOnlineAndSubmitted(submittedImage)"ng-model= "submittedImage.activeOnline"  view-only="CP_IMG_01" disabled>
+					</td>
+					<td style="width: 7%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{$ctrl.getDestinations(submittedImage.destinations)}}</label>
+						<div can-edit="CP_IMG_01" style="width: 95px">
+							<ui-select class="multiple-destination-domains" ng-model="submittedImage.destinations" theme="bootstrap" multiple style="margin: 0px" >
+								<ui-select-match>
+									{{$item.description}}
+								</ui-select-match>
+								<ui-select-choices repeat="destination in $ctrl.destinations" refresh-delay="0">
+									{{destination.description}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+					</td>
+					<td style="width: 8%;text-align: center;">
+						<label style="font-weight: normal" view-only="CP_IMG_01">{{submittedImage.imageStatus.description}}</label>
+						<select ng-model="submittedImage.imageStatusCode" can-edit="CP_IMG_01">
+							<option ng-repeat="status in $ctrl.statuses" value="{{status.id}}">{{status.description}}</option>
+						</select>
+					</td>
+					<td style="width: 4%;text-align: center;">{{submittedImage.createdDate | date: "MM/dd/yyyy"}}</td>
+					<td style="width: 4%;text-align: center; min-width: 71px;">{{submittedImage.sourceSystem.description}}</td>
+					<td style="width: 4%;text-align: center; min-width: 71px;">{{submittedImage.imageSource.description}}</td>
+					<td style="width: 8%;min-width:70px;text-align: center;">{{submittedImage.imageStatusReason}}</td>
+					<td style="width: 4%;text-align: center;">{{submittedImage.lastModifiedBy}}<br>{{submittedImage.lastModifiedOn | date: "MM/dd/yyyy"}}</td>
+					<td style="width: 4%;min-width:60px;text-align: center;">
+						<label class="ng-binding" ng-click="$ctrl.navigateToCustomHierarchy(submittedImage.imageMetaDataList[0].entity.id)">
+							<a title="Navigate to Custom Hierarchy">
+								{{submittedImage.imageMetaDataList[0].entity.displayText}}
+							</a>
+						</label>
+					</td>
+				</tr>
+			</table>
+			<div>
+				<div class="col-md-12" style="margin-top: 5px; margin-bottom: 5px">
+					<div class="pull-right">
+						<div id="paginationCustomArea"></div>
+						<div class="pull-right clearfix">
+							<button type="button" class="btn  btn-primary btn-default btn-sm" ng-click="$ctrl.onShowOrHideALlImage()">{{$ctrl.showAllDisplay}}</button>
+							<button type="button" class="btn  btn-primary btn-default btn-sm" ng-click="$ctrl.onShowOrHideRejectedImage()">{{$ctrl.showRejectedDisplay}}</button>
+						</div>
+					</div>
+					<div class="pull-left" style="margin-left: -15px; margin-top: {{$ctrl.marginTop}}">
+						<span>Total Images: <b>{{$ctrl.totalImages}}</b>,</span>
+						<span style="margin-left: 10px;">Total Approved Images: <b>{{$ctrl.totalApprovedImages}}</b>,</span>
+						<span style="margin-left: 10px;">Total Images Need Approval: <b>{{$ctrl.totalNeedingApprovingImages}}</b></span>
+					</div>
+
+				</div>
+			</div>
+			<script type="text/ng-template" id="custom/pager" >
+				<div id="paging" class="bottom" hidden>
+					<div  id="allocateCargoTable_length" class="dataTables_length">
+						<div class="dataTables_paginate paging_bs_normal">
+							<ul class="pagination ng-table-pagination pull-right">
+								<li ng-class="{'disabled': !page.active}" ng-repeat="page in pages" ng-switch="page.type">
+									<a ng-switch-when="prev" ng-click="selectPage(params, page.number)" href=""><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;Previous</a>
+									<a ng-switch-when="first" ng-click="selectPage(params, page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="page"  ng-click="selectPage(params, page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="more" ng-click="selectPage(params, page.number)" href="">&#8230;</a>
+									<a ng-switch-when="last" ng-click="selectPage(params, page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="next" ng-click="selectPage(params, page.number)" href="">Next&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</script>
+			<!--Show rejected Images button-->
+
+		</div>
+	</div>
+</div>
+
+<div id="confirmationShowHideReject" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>Unsaved data will be lost. Do you want to save the changes before continuing?</h5>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+							ng-click="$ctrl.onYesConfirmedButtonClicked();">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+							ng-click="$ctrl.onNoConfirmedButtonClicked()">No
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							data-dismiss="modal">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--This Div holds all the html for the edit image Modal-->
+<div id="editImageModal" class="modal" role="dialog" ng-init="$ctrl.imageInit" data-backdrop="static">
+	<div id="editImageModalDialog" class="modal-dialog">
+		<div class="modal-content" >
+			<!--Modal Header-->
+			<div class="modal-header" style="background-color: #337ab7; height: 70%">
+				<div class="row">
+					<div class="col-md-11 col-sm-11">
+						<div class="modal-title inline-block" style="color: #ffffff">
+							<h5>Image to Edit</h5>
+						</div>
+					</div>
+					<div class="col-md-1 col-sm-1 pull-right">
+						<div class="modal-title inline-block" style="color: #ffffff">
+							<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0"
+									data-dismiss="modal" aria-label="Close">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+							<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+									ng-click="$ctrl.downloadImage($ctrl.imageToEditData.image, $ctrl.imageToEditData.imageFormat)">
+								<span class="glyphicon glyphicon-download-alt"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--Modal Body-->
+			<div class="modal-body">
+				<div class="img-container">
+					<img id="imageToEdit" ng-src="{{$ctrl.imageToEdit}}">
+				</div>
+				<div style="text-align: center">
+					<div class="btn-group">
+						<button title="flip image horizontal" class="btn btn-primary" ng-click="$ctrl.flipImageX()">
+							<span class="fa fa-arrows-h"></span>
+						</button>
+						<button title="flip image vertical" class="btn btn-primary" ng-click="$ctrl.flipImageY()">
+							<span class="fa fa-arrows-v"></span>
+						</button>
+					</div>
+					<div class="btn-group">
+						<button title="rotate image counter-clockwise" class="btn btn-primary" ng-click="$ctrl.spinCropper(-90)">
+							<span class="fa fa-rotate-left"></span>
+						</button>
+						<button title="rotate image clockwise" class="btn btn-primary" ng-click="$ctrl.spinCropper(90)">
+							<span class="fa fa-rotate-right"></span>
+						</button>
+					</div>
+					<div class="btn-group">
+						<button title="set image to crop mode" class="btn btn-primary" ng-click="$ctrl.cropMode()">
+							<span class="fa fa-crop"></span>
+						</button>
+						<button title="set image to move mode" class="btn btn-primary" ng-click="$ctrl.moveMode()">
+							<span class="fa fa-arrows"></span>
+						</button>
+					</div>
+					<div class="btn-group">
+						<button title="zoom in" class="btn btn-primary" ng-click="$ctrl.zoomIn()">
+							<span class="fa fa-search-plus"></span>
+						</button>
+						<button title="zoom out" class="btn btn-primary" ng-click="$ctrl.zoomOut()">
+							<span class="fa fa-search-minus"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<!--Modal Footer-->
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-dismiss="modal">
+					Close
+				</button>
+				<button class="btn btn-primary"
+						ng-click="$ctrl.previewCroppedImage()"
+						data-toggle="modal"
+						data-target="#previewImageModal">
+					Preview to Save
+				</button>
+				<div class ="row" ng-hide="$ctrl.submittedImages || $ctrl.activeOnlineImages || $ctrl.isWaitingForResponse" >
+					<span class="alert col-md-4 col-md-push-4 text-center myfade" role="alert">No Approved or Pending Images</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--View Full Image-->
+<div id="imagePopup" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" data-dismiss="modal"
+								aria-label="Close">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+								ng-click="$ctrl.downloadImage($ctrl.imageBytes, $ctrl.imageFormat)">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!--This Div holds all of the html for the upload Modal-->
+<div id="uploadImageModal" class="modal" role="dialog" data-backdrop="static" ng-init="$ctrl.initModal()">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!--Modal Header-->
+			<div class="modal-header" style="background-color: #337ab7; height: 70%">
+				<div class="modal-title inline-block" style="color: #ffffff">
+					UPC Image Upload
+				</div>
+			</div>
+			<!--Modal Body-->
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+						<label>Step 1 Select Item Category</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-3 col-md-8">
+						<select ng-model="$ctrl.uploadImageCategory">
+							<option value="">--Select Image Category--</option>
+							<option ng-repeat="category in $ctrl.categories" value="{{category.id}}">{{category.description}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+						<label>Step 2 Select Image Source</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-3 col-md-8">
+						<select ng-model="$ctrl.uploadImageSource">
+							<option value="">--Select Image Source--</option>
+							<option ng-repeat="source in $ctrl.sources" value="{{source.id}}">{{source.description}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+						<label>Step 3 Select Destination Domain</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-3 col-md-8">
+						<ui-select ng-model="$ctrl.uploadImageDestinations" theme="bootstrap" multiple style="max-width: 200px; margin: 0px" >
+							<ui-select-match>
+								{{$item.description}}
+							</ui-select-match>
+							<ui-select-choices repeat="destination in $ctrl.destinations" refresh-delay="0">
+								{{destination.description}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10">
+						<label>Step 4 Upload Image</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-1 col-md-10" >
+						<i>*JPG, JPEG, TIF, PNG, TIFF formats only</i>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-offset-3 col-md-4">
+						<input type="file" id="uploadImageData" accept="image/jpg, image/tif, image/jpeg, image/tiff, image/png">
+					</div>
+					<div class="col-md-4">
+						<span id="invalidSpan" style="color: red; display: none">Invalid file type</span>
+					</div>
+				</div>
+			</div>
+			<!--Modal Footer-->
+			<div class="modal-footer">
+				<div class="inline-block pull-right">
+					<!--can-edit="CP_IMG_01">-->
+					<button id="uploadImageButton" class="btn btn-primary" ng-click="$ctrl.uploadImage()" >
+						Upload
+					</button>
+					<button class="btn btn-primary" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--This div displays a preview of the image your about to change-->
+<div id="previewImageModal" class="modal" role="dialog" data-backdrop="static">
+	<div id="previewImageModalDialog" class="modal-dialog">
+		<div class="modal-content">
+			<!--Modal Header-->
+			<div class="modal-header" style="background-color: #337ab7; height: 70%">
+				<div class="modal-title inline-block" style="color: #ffffff">
+					UPC Image Edit Preview
+				</div>
+			</div>
+			<!--Modal Body-->
+			<div class="modal-body">
+				<img id="previewImage">
+			</div>
+			<!--Modal Footer-->
+			<div class="modal-footer">
+				<div class="inline-block pull-right">
+					<!--can-edit="CP_IMG_01">-->
+					<button class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.saveImage()">
+						Save
+					</button>
+					<button class="btn btn-primary" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--This div displays the choice between single layer or multi layer copying to hierarchy-->
+<div id="copyToHierarchyOptions" class="modal" role="dialog" data-backdrop="static" ng-init="$ctrl.copyToHierarchyModalInit()">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!--Modal Header-->
+			<div class="modal-header" style="background-color: #337ab7; height: 70%">
+				<div class="modal-title inline-block" style="color: #ffffff">
+					Copy to Hierarchy Options
+				</div>
+			</div>
+			<!--Modal Body-->
+			<div class="modal-body" style="font-weight: bold">
+				<div  ng-if="!$ctrl.isValidHierarchy()">
+					<label>All potential candidates need to have the "APPROVED" status</label>
+				</div>
+				<div ng-if="$ctrl.detectChange()">
+					<label>All changes must be saved before copying to a hierarchy</label>
+				</div>
+				<div ng-if="$ctrl.isValidHierarchy() && !$ctrl.detectChange()">
+					<div>
+						<label>{{$ctrl.hierarchyString}}</label>
+					</div>
+					<div class="row">
+						<div class="col-md-3"></div>
+						<input style="text-align: center" type="radio" name="numberOfLevel" ng-model="$ctrl.hierarchyLevels" value="single">Lowest Level<br>
+					</div>
+					<div class="row">
+						<div class="col-md-3"></div>
+						<input style="text-align: center" type="radio" name="numberOfLevel" ng-model="$ctrl.hierarchyLevels" value="multi">All Levels<br>
+					</div>
+				</div>
+
+			</div>
+			<!--Modal Footer-->
+			<div class="modal-footer">
+				<div class="inline-block pull-right">
+					<button ng-if="$ctrl.isValidHierarchy()"
+							class="btn btn-primary"
+							data-dismiss="modal"
+							ng-click="$ctrl.copyToHierarchy()">
+						Save
+					</button>
+					<button class="btn btn-primary" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--Editing buttons row-->
+<div class="inline-block pull-right" style="padding-left: 3px;">
+	<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+			data-ng-click="$ctrl.returnToList()">Return To List</button>
+</div>
+<div class="inline-block pull-right"  ng-show="!$ctrl.isWaitingForResponse" can-edit="CP_IMG_01">
+	<button class="btn btn-primary"
+			data-toggle="modal"
+			data-target="#copyToHierarchyOptions"
+			ng-disabled="$ctrl.isDisableCopyToHierarchyButton()">
+		Copy to Hierarchy
+	</button>
+	<button class="btn btn-primary"
+			ng-click=""
+			data-toggle="modal"
+			data-target="#uploadImageModal">
+		Upload Image
+	</button>
+	<button class="btn btn-primary"
+			ng-click="$ctrl.resetImageInfo()"> Reset
+	</button>
+	<button class="btn btn-primary"
+			ng-click="$ctrl.saveImageInfo()"> Save
+	</button>
+</div>
+

@@ -1,0 +1,146 @@
+<div class="col-md-12" ng-controller="DiscontinueExceptionParametersController as exceptionParametersController" ng-init="exceptionParametersController.init()">
+	<div class="row" data-ng-if="exceptionParametersController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{exceptionParametersController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="exceptionParametersController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{exceptionParametersController.error}}</span>
+	</div>
+
+	<!-- Delete exception modal -->
+	<div class="modal fade" id="deleteExceptionModal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<p>Are you sure you want to delete this exception?.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="exceptionParametersController.deleteDiscontinueException()">Yes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel-group"ng-show="!exceptionParametersController.viewingAudit">
+		<div class="panel panel-primary" style="padding-bottom: 15px; margin-bottom: 2%">
+			<div class="panel-heading">
+				<h4 class="panel-title">Exception</h4>
+			</div>
+			<div class="panel-body">
+				<div  class="col-md-6">
+					<div ng-show="!exceptionParametersController.isViewingDeletedExceptions">
+						<div class="inline-block">Exception List</div>
+						<div class="inline-block glyphicon glyphicon-question-sign" style="color: blue"
+							 data-toggle="tooltip" title="{{exceptionParametersController.discontinueDefinition.exceptions}}">
+						</div>
+					</div>
+					<div class="col-md-3" ng-show="!exceptionParametersController.isViewingDeletedExceptions">
+						<div class="row">
+							<div class="dropdown" style="width: 100%">
+								<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="discoTypeList" style="width: 100%; text-align: left; align-content: center; margin-bottom: 10px">{{exceptionParametersController.selectedDiscoType}}
+									<span class="glyphicon glyphicon-triangle-bottom pull-right"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu" aria-labelledby="discoTypeList">
+									<li class="pointer" ng-repeat="option in exceptionParametersController.dropdownOptions" ng-click="exceptionParametersController.getDiscoExceptionsByType(option)"><a>{{option}}</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div can-view="PD_DSCO_04">
+							<button class="pull-right btn btn-default" ng-click="exceptionParametersController.changeDeletedExceptionsView()" style="margin-bottom: 10px">{{!exceptionParametersController.isViewingDeletedExceptions ? "Show Deleted Exceptions" : "Show Discontinue Exceptions"}}</button>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="row">
+							<div>
+								<table class="table-heb table-bordered table-striped table-hover" style="width: 100%"  id="exceptionsTable">
+									<thead>
+									<tr>
+										<th style="width: 20%">Exception Type</th>
+										<th style="width: 80%">Description</th>
+									</tr>
+									</thead>
+									<tr ng-repeat="exception in exceptionParametersController.exceptionList">
+										<td>{{exception.exceptionType}}</td>
+										<td>
+											<ui-select ng-model="exceptionParametersController.exceptionSelected"
+													   theme="bootstrap"
+													   ng-if="exception.addingException && exceptionParametersController.isSearchable()"
+													   id="exceptionSelected"
+													   title="Choose a {{exception.exceptionType}}">
+												<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+												<ui-select-choices repeat="element in exceptionParametersController.valueList"
+																   refresh="exceptionParametersController.getCurrentDropDownResults($select.search)"
+																   refresh-delay="0">{{element.displayName}}
+												</ui-select-choices>
+											</ui-select>
+											<div ng-show="exception.addingException && exceptionParametersController.selectedDiscoType == 'SBT'">{{exception.exceptionName}}</div>
+											<input class="form-control" type="text" ng-show="exception.addingException && exceptionParametersController.selectedDiscoType == 'UPC'"
+												   ng-model="exceptionParametersController.exceptionTypeId" pattern="\d*" min="0">
+											<a ng-show="!addingException" class="pointer" ng-click="exceptionParametersController.selectException(exception)">{{exception.exceptionName}}</a>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6" ng-show="!exceptionParametersController.isViewingDeletedExceptions">
+					<div class="panel-group">
+						<div class="panel panel-primary">
+							<div class="panel-heading" ng-show="exceptionParametersController.itemSelected">
+								<h4 class="panel-title">{{exceptionParametersController.discontinueExceptionTitle}}</h4>
+							</div>
+							<div class="panel-body">
+								<div class="panel panel-default">
+									<div style="padding-left: 15px">
+										<input class="inline-block" type="checkbox" value="" ng-model="exceptionParametersController.neverDiscontinueSwitch" disabled="{{!exceptionParametersController.editing}}" id="neverDiscontinueSwitch">
+										<strong class="inline-block">Never Discontinue</strong>
+									</div>
+									<div class="panel-body">
+										<div ng-include src="'src/productDiscontinue/discontinueParametersTemplate.html'"></div>
+									</div>
+
+								</div>
+								<div class="pull-right" can-edit="PD_DSCO_03" >
+
+									<!--discontinue exception type selected and it isn't 'All'-->
+									<div class="inline-block"
+										 ng-show="exceptionParametersController.isAddEligible() && !exceptionParametersController.addingException && !exceptionParametersController.editing">
+										<div class="glyphicon glyphicon-plus pointer" style="color: green; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.addRow()"></div>
+									</div>
+
+									<!--discontinue exception was selected-->
+									<div class="inline-block" ng-show="!exceptionParametersController.addingException && exceptionParametersController.itemSelected && !exceptionParametersController.editing">
+										<div class="glyphicon glyphicon-edit pointer" style="color: darkorange; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.setEditing(true)"></div>
+										<div class="glyphicon glyphicon-remove pointer" style="color: red; padding-top: 5px; font-size: large" data-toggle="modal" data-target="#deleteExceptionModal"></div>
+										<div can-view="PD_DSCO_04" class="glyphicon glyphicon-folder-open pointer" style="color: blue; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.showAudit()"></div>
+									</div>
+
+									<!--adding discontinue exception-->
+									<div class="inline-block" ng-show="exceptionParametersController.addingException">
+										<div class="glyphicon glyphicon-floppy-disk pointer" style="color: green; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.addExceptionRule()"></div>
+										<div class="glyphicon glyphicon-refresh pointer" style="color: blue; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.refreshCurrentException()"></div>
+										<div class="glyphicon glyphicon-ban-circle pointer" style="color: red; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.removeAddedException()"></div>
+									</div>
+
+									<!--editing existing discontinue exception-->
+									<div class="inline-block" ng-show="exceptionParametersController.editing">
+										<div class="glyphicon glyphicon-floppy-disk pointer" style="color: green; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.updateExceptionRule()"></div>
+										<div class="glyphicon glyphicon-refresh pointer" style="color: blue; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.refreshCurrentException()"></div>
+										<div class="glyphicon glyphicon-ban-circle pointer" style="color: red; padding-top: 5px; font-size: large" ng-click="exceptionParametersController.cancelExceptionEdit()"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-group" ng-show="exceptionParametersController.viewingAudit">
+		<div ng-include src="'src/productDiscontinue/discontinueParametersAudit.html'"></div>
+	</div>
+</div>

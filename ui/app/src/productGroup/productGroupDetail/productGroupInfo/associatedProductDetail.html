@@ -1,0 +1,103 @@
+<!--
+  ~ associatedProductDetail.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div style="margin: 0 auto;padding: 20px ;"  ng-show="$ctrl.isWaitingForResponse">
+	<!-- Waiting spinner. -->
+	<loading-spinner style="">
+	</loading-spinner>
+
+</div>
+<div ng-init="$ctrl.init()" ng-show="!$ctrl.isWaitingForResponse && $ctrl.productShowing != null" ng-if="$ctrl.cusProductGroup !== undefined" style="    width: 100%;display: inline-block;">
+	<div  class="pull-right margin-top-10">
+	<button class="btn-link" data-ng-disabled="$ctrl.isCreateProductGroup" data-ng-click="$ctrl.navigateToEcommerView()" href="#home"
+	>View More</button>
+</div>
+	<div  class="col-md-12" style="margin-top:5px" >
+	<div class="col-md-5" style="padding-left: 0px;">
+		<div class="vcenter">
+			<div class="col-md-12" style="padding: 0px">
+				<img data-ng-show="$ctrl.imagePrimary"
+					 data-ng-src="{{$ctrl.imagePrimary}}"
+					 ng-click="$ctrl.showFullPrimaryImage()"
+					 style="max-width:100%; max-height: 90%;">
+				<img data-ng-show="!$ctrl.imagePrimary"
+					 data-ng-src="images/no_image.png"
+					 style="max-width:100%; max-height: 90%;">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-7">
+		<div class="row ecom-box" style="min-height: auto;">
+			<div class="" style="padding-left: 0px;"><label>Brand</label></div>
+			<div class="ng-binding ">{{$ctrl.brand.content}}</div>
+		</div>
+		<div class="row ecom-box"style="min-height: auto;">
+			<div class="" style="padding-left: 0px;"><label>Display Name</label></div>
+			<div class="ng-binding ">{{$ctrl.displayName.content}}</div>
+		</div>
+		<div class="row ecom-box"style="min-height: auto;">
+			<div class="" style="padding-left: 0px;"><label>Size</label></div>
+			<div class="ng-binding ">{{$ctrl.size.content}}</div>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="row ecom-box"style="min-height: auto;">
+			<div class="" style="padding-left: 0px;"><label>Romance Copy</label></div>
+			<div ng-bind-html= "$ctrl.romanceCopy.content">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12" style="padding:0;">
+		<table ng-table="$ctrl.choiceTableParams" show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%;">
+			<thead>
+			<tr style="height: 25px;">
+				<th><input type="checkbox" data-ng-disabled="$ctrl.isCreateProductGroup" class="ng-pristine ng-untouched ng-valid ng-not-empty"  value="true" ng-checked="$ctrl.selectedAll" data-ng-click="$ctrl.selectAll()"></th>
+				<th style="">Choice Option</th>
+				<th style="">Choice Type</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="choice in $data" data-ng-click="$ctrl.selectRow(choice)" ng-click="selectItem(choice)"
+				ng-class="{active: isActive(choice)}">
+				<td align="center"><input  type="checkbox" class="ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="choice.isSelected" data-ng-disabled="choice.productGroupChoiceType.pickerSwitch || $ctrl.isCreateProductGroup" ng-checked="choice.isSelected" data-ng-click="$ctrl.setCheckAll()"></td>
+				<td>{{choice.choiceOption.productChoiceText}}</td>
+				<td>{{choice.choiceOption.choiceType.description}}</td>
+
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</div>
+
+<!-- Popup show and download image-->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+				<td >
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" title="Delete"
+								data-dismiss="modal" aria-label="Close" >
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" title="Download" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px" ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+				</td>
+			</tr>
+				<tr>
+				<td >
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+</div>

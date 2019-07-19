@@ -1,0 +1,130 @@
+<?mxl version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:util="http://www.springframework.org/schema/util"
+
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	>
+
+	<!-- Load the JPA configuration -->
+    <import resource="jpa-config.xml" />
+
+	<!-- Load the batch job configuration -->
+	<import resource="batch-config.xml"/>
+
+	<!-- Scan application directories for beans -->
+	<context:component-scan base-package="com.heb" />
+	<context:component-scan base-package="com.heb.gdsn" />
+	<context:component-scan base-package="com.heb.util.controller" />
+	<context:component-scan base-package="com.heb.scaleMaintenance" />
+
+	<context:property-placeholder
+			location="classpath:application.properties"
+			ignore-unresolvable="true"/>
+
+	<!-- Functional testing profile beans -->
+	<beans profile="functional-test">
+		<import resource="classpath*:functional-test-db-config.xml"/>
+
+		<!-- Loads development properties -->
+		<context:property-placeholder
+				location="classpath*:application-functional-test.properties"
+				ignore-unresolvable="true"/>
+	</beans>
+
+	<!-- Local profile beans -->
+	<beans profile="local">
+		<import resource="db-config.xml" />
+		<import resource="security-config.xml" />
+		<!-- Loads development properties -->
+		<context:property-placeholder
+				location="classpath:application-local.properties"
+				ignore-unresolvable="true"/>
+	</beans>
+
+	<!-- Development profile beans -->
+    <beans profile="dev">
+		<import resource="db-config.xml" />
+		<import resource="security-config.xml" />
+        <!-- Loads development properties -->
+        <context:property-placeholder
+                location="classpath:application-dev.properties"
+                ignore-unresolvable="true"/>
+    </beans>
+
+	<!-- Certification profile beans -->
+	<beans profile="cert">
+		<import resource="db-config.xml" />
+		<import resource="security-config.xml" />
+		<!-- Loads development properties -->
+		<context:property-placeholder
+				location="classpath:application-cert.properties"
+				ignore-unresolvable="true"/>
+	</beans>
+
+	<beans profile="prod">
+		<import resource="db-config.xml" />
+		<import resource="security-config.xml" />
+		<!-- Loads development properties -->
+		<context:property-placeholder
+				location="classpath:application-prod.properties"
+				ignore-unresolvable="true"/>
+	</beans>
+
+    <!-- Beans for all profiles -->
+     <!-- DB2O CHANGES by vn76717-->
+    <beans>
+    
+        <!-- Scan application directories for beans -->
+        <context:component-scan base-package="com.heb.pm" />
+        <context:component-scan base-package="com.heb.util.controller" />
+
+        <!-- Add support for localization of messages to the client. -->
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+            <property name="basename" value="messages" />
+            <property name="defaultEncoding" value="UTF-8" />
+        </bean>
+
+		<!-- Formatters that will handle converting objects from the front end to controller paramaters for non
+		built-in types. -->
+        <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
+        <bean id="integerListFromStringFormatter" class="com.heb.util.controller.IntegerListFromStringFormatter" />
+        <bean id="longListFromStringFormatter" class="com.heb.util.controller.LongListFromStringFormatter" />
+        <bean id="prodDiscoExceptionTypeFromStringFormatter" class="com.heb.pm.productDiscontinue.ProdDiscoExceptionTypeFromStringFormatter" />
+        <bean id="bdmFromStringFormatter" class="com.heb.pm.productDiscontinue.BdmFromStringFormatter" />
+
+        <bean id="conversionService"
+              class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+            <property name="formatters">
+                <set>
+                    <ref bean="integerListFromStringFormatter" />
+                    <ref bean="longListFromStringFormatter" />
+                    <ref bean="prodDiscoExceptionTypeFromStringFormatter" />
+                    <ref bean="bdmFromStringFormatter" />
+                </set>
+            </property>
+        </bean>
+
+        <util:properties id="itemNotDelReasons" location="classpath:itemNotDeleteReason.properties" />
+
+		<bean id="applicationEventMulticaster"
+			  class="org.springframework.context.event.SimpleApplicationEventMulticaster">
+			<property name="taskExecutor">
+				<bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"/>
+			</property>
+		</bean>
+    </beans>
+</beans>

@@ -1,0 +1,47 @@
+<div ng-init="trackingDetailDirective.init()">
+	<div class="col-md-12">
+		<div class="panel-group" >
+			<div class="panel panel-primary" >
+				<div class="panel-heading" >
+					<h4 class="panel-title inline-block">
+						<b>Detail Tracking {{trackingDetailDirective.selectedItem.requestId}}</b>
+					</h4>
+					<div class="inline-block pull-right" ng-if="trackingDetailDirective.downloading" style="color: orange">Downloading..</div>
+					<div class="inline-block pull-right glyphicon glyphicon-download-alt pointer" ng-if="!trackingDetailDirective.isWaiting" style="color: orange" ng-click="trackingDetailDirective.export()"></div>
+				</div>
+				<div class="panel-body">
+					<div class="row form-inline" style="padding: 25px">
+						<loading-spinner ng-show="trackingDetailDirective.isWaiting">
+						</loading-spinner>
+						<table ng-show="!trackingDetailDirective.isWaiting" ng-table="trackingDetailDirective.tableParams"  show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%">
+							<thead>
+							<tr >
+								<th data-title="'Product ID'" > Product ID</th>
+								<th data-title="'Product Description'">Product Description</th>
+								<th data-title="'Size'">Size</th>
+								<th data-title="'Primary UPC'">Primary UPC</th>
+								<th data-title="'Result'">Result</th>
+								<th data-title="'Error Message'">Error Message</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat = "attribute in trackingDetailDirective.data ">
+								<td data-title="'Product ID'" > {{attribute.productId}}</td>
+								<td data-title="'Product Description'">{{attribute.productDescription}}</td>
+								<td data-title="'Size'">{{attribute.size}}</td>
+								<td data-title="'Primary UPC'">{{attribute.primaryUpc}}</td>
+								<td data-title="'Result'" style="color:red;" ng-if="attribute.errorMessage!==''">{{attribute.updateResult}}</td>
+								<td data-title="'Result'" ng-if="attribute.errorMessage===''">{{attribute.updateResult}}</td>
+								<td data-title="'Error Message'" style="color:red;">{{attribute.errorMessage}}</td>
+							</tr>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+

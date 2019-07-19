@@ -1,0 +1,50 @@
+<!--
+  ~ productSearchSelection.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<!-- The table with the list of products. -->
+<br>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<loading-spinner ng-show="$ctrl.isWaiting">
+		</loading-spinner>
+
+
+		<div ng-show="!$ctrl.isWaiting">
+			<div data-ng-if="$ctrl.error">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+			</div>
+
+			<div data-ng-if="!$ctrl.error">
+				<p class="panel-title text-left">{{$ctrl.resultMessage}}</p>
+			</div>
+
+			<table ng-table="$ctrl.tableParams"
+				   class="table-heb table-bordered table-striped" style="width: 100%">
+				<thead>
+				<tr>
+					<th style="width: 15px"><input  type="checkbox" ng-model="$ctrl.allProductsChecked" ng-click="$ctrl.toggleAllCheckedProducts()"></th>
+					<th>Product ID</th>
+					<th>Product Description</th>
+					<th>Size</th>
+					<th>Product Primary UPC</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="product in $ctrl.data track by $index">
+					<td data-title=""><input type="checkbox" ng-model="product.isChecked" ng-change="$ctrl.updateSelected(product)"></td>
+					<td class="text-left">{{product.prodId}}</td>
+					<td class="text-left">{{product.description}}</td>
+					<td class="text-left">{{product.productPrimarySellingUnit.tagSize}}</td>
+					<td class="text-left">{{product.productPrimarySellingUnit.upc}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,640 @@
+<div class="row container-fluid"
+	 ng-controller="ScaleManagementNutrientStatementController as scaleManagementNutrientStatementController"
+	 ng-init="scaleManagementNutrientStatementController.init()">
+	<div class="row" data-ng-if="scaleManagementNutrientStatementController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientStatementController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="scaleManagementNutrientStatementController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientStatementController.error}}</span>
+	</div>
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Nutrient Statement Search
+					<i ng-click="scaleManagementNutrientStatementController.searchPanelVisible = !scaleManagementNutrientStatementController.searchPanelVisible"
+					   class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': scaleManagementNutrientStatementController.searchPanelVisible, 'glyphicon glyphicon-plus': !scaleManagementNutrientStatementController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="scaleManagementNutrientStatementController.searchPanelVisible"
+					 class="panel-body black-border">
+					<div class="row">
+						<!-- Radio buttons for list type (NutrientCode, Nutrient Statement, Description) . -->
+						<div class="col-md-12">
+							<label>
+								<input type="radio" ng-model="scaleManagementNutrientStatementController.selectionType"
+									   value="{{scaleManagementNutrientStatementController.STATEMENT_ID}}"
+									   ng-click="scaleManagementNutrientStatementController.selectionTypeChanged()"/>Statement
+								ID
+							</label>
+							<label>
+								<input type="radio" ng-model="scaleManagementNutrientStatementController.selectionType"
+									   value="{{scaleManagementNutrientStatementController.NUTRIENT_CODE}}"
+									   ng-click="scaleManagementNutrientStatementController.selectionTypeChanged()"/>Nutrient
+								Code
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<!-- The text box for the user input. -->
+								<div class="col-md-6" style="min-width: 349px">
+													<textarea
+														data-ng-model="scaleManagementNutrientStatementController.searchSelection"
+														rows="8" style="min-width: 334px"
+														placeholder="{{scaleManagementNutrientStatementController.getTextPlaceHolder()}}"
+														class="col-md-12 noresize">
+													</textarea>
+								</div>
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-6">
+											<button
+												data-ng-click="scaleManagementNutrientStatementController.newSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementNutrientStatementController.searchSelection == null">
+												Search
+											</button>
+											<button
+												data-ng-click="scaleManagementNutrientStatementController.searchAll()"
+												class="btn btn-primary btn-block">Search All
+											</button>
+										</div>
+										<div class="col-md-6">
+											<button
+												data-ng-click="scaleManagementNutrientStatementController.clearSearch()"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="scaleManagementNutrientStatementController.searchSelection == null">
+												Clear
+											</button>
+											<button
+												data-ng-click="scaleManagementNutrientStatementController.createNutrientStatement()"
+												title="Add an nutrient statement"
+												data-toggle="modal" data-target="#nutrientStatementModal"
+												class="btn btn-primary btn-block"
+												data-ng-disabled="!scaleManagementNutrientStatementController.canEditNutrientStatements()">
+												Add
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<loading-spinner ng-show="scaleManagementNutrientStatementController.isWaiting">
+	</loading-spinner>
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						These are the {{scaleManagementNutrientStatementController.selectedType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+				<div class="modal-body">
+					<div
+						ng-repeat="nutrientStatements in scaleManagementNutrientStatementController.missingValues.noMatchList">
+						{{nutrientStatements}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="row" data-ng-if="scaleManagementNutrientStatementController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientStatementController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="scaleManagementNutrientStatementController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientStatementController.modifyError}}</span>
+		</div>
+		<div class="row" data-ng-if="scaleManagementNutrientStatementController.deleteMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientStatementController.deleteMessage}}</span>
+		</div>
+		<div class="panel-group"
+			 ng-show="!scaleManagementNutrientStatementController.isWaiting && scaleManagementNutrientStatementController.data != null">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div
+						ng-if="!scaleManagementNutrientStatementController.isAddingNutrientStatement && scaleManagementNutrientStatementController.resultMessage != null && !scaleManagementNutrientStatementController.isEditing">
+						<h4 class="panel-title inline-block"><b>Search Results</b></h4>
+						<h5 class="panel-title inline-block">
+							{{scaleManagementNutrientStatementController.resultMessage}}</h5>
+
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+							 ng-click="scaleManagementNutrientStatementController.export()"
+							 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium"
+							 data-toggle="tooltip" title="Export to Excel"></div>
+						<div class="inline-block pull-right"
+							 ng-show="scaleManagementNutrientStatementController.downloading" style="color: orange">
+							Downloading...
+						</div>
+						<div class="inline-block pull-right"
+							 ng-if="scaleManagementNutrientStatementController.showMatchCount()">
+							<h5 ng-if="scaleManagementNutrientStatementController.missingValues.matchCount > 0"
+								class="green-text panel-title inline-block">
+								{{scaleManagementNutrientStatementController.missingValues.matchCount}}
+								<span ng-if="scaleManagementNutrientStatementController.missingValues.matchCount ==  1">{{scaleManagementNutrientStatementController.selectionType}}</span>
+								<span ng-if="scaleManagementNutrientStatementController.missingValues.matchCount >  1">{{scaleManagementNutrientStatementController.selectionType}}s</span>
+								found</h5>
+							<h5 ng-if="scaleManagementNutrientStatementController.missingValues.noMatchCount > 0"
+								data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{scaleManagementNutrientStatementController.missingValues.noMatchCount}}
+								<span
+									ng-if="scaleManagementNutrientStatementController.missingValues.noMatchCount ==  1">{{scaleManagementNutrientStatementController.selectionType}}</span>
+								<span
+									ng-if="scaleManagementNutrientStatementController.missingValues.noMatchCount >  1">{{scaleManagementNutrientStatementController.selectionType}}s</span>
+								not found</h5>
+						</div>
+
+					</div>
+				</div>
+				<div class="panel-body"
+					 ng-class="{'ng-table-pager-none' : scaleManagementNutrientStatementController.noPagination}">
+					<table ng-table="scaleManagementNutrientStatementController.tableParams"
+						   class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr style="color: white; background-color: #00476b">
+							<th style="min-width: 100px">Statement ID</th>
+							<th style="min-width: 100px">Measure Quantity</th>
+							<th style="min-width: 100px">Metric Quantity</th>
+							<th style="min-width: 100px">Servings Per Container</th>
+							<th style="min-width: 100px">Effective Date</th>
+							<th style="min-width: 100px">Remarks</th>
+							<th style="min-width: 100px"></th>
+						</tr>
+						<tr ng-repeat="nutrientStatement in scaleManagementNutrientStatementController.data track by $index">
+							<td>
+								<div>{{nutrientStatement.nutrientStatementNumber}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.commonDisplayName}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.metricDisplayName}}</div>
+							</td>
+							<td>
+								<div  ng-if="nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}} {{scaleManagementNutrientStatementController.VARIES_LABEL}}</div>
+								<div  ng-if="!nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.effectiveDate | date: 'MM/dd/yyyy'}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.remarks}}</div>
+							</td>
+							<td>
+								<i can-view="SM_NTRN_02"
+								   data-toggle="modal" data-target="#nutrientStatementModal"
+								   data-ng-click="scaleManagementNutrientStatementController.editNutritionStatement(nutrientStatement, $index)"
+								   class="glyphicon glyphicon-edit pointer" style="color: orange; font-size: large"></i>
+								<span can-edit="SM_NTRN_02">
+									<a data-ng-click="scaleManagementNutrientStatementController.chooseNutrientStatementDepartments($index)"
+									   class="glyphicon glyphicon-remove pointer"
+									   ng-if="!scaleManagementNutrientStatementController.isAddingNutrientStatement &&
+												   !scaleManagementNutrientStatementController.isEditing"
+									   style="color: red; font-size: large"></a>
+								</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="nutrientStatementModal" class="modal fade" role="dialog">
+		<div class="modal-dialog" style="width: 90%">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="row" view-only="SM_NTRN_02" ng-show="!scaleManagementNutrientStatementController.isCheckExistNLEA2016Waiting">
+						<h5 class="modal-title inline-block col-md-4" style="color: #ffffff">Nutrient Statement Detail</h5>
+						<b ng-show="!scaleManagementNutrientStatementController.isExistNLEA2016 && !scaleManagementNutrientStatementController.isAddingNutrientStatement" class="col-md-5  text-center inline-block" style="color: #d40b0b;font-size: 14px;text-align: left;">There is no 2016 nutrition panel corresponding to this panel.</b>
+						<span ng-show="scaleManagementNutrientStatementController.isExistNLEA2016 && !scaleManagementNutrientStatementController.isAddingNutrientStatement" class="col-md-5  text-center inline-block" style="color: #ffffff;font-size: 14px;text-align: left;">A 2016 nutrition panel corresponding to this panel exists.</span>
+					</div>
+					<div class = "row" can-edit="SM_NTRN_02" ng-show="!scaleManagementNutrientStatementController.isCheckExistNLEA2016Waiting">
+						<h5 class="modal-title inline-block col-md-4" style="color: #ffffff"
+							ng-show="scaleManagementNutrientStatementController.isAddingNutrientStatement">Add Nutrient
+							Statement</h5>
+						<h5 class="modal-title inline-block col-md-4" style="color: #ffffff"
+							ng-show="scaleManagementNutrientStatementController.isEditing">Modify Nutrient Statement</h5>
+						<b ng-show="!scaleManagementNutrientStatementController.isExistNLEA2016 && !scaleManagementNutrientStatementController.isAddingNutrientStatement" class="col-md-5  text-center inline-block" style="color: #d40b0b;font-size: 14px;text-align: left;">There is no 2016 nutrition panel corresponding to this panel.</b>
+						<span ng-show="scaleManagementNutrientStatementController.isExistNLEA2016 && !scaleManagementNutrientStatementController.isAddingNutrientStatement" class="col-md-5  text-center inline-block" style="color: #ffffff;font-size: 14px;text-align: left;">A 2016 nutrition panel corresponding to this panel exists.</span>
+					</div>
+				</div>
+				<div class="modal-body">
+					<loading-spinner ng-show="scaleManagementNutrientStatementController.isCheckExistNLEA2016Waiting"></loading-spinner>
+					<div class="well" style="margin-bottom: 0" ng-show="!scaleManagementNutrientStatementController.isCheckExistNLEA2016Waiting">
+						<div class="row">
+							<!-- The first column of the popup which includes the ID, measures, units of measuere, etc. -->
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="nutrientStatementNumber">
+												Statement ID
+												<strong style="color: red"> **</strong>
+												<strong class="inline-block"
+														ng-if="scaleManagementNutrientStatementController.isAddingNutrientStatement">
+													<strong
+														ng-if="scaleManagementNutrientStatementController.isNutrientStatementCodeAvailable == 'Available'"
+														style="color: green">{{scaleManagementNutrientStatementController.isNutrientStatementCodeAvailable}}</strong>
+													<strong
+														ng-if="scaleManagementNutrientStatementController.isNutrientStatementCodeAvailable != 'Available'"
+														style="color: darkorange">{{scaleManagementNutrientStatementController.isNutrientStatementCodeAvailable}}</strong>
+												</strong>
+											</label>
+											<input can-edit="SM_NTRN_02"
+												   id="nutrientStatementNumber" class="form-control" type="number"
+												   ng-model="scaleManagementNutrientStatementController.nutrientStatement.nutrientStatementNumber"
+												   ng-disabled="scaleManagementNutrientStatementController.isEditing"
+												   ng-change="scaleManagementNutrientStatementController.isStatementCodeAvailable()"
+												   ng-pattern="/^[0-9]*$/"
+												   maxlength="5"
+												>
+
+											<div view-only="SM_NTRN_02" id="nutrientStatementNumber">
+												<p>
+													{{scaleManagementNutrientStatementController.nutrientStatement.nutrientStatementNumber}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Serving Size Label</label>
+											<span
+												ng-style="{'color': scaleManagementNutrientStatementController.servingLabel.length>22 ? 'red':'green'}"> Characters Remaining:  {{scaleManagementNutrientStatementController.servingTextCharacterRemainingCharacterCount}}</span>
+											<br>
+
+											<div id="scaleManagementNutrientStatementLabel" style="padding-top: 7px">
+												{{scaleManagementNutrientStatementController.servingLabel}}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="measureQuantity">Measure Quantity<strong style="color: red">
+												**</strong></label>
+											<input can-edit="SM_NTRN_02"
+												   id="measureQuantity"
+												   ng-change="scaleManagementNutrientStatementController.updateServingLabelComponents()"
+												   class="form-control input-no-spinner" type="number"
+												   ng-model="scaleManagementNutrientStatementController.nutrientStatement.measureQuantity"/>
+
+											<div view-only="SM_NTRN_02" id="measureQuantity">
+												<p>
+													{{scaleManagementNutrientStatementController.nutrientStatement.measureQuantity}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="nutrientCommonUom">Measure UOM Code<strong style="color: red">
+												**</strong></label>
+
+											<div can-edit="SM_NTRN_02">
+												<ui-select
+													id="nutrientCommonUom"
+													ng-model="scaleManagementNutrientStatementController.nutrientStatement.nutrientCommonUom"
+													theme="bootstrap"
+													id="nutrientCommonUom"
+													title="Choose a Common UOM"
+													ng-change="scaleManagementNutrientStatementController.updateServingLabelComponents()">
+													<ui-select-match allow-clear="true">{{$select.selected.displayName}}</ui-select-match>
+													<ui-select-choices
+														repeat="element in scaleManagementNutrientStatementController.valueList"
+														refresh="scaleManagementNutrientStatementController.getCurrentDropDownResults(scaleManagementNutrientStatementController.COMMON_MEASURE_SYSTEM, $select.search)"
+														refresh-delay="0">{{element.displayName}}
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NTRN_02" id="nutrientCommonUom">
+												<p>
+													{{scaleManagementNutrientStatementController.nutrientStatement.nutrientCommonUom.displayName}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="metricQuantity">Metric Quantity<strong style="color: red">
+												**</strong></label>
+											<input can-edit="SM_NTRN_02"
+												   id="metricQuantity"
+												   ng-change="scaleManagementNutrientStatementController.updateServingLabelComponents()"
+												   class="form-control input-no-spinner" type="number"
+												   ng-model="scaleManagementNutrientStatementController.nutrientStatement.metricQuantity">
+
+											<div view-only="SM_NTRN_02" id="metricQuantity"><p>
+												{{scaleManagementNutrientStatementController.nutrientStatement.metricQuantity}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="nutrientMetricUom">Metric UOM Code<strong style="color: red">
+												**</strong></label>
+
+											<div can-edit="SM_NTRN_02">
+												<ui-select id="nutrientMetricUom"
+														   ng-model="scaleManagementNutrientStatementController.nutrientStatement.nutrientMetricUom"
+														   theme="bootstrap"
+														   id="nutrientStatementUomSelection"
+														   title="Choose a UOM"
+														   ng-change="scaleManagementNutrientStatementController.updateServingLabelComponents()">
+													<ui-select-match allow-clear="true">
+														{{$select.selected.displayName}}
+													</ui-select-match>
+													<ui-select-choices
+														repeat="element in scaleManagementNutrientStatementController.valueList"
+														refresh="scaleManagementNutrientStatementController.getCurrentDropDownResults(scaleManagementNutrientStatementController.METRIC_MEASURE_SYSTEM, $select.search)"
+														refresh-delay="0">{{element.displayName}}
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NTRN_02" id="nutrientMetricUom"><p>
+												{{scaleManagementNutrientStatementController.nutrientStatement.nutrientMetricUom.displayName}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="servingsPerContainer">Servings Per Container<strong
+												style="color: red"> **</strong></label>
+
+											<div id="servingsPerContainerView" view-only="SM_NTRN_02">
+												{{scaleManagementNutrientStatementController.nutrientStatement.servingsPerContainer}}
+												<span
+													data-ng-show="scaleManagementNutrientStatementController.isServingSizeVariable()"> {{scaleManagementNutrientStatementController.VARIES_LABEL}}</span>
+											</div>
+
+
+											<div id="servingsPerContainerGroup" can-edit="SM_NTRN_02" class="input-group" style="display: table; width: 100%">
+												<input  id="servingsPerContainer" class="form-control" style="width:100%" type="number"
+													   data-ng-change="scaleManagementNutrientStatementController.updateShowVariesLabelComponents()"
+													   ng-model="scaleManagementNutrientStatementController.nutrientStatement.servingsPerContainer"
+													   ng-pattern="/^[0-9]*$/"
+													   maxlength="3">
+												<span style="display: table-cell; vertical-align: middle; text-align:center">
+													 {{scaleManagementNutrientStatementController.showVariesLabel}}
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="updateEffectiveDate">Effective Date<strong style="color: red">
+												**</strong></label>
+
+											<div id="servingsPerContainer" view-only="SM_NTRN_02">
+												{{scaleManagementNutrientStatementController.nutrientStatement.effectiveDate
+												| date:'MM/dd/yyyy'}}
+											</div>
+											<div can-edit="SM_NTRN_02" class="input-group pull-right">
+												<input id="updateEffectiveDate" class="form-control date-picker" type="text"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   is-open="scaleManagementNutrientStatementController.effectiveDatePickerOpened"
+													   ng-model-options="{timezone:'UTC'}"
+													   datepicker-options="scaleManagementNutrientStatementController.datePickerOptions"
+													   ng-model="scaleManagementNutrientStatementController.nutrientStatement.effectiveDate"
+													   ng-required="true" close-text="Close"/>
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default"
+													ng-click="scaleManagementNutrientStatementController.openEffectiveDatePicker()">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-8">
+										<div class="row">
+											<div class="col-md-12" can-edit="SM_NTRN_02">
+												<button type="button" class="btn btn-primary btn-sm"
+														ng-click="scaleManagementNutrientStatementController.addNutrient()"
+														title="{{scaleManagementNutrientStatementController.isMandated() ? 'There are no federal mandated nutrients available at this time.' :
+													 'There are ' + scaleManagementNutrientStatementController.currentNonZeroNutrientList.length + ' federal mandated nutrients available.'}}"
+														ng-disabled="scaleManagementNutrientStatementController.isMandated()">
+													{{!scaleManagementNutrientStatementController.isMandated() ? "Add Mandated Nutrients" :
+													scaleManagementNutrientStatementController.isMandatedWaiting ? "Add Mandated Nutrients ...loading" : "No More Mandated Nutrients to	Add"}}
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- The second column of the popup which contains all the nutrition information. -->
+							<ng-form name="nutrientForm">
+								<div class="col-md-6">
+
+								<div class="row"
+									 ng-show="scaleManagementNutrientStatementController.nutrientStatement.nutrientStatementDetailList.length > 0">
+									<div class="col-md-12">
+										<div class="row">
+											<br>
+
+											<div class="col-md-12">
+												<div class="row">
+													<strong class="col-md-6">Nutrient</strong>
+													<strong class="col-md-2"></strong>
+													<strong class="col-md-2">Amount</strong>
+													<strong class="col-md-2">%DV</strong>
+												</div>
+											</div>
+											<br>
+
+											<div
+												ng-repeat="detail in scaleManagementNutrientStatementController.nutrientStatement.nutrientStatementDetailList track by $index">
+												<br>
+
+												<div class="col-md-12">
+													<div class="row">
+														<div class="col-md-6">
+															<p>{{detail.nutrient.nutrientDescription}}</p>
+														</div>
+														<!-- Wait/OK/Error messages for rounding. -->
+														<div class="col-md-2">
+															<span style="color: green"
+																	ng-if="detail.isNewElement && !detail.nutrientRoundingRequired">(New)</span>
+															<div
+																ng-class="{'small-loader' : detail.nutrientRoundingRequired && detail.stillNeedsRequired}"></div>
+															<span style="color: red"
+																	class="pointer"
+																	title="{{detail.roundingError}}"
+																	ng-if="detail.nutrientRoundingRequired && !detail.stillNeedsRequired">(Error)</span>
+															<span style="color: green"
+																	ng-if="!detail.nutrientRoundingRequired && !detail.stillNeedsRequired && detail.changedQuantity">(OK)</span>
+															<!-- The little thing to allow the user to change the default editing behavior. -->
+															<!-- It should only show up for stuff you edit the amount and there is a defined daily amount. -->
+															<div ng-if="detail.nutrient.recommendedDailyAmount != 0.0
+																&& detail.nutrient.usePercentDailyValue == false
+																&& scaleManagementNutrientStatementController.canEditNutrientStatements()"
+																 class="glyphicon glyphicon-random inline-block pull-right pointer"
+																 ng-click="scaleManagementNutrientStatementController.flipEditMode(detail)"
+																 data-toggle="tooltip" title="Manual Override"></div>
+
+														</div>
+
+														<!-- When user is view only, just show the values and percentages as text.-->
+														<div view-only="SM_NTRN_02">
+															<!-- Show the measure quantity if usPercentDailyValue is false. -->
+															<div class="col-md-2">
+																<div
+																	ng-if="detail.nutrient.usePercentDailyValue == false"
+																	class="col-md-2">
+																	{{detail.nutrientStatementQuantity}}
+																</div>
+															</div>
+															<!-- Show the percent daily value if recommendedDailyAmount is defined. -->
+															<div class="col-md-2">
+																<div
+																	ng-if="detail.nutrient.recommendedDailyAmount != 0.0"
+																	class="col-md-2">
+																	{{detail.nutrientDailyValue | number}}%
+																</div>
+															</div>
+														</div>
+
+														<!-- If the user can edit, then open up text boxes for them to do so. -->
+														<div can-edit="SM_NTRN_02">
+															<!-- The user can edit the measure. -->
+															<input ng-if="scaleManagementNutrientStatementController.isEditableNutrientMeasure(detail)"
+																   value="detail.nutrientStatementQuantity"
+																   type="text"
+																   ng-model="detail.nutrientStatementQuantity"
+																   class="col-md-2"
+																   ng-pattern="/^[0-9]*(\.[0-9]{0,1})?$/"
+																   name="measure{{$index}}"
+																   ng-blur='scaleManagementNutrientStatementController.applyRoundingRuleToNutrientCode(this, $index, detail)'/>
+
+															<!-- This DIV is here to add a column if editing by usePercentDailyValue. -->
+															<div class="col-md-2"
+																 ng-if="scaleManagementNutrientStatementController.showBlankNutrientMeasure(detail) == true"></div>
+
+															<div class="col-md-2"
+																 ng-if="scaleManagementNutrientStatementController.showReadOnlyNutrientMeasure(detail) == true">
+																{{detail.nutrientStatementQuantity}}
+															</div>
+
+															<!-- If usePercentDailyValue is true, show the box for them to enter the amount-->
+															<input
+																ng-if="scaleManagementNutrientStatementController.isEditablePercentDailyValue(detail)"
+																value="detail.nutrientDailyValue"
+																type="text"
+																ng-model="detail.nutrientDailyValue"
+																ng-pattern="/^[0-9]*$/"
+																class="col-md-2"/>
+
+															<!-- If usePercentDailyValue is false and recommendedDailyAmount is defined, then just show the value. -->
+															<div
+																ng-if="detail.nutrient.recommendedDailyAmount != 0.0
+																	&& scaleManagementNutrientStatementController.isEditablePercentDailyValue(detail) == false"
+																class="col-md-2">
+																<p>{{detail.nutrientDailyValue | number}}%</p>
+															</div>
+
+
+														</div>
+													</div>
+												</div>
+												<br>
+												<br>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							</ng-form>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<strong class="inline-block pull-left" style="color: red">** Required</strong>
+					<button type="button"
+							class="inline-block btn btn-success btn-sm"
+							data-dismiss="modal"
+							ng-click="scaleManagementNutrientStatementController.cancelEdit()"
+							view-only="SM_NTRN_02">Close
+					</button>
+					<button type="button"
+							class="inline-block btn btn-danger btn-sm"
+							data-dismiss="modal"
+							ng-click="scaleManagementNutrientStatementController.cancelEdit()"
+							can-edit="SM_NTRN_02">Cancel
+					</button>
+					<button type="button"
+							class="inline-block btn btn-success btn-sm"
+							data-dismiss="modal"
+							ng-click="scaleManagementNutrientStatementController.addNutrientStatement()"
+							data-ng-disabled="scaleManagementNutrientStatementController.isRequiredNutrientInfoMissing()
+								|| !nutrientForm.$valid"
+							can-edit="SM_NTRN_02">Submit
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Dialog for the user to select departments when doing a delete. -->
+	<div id="nutrientStatementChooseDepartmentModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff"
+						ng-show="scaleManagementNutrientStatementController.isRemovingNutrientStatement">Please specify
+						the department(s) for the delete.</h5>
+				</div>
+				<div class="modal-body">
+					<table class="table-heb table-bordered table-striped" style="width: 100%">
+						<thead>
+						<tr>
+							<th style="text-align: left !important;">
+								<input type="checkbox" ng-model="scaleManagementNutrientStatementController.selectAll"
+									   ng-change="scaleManagementNutrientStatementController.addAllDepartments(scaleManagementNutrientStatementController.selectAll)">
+							</th>
+							<th>Department</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="dept in scaleManagementNutrientStatementController.departmentArray track by $index">
+							<td>
+								<input type="checkbox" ng-model="dept.isSelected"
+									   ng-change="scaleManagementNutrientStatementController.updateSelectAllSwitch(dept.isSelected)">
+							</td>
+							<td>{{dept.id}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+						Cancel
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+							ng-click="scaleManagementNutrientStatementController.removeNutrientStatement()"
+							data-ng-disabled="!scaleManagementNutrientStatementController.isDepartmentChosen()">Submit
+					</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

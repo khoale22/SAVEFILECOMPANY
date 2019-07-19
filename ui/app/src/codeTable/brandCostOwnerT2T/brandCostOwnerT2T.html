@@ -1,0 +1,139 @@
+<!--
+  ~ brandCostOwnerT2T.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12.0
+  -->
+<div can-view="CT_BRND_01" id="brandCostOwnerT2T" ng-init="$ctrl.init()">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error" data-ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success" data-ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="margin-top-10">
+		<div class="inline-block pull-right" ng-if="$ctrl.downloading" style="color: orange;padding-top: 5px;">
+			Downloading...
+		</div>
+		<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+			 ng-click="$ctrl.exportBrndCstOwnrT2Ts()"
+			 style="color: orange; padding-left: 20px; padding-top: 5px;  font-size: medium"
+			 data-toggle="tooltip" title="Export to CSV"></div>
+		<button type="button" class="inline-block btn btn-primary btn-sm pull-right" style="margin-bottom: 10px;"
+				data-ng-click="$ctrl.clearFilter()">
+			Clear Filter
+		</button>
+	</div>
+	<div class="row margin-top-10">
+		<div class="col-md-12">
+			<!-- Show List of Brand cost owner t2ts-->
+			<table class="table table-heb table-heb-filter table-condensed table-striped"
+				   data-ng-table="$ctrl.tableParams">
+				<thead>
+				<tr>
+					<th style="width:30%;">Brand</th>
+					<th style="width:30%;">Cost Owner</th>
+					<th style="width:40%;">Top 2 Top</th>
+				</tr>
+				<tr >
+					<th>
+						<ui-select theme="bootstrap" id="productBrandFilter"
+								   data-toggle="tooltip" data-ng-disabled="$ctrl.isWaitingForResponse"
+								   spinner-enabled="true"
+								   ng-model="$ctrl.productBrand"
+								   search-enabled="true"
+								   spinner-class="ui-select-refreshing glyphicon-refresh ui-select-spin"
+								   ng-change="$ctrl.selectedProductBrand($select.selected)"
+								   uis-open-close="$ctrl.onOpenCloseProductBrand(isOpen,$select.selected)">
+							<ui-select-match placeholder="--Select--" allow-clear="true">
+								{{$select.selected.displayName}}
+							</ui-select-match>
+
+							<ui-select-choices
+								repeat="brand in $ctrl.productBrands track by $index"
+								refresh="$ctrl.loadProductBrands($select.open,$select.search)"
+								refresh-delay="500"
+							>{{brand.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</th>
+					<th>
+						<ui-select theme="bootstrap" id="costOwnerFilter"
+								   data-toggle="tooltip" data-ng-disabled="$ctrl.isWaitingForResponse"
+								   spinner-enabled="true"
+								   ng-model="$ctrl.costOwner"
+								   search-enabled="true"
+								   spinner-class="ui-select-refreshing glyphicon-refresh ui-select-spin"
+								   ng-change="$ctrl.selectedCostOwner($select.selected)"
+								   uis-open-close="$ctrl.onOpenCloseCostOwner(isOpen,$select.selected)">
+							<ui-select-match placeholder="--Select--" allow-clear="true">
+								{{$select.selected.displayName}}
+							</ui-select-match>
+
+							<ui-select-choices
+								repeat="cost in $ctrl.costOwners track by $index"
+								refresh="$ctrl.loadCostOwners($select.open,$select.search)"
+								refresh-delay="500"
+							>{{cost.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</th>
+					<th>
+						<ui-select theme="bootstrap" id="topToTopFilter"
+								   data-toggle="tooltip"
+								   spinner-enabled="true" data-ng-disabled="$ctrl.isWaitingForResponse"
+								   ng-model="$ctrl.topToTop"
+								   search-enabled="true"
+								   spinner-class="ui-select-refreshing glyphicon-refresh ui-select-spin"
+								   ng-change="$ctrl.selectedTopToTop($select.selected)"
+								   uis-open-close="$ctrl.onOpenCloseTopToTop(isOpen,$select.selected)">
+							<ui-select-match placeholder="--Select--" allow-clear="true">
+								{{$select.selected.displayName}}
+							</ui-select-match>
+
+							<ui-select-choices
+								repeat="cost in $ctrl.topToTops track by $index"
+								refresh="$ctrl.loadTopToTops($select.open,$select.search)"
+								refresh-delay="500"
+							>{{cost.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-ng-show="!$ctrl.isWaitingForResponse" data-ng-repeat="item in $data track by $index"
+					style="cursor: pointer;"
+					class="{{$ctrl.selectedRowIndex == $index ?'row-selected':''}}"
+					data-ng-click="$ctrl.setSelectedRowIndexAction($index)">
+					<td style="vertical-align: middle">
+						{{item.productBrand.displayName}}
+					</td>
+					<td style="vertical-align: middle">
+						{{item.costOwner.displayName}}
+					</td>
+					<td style="vertical-align: middle">
+						{{item.costOwner.topToTop.displayName}}
+					</td>
+				</tr>
+				<tr data-ng-show="$ctrl.isWaitingForResponse">
+					<td colspan="3">
+						<loading-spinner></loading-spinner>
+					</td>
+				</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

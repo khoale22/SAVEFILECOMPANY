@@ -1,0 +1,274 @@
+<!--
+  ~ warehouseToWarehouse.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12" ng-controller="MoveWarehouseUpcSwapController as moveWarehouseUpcSwapController" ng-init="moveWarehouseUpcSwapController.init()">
+
+	<div class="row" data-ng-if="moveWarehouseUpcSwapController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{moveWarehouseUpcSwapController.error}}</span>
+	</div>
+
+	<div class="panel-group" style="min-width: 1195px" can-edit="PD_SWAP_01" ng-show="!moveWarehouseUpcSwapController.isWaitingForResponse">
+		<div class="panel panel-primary" ng-if="moveWarehouseUpcSwapController.showSwapPanel()">
+			<div class="panel-heading">
+				<h4 class="panel-title">Warehouse to Warehouse Move</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+					<colgroup style="border: solid">
+						<col span="{{moveWarehouseUpcSwapController.hasSourceError ? 9 : 8}}">
+					</colgroup>
+					<colgroup>
+						<col span="1">
+					</colgroup>
+					<colgroup style="border: solid">
+						<col span="{{moveWarehouseUpcSwapController.hasUpcSwapRecord ? moveWarehouseUpcSwapController.hasDestinationError ? 8 : 7 : 6}}">
+					</colgroup>
+					<thead>
+					<tr>
+						<th colspan="{{moveWarehouseUpcSwapController.hasSourceError ? 9 : 8}}" style="background: #f1f1f1; color: black">Source</th>
+						<th colspan="1" style="background: none; border: none"></th>
+						<th colspan="{{moveWarehouseUpcSwapController.hasUpcSwapRecord ? moveWarehouseUpcSwapController.hasDestinationError ? 8 : 7 : 6}}" style="background: #f1f1f1; color: black">Destination</th>
+					</tr>
+					<tr>
+						<th style="width: 100px">Product ID</th>
+						<th style="width: 150px">UPC</th>
+						<th>Is Primary</th>
+						<th style="width: 165px">Future Primary</th>
+						<th style="width: 300px">What to send</th>
+						<th>Item Code</th>
+						<th>Description</th>
+						<!--<th>POG</th>-->
+						<th>More Info</th>
+						<th ng-show="moveWarehouseUpcSwapController.hasSourceError">Message</th>
+						<th style="background: none; border: none"></th>
+						<th style="width: 100px">Product ID</th>
+						<th style="width: 100px">Item Code</th>
+						<th>Description</th>
+						<th style="width: 125px">Current Primary UPC</th>
+						<th style="width: 165px">Make Primary</th>
+						<!--<th>POG</th>-->
+						<th>More Info</th>
+						<th ng-show="moveWarehouseUpcSwapController.hasDestinationError">Message</th>
+						<th ng-show="moveWarehouseUpcSwapController.hasUpcSwapRecord"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="upcSwap in moveWarehouseUpcSwapController.upcSwapList track by $index" style="width: 100%">
+						<td><a class="pointer" ng-click="moveWarehouseUpcSwapController.showProductInfo(upcSwap.source.productId)">{{upcSwap.source.productId}}</a></td>
+						<td><input type="text" ng-change="moveWarehouseUpcSwapController.setUpcDataRows($index)"
+								   class="form-control"
+								   ng-paste="moveWarehouseUpcSwapController.setUpcDataRowsPaste($index)"
+								   ng-model="upcSwap.sourceUpc" id="{{'upc' + $index}}" style="width: 100%"></td>
+						<td>{{upcSwap.sourcePrimaryUpc | boolean_yn}}</td>
+						<td>
+							<ui-select ng-model="upcSwap.selectSourcePrimaryUpc"
+									   theme="bootstrap"
+									   ng-if="moveWarehouseUpcSwapController.showSelectSourcePrimary(upcSwap)"
+									   search-enabled="false"
+									   on-select="moveWarehouseUpcSwapController.setAvailablePrimaryList(upcSwap, this, $select.selected)"
+									   id="selectSourcePrimaryUpc"
+									   title="Choose a future primary.">
+								<ui-select-match allow-clear="true">{{$select.selected}}
+								</ui-select-match>
+								<ui-select-choices
+									repeat="associatedUpc in moveWarehouseUpcSwapController.associatedUPCsNoneSelectAllOption(upcSwap.source.associatedUpcList)">{{associatedUpc}}
+								</ui-select-choices>
+							</ui-select>
+							<div ng-if="moveWarehouseUpcSwapController.showPreDigitFour(upcSwap)">Pre-digit 4</div>
+							<div ng-if="upcSwap.sourcePrimaryUpc && upcSwap.primarySelectOption == 'JUST_ASSOCIATES'">{{upcSwap.sourceUpc}}</div>
+							<div ng-if="!upcSwap.sourcePrimaryUpc">{{upcSwap.selectSourcePrimaryUpc}}</div>
+						</td>
+						<td>
+							<select id="primarySelectOption"
+									class="form-control"
+									ng-if="upcSwap.sourcePrimaryUpc && moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)"
+									ng-model="upcSwap.primarySelectOption"
+									ng-change="moveWarehouseUpcSwapController.refreshSelectize(upcSwap)">
+								<option
+									value="{{moveWarehouseUpcSwapController.whatToSendList[0].id}}">{{moveWarehouseUpcSwapController.whatToSendList[0].name}}
+								</option>
+								<option
+									value="{{moveWarehouseUpcSwapController.whatToSendList[1].id}}"
+									ng-if="(upcSwap.source.associatedUpcList.length + upcSwap.additionalUpcList.length > 0)">{{moveWarehouseUpcSwapController.whatToSendList[1].name}}
+								</option>
+								<option
+									value="{{moveWarehouseUpcSwapController.whatToSendList[2].id}}"
+									ng-if="(upcSwap.source.associatedUpcList.length + upcSwap.additionalUpcList.length > 0)">{{moveWarehouseUpcSwapController.whatToSendList[2].name}}
+								</option>
+							</select>
+							<div
+								ng-if="!upcSwap.sourcePrimaryUpc && moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)">Only Associate
+							</div>
+							<br>
+							<ui-select ng-model="upcSwap.additionalUpcList" style="width: 300px;"
+									   class="form-control"
+									   theme="bootstrap"
+									   ng-if="upcSwap.sourcePrimaryUpc && moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap) && upcSwap.primarySelectOption != 'JUST_PRIMARY'"
+									   multiple
+									   search-enabled="false"
+									   placeholder="Choose associate(s)."
+									   on-select="moveWarehouseUpcSwapController.setAssociateListToSelectize(upcSwap, this, $item, false)"
+									   on-remove="moveWarehouseUpcSwapController.setAssociateListToSelectize(upcSwap, this, $item, true)"
+									   id="additionalUpcList">
+								<ui-select-match placeholder="Choose associate(s).">{{$item}}
+								</ui-select-match>
+								<ui-select-choices repeat="element in upcSwap.source.associatedUpcList">{{element}}
+								</ui-select-choices>
+							</ui-select>
+						</td>
+						<td>{{upcSwap.source.itemCode}}</td>
+						<td>{{upcSwap.source.itemDescription}}</td>
+						<!--<td>{{moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)? upcSwap.source.onLiveOrPendingPog? 'YES' : 'NO' : null}}</td>-->
+						<!--<td>{{ upcSwap.source.onLiveOrPendingPog | boolean_yn}}</td>-->
+						<td>
+							<i class="glyphicon glyphicon-info-sign" style="color: blue"
+							   title="{{upcSwap.sourceInformation}}"
+								ng-if="moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)">
+							</i>
+						</td>
+						<td ng-show="moveWarehouseUpcSwapController.hasSourceError" style="color: red">{{upcSwap.source.errorMessage}}</td>
+						<td style="background: none; border: none"></td>
+						<td><a class="pointer" ng-click="moveWarehouseUpcSwapController.showProductInfo(upcSwap.destination.productId)">{{upcSwap.destination.productId}}</a></td>
+						<td>
+							<input type="text" ng-change="moveWarehouseUpcSwapController.setItemCodeDataRows($index)"
+								   class="form-control"
+								   ng-paste="moveWarehouseUpcSwapController.setItemCodeDataRowsPaste($index)"
+								   ng-model="upcSwap.destination.itemCode" id="{{'newItemCode' + $index}}" style="width: 100%">
+						</td>
+						<td>{{upcSwap.destination.itemDescription}}</td>
+						<td>{{upcSwap.destinationPrimaryUpc}}</td>
+						<td>
+							<ui-select ng-model="upcSwap.destinationPrimaryUpcSelected"
+									   theme="bootstrap"
+									   ng-if="moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)"
+									   search-enabled="false"
+									   id="selectFuturePrimaryUpc"
+									   title="Choose a future primary.">
+								<ui-select-match allow-clear="true">{{$select.selected}}
+								</ui-select-match>
+								<ui-select-choices repeat="associatedUpc in moveWarehouseUpcSwapController.getAvailableFuturePrimaryList(upcSwap)">{{associatedUpc}}
+								</ui-select-choices>
+							</ui-select>
+						</td>
+						<!--<td>{{moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)? upcSwap.destination.onLiveOrPendingPog? 'YES' : 'NO' : null}}</td>-->
+						<!--<td>{{upcSwap.destination.onLiveOrPendingPog | boolean_yn}}</td>-->
+						<td>
+							<i class="glyphicon glyphicon-info-sign" style="color: blue"
+							   title="{{upcSwap.destinationInformation}}"
+							   ng-if="moveWarehouseUpcSwapController.alreadyFetchedDetails(upcSwap)">
+							</i>
+						</td>
+						<td ng-show="moveWarehouseUpcSwapController.hasDestinationError" style="color: red">{{upcSwap.destination.errorMessage}}</td>
+						<td ng-show="moveWarehouseUpcSwapController.hasUpcSwapRecord">
+							<div class="glyphicon glyphicon-remove pointer" style="color: red; padding-left: 15px"
+								 ng-click="moveWarehouseUpcSwapController.removeDataRow($index)">
+
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="inline-block pull-right" style="padding-top: 10px">
+					<button class="btn btn-info"
+							ng-click="moveWarehouseUpcSwapController.clearData()"
+							ng-disabled="moveWarehouseUpcSwapController.isEmptyData()">Clear
+					</button>
+					<button class="btn btn-info" ng-click="moveWarehouseUpcSwapController.addEmptyDataRow()">Add Row</button>
+					<button class="btn btn-info" ng-click="moveWarehouseUpcSwapController.getWarehouseUpcSwapDetails()">Fetch Details</button>
+					<button class="btn btn-primary"
+							ng-click="moveWarehouseUpcSwapController.submitWarehouseUpcSwap()"
+							ng-disabled="!moveWarehouseUpcSwapController.alreadyFetchedAllDetails()">Submit
+					</button>
+				</div>
+			</div>
+		</div>
+		<div ng-if="moveWarehouseUpcSwapController.isViewingProductInfo()">
+			<div ng-include src="'src/productInfo/productInfo.html'"></div>
+		</div>
+		<div class="panel panel-primary" ng-if="moveWarehouseUpcSwapController.showAfterUpdate">
+
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block">Details after swap</h4>
+				<div class="inline-block pull-right">
+					<span ng-if="moveWarehouseUpcSwapController.errorResultList.length > 0" class="inline-block"
+						  style="color: orange; padding-right: 10px">{{moveWarehouseUpcSwapController.errorResultList.length}} errors (close to redo)</span>
+					<div ng-click="moveWarehouseUpcSwapController.closePage()" class="glyphicon glyphicon-remove pointer inline-block pull-right"></div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="panel panel-default">
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+						<colgroup style="border: solid">
+							<col span="6">
+						</colgroup>
+						<colgroup>
+							<col span="1">
+						</colgroup>
+						<colgroup style="border: solid">
+							<col span="6">
+						</colgroup>
+						<thead>
+						<tr>
+							<th colspan="6" style="background: #f1f1f1; color: black">Source</th>
+							<th colspan="1" style="background: none; border: none"></th>
+							<th colspan="6" style="background: #f1f1f1; color: black">Destination</th>
+						</tr>
+						<tr>
+							<th>Product ID</th>
+							<th>UPC</th>
+							<th>Item Code</th>
+							<th>Size</th>
+							<th>Description</th>
+							<th>UPCs</th>
+							<th style="background: none; border: none"></th>
+							<th>Product ID</th>
+							<th>Item Code</th>
+							<th>Description</th>
+							<th>Size</th>
+							<th>UPCs</th>
+							<th>Messages</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="upcSwapAfterUpdate in moveWarehouseUpcSwapController.afterUpdateList" style="width: 100%">
+							<td>{{upcSwapAfterUpdate.source.productId}}</td>
+							<td>{{upcSwapAfterUpdate.sourceUpc}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemCode}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemDescription}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemSize}}</td>
+							<td>
+								<div ng-repeat="associate in upcSwapAfterUpdate.source.associatedUpcList track by $index">
+									<strong ng-if="$index === 0">{{associate}}</strong>
+									<div ng-if="$index != 0">{{associate}}</div>
+								</div>
+							</td>
+							<td style="background: none; border: none"></td>
+							<td>{{upcSwapAfterUpdate.destination.productId}}</td>
+							<td>{{upcSwapAfterUpdate.destination.itemCode}}</td>
+							<td>{{upcSwapAfterUpdate.destination.itemDescription}}</td>
+							<td>{{upcSwapAfterUpdate.destination.itemSize}}</td>
+							<td>
+								<div ng-repeat="associate in upcSwapAfterUpdate.destination.associatedUpcList track by $index">
+									<strong ng-if="$index === 0">{{associate}}</strong>
+									<div ng-if="$index != 0">{{associate}}</div>
+								</div>
+							</td>
+							<td ng-style="{'color': upcSwapAfterUpdate.statusMessage != 'Success' ? 'red' : 'green'}">{{upcSwapAfterUpdate.statusMessage}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<loading-spinner ng-show="moveWarehouseUpcSwapController.isWaitingForResponse">
+	</loading-spinner>
+
+</div>

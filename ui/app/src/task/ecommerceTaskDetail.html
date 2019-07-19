@@ -1,0 +1,729 @@
+<div ng-controller="EcommerceTaskDetailController as $ctrl"
+	 ng-init="$ctrl.init()">
+	<!-- Top task info section -- starts -->
+	<div class="container" style="width: 100%">
+		<div class="row" ng-show="$ctrl.messageTask && !$ctrl.isErrorTask">
+			<div class="col-md-2" style="" ></div>
+			<div class="col-md-7" style="text-align: center; vertical-align: middle; margin-left: 55px;">
+						<span class="alert alert-success col-md-4 col-md-push-4 myfade" style="padding: 1%" role="alert">
+							{{$ctrl.messageTask}}
+						</span>
+			</div>
+			<div class="col-md-3" style="text-align: right;">
+			</div>
+		</div>
+		<div class="row" ng-show="$ctrl.messageTask && $ctrl.isErrorTask" style="margin-bottom: 15px;">
+						<span class="alert alert-danger col-md-4 col-md-push-4 myfade"
+							  style="text-align:center; margin-bottom: 0px;" role="alert">
+							{{$ctrl.messageTask}}
+						</span>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-1" style="text-align: right"><label>Task Description</label></div>
+				<div class="col-md-2" style="text-align: left;padding-bottom: 1%">
+					<div ng-if="!$ctrl.isEditingTask">{{$ctrl.task.alertDataTxt}}</div>
+					<div ng-if="$ctrl.isEditingTask">
+						<input type="text" class="form-control" ng-model="$ctrl.task.alertDataTxt" maxlength="255"/>
+					</div>
+				</div>
+				<div class="col-md-1" style="text-align: right"><label>Task Type</label></div>
+				<div class="col-md-2" style="text-align: left">{{$ctrl.taskTypeMap[$ctrl.task.alertTypeCD]}}</div>
+				<div class="col-md-1" style="text-align: right"><label>Created By</label></div>
+				<div class="col-md-2" style="text-align: left">{{$ctrl.task.createdByFullName != null?$ctrl.task.createdByFullName:$ctrl.task.delegatedByUserID}}</div>
+				<div class="col-md-3"></div>
+			</div>
+		</div>
+		<div class="row" style="margin-bottom: 0.5%">
+			<div class="col-md-12">
+				<div class="col-md-1" style="text-align: right"><label>Task Status</label></div>
+				<div class="col-md-2" style="text-align: left">
+					<div ng-if="!$ctrl.isEditingTask">{{$ctrl.task.alertHideSw == 'Y' ? "Deleted" : $ctrl.taskStatusMap[$ctrl.task.alertStatusCD]}}</div>
+					<div ng-if="$ctrl.isEditingTask">
+						<select class="form-control" ng-model="$ctrl.task.alertStatusCD">
+							<option value="ACTIV">Active</option>
+							<option value="CLOSD">Closed</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-1" style="text-align: right"><label>Assigned To</label></div>
+				<div class="col-md-2" style="text-align: left">
+					<div class="dropdown">
+						<label id="assignedToMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+							   style="pointer-events: {{$ctrl.task.alertHideSw == 'Y' ? 'none':'fill'}}; opacity: {{$ctrl.task.alertHideSw == 'Y' ? 0.4 : 1}}"
+							   class="dropdown-toggle pointer text-primary" style="text-align: right">
+							{{$ctrl.assignedTo.fullName}}
+							<span ng-show="$ctrl.assignedTo.uid">[{{$ctrl.assignedTo.uid}}]</span><span class="caret"></span>
+						</label>
+						<ul class="dropdown-menu pre-scrollable" aria-labelledby="assignedToMenu">
+							<li>
+								<a class="pointer" ng-click="$ctrl.toggleAssignee($ctrl.defaultUser)" style="text-align: center">
+									{{$ctrl.defaultUser.fullName}}</a>
+							</li>
+							<li ng-repeat="user in $ctrl.assignedToUsers">
+								<a class="pointer" ng-click="$ctrl.toggleAssignee(user)" style="text-align: right">
+									{{user.fullName}}<span style="margin-left: 5%">[{{user.uid}}]</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-1" style="text-align: right">
+					<label>Notes</label>
+				</div>
+				<div class="col-md-1">
+					<label class="text-primary pointer" ng-click="$ctrl.displayTaskNotes()"
+						   style="pointer-events: {{$ctrl.task.alertHideSw == 'Y' ? 'none':'fill'}}; opacity: {{$ctrl.task.alertHideSw == 'Y' ? 0.4 : 1}}"
+					>View/Add Notes</label>
+				</div>
+				<div class="col-md-4" style="text-align: right">
+                    <button type="button" class="btn btn-sm btn-danger" can-edit="TK_ECOM_01"
+							data-toggle="modal" data-target="#confirmDeleteTaskSummaryModal" ng-disabled="!$ctrl.isDeletingTask || $ctrl.isDeletedTask">
+                        <span class="glyphicon glyphicon-remove"></span> Delete</button>
+					<button type="button" class="btn btn-sm btn-primary" can-edit="TK_ECOM_01"
+							ng-click="$ctrl.isEditingTask = !$ctrl.isEditingTask" ng-disabled="$ctrl.isEditingTask || $ctrl.isDeletedTask">
+						<span class="glyphicon glyphicon-edit"></span> Edit</button>
+					<button type="button" class="btn btn-sm btn-primary" can-edit="TK_ECOM_01"
+							ng-click="$ctrl.updateTask()" autocomplete="off" ng-disabled="!$ctrl.isEditingTask">
+						<span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+					<button type="button" class="btn btn-sm btn-primary" can-edit="TK_ECOM_01" ng-disabled="$ctrl.isDeletedTask"
+							ng-click="$ctrl.resetTask()" autocomplete="off">
+						<span class="glyphicon glyphicon-refresh"></span> Reset</button>
+					<button type="button" class="btn btn-sm btn-primary" can-edit="TK_ECOM_01" ng-disabled="$ctrl.isDeletedTask"
+							ng-click="$ctrl.loadMyTask()">
+						<span class="glyphicon glyphicon-user"></span> My Task</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Top task info section -- ends -->
+	<!-- Main Data Table of products of a task  -- starts -->
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block"><b>Displaying Results: </b></h4>
+				<h5 class="panel-title inline-block">{{$ctrl.resultMessage}}</h5>
+				<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+					 ng-click="$ctrl.export()"
+					 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium;
+					 pointer-events: {{$ctrl.task.alertHideSw == 'Y' ? 'none':'fill'}}; opacity: {{$ctrl.task.alertHideSw == 'Y' ? 0.4 : 1}}"
+					 data-toggle="tooltip" title="Export to Excel"></div>
+				<button class="btn btn-sm btn-primary inline-block pull-right pointer"
+						style="margin-top: -7px;" title="Return To List"
+						ng-click="$ctrl.returnToEcommerceTaskList()" type="button">
+					<span>Return To List</span>
+				</button>
+				</button>
+				<div class="inline-block pull-right"
+					 ng-show="$ctrl.downloading" style="color: orange">
+					Downloading...
+				</div>
+			</div>
+			<div class="panel-body" style="width: 100%">
+				<div class="row" style="margin-bottom: 5px;" ng-show="$ctrl.message">
+					<div class="col-md-2" style="" ></div>
+					<div class="col-md-7" style="text-align: center; vertical-align: middle; padding-top: 0.7%;
+													margin-bottom: 15px;;margin-left: 60px;">
+						<span ng-class="{'alert' : true,'alert-danger' : $ctrl.isError,'alert-success' : !$ctrl.isError}"
+							  style="padding: 1%" role="alert">{{$ctrl.message}}</span>
+					</div>
+					<div class="col-md-3" style="text-align: right;">
+
+					</div>
+				</div>
+				<div class="row" ng-show="$ctrl.isErrorMassFillData">
+						<span ng-show="$ctrl.isErrorRequireMess" class="alert alert-danger col-md-4 col-md-push-4 myfade"
+							style="text-align:center; margin-bottom: 0px;" role="alert">
+							{{$ctrl.isErrorRequireMess}}
+						</span>
+						<span ng-show="!$ctrl.isErrorRequireMess" style="margin-bottom: 0px;" class="alert alert-danger col-md-4 col-md-push-4 myfade" role="alert">
+							<ul style="padding-left: 10px">
+								Mass Fill:
+								<li ng-repeat="error in $ctrl.errorMassFillDataLst" style="margin-top: 5px; margin-left: 30px;">{{error}}</li>
+							</ul>
+						</span>
+				</div>
+				<div class="row" id="data-mass-fill" style="margin-top: 15px">
+					<div class="col-md-10">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="col-md-12" style="text-align: center;">
+									<div class="divider-horizontal" style="margin-bottom: -6px"></div>
+									<label style="position: relative;background: white;">Fulfillment Program</label>
+								</div>
+								<div class="col-md-4 sale-channel">
+									<ui-select theme="bootstrap"
+										data-toggle="tooltip" ng-disabled="$ctrl.isDeletedTask"
+										ng-model="$ctrl.salesChannel" ng-change="$ctrl.handleChangeSalesChannel()">
+										<ui-select-match placeholder="--Select--">
+											{{$select.selected.description}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="salesChannel in $ctrl.salesChannels"
+											>{{salesChannel.description}}
+										</ui-select-choices>
+									</ui-select>
+								</div>
+								<div class="col-md-5 fufillment-program">
+									<div ng-dropdown-multiselect="" disabled="$ctrl.salesChannel == null || $ctrl.salesChannel.id == null" events="handleEventSelectDropdown"  options="$ctrl.fulfillmentPrograms"
+									selected-model="$ctrl.fulfillmentProgramsSelected" extra-settings="dropdownMultiselectSettings"
+									translation-texts="projectText" title="{{$ctrl.getTitleForFulfillmentProgram()}}"></div>
+								</div>
+								<div class="col-md-3 show-on-site">
+									<ui-select theme="bootstrap"
+										data-toggle="tooltip"
+										ng-model="$ctrl.showOnSite"
+										ng-change="$ctrl.handleShowOnSiteDate()"
+										ng-disabled="$ctrl.fulfillmentProgramsSelected == null || $ctrl.fulfillmentProgramsSelected.length ==0"
+										>
+										<ui-select-match placeholder="--Select--">
+											{{$select.selected.description}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="showOnSite in $ctrl.showOnSiteSelects"
+											>{{showOnSite.description}}
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+							<div class="col-md-2 form-group" style="text-align: center;">
+								<label>Effective Date</label>
+								<div class="input-group" id="inputStartDate" style="width:100%">
+									<input class="form-control date-picker"
+										readonly="false"
+										type="text"
+										uib-datepicker-popup = "MM/dd/yyyy"
+										datepicker-options="$ctrl.options"
+										is-open="$ctrl.showOnSiteStartDateOpen"
+										ng-model="$ctrl.effectiveDate"
+										ng-value="$ctrl.effectiveDate"
+										ng-required="false"
+										close-text="Close"
+										ng-disabled="$ctrl.showOnSite == null || $ctrl.showOnSite.id == null || $ctrl.showOnSite.id == 0"
+										/>
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default"
+																ng-click="$ctrl.openDatePicker('showOnSiteStartDate')"
+																ng-disabled="$ctrl.showOnSite == null || $ctrl.showOnSite.id == null || $ctrl.showOnSite.id == 0"
+																>
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-2 form-group" style="text-align: center;">
+								<label>End Date</label>
+								<div class="input-group" id="inputEndDate" style="width:100%">
+									<input class="form-control date-picker"
+										readonly="false"
+										type="text"
+										uib-datepicker-popup = "MM/dd/yyyy"
+										datepicker-options="$ctrl.options"
+										is-open="$ctrl.showOnSiteEndDateOpen"
+										ng-model="$ctrl.expirationDate"
+										ng-value="$ctrl.expirationDate"
+										ng-required="false"
+										close-text="Close"
+										ng-disabled="$ctrl.showOnSite == null || $ctrl.showOnSite.id == null || $ctrl.showOnSite.id == 0"
+										/>
+									<span class="input-group-btn" style="width: 21px;height: 25px;">
+										<button type="button" 	class="btn btn-default"
+																ng-click="$ctrl.openDatePicker('showOnSiteEndDate')"
+																ng-disabled="$ctrl.showOnSite == null || $ctrl.showOnSite.id == null || $ctrl.showOnSite.id == 0"
+																>
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-2 form-group" style="text-align: center;">
+								<label>PDP Template Id</label>
+								<ui-select theme="bootstrap" ng-disabled="$ctrl.isDeletedTask"
+										data-toggle="tooltip"
+										ng-model="$ctrl.pdpTemplate">
+									<ui-select-match placeholder="--Select--">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="pdpTemplate in $ctrl.pdpTemplates"
+										>{{pdpTemplate.description}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<button type="button" can-edit="TK_ECOM_01" ng-disabled="$ctrl.isDeletedTask" class="btn btn-sm btn-success" style="float: right;" ng-click="$ctrl.massFillDataWithProduct()">
+							Mass Fill
+						</button>
+					</div>
+				</div>
+				<table id="taskManagement" ng-table="$ctrl.tableParams" template-pagination="custom/pager"
+					   class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+					<thead>
+						<tr style="text-align: center">
+							<th><input type="checkbox" ng-model="$ctrl.allWorkRequests"
+									   ng-click="$ctrl.resetWorkRequestsSelection(false)"  ng-disabled="$ctrl.isWaiting || $ctrl.isNoRecordsFound"></th>
+							<th>Image</th>
+							<th>Notes</th>
+							<th>Product ID</th>
+							<th>Product Name</th>
+							<th>Size</th>
+							<th>Primary UPC</th>
+							<th>Brand</th>
+							<th>Customer Hierarchy</th>
+							<th>
+								<div id="fulfillmentChannelFilter" class="dropdown">
+									<label id="fulfillmentChannelMenu" type="button" data-toggle="dropdown" aria-haspopup="true"
+										   aria-expanded="false" class="dropdown-toggle pointer">
+										Fulfillment Channel<span class="caret"></span>
+									</label>
+									<ul class="dropdown-menu" aria-labelledby="fulfillmentChannelMenu">
+										<form>
+											<input type="checkbox" style="margin-left: 3px" id="all-sales-channels" data-ng-click="$ctrl.setSelectedForAllSalesChannels()"  ng-model="$ctrl.allSalesChannels">
+											<label class="form-check-label text-primary" for="all-sales-channels"> Select/Unselect All</label>	
+											<li ng-repeat="salesChannel in $ctrl.salesChannelsFilter" class="text-primary" style="margin: 0px 2%">
+												<div class="form-check">
+													<input type="checkbox" data-ng-click="$ctrl.setSelectAllSalesChannels()" class="form-check-input" ng-model="salesChannel.checked" id="{{salesChannel.id}}">
+													<label class="form-check-label" for="{{salesChannel.id}}">{{salesChannel.description}}</label>
+												</div>
+											</li>
+											<div style="text-align: center">
+												<div class="btn-group" role="group" aria-label="...">
+													<button class="btn btn-sm btn-primary" ng-click="$ctrl.applyFilteFulfillmentChannel()">Apply</button>
+													<button class="btn btn-sm btn-primary" ng-click="$ctrl.resetFilterFulfillmentChannel()">Reset</button>
+													<button class="btn btn-sm btn-primary data-toggle" data-toggle='dropdown-role-name'
+															ng-click="$ctrl.cancelFilterFulfillmentChannel()">Cancel</button>
+												</div>
+											</div>
+										</form>
+									</ul>
+								</div>
+							</th>
+							<th>PDP Template</th>
+							<th>
+								<div id="showOnSiteFilter" class="dropdown container-fluid" >
+									<label id="showOnSiteMenu" type="button" data-toggle="dropdown" aria-haspopup="true"
+										   aria-expanded="false" class="dropdown-toggle pointer">
+										Show On Site<span class="caret"></span>
+									</label>
+									<ul class="dropdown-menu" aria-labelledby="showOnSiteMenu">
+										<form>
+											<li ng-repeat="showOnSite in $ctrl.displayShowOnSiteOptions" class="text-primary" style="margin: 0px 2%">
+												<div class="form-check">
+													<input type="checkbox" class="form-check-input" ng-model="showOnSite.checked" id="{{showOnSite.code}}">
+													<label class="form-check-label" for="{{showOnSite.code}}">{{showOnSite.desc}}</label>
+												</div>
+											</li>
+											<div style="text-align: center">
+												<div class="btn-group" role="group" aria-label="...">
+													<button class="btn btn-sm btn-primary" ng-click="$ctrl.applyFilterShowOnSite()">Apply</button>
+													<button class="btn btn-sm btn-primary" ng-click="$ctrl.resetFilterShowOnSite()">Reset</button>
+													<button class="btn btn-sm btn-primary" ng-click="$ctrl.cancelFilterShowOnSite()">Cancel</button>
+												</div>
+											</div>
+										</form>
+									</ul>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="wrkRqst in $data track by $index" ng-show="!$ctrl.isWaiting"
+						style="text-align: center" ng-style="wrkRqst.isMassFill ? { 'background':'rgb(241, 200, 255)'} : { 'background': ''}">
+						<td width="3%">
+							<input type="checkbox" ng-checked="$ctrl.allWorkRequests" ng-change = "$ctrl.handleCheckProduct(wrkRqst)" ng-model="wrkRqst.checked"
+								   can-edit="TK_ECOM_01" ng-click="$ctrl.toggleProductSelection(wrkRqst)">
+						</td>
+						<td data-title="'Image'" width="5%">
+							<div data-ng-show="!wrkRqst.productMaster.image" style="padding:10px !important;">
+								<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+							</div>
+							<div data-ng-show="wrkRqst.productMaster.image">
+								<img class="task-img-thumbnail" ng-src="{{wrkRqst.productMaster.image}}"
+									 ng-click="wrkRqst.productMaster.image=='images/no_image.png'?'':$ctrl.showFullImage(wrkRqst.productId)"/>
+							</div>
+						</td>
+						<td data-title="'Notes'" width="5%">
+							<i class="text-primary fa fa-file-text pointer" aria-hidden="true" style="font-size:20px;"
+							   ng-click="$ctrl.displayProductNotes(wrkRqst)"></i>
+						</td>
+						<td data-title="'Product ID'" width="10%" style="text-align: center">
+								<button class="btn-link"  data-ng-click="$ctrl.getProductToNavigate(wrkRqst.productId, $index)" href="#home"
+								>{{wrkRqst.productId}}</button>
+
+						</td>
+						<td data-title="'Product Name'" width="12%" style="text-align: left" ng-bind-html="wrkRqst.displayName"></td>
+						<td data-title="'Size'" width="5%" style="text-align: left">
+							{{wrkRqst.size}}
+						</td>
+						<td data-title="'Primary UPC'" width="10%" style="text-align: left">
+							{{wrkRqst.productMaster.productPrimaryScanCodeId}}
+						</td>
+						<td data-title="'Brand'" width="15%" style="text-align: left" ng-bind-html="wrkRqst.brand"></td>
+						<td data-title="'Customer Hierarchy'" width="15%" style="text-align: left">
+							<span class="glyphicon glyphicon-arrow-right text-primary">
+								{{wrkRqst.productMaster.primaryCustomerHierarchy.genericParentEntity.hierarchyPathDisplay}}
+							</span>
+							<product-custom-hierarchy-assignment
+								update-assignment="$ctrl.updateAssignment()" hierarchy-context-code="$ctrl.hierarchyContextCode" product-master="wrkRqst.productMaster">
+							</product-custom-hierarchy-assignment>
+						</td>
+						<td data-title="'Fulfillment Channel'" width="10%" style="text-align: left">
+							{{$ctrl.displayFulfilmentChannels(wrkRqst.productMaster.productFullfilmentChanels)}}
+						</td>
+						<td data-title="'PDP Template'" width="5%" style="text-align: left">
+							{{$ctrl.displayPDPTemplate(wrkRqst.productMaster.masterDataExtensionAttributes)}}
+						</td>
+						<td data-title="'Show On Site'" width="10%" style="text-align: center">
+							{{$ctrl.displayShowOnSite(wrkRqst.productMaster.productOnlines) ? 'Yes' : 'No'}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<script type="text/ng-template" id="custom/pager">
+					<div class="bottom">
+						<div class="ng-cloak ng-table-pager" ng-if="params.data.length">
+							<ul class="pagination ng-table-pagination">
+								<li ng-class="{'disabled': !page.active && !page.current, 'active': page.current}" ng-repeat="page in pages"
+									ng-switch="page.type">
+									<a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo;</a>
+									<a ng-switch-when="first" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="page" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="more" ng-click="params.page(page.number)" href="">&#8230;</a>
+									<a ng-switch-when="last" ng-click="params.page(page.number)" href=""><span ng-bind="page.number"></span></a>
+									<a ng-switch-when="next" ng-click="params.page(page.number)" href="" style="margin-right: 30px;">&raquo;</a>
+								</li>
+							</ul>
+							<ul class="pagination ng-table-pagination">
+								<div ng-class="{'disabled': !page.active && !page.current, 'active': page.current}"
+									ng-switch="page.type" >
+									<div class="pull-right">
+										<span>Page size:</span>
+										<select class="bottom" ng-param-directive ng-model="pageCount" style="padding: 6px;" ng-int="pageCount = option[1]" ng-options ="count for count in params.settings().counts" ng-change="params.count(pageCount)" ng-init="pageCount=25">
+											<option value="" ng-show="false"></option>
+										</select>
+									</div>
+								</div>
+							</ul>
+						</div>
+                    </div>
+				</script>
+				<div ng-show="!$ctrl.isWaiting && $ctrl.isNoRecordsFound" style="text-align: center;">
+					<h5 class="text-warning">No Records found !!</h5>
+				</div>
+				<!-- Waiting spinner. -->
+				<loading-spinner ng-show="$ctrl.isWaiting"></loading-spinner>
+				<div class="row" style="margin-bottom: 5px;">
+					<div class="col-md-12" style="text-align: right;">
+						<button type="button" class="btn btn-sm btn-success"
+								ng-click="$ctrl.addProducts()" autocomplete="off" ng-disabled="$ctrl.isDeletedTask"
+								can-edit="TK_ECOM_01"><span class="glyphicon glyphicon-plus"></span> Add Products</button>
+						<button type="button" class="btn btn-sm btn-danger"
+								ng-click="$ctrl.removeProducts()" autocomplete="off" ng-disabled="$ctrl.isDeletedTask"
+								can-edit="TK_ECOM_01"><span class="glyphicon glyphicon-remove"></span> Remove Products</button>
+						<button type="button" class="btn btn-sm btn-primary"
+								autocomplete="off" ng-disabled="$ctrl.isDeletedTask"
+								can-edit="TK_ECOM_01" ng-click="$ctrl.saveDataMassFill()"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+						<button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.onReset()" ng-disabled="$ctrl.isDeletedTask">
+							<span class="glyphicon glyphicon-refresh"></span> Reset</button>
+						<button type="button" class="btn btn-sm btn-primary" ng-disabled="$ctrl.isDeletedTask"
+								ng-click="$ctrl.refreshTable(1,true)" autocomplete="off">
+							<span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+						<button type="button" class="btn btn-sm btn-primary" ng-disabled="$ctrl.isDeletedTask"
+							autocomplete="off"
+							can-edit="TK_ECOM_02" ng-click="$ctrl.assignToBDM()">Assign to BDM</button>
+						<button type="button" class="btn btn-sm btn-primary" ng-disabled="$ctrl.isDeletedTask"
+							autocomplete="off"
+							can-edit="TK_ECOM_03" ng-click="$ctrl.assignToEBM()">Assign to eBM</button>
+						<button type="button" can-edit="TK_ECOM_01" ng-disabled="$ctrl.isDeletedTask" class="btn btn-sm btn-primary " ng-click="$ctrl.publish()">Publish</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Main Data Table of products of a task  -- ends -->
+	<!-- Modal - task notes  - starts -->
+	<task-notes task="$ctrl.task"></task-notes>
+	<!-- Modal - task notes  - ends -->
+	<!-- Modal - product notes  - starts -->
+	<product-notes work-request="$ctrl.selectedWorkRequest"></product-notes>
+	<!-- Modal - product notes  - ends -->
+	<!-- Modal - add products - starts -->
+	<div id="addProductsModal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Add Products</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="well" style="margin-bottom:0">
+						<product-search-criteria on-update="$ctrl.updateSearchCriteria(searchCriteria)">
+						</product-search-criteria>
+						<div ng-if="$ctrl.searchCriteria">
+							<product-search-selection search-criteria="$ctrl.searchCriteria"
+													  on-update="$ctrl.updateSearchSelection(selectedProducts)">
+							</product-search-selection>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - add products - ends -->
+	<!-- Modal - Confirm Remove All Products- starts -->
+	<div id="removeAllProductsModal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Remove Confirmation</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>Are you sure that you want to remove the selected products?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" tabindex="2"
+							ng-click="$ctrl.removeAllProducts()">Yes</button>
+					<button type="button" class="btn btn-default" tabindex="1" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm Remove All Products - ends -->
+	<!-- Modal - view Image - starts-->
+	<div id="imageModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered modal-lg" style="width: 100%;text-align: center">
+			<div style="display: flex; justify-content: center;">
+				<table style="margin-top: 10px;">
+					<tr>
+						<td>
+							<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" title="Delete"
+									data-dismiss="modal" aria-label="Close" >
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+							<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px" title="Download"
+									ng-click="$ctrl.downloadImage()">
+								<span class="glyphicon glyphicon-download-alt"></span>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<loading-spinner ng-show="$ctrl.isImageDownloading"></loading-spinner>
+							<div ng-show="!$ctrl.isImageDownloading">
+								<img ng-if="$ctrl.selectedImage" data-ng-src="data:image/png;base64,{{$ctrl.selectedImage.image}}"
+									 style="max-height: 700px; max-width: 1000px;"/>
+								<img ng-if="!$ctrl.selectedImage" data-ng-src="{{$ctrl.NO_IMAGE_URL}}" />
+							</div>
+
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - view Image - ends-->
+	<!-- Modal - Confirm Select Products- starts -->
+	<div id="confirmSelectProductsModal" class="modal fade">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Task Message</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>{{$ctrl.confirmSelectProductsModalContent}}</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" tabindex="1" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm Remove All Products - ends -->
+	<!-- Modal - Confirm save mass fill data- starts -->
+	<div id="confirmSaveMassFill" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Update Message</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="row form-group">
+						<h5 class="col-md-12 control-label">You have selected {{$ctrl.getTotalRecordMassFill()}} record(s) for update. Would you like to continue with the update?</h5>
+					</div>
+					<div class="row form-group">
+						<h5 class="col-md-4 control-label" style="padding-right: 0px; margin-top: 5px;">Mass Update Description:</h5>
+						<div class="col-md-8">
+							<input class="form-control" type="text" ng-model="$ctrl.massFillDescription" placeholder="Type a name to Identify this Update request" maxlength="150">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.doSaveDataMassFill()">Yes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm save mass fill data - ends -->
+	<!-- Modal - Confirm save success mass fill data- starts -->
+	<div id="confirmSaveSuccessMassFill" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Mass Update Message</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>Your mass update request with ID {{$ctrl.trackingId}} is in progress. Would you like to check status of this request?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" ng-click="$ctrl.goToCheckStatusPage();">Check Status</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="$ctrl.refreshTable(1,true);">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm save success mass fill data - ends -->
+	<!-- Modal - Confirm save mass fill data- starts -->
+	<div id="confirmAssignTask" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Task Message</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>{{$ctrl.confirmAssignTaskContent}}</h5>
+				</div>
+				<div class="modal-footer">
+					<button data-ng-show="$ctrl.isAssignToBDM" type="button" class="btn btn-primary" data-dismiss="modal" can-edit="TK_ECOM_02" ng-click="$ctrl.doAssignToBDM();">Yes</button>
+					<button data-ng-show="$ctrl.isAssignToEBM" type="button" class="btn btn-primary" data-dismiss="modal" can-edit="TK_ECOM_03" ng-click="$ctrl.doAssignToEBM();">Yes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm save mass fill data - ends -->
+	<!-- Modal - Confirm save mass fill data- starts -->
+	<div id="confirmAssignTaskSuccess" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left"><h5 class="modal-title">Task Details</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+								<span style="color:white">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>{{$ctrl.confirmAssignTaskSuccessContent}}</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm save mass fill data - ends -->
+
+	<!-- Confirm assign product to eBM message--->
+	<div id="confirmatioPublishProductModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="col-lg-6" style="text-align: left">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Publish Message </h5>
+					</div>
+					<div class="col-lg-6" style="text-align: right">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+							<span style="color:white">&times;</span>
+						</button>
+					</div>
+				</div>
+				<div class="modal-body">
+					<h5>Are you sure you want to publish the selected Product?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-primary btn-sm" data-dismiss="modal"
+							ng-click="$ctrl.publishProduct()">
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-primary btn-sm" data-dismiss="modal">
+						No
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal - Confirm delete task - start-->
+	<div id="confirmDeleteTaskSummaryModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Delete Confirmation</h5>
+				</div>
+                <div class="col-lg-6" style="text-align: right">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+                        <span style="color:white">&times;</span>
+                    </button>
+                </div>
+				<div class="modal-body">
+					<h5>Are you sure you want to delete the selected task?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" tabindex="2"
+                            ng-click="$ctrl.deleteTask()">Yes</button>
+                    <button type="button" class="btn btn-default" tabindex="1" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal - Confirm delete task - end-->
+</div>

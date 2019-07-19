@@ -1,0 +1,676 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error">
+	<!-- <span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert">{{$ctrl.error}}</span> -->
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+</div>
+<div class="row" data-ng-if="$ctrl.success">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<div ng-show="!$ctrl.isVendorInfoAvailable && !$ctrl.isLoading" >
+	<span class="alert col-md-4 col-md-push-4 text-center myfade" role="alert">Item has no Vendor Information Available</span>
+</div>
+<div ng-show="!$ctrl.isLoading && $ctrl.isVendorInfoAvailable">
+	<div class="row">
+		<div class="col-md-12 pull-right">
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showVendorAuditInfo()"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<label>Item ID:</label><label style="font-weight: bold">{{$ctrl.itemMaster.key.itemCode}}</label>
+		</div>
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-md-3">
+					<label class="pull-right">Bicep Vendor</label>
+				</div>
+				<div class="col-md-9">
+					<div class="dropdown">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+								ng-show="!$ctrl.emptyVendor"
+								style="text-align: left; align-content: center; padding: 2px">
+							{{$ctrl.selectedVendor.displayBicepVendorName}}
+							<div class="pull-right">
+								<span class="caret"></span>
+							</div>
+						</button>
+						<ul class="dropdown-menu" style="padding: 4px">
+							<li ng-repeat="vendor in $ctrl.vendorList track by $index"
+								ng-click="$ctrl.handleVendorListChange(vendor, $index)"
+								class="pointer">{{vendor.displayBicepVendorName}}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="row">
+				<div align="right" class="col-md-3">
+					<label class="pull-right">AP Vendor</label>
+				</div>
+				<div class="col-md-9">
+					{{$ctrl.selectedVendor.location.apLocation.displayName}}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="row">
+				<div class="col-md-12">
+			<div ng-show="$ctrl.isMixedClassVendor"><label>Mixed Class Vendor</label></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divider-horizontal"></div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-4 col-md-offset-2">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Vendor Product Code</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<input type="text"
+						   class="form-control"
+						   ng-model="$ctrl.selectedVendor.vendItemId"
+						   ng-disabled="$ctrl.isDisabledMode()"
+						   ng-show="!$ctrl.emptyVendor"
+						   maxlength="20"
+						   ng-trim="false">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3" style="margin-bottom: 5px">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Cost Owner</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label>{{$ctrl.selectedVendor.costOwner.displayName}}</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3" style="margin-bottom: 5px">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Top 2 Top</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label>{{$ctrl.selectedVendor.costOwner.topToTop.displayName}}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-4 col-md-offset-2">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Vendor Pallet Quantity</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<input type="text" ng-model="$ctrl.selectedVendor.palletQuantity"
+						   class="form-control"
+						   ng-disabled="$ctrl.isDisabledMode()"
+						   ng-show="!$ctrl.emptyVendor"
+						   ng-pattern="/^[0-9]{1,9}?$/"
+						   maxlength="9"
+						   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+						   title="Vendor Pallet Quantity must be a numeric value">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4" style="margin-bottom: 5px">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Country of Origin</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label>{{$ctrl.selectedVendor.country.displayName}}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-4 col-md-offset-2">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Vendor Pallet Size</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<label>{{$ctrl.selectedVendor.palletSize}}</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4" style="margin-bottom: 5px">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Order Quantity Restriction</label>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<ui-select
+						theme="bootstrap"
+						append-to-body="true"
+						title="Choose an order quantity restriction"
+						ng-model="$ctrl.selectedVendor.orderQuantityRestrictionCode"
+						ng-disabled="$ctrl.isDisabledMode()">
+						<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+						<ui-select-choices repeat="orderQuantityRestriction.id as orderQuantityRestriction in $ctrl.orderQuantityRestrictionList">{{orderQuantityRestriction.displayName}}
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-4 col-md-offset-2">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>Cost Link Id</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<input type="text" ng-model="$ctrl.selectedVendor.costLinkId"
+						   class="form-control"
+						   ng-disabled="$ctrl.isDisabledMode()"
+						   ng-show="!$ctrl.emptyVendor"
+						   ng-pattern="/^[0-9]{1,9}?$/"
+						   maxlength="9"
+						   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+						   title="Cost Link ID must be a numeric value">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4" style="margin-bottom: 5px">
+			<div class="row">
+				<div align="right" class="col-md-4">
+					<div class="pull-right">
+						<label>SCA</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label>{{$ctrl.selectedVendor.sca.displayName}}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divider-horizontal"></div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Pack</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{$ctrl.selectedVendor.packQuantity}}</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Pack</label>
+						</div>
+						<div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.shipPackQuantity}}</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Net Cube</label>
+						</div>
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.nestCube"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,6}(\.[0-9]{0,3})?$/"
+								   maxlength="10"
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Net Cube value must be greater or equal 0 and less than or equal to 999999.999">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>List Cost</label>
+						</div>
+						<div ng-if="$ctrl.listCost != null">
+							<div class="col-md-6">
+								<label>${{$ctrl.listCost}}</label>
+							</div>
+						</div>
+						<div ng-if="$ctrl.listCost == null">
+							<label>Cost Unavailable</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Length</label>
+						</div>
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.length"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Master Length is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Length</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedWarehouseLocationItem.shipLength}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.selectedWarehouseLocationItem.shipLength"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Ship Length is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Net Max Qty</label>
+						</div>
+						<div class="col-md-6">
+							<label>
+								<input type="text"
+									   class="form-control"
+									   ng-model="$ctrl.selectedVendor.nestMax"
+									   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+									   style="width: 50px"
+									   ng-disabled="$ctrl.isDisabledMode()"
+									   ng-pattern="/^[0-9]{1,9}?$/"
+									   maxlength="9"
+									   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+									   title="Net Max Qty must be a numeric value">
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Unit Cost</label>
+						</div>
+						<div ng-if="$ctrl.listCost != null">
+							<div class="col-md-6">
+								<label>{{$ctrl.unitCostDisplay}}</label>
+							</div>
+						</div>
+						<div ng-if="$ctrl.listCost == null">
+							<label>Cost Unavailable</label>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Width</label>
+						</div>
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.width"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Master Width is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Width</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedWarehouseLocationItem.shipWidth}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.selectedWarehouseLocationItem.shipWidth"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Ship Width is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Vendor Tie</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedVendor.tie}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.tie"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,9}?$/"
+								   maxlength="9"
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Vendor Tie must be a numeric value">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Retail</label>
+						</div>
+						<div ng-if="$ctrl.retail != null" class="col-md-6">
+							<label>{{$ctrl.retail.xFor}} For ${{$ctrl.retail.retail}}</label>
+						</div>
+						<div ng-if="$ctrl.retail == null" class="col-md-6"><label>Retail unavailable</label></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Height</label>
+						</div>
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.height"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Master Height is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Height</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedWarehouseLocationItem.shipHeight}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.selectedWarehouseLocationItem.shipHeight"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,2}(\.[0-9]{0,1})?$/"
+								   maxlength="4"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Ship Height is a mandatory field, greater than 0 and less than or equal to 99.9">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Vendor Tier</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedVendor.tier}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.tier"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,9}?$/"
+								   maxlength="9"
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Vendor Tier must be a numeric value">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Gross Margin</label>
+						</div>
+						<div class="col-md-6">
+							<label>{{$ctrl.grossMargin}}</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Weight</label>
+						</div>
+						<div class="col-md-6">
+							<input type="text"
+								   class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.weight"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+								   maxlength="8"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Master Weight is a mandatory field, greater than 0 and less than or equal to 99999.99">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Weight</label>
+						</div>
+						<!-- <div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedWarehouseLocationItem.shipWeight}}</label>
+						</div> -->
+						<div class="col-md-6">
+							<input type="text"
+							       class="form-control"
+								   ng-show="!$ctrl.isDsd && !$ctrl.emptyVendor"
+								   ng-model="$ctrl.selectedVendor.selectedWarehouseLocationItem.shipWeight"
+								   style="width: 50px"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+								   maxlength="8"
+								   required
+								   oninput="this.value=this.value.replace(/[^0-9.]/g,'');"
+								   title="Ship Weight is a mandatory field, greater than 0 and less than or equal to 99999.99">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Reliable Inventory</label>
+						</div>
+						<div class="col-md-6">
+							<input type="checkbox"
+								   ng-model="$ctrl.isReliable"
+								   ng-disabled="true"
+								   ng-show="!$ctrl.emptyVendor">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 5px">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Master Cube</label>
+						</div>
+						<div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedVendor.cube}}</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<div align="right" class="col-md-6">
+							<label>Ship Cube</label>
+						</div>
+						<div class="col-md-6"
+							 ng-show="!$ctrl.isDsd">
+							<label>{{$ctrl.selectedWarehouseLocationItem.shipCube}}</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div class="divider-horizontal"></div>
+		<div class="inline-block pull-right">
+			<button class="btn btn-primary"
+					ng-click="$ctrl.backCandidate()">
+				Back
+			</button>
+			<button class="btn btn-primary"
+					ng-click="$ctrl.nextCandidate()">
+				Next
+			</button>
+			<button class="btn btn-primary"
+					ng-click="$ctrl.activateCandidate()">
+				Activate
+			</button>
+			<button class="btn btn-primary"
+					ng-click="$ctrl.confirmRejectCandidate()">
+				Reject
+			</button>
+			<!-- <button class="btn btn-primary"
+					ng-click="$ctrl.resetSelectedVendor()">
+				Reset
+			</button>
+			<button class="btn btn-primary"
+					ng-click="$ctrl.updateSelectedVendor()">
+				Save
+			</button> -->
+		</div>
+	</div>
+</div>
+<div id="vendorRejectCandidateModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.headerTitleConfirm}}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+						ng-click="$ctrl.noConfirmAction()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.yesConfirmAction()"
+						ng-show="$ctrl.yesBtnEnable">
+					{{$ctrl.yesBtnLabel}}
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.noConfirmAction()">
+					{{$ctrl.closeBtnLabel}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+

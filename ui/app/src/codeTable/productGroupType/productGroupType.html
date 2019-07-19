@@ -1,0 +1,88 @@
+<!--
+  ~ productGroupType.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn87351
+  @since 2.12.0
+  -->
+<div data-ng-hide="$ctrl.details.isShowing" can-edit="CT_PDGT_01" ng-init="$ctrl.init()">
+	<div class="row margin-top-10" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaiting">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row margin-top-10" data-ng-if="$ctrl.details.success" ng-show="!$ctrl.isWaiting">
+		<div data-ng-if="$ctrl.details.isLoadData">
+			{{$ctrl.reLoadData()}}
+		</div>
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.details.success}}</span>
+	</div>
+
+	<div class="row margin-top-10" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaiting">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<loading-spinner ng-show="$ctrl.isWaiting">
+	</loading-spinner>
+	<div class="col-md-12">
+		<div class="panel-body" style="display: inline-block; width: 100%;">
+			<div class="pull-right" ng-show="!$ctrl.isWaiting">
+				<button class="btn btn-sm btn-primary" ng-click="filter.productGroupTypeSummary=undefined;">
+					Clear Filter
+				</button>
+			</div>
+			<div class="margin-top-10" style="min-height:400px; position: relative; float: left; width: 100%; padding: 0;" ng-show="!$ctrl.isWaiting">
+				<table show-filter="true" ng-table="tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+					<thead>
+						<tr>
+							<th style="width:90%;">Product Group Type</th>
+							<th rowspan="2" style="width:5%;text-align: center">Action</th>
+
+						</tr>
+						<tr>
+							<th style="width:90%;"><input ng-model="filter.productGroupTypeSummary" class="form-control" />
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="attribute in $data">
+							<td data-title="'Product Group Type'"><a data-ng-click="$ctrl.showDetails(attribute)" style="cursor: pointer;color:#333">{{attribute.productGroupTypeSummary}}</a></td>
+							<td style="width:5%;text-align: center">
+								<button class="glyphicon glyphicon-remove pointer" title="Delete" style="color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+								 ng-click="$ctrl.deleteProductGroupChoiceTypes(attribute)"></button>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+			<div ng-show="!$ctrl.isWaiting" class="inline-block pull-right margin-top-10">
+				<button class="btn btn-primary" data-toggle="modal" ng-click="$ctrl.addNewProductGroupType()">
+					Add
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<product-group-type-details-component details="$ctrl.details" ng-if="$ctrl.details.isShowing"></product-group-type-details-component>
+
+<!-- Common confirm modal -->
+<div id="common-confirm-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<!--					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+-->
+				<h5 class="modal-title" style="color: #ffffff">Delete Product Groups Type</h5>
+			</div>
+			<div class="modal-body" style="font-size:14px;">
+				<p>Are you sure you want to delete the selected Product Groups Type ?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.doDeleteProductGroupChoiceTypes()">Yes</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+			</div>
+		</div>
+	</div>
+</div>

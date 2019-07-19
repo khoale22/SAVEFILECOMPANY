@@ -1,0 +1,180 @@
+<div can-view="SM_MAINT_02" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="ScaleMaintenanceStoreDeptController as scaleMaintenanceStoreDeptController">
+	<div class="row" data-ng-if="scaleMaintenanceStoreDeptController.loadError">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{scaleMaintenanceStoreDeptController.error}}</span>
+    </div>
+    <div class="row" data-ng-if="scaleMaintenanceStoreDeptController.loadSuccess">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{scaleMaintenanceStoreDeptController.success}}</span>
+	</div>
+	<div class="panel-group"  ng-show="!scaleMaintenanceStoreDeptController.isDetailsShowing  && !scaleMaintenanceStoreDeptController.isAddShowing">
+		<div class="panel panel-primary" >
+			<div class="panel-heading" >
+				<h4 class="panel-title inline-block">
+					<b>EPLUM Scale Maintenance - Store Department Authorization</b></h4>
+			</div>
+			<div class="panel-body">
+				<div class="form-inline form-horizontal">
+					<div >
+						<table ng-table="scaleMaintenanceStoreDeptController.tableParams" show-filter="true"  class="table-heb table-bordered table-striped" style="width: 100%">
+							<thead>
+							 <tr>
+								<th ng-repeat="column in scaleMaintenanceStoreDeptController.columns">{{column.title}}</th>
+							</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat = "attribute in scaleMaintenanceStoreDeptController.data ">
+									<td style="text-align: center" >
+                                    	<button data-ng-click="scaleMaintenanceStoreDeptController.deleteStoreDeptDetails(attribute)" class="glyphicon glyphicon-remove pointer" title="Delete"
+			                                style="color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;">
+	                                    </button>
+                                    </td>
+									<td style="text-align: center">
+										<a ng-click="scaleMaintenanceStoreDeptController.editStoreDeptDetails(attribute)"
+										   style="cursor: pointer;"> {{attribute.storeNum}}</a>
+									</td>
+									<td style="text-align: left">{{attribute.storeDesc}}</td>
+									<td style="text-align: center">{{attribute.deptId1}}</td>
+									<td style="text-align: center">{{attribute.deptId2}}</td>
+									<td style="text-align: center">{{attribute.deptId3}}</td>
+									<td style="text-align: center">{{attribute.deptId4}}</td>
+									<td style="text-align: center">{{attribute.deptId5}}</td>
+									<td style="text-align: center">{{attribute.deptId6}}</td>
+									<td style="text-align: center">{{attribute.deptId7}}</td>
+									<td style="text-align: center">{{attribute.deptId8}}</td>
+									<td style="text-align: center">{{attribute.deptId9}}</td>
+									<td style="text-align: center">{{attribute.deptId10}}</td>
+									<td style="text-align: center">{{attribute.deptId11}}</td>
+									<td style="text-align: center">{{attribute.deptId12}}</td>
+									<td style="text-align: center">{{attribute.deptId13}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="inline-block pull-left">
+					<button class="btn btn-primary" ng-click="scaleMaintenanceStoreDeptController.addStoreDeptDetails()" style="margin-top:20%" >Add Store</button>
+				</div>
+			</div>
+	   </div>
+	   <!-- Confirm message -->
+		<div id="confirmModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<h5 class="modal-title inline-block" style="color: #ffffff">Delete Store Department</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<h5>Are you sure you want to delete the Store Department Mapping? </h5>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="inline-block btn btn-success btn-sm" ng-click="scaleMaintenanceStoreDeptController.doDeleteStore()">
+							Yes
+						</button>
+						<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+							No
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	
+	<div class="panel-group" ng-show="scaleMaintenanceStoreDeptController.isAddShowing || scaleMaintenanceStoreDeptController.isDetailsShowing">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				 <h4 class="panel-title inline-block">
+					<b>EPLUM Scale Maintenance - Store Department Authorization</b></h4>
+			</div>
+			 <div class="panel-body">
+				<div class="form-inline form-horizontal">
+					 <div class="panel panel-primary"> 
+				 		 <div class="panel-heading" ng-show="scaleMaintenanceStoreDeptController.isAddShowing">
+				        	<h2 class="panel-title inline-block">
+					        <b>Add Store/Departments</b></h2>
+                         </div>
+                         <div class="panel-heading" ng-show="scaleMaintenanceStoreDeptController.isDetailsShowing">
+				        	<h2 class="panel-title inline-block">
+					        <b>Edit Departments</b></h2>
+                         </div>
+					      <table show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%; margin-top: 5px;"> 
+	                            <div class="modal-body">
+	                                    <div class="well" style="margin-bottom: 0">
+	                                        <div class="row">
+	                                            <div class="col-md-20" style="margin-bottom: -1%;">
+	                                                <!-- <div class="form-group"> -->
+	                                                    <label for="storeNo" style ="font-size: 12px;margin-left:100px;margin-bottom:10px">Store No<strong class="inline-block pull-right" style="color: red; font-size: 12px;margin-left: 10px;margin-bottom:30px">**</strong></label>
+	                                                    <input id="storeNo" class="form-control" type="text"  numbers-only maxlength="5" ng-model="scaleMaintenanceStoreDeptController.selectedStoreDetail.storeNo" ng-blur="scaleMaintenanceStoreDeptController.getStoreDescription()" ng-disabled = "!scaleMaintenanceStoreDeptController.isAddShowing">
+	                                                    <label for="storeDescription" style ="font-size: 12px;margin-left:10px;margin-bottom:10px">Store Description<strong class="inline-block pull-right" style="color: red; font-size: 12px;margin-left: 10px;margin-bottom:30px;">**</strong></label>
+	                                                    <input style="width: 25%;height: 24px;margin-left: 0px;" class="form-control ng-pristine ng-untouched ng-valid ng-valid-maxlength ng-not-empty" type="text" ng-model="scaleMaintenanceStoreDeptController.selectedStoreDetail.storeDesc" maxlength="30" disabled=""> 
+	                                                <!-- </div> -->
+	                                            </div>
+	                                               
+	                                         <div class="row">
+								                <div class="col-md-12"> 
+								             <!--  <div ng-repeat="detail in ingredientStatementsController.selectedIngredientStatement.ingredientStatementDetails track by $index"> -->
+									                 <div ng-repeat="detail in scaleMaintenanceStoreDeptController.selectedStoreDetail.storeDepartmentDetails track by $index">
+										                <label for="{{'detail' + $index}}" ng-style="{'padding-top': $index != 0 ?  '5px': ''}" style="font-size: 12px;margin-bottom: 1%;margin-top: 1%;margin-left: 6%">Department Id {{$index + 1}} :</label>
+										                   <!--  <div class="row"> --> 
+											                    <!-- <div class="col-md-4"> -->
+											                        <input id="{{'detail' + $index}}"  class="form-control" type="text" numbers-only ng-model="detail.deptId" maxlength="3" data-ng-disabled="detail.disabled" 
+											                        ng-blur="scaleMaintenanceStoreDeptController.isDuplicateDepartment(detail.deptId,$index)" style="margin-left: 1%;" autofocus>
+											                    <!-- </div> -->
+											                   <!--  <div class="col-md-2">
+												                    <div class="row">
+													                    <div class="col-md-6"> -->
+	                                                                        <button class="glyphicon glyphicon-plus" style="color: green; padding-top: 2px; padding-bottom: 5px; background: none; border: none; font-size: large; margin-left: 7%;"
+	                                                                                title="{{scaleMaintenanceStoreDeptController.isAnyDeptNull() ? 'Please select the empty department before adding another.' : null}}"
+	                                                                                ng-click="scaleMaintenanceStoreDeptController.addDept($index + 1)" data-ng-disabled="scaleMaintenanceStoreDeptController.isAnyDeptNull()"
+	                                                                                ng-style="{'cursor': scaleMaintenanceStoreDeptController.isAnyDeptNull()?  'not-allowed': 'pointer'}">
+	                                                                        </button>
+	                                    
+													                    <!-- </div>
+												                    </div>
+											                    </div> -->
+											                    <!-- <div class="col-md-2"> -->
+												                    <button ng-click="scaleMaintenanceStoreDeptController.removeDepartment($index)" data-ng-disabled="scaleMaintenanceStoreDeptController.isAddShowing && $index == 0"
+														            class="btn btn-danger btn-sm" style="margin-left: 7%">Remove</button>
+											                   <!--  </div> -->
+										               <!--  </div> --> 
+										               </div> 
+									                 </div>
+								                 </div>
+	                                           
+	                                           
+	                                           
+	                                           
+	                                           
+	                                           
+							                 </div>
+	                                      </div>  
+	                                  </div> 
+	                        </table>	
+	           		 <!--  </div> -->	
+	           	 </div>	
+            </div>
+            
+            <div class="row">
+                    <div class="col-md-12">
+                    <div class="modal-footer">
+                        <div class="inline-block pull-left">
+                            <button class="btn btn-primary" ng-click="scaleMaintenanceStoreDeptController.saveStoreDeptDetails()" data-ng-disabled="!scaleMaintenanceStoreDeptController.isDataChanged()" > Save </button>
+                            <button class="btn btn-primary" ng-click="scaleMaintenanceStoreDeptController.resetStoreDeptDetails()" data-ng-disabled="!scaleMaintenanceStoreDeptController.isDataChanged()"> Reset </button>
+                            <button class="btn btn-primary" ng-click="scaleMaintenanceStoreDeptController.returnStoreDeptDetails()"> Return to List </button>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+      </div>
+  </div>
+</div>   		
+</div> 

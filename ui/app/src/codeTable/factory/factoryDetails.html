@@ -1,0 +1,214 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div class="container-fluid" ng-show="!$ctrl.isWaitingForResponse">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row" style="margin: 0">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="col-xs-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Factory Id </label>
+					</div>
+					<div class="col-md-9">
+						{{$ctrl.itemSending.factoryId}}
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Factory Name </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.factoryName" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Address Line 1 </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.addressOne" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Address Line 2 </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.addressTwo" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>City </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.city" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>County </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.county" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>State/Province </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.state" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Country </label>
+					</div>
+					<div class="col-md-9">
+						<ui-select id="contryInput"  ng-model="$ctrl.itemSending.country"
+								   theme="bootstrap" title="Choose a country">
+							<ui-select-match allow-clear="true">
+								{{$select.selected.displayName}}
+							</ui-select-match>
+							<ui-select-choices
+								repeat="country.countryName as country in $ctrl.countries | propsFilter: {countryName: $select.search, displayName: $select.search}"
+								refresh-delay="0">{{country.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Zip Code </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.zip" maxlength="10">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="col-xs-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label> </label>
+					</div>
+					<div class="col-md-9">
+
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Status </label>
+					</div>
+					<div class="col-md-9">
+						<ui-select id="statusInput" ng-model="$ctrl.itemSending.status"
+								   theme="bootstrap" title="Choose a status">
+							<ui-select-match allow-clear="true">
+								{{$select.selected.name}}
+							</ui-select-match>
+							<ui-select-choices
+								repeat="status.id as status in $ctrl.statusList"
+								refresh-delay="0">{{status.name}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Phone </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.phone" maxlength="20">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Fax </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.fax" maxlength="20">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Contact </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.contactName" maxlength="30">
+					</div>
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px">
+					<div class="col-md-3" style="text-align: right">
+						<label>Email </label>
+					</div>
+					<div class="col-md-9">
+						<input style="width: 100%;height: 24px" ng-model="$ctrl.itemSending.contactEmail" maxlength="50">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row pull-right" style="margin-right: 30px">
+			<button type="button" class="btn btn-link" data-ng-disabled="$ctrl.previousDisable()"
+					ng-click="$ctrl.gotoPreviousFactory()">
+				<span aria-hidden="true">&laquo;</span>
+				Previous
+			</button>
+			&nbsp;&nbsp;
+			<button type="button" class="btn btn-link" data-ng-disabled="$ctrl.nextDisable()"
+					ng-click="$ctrl.gotoNextFactory()">
+				Next
+				<span aria-hidden="true">&raquo;</span>
+			</button>
+		</div>
+	</div>
+
+	<!--Footer -- Contain Save, Reset button-->
+	<div class="row">
+		<div class="divider-horizontal"></div>
+		<div class="col-md-12">
+			<div class="inline-block pull-right">
+				<button view-only="CT_FCTR_01" class="btn btn-primary" disabled="true"> Save</button>
+				<button view-only="CT_FCTR_01" class="btn btn-primary" disabled="true"> Reset</button>
+				<button can-edit="CT_FCTR_01" class="btn btn-primary" data-ng-disabled="!$ctrl.isDataChanged()"
+						ng-click="$ctrl.saveFactory()">
+					Save
+				</button>
+				<button can-edit="CT_FCTR_01" class="btn btn-primary" data-ng-disabled="!$ctrl.isDataChanged()"
+						ng-click="$ctrl.resetFactory()">
+					Reset
+				</button>
+				<button class="btn btn-primary" ng-click="$ctrl.returnToListClick()">Return to List</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="changeTabConfirmation" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body"><h5>{{$ctrl.MESSAGE_CONFIRM_CLOSE}}</h5></div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveFactory()">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

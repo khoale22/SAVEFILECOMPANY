@@ -1,0 +1,149 @@
+<!--
+  ~  ingredientCategory.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-cloak="true" ng-controller="IngredientCategoryController as ingredientCategoryController"
+	 ng-init="ingredientCategoryController.init()" can-view="SM_CODE_04">
+	<div class="row" data-ng-if="ingredientCategoryController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientCategoryController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="ingredientCategoryController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientCategoryController.error}}</span>
+	</div>
+
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Ingredient Category Search
+					<i ng-click="ingredientCategoryController.searchPanelVisible = !ingredientCategoryController.searchPanelVisible" class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': ingredientCategoryController.searchPanelVisible, 'glyphicon glyphicon-plus': !ingredientCategoryController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="ingredientCategoryController.searchPanelVisible">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<label>
+									<input type="radio" ng-model="ingredientCategoryController.selectionType" value="{{ingredientCategoryController.INGREDIENT_CODE}}" />Ingredient Category Code
+								</label>
+								<label>
+									<input type="radio" ng-model="ingredientCategoryController.selectionType" value="{{ingredientCategoryController.DESCRIPTION}}" />Description
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-6">
+										<textarea data-ng-model="ingredientCategoryController.searchSelection" rows="8"
+												  placeholder="{{ingredientCategoryController.getTextPlaceHolder()}}" class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<!--Buttons to do the search or clear the user input. -->
+											<div class="col-md-6">
+												<button data-ng-click="ingredientCategoryController.newSearch()" class="btn btn-primary btn-block" data-ng-disabled="ingredientCategoryController.searchSelection == null">Search</button>
+												<button data-ng-click="ingredientCategoryController.searchAll()" class="btn btn-primary btn-block">Search All</button>
+											</div>
+											<div class="col-md-6">
+												<button data-ng-click="ingredientCategoryController.clearSearch()" class="btn btn-primary btn-block" data-ng-disabled="ingredientCategoryController.searchSelection == null">Clear</button>
+												<button data-ng-click="ingredientCategoryController.addRow()" class="btn btn-primary btn-block" can-edit="SM_CODE_01">Add</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="ingredientCategoryController.isWaiting">
+	</loading-spinner>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+
+						These are the {{ingredientCategoryController.selectionType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="categoryCode in ingredientCategoryController.missingValues.noMatchList">{{categoryCode}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="!ingredientCategoryController.isWaiting && ingredientCategoryController.deleteMessage != null">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientCategoryController.deleteMessage}}</span>
+	</div>
+
+	<div class="col-md-12" ng-show="!ingredientCategoryController.isWaiting && ingredientCategoryController.data != null">
+		<div class="row" data-ng-if="ingredientCategoryController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientCategoryController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="ingredientCategoryController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientCategoryController.modifyError}}</span>
+		</div>
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div ng-if="!ingredientCategoryController.isAddingIngredientCode && ingredientCategoryController.resultMessage != null">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{ingredientCategoryController.resultMessage}}
+
+						</h5>
+
+						<div class="inline-block pull-right" ng-if="ingredientCategoryController.showMatchCount()">
+							<h5 ng-if="ingredientCategoryController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{ingredientCategoryController.missingValues.matchCount}}
+								<span ng-if="ingredientCategoryController.missingValues.matchCount ==  1">{{ingredientCategoryController.selectionType}}</span>
+								<span ng-if="ingredientCategoryController.missingValues.matchCount >  1">{{ingredientCategoryController.selectionType}}s</span>
+								found</h5>
+							<h5 ng-if="ingredientCategoryController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{ingredientCategoryController.missingValues.noMatchCount}}
+								<span ng-if="ingredientCategoryController.missingValues.noMatchCount ==  1">{{ingredientCategoryController.selectionType}}</span>
+								<span ng-if="ingredientCategoryController.missingValues.noMatchCount >  1">{{ingredientCategoryController.selectionType}}s</span>
+								not	found</h5>
+						</div>
+					</div>
+					<div ng-if="ingredientCategoryController.isAddingIngredientCode || ingredientCategoryController.resultMessage == null">New Ingredient Category</div>
+				</div>
+				<div class="panel-body">
+					<table ng-table="ingredientCategoryController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr ng-repeat="ingredientCategory in ingredientCategoryController.data track by $index">
+							<td data-title="'Ingredient Category Code'">{{ingredientCategory.categoryCode}}</td>
+							<td data-title="'Ingredient Category Description'">
+								<div ng-if="ingredientCategoryController.isNumber(ingredientCategory.categoryCode) && !ingredientCategory.isEditing" ng-model="ingredientCategory.categoryDescription">{{ingredientCategory.categoryDescription}}</div>
+								<input type="text" ng-if="!ingredientCategoryController.isNumber(ingredientCategory.categoryCode) || ingredientCategory.isEditing" ng-model="ingredientCategory.categoryDescription">
+							</td>
+							<td can-edit="SM_CODE_04">
+								<i data-ng-click="ingredientCategoryController.editIngredientCode($index)" class="glyphicon glyphicon-edit pointer"  ng-if="!ingredientCategoryController.isAddingIngredientCode && !ingredientCategory.isEditing" style="color: orange; font-size: large"></i>
+								<i data-ng-click="ingredientCategoryController.removeIngredientCode($index)" class="glyphicon glyphicon-remove pointer"  ng-if="!ingredientCategoryController.isAddingIngredientCode && !ingredientCategory.isEditing" style="color: red; font-size: large"></i>
+								<i data-ng-click="ingredientCategoryController.ingredientCodeChanges()" class="glyphicon glyphicon-floppy-disk pointer"  ng-if="ingredientCategoryController.isAddingIngredientCode || ingredientCategory.isEditing" style="color: green; font-size: large"></i>
+								<i data-ng-click="ingredientCategoryController.cancel($index)" class="glyphicon glyphicon-ban-circle pointer" ng-if="ingredientCategory.isEditing" style="color: red; font-size: large"></i>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,82 @@
+<!--
+  ~ taxonomy.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div can-view="PD_TXNMY_00" class="row">
+	<div data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+
+	<div class="col-md-12">
+		<!--current levels section-->
+		<form can-view="PD_TXNMY_01">
+			<fieldset class="customLegend">
+				<legend>Hierarchy</legend>
+				<loading-spinner ng-if="$ctrl.loadingLevels"></loading-spinner>
+				<div class="col-md-10" ng-if="!$ctrl.loadingLevels">
+					<table class="table-heb table-bordered table-striped" style="width: 60%">
+						<thead>
+						<tr>
+							<th style="width: 15%;text-align: center">Current Levels</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="data in $ctrl.levels">
+							<td><div ng-include="'src/customHierarchy/pathRendererNoStyle.html'"></div></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="pull-right" style="padding-right: 15px">
+					<e-commerce-view-hierachy-assigement
+						validation-e-commerce-view="$ctrl.getLevels()"
+						current-tab="$ctrl.matHierarchy" product-master="$ctrl.productMaster"
+						hierarchy-path-limit="$ctrl.hierarchyPathLimit">
+					</e-commerce-view-hierachy-assigement>
+				</div>
+			</fieldset>
+		</form>
+		<!--attributes section-->
+		<form can-view="PD_TXNMY_02">
+			<fieldset class="customLegend">
+				<legend>Attributes</legend>
+				<div class="col-md-12">
+					<product-attributes-component
+						has-changes="$ctrl.hasProductChanges(changes)"
+						product-master="$ctrl.productMaster" product-type="'PROD'" display-name="'Products'">
+					</product-attributes-component>
+					<product-attributes-component
+						has-changes="$ctrl.hasCasePackChanges(changes)"
+						product-master="$ctrl.productMaster"  product-type="'ITMCD'" display-name="'Case Packs(WHS)'">
+					</product-attributes-component>
+					<product-attributes-component
+						has-changes="$ctrl.hasCasePackChanges(changes)"
+						product-master="$ctrl.productMaster"  product-type="'DSD'" display-name="'Case Packs(DSD)'">
+					</product-attributes-component>
+					<product-attributes-component
+						has-changes="$ctrl.hasUPCChanges(changes)"
+						product-master="$ctrl.productMaster" product-type="'UPC'" display-name="'Selling Units'">
+					</product-attributes-component>
+				</div>
+			</fieldset>
+		</form>
+		<div can-edit="PD_TXNMY_02" class="inline-block pull-right" style="padding-top: 5px">
+			<button
+				class="btn btn-default"
+				ng-disabled="!$ctrl.hasChanges()"
+				ng-click="$ctrl.reset()">Reset</button>
+			<button
+				class="btn btn-primary"
+				ng-disabled="!$ctrl.hasChanges()"
+				ng-click="$ctrl.saveChanges()">Save</button>
+		</div>
+	</div>
+</div>

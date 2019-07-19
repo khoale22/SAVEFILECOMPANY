@@ -1,0 +1,847 @@
+<!--
+  ~ productSearch.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="panel panel-primary" ng-controller="ProductSearchController as productSearchController"
+	 ng-init="productSearchController.init()">
+	<div class="panel-heading">Product Search
+		<i id="productSearchVisibility" ng-click="productSearchController.setSearchPanelVisibility()"
+		   class="pull-right pointer"
+		   ng-class="{'glyphicon glyphicon-minus': productSearchController.isSearchPanelVisible(), 'glyphicon glyphicon-plus': !productSearchController.isSearchPanelVisible()}">
+		</i>
+	</div>
+	<div ng-show="productSearchController.isSearchPanelVisible()" class="panel-body black-border panel-collapse">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel-heading">
+					<ul class="nav nav-pills">
+						<li class="active">
+							<a id="productSearchBasicTab" data-target="#basicSearch" data-toggle="tab"
+							   ng-click="productSearchController.initBasicSearch($event)">Basic
+							</a>
+						</li>
+						<li>
+							<a id="productSearchHierarchyTab" data-target="#hierarchySearch" data-toggle="tab"
+							   ng-click="productSearchController.initProductHierarchySearch($event)">Product Hierarchy
+							</a>
+						</li>
+						<li ng-if="productSearchController.showFullPanel()">
+							<a id="productSearchCustomerHierarchyTab" data-target="#customHierarchySearch" data-toggle="tab"
+							   ng-click="productSearchController.initCustomerHierarchySearch($event)">Customer Hierarchy
+							</a>
+						</li>
+						<li>
+							<a id="productSearchBDMTab" data-target="#bdmSearch" data-toggle="tab"
+							   ng-click="productSearchController.initBDMSearch($event)">BDM
+							</a>
+						</li>
+						<!-- Remove MRT panel per Amy. -->
+						<!--<li ng-if="productSearchController.showFullPanel()">-->
+							<!--<a id="productSearchMRTTab" data-target="#mrtSearch" data-toggle="tab"-->
+							   <!--ng-click="productSearchController.initMRTSearch()">MRT-->
+							<!--</a>-->
+						<!--</li>-->
+						<li>
+							<a id="productSearchVendorTab" data-target="#vendorSearch" data-toggle="tab"
+							   ng-click="productSearchController.initVendorSearch($event)">Vendor
+							</a>
+						</li>
+						<li ng-if="productSearchController.showFullPanel()">
+							<a id="productByosSearchTab" data-target="#byosSearch" data-toggle="tab"
+							   ng-click="productSearchController.initByosSearch($event)">BYOS
+							</a>
+						</li>
+						<li ng-if="productSearchController.showFullPanel()">
+							<a id="productDescriptionSearchTab" data-target="#descriptionSearch" data-toggle="tab"
+							   ng-click="productSearchController.initDescriptionSearch($event)">Description
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body">
+					<div class="tab-content">
+
+						<!-- The panel for basic search.  -->
+						<div class="tab-pane active" id="basicSearch">
+							<div class="row">
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+									<!-- List for the different types the user is allowed to search by a list of. -->
+									<div class="row" style="margin-bottom: 10px">
+										<label for="multiValueSearchType">Criteria type</label>
+										<select class="form-control"
+												ng-model="productSearchController.selectionType"
+												id="multiValueSearchType">
+											<option value="{{productSearchController.UPC}}">UPC</option>
+											<option value="{{productSearchController.ITEM_CODE}}">Item Code</option>
+											<option value="{{productSearchController.PRODUCT_ID}}">Product ID
+											</option>
+											<option ng-if="productSearchController.showFullPanel()"
+													value="{{productSearchController.CASE_UPC}}">Case UPC</option>
+											<option ng-if="productSearchController.showFullPanel()"
+													value="{{productSearchController.CLASS}}">Class</option>
+											<option ng-if="productSearchController.showFullPanel()"
+													value="{{productSearchController.COMMODITY}}">Commodity</option>
+											<option ng-if="productSearchController.showFullPanel()"
+													value="{{productSearchController.SUB_COMMODITY}}">Sub Commodity</option>
+										</select>
+									</div>
+									<div class="row">
+											<textarea pattern="[0-9\s,]+"
+												      id="productSearchTextArea"
+													  data-ng-model="productSearchController.searchSelection" rows="8"
+													  placeholder="{{productSearchController.getBasicSearchTextPlaceHolder()}}"
+													  style="width: 100%; resize: vertical" class="form-control">
+											</textarea>
+									</div>
+								</div>
+								<!-- Status filter -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+
+									<Label for="itemStatuBlockBasic">Item Status</Label>
+
+									<div id="itemStatuBlockBasic">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!--Search -->
+									<button id="productSearchBasicSearch"
+											data-ng-click="productSearchController.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null || productSearchController.searchSelection == ''">
+										Search
+									</button>
+									<!-- Clear -->
+									<button id="productSearchBasicClear"
+											data-ng-click="productSearchController.clearBasicSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null || productSearchController.searchSelection == ''">
+										Clear
+									</button>
+									<!-- Add to complex search -->
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchBasicAdd"
+											data-ng-click="productSearchController.addBasicSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null || productSearchController.searchSelection == ''">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End basic search pane -->
+
+						<!-- Panel for hierarchy search. -->
+						<div class="tab-pane" id="hierarchySearch">
+							<div class="row">
+								<!-- Level selection drop-down and search box. -->
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+									<div class="row" style="margin-bottom: 5px">
+
+										<label>
+											<input id="productSearchHierarchySubDepartmentRadio" type="radio" ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.SUB_DEPARTMENT}}"/>Sub Department
+										</label>
+										<label>
+											<input id="productSearchHierarchyClassRadio" type="radio" ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.CLASS}}"/>Class
+										</label>
+										<label>
+											<input id="productSearchHierarchyCommodityRadio" type="radio" ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.COMMODITY}}"/>Commodity
+										</label>
+										<label>
+											<input id="productSearchHierarchySubCommodityRadio" type="radio" ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.SUB_COMMODITY}}"/>Sub Commodity
+										</label>
+
+									</div>
+									<div class="row">
+										<ui-select ng-model="productSearchController.searchSelection"
+												   theme="bootstrap"
+												   id="productSearchSelection"
+												   title="Choose a {{productSearchController.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in productSearchController.valueList"
+												refresh="productSearchController.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<!-- Item Status Filter -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<Label for="statusBlockHierarchy">Item Status</Label>
+
+									<div id="statusBlockHierarchy">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Serach -->
+									<button id="productSearchHierarchySearch"
+											data-ng-click="productSearchController.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchHierarchyAdd"
+											data-ng-click="productSearchController.addHierarchySearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Add
+									</button>
+								</div>
+							</div>
+							<div class="row">
+								<product-hierarchy-search-selection on-update="productSearchController.addSelectedHierarchyItemToSearch(selectedItem)"></product-hierarchy-search-selection>
+							</div>
+						</div>
+						<!-- Panel for customer hierarchy search. -->
+						<div class="tab-pane" id="customHierarchySearch">
+							<div class="row">
+								<custom-hierarchy-search class="col-md-8"
+														 on-custom-hierarchy-page="false"
+														 on-select="productSearchController.addSelectedCustomHierarchyToSearch(selectedLevel, requestNumber)">
+								</custom-hierarchy-search>
+								<!-- Item Status -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<Label for="statusBlockCustomerHierarchy">Item Status</Label>
+
+									<div id="statusBlockCustomerHierarchy">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<button id="productSearchCustomerHierarchySearch"
+											data-ng-click="productSearchController.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="!productSearchController.isLowestCustomHierarchyLevel()">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchCustomerHierarchyAdd"
+											data-ng-click="productSearchController.addCustomerHierarchySearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="!productSearchController.isLowestCustomHierarchyLevel()">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End panel for hierarchy search. -->
+
+						<!-- Panel for BDM search. -->
+						<div class="tab-pane" id="bdmSearch">
+							<div class="row">
+								<!-- BDM drop-down -->
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+									<div class="row">
+										<label for="bdmSearchSelection">Select a BDM</label>
+										<ui-select ng-model="productSearchController.searchSelection"
+												   theme="bootstrap"
+												   id="bdmSearchSelection"
+												   title="Choose a {{productSearchController.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in productSearchController.valueList"
+												refresh="productSearchController.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<!-- Item Status -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<Label for="statusBlockBdm">Item Status</Label>
+
+									<div id="statusBlockBdm">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<button id="productSearchBDMSearch"
+											data-ng-click="productSearchController.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Search
+									</button>
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchBDMAdd"
+											data-ng-click="productSearchController.addBdmSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End BDM panel -->
+
+						<!-- MRT panel -->
+						<div class="tab-pane" id="mrtSearch">
+							<div class="row">
+								<!-- The box to enter item code or case UPC -->
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+									<div class="row" style="margin-bottom: 5px">
+										<label>
+											<input id="productSearchMRTItemCodeRadio" type="radio"
+												   ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.ITEM_CODE}}"/>Item Code
+										</label>
+										<label>
+											<input id="productSearchMRTCaseUPCRadio" type="radio"
+												   ng-model="productSearchController.selectionType"
+												   value="{{productSearchController.CASE_UPC}}"/>Case UPC
+										</label>
+									</div>
+									<div class="row">
+										<input id="productSearchMRTTextArea" type="text" pattern="[0-9]{1,19}"
+											   title="Please enter one valid {{productSearchController.selectionType}}"
+											   ng-model="productSearchController.searchSelection"
+											   placeholder="{{productSearchController.getMrtSearchTextPlaceHolder()}}"
+											   style="width: 100%"
+											class="form-control">
+									</div>
+								</div>
+
+								<!-- status filter -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<label for="statusBlockMrt">Item Status</label>
+
+									<div id="statusBlockMrt">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- buttons -->
+								<div class="col-md-4">
+									<button id="productSearchMRTSearch"
+											data-ng-click="productSearchController.search()"
+											title="Please enter one valid {{productSearchController.selectionType}}"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Search
+									</button>
+								</div>
+
+							</div>
+
+						</div>
+						<!-- End MRT panel -->
+
+						<!-- Vendor panel -->
+						<div class="tab-pane" id="vendorSearch">
+							<div class="row">
+								<!-- Vendor list -->
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+									<div class="row">
+										<label for="vendorSearchSelection">Select a Vendor</label>
+										<ui-select ng-model="productSearchController.searchSelection"
+												   theme="bootstrap"
+												   id="vendorSearchSelection"
+												   title="Choose a {{productSearchController.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in productSearchController.valueList"
+												refresh="productSearchController.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+
+								<!-- Item status -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<label for="statusBlockVendor">Item Status</label>
+
+									<div id="statusBlockVendor">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio" id="vendorStatusDiscontinued"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Search -->
+									<button id="productSearchVendorSearch"
+											data-ng-click="productSearchController.search()"
+											title="Please enter one valid {{productSearchController.selectionType}}"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchVendorAdd"
+											data-ng-click="productSearchController.addVendorSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Add
+									</button>
+								</div>
+
+
+							</div>
+						</div>
+						<!-- End vendor panel -->
+
+						<!-- BOYS -->
+						<div class="tab-pane" id="byosSearch">
+							<!-- This is complicated enough to be moved to a new page and controller -->
+							<div class="row" id="byosSubPane" ng-include="'src/search/byos.html'"></div>
+						</div>
+
+						<!-- End BOYS -->
+
+						<!-- Description panel -->
+						<div class="tab-pane" id="descriptionSearch">
+							<div class="row">
+								<div
+									ng-class="{'col-md-5' : productSearchController.showItemStatusFilter(), 'col-md-8' : !productSearchController.showItemStatusFilter()}">
+
+									<div class="row"  style="margin-bottom: 5px">
+										<div class="col-md-5">
+
+											<input type="checkbox" id="searchByProductDescription"
+												   ng-model="productSearchController.searchByProductDescription">
+											<label for="searchByProductDescription">Product Description</label>
+
+										</div>
+										<div class="col-md-7">
+
+											<input type="checkbox" id="searchByCustomerFriendlyDescription"
+												   ng-model="productSearchController.searchByCustomerFriendlyDescription">
+											<label for="searchByCustomerFriendlyDescription">Customer Friendly Description</label>
+											</div>
+
+											<div class="col-md-5">
+											<input type="checkbox" id="searchByDisplayName"
+												   ng-model="productSearchController.searchByDisplayName">
+											<label for="searchByDisplayName">Display Name</label>
+												</div>
+
+												<div class="col-md-7">
+											<input type="checkbox" id="searchByAllExtended"
+												   ng-model="productSearchController.searchAllExtendedAttributes">
+											<label for="searchByAllExtended">All Extended Attributes</label>
+													</div>
+
+									</div>
+									<div class="row">
+										<!--<label for="productSearchDescriptionText">Description</label>-->
+										<input id="productSearchDescriptionText" type="text"
+											   title="Please enter a description to search for."
+											   ng-model="productSearchController.searchSelection"
+											   placeholder="Description"
+											   class="form-control">
+										</div>
+								</div>
+
+								<!-- Item status -->
+								<div class="col-md-3" ng-if="productSearchController.showItemStatusFilter()">
+									<label for="statusBlockVendor">Item Status</label>
+
+									<div id="statusBlockDescription">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="productSearchController.itemStatus"
+																		  value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Search -->
+									<button id="productSearchDescriptionSearch"
+											data-ng-click="productSearchController.search()"
+											title="Please enter a product description"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="productSearchController.showFullPanel()"
+											id="productSearchDescriptionAdd"
+											data-ng-click="productSearchController.addDescriptionSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="productSearchController.searchSelection == null">
+										Add
+									</button>
+								</div>
+
+							</div>
+						</div>
+						<!-- End description panel -->
+
+						<!-- Panel for BYOS search. -->
+						<!--<div class="tab-pane" id="byosSearch">-->
+						<!--<div class="row">-->
+						<!--<div class="col-md-12">-->
+						<!--<div class="row">-->
+						<!--<div class="col-md-6">-->
+						<!--<label>Current Search Values:</label>-->
+						<!--<ui-select ng-model="productSearchController.byosSearchSelection"-->
+						<!--theme="selectize"-->
+						<!--multiple-->
+						<!--id="byosSearchSelection"-->
+						<!--title="Choose a {{productSearchController.selectionType}}">-->
+						<!--<ui-select-match>{{$item.displayName}}</ui-select-match>-->
+						<!--<ui-select-choices repeat="element in productSearchController.valueList"-->
+						<!--refresh="productSearchController.getCurrentDropDownResults($select.search)"-->
+						<!--refresh-delay="0">{{element.displayName}}-->
+						<!--</ui-select-choices>-->
+						<!--</ui-select>-->
+						<!--<label>Select a field type to search for:</label>-->
+						<!--<select ng-options="o.name for o in productSearchController.byosOptions"-->
+						<!--ng-model="productSearchController.searchingBy">-->
+						<!--</select>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--<div class="row" ng-show="productSearchController.searchingBy">-->
+						<!--&lt;!&ndash; Selecitze for BDM searches. &ndash;&gt;-->
+						<!--<div class="col-md-6" ng-switch="productSearchController.optionHasDropdown()">-->
+						<!--<div ng-switch-when="true">-->
+						<!--<label>Select a {{productSearchController.searchingBy.value}}:</label>-->
+						<!--<ui-select ng-model="productSearchController.searchSelection"-->
+						<!--theme="bootstrap"-->
+						<!--title="Choose a {{productSearchController.selectionType}}"-->
+						<!--ng-change="productSearchController.updateByosSelection()">-->
+						<!--<ui-select-match>{{$select.selected.displayName}}</ui-select-match>-->
+						<!--<ui-select-choices repeat="element in productSearchController.valueList"-->
+						<!--refresh="productSearchController.getCurrentDropDownResults($select.search)"-->
+						<!--refresh-delay="0">{{element.displayName}}-->
+						<!--</ui-select-choices>-->
+						<!--</ui-select>-->
+						<!--</div>-->
+						<!--<div ng-switch-default>-->
+						<!--<div ng-switch="productSearchController.optionHasDate()">-->
+						<!--<div ng-switch-when="true">-->
+						<!--<label>Select Option</label>-->
+						<!--<div class="btn-group">-->
+						<!--<label class="btn btn-primary"-->
+						<!--ng-model="productSearchController.selectionOption.value"-->
+						<!--uib-btn-radio="'Equals'">=</label>-->
+						<!--<label class="btn btn-primary"-->
+						<!--ng-model="productSearchController.selectionOption.value"-->
+						<!--uib-btn-radio="'Less'"><</label>-->
+						<!--<label class="btn btn-primary"-->
+						<!--ng-model="productSearchController.selectionOption.value"-->
+						<!--uib-btn-radio="'Greater'">></label>-->
+						<!--</div>-->
+						<!--<br>-->
+						<!--<label>Select Date</label>-->
+						<!--<pre>{{productSearchController.selectionOption.effectiveDate}}</pre>-->
+						<!--<div class="input-group pull-right">-->
+						<!--<input id="effectiveDate" class="form-control" type="text"-->
+						<!--uib-datepicker-popup-->
+						<!--is-open="productSearchController.effectiveDatePickerOpened"-->
+						<!--ng-model-options="{timezone:'UTC'}"-->
+						<!--ng-model="productSearchController.selectionOption.effectiveDate"-->
+						<!--ng-required="true" close-text="Close"/>-->
+						<!--<span class="input-group-btn">-->
+						<!--<button type="button" class="btn btn-default"-->
+						<!--ng-click="productSearchController.effectiveDatePickerOpened = true">-->
+						<!--<i class="glyphicon glyphicon-calendar"></i>-->
+						<!--</button>-->
+						<!--</span>-->
+						<!--</div>-->
+						<!--<br>-->
+						<!--<button type="button" class="btn btn-success" ng-click="productSearchController.updateByosSelectionWithDateOption()">Add Date</button>-->
+						<!--</div>-->
+						<!--<div ng-switch-default>-->
+						<!--<label>Select Option</label>-->
+						<!--<input type="radio" ng-model="productSearchController.selectionOption"-->
+						<!--value="Yes"-->
+						<!--ng-click="productSearchController.updateByosSelectionWithOption()"/>Yes-->
+						<!--<input type="radio" ng-model="productSearchController.selectionOption"-->
+						<!--value="No"-->
+						<!--ng-click="productSearchController.updateByosSelectionWithOption()"/>No-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--<div class="col-md-6">-->
+						<!--<div class="row">-->
+						<!--&lt;!&ndash; Optional status filter. &ndash;&gt;-->
+						<!--<div class="col-md-6"  ng-show="productSearchController.showItemStatusFilter()">-->
+						<!--<span>Item Status</span>-->
+						<!--<label class="col-md-12"><input type="radio" ng-model="productSearchController.itemStatus"-->
+						<!--value="{{productSearchController.DEFAULT_ITEM_STATUS}}">All</label>-->
+						<!--<label class="col-md-12"><input type="radio" ng-model="productSearchController.itemStatus"-->
+						<!--value="{{productSearchController.ACTIVE_ITEM_STATUS}}">Active</label>-->
+						<!--<label class="col-md-12"><input type="radio" ng-model="productSearchController.itemStatus"-->
+						<!--value="{{productSearchController.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>-->
+						<!--</div>-->
+						<!--&lt;!&ndash; Button to do the search. &ndash;&gt;-->
+						<!--<div class="col-md-6">-->
+						<!--<button data-ng-click="productSearchController.search()" class="btn btn-primary btn-block" data-ng-disabled="productSearchController.searchSelection == null">Search</button>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+						<!--</div>-->
+					</div>
+					<!-- Show the user's selected search criteria. -->
+				</div>
+				<div class="row" ng-show="productSearchController.hasComplexSearch()">
+					<hr style="border-color: black">
+					<div class="col-md-9">
+						<div ng-show="productSearchController.hasProductIdSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeProductIdSearch()"></i>
+							</div>
+							<div class="inline-block">{{productSearchController.getProductIdSearchText()}}</div>
+
+						</div>
+						<div ng-show="productSearchController.hasUpcSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeUpcSearch()"></i>
+							</div>
+							<div class="inline-block">{{productSearchController.getUpcSearchText()}}</div>
+						</div>
+						<div ng-show="productSearchController.hasItemCodeSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeItemCodeSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getItemCodeSearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasCaseUpcSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeCaseUpcSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getCaseUpcSearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasClassSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeClassSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getClassSearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasCommoditySearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeCommoditySearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getCommoditySearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasSubCommoditySearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeSubCommoditySearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getSubCommoditySearchText()}}
+							</div>
+						</div>
+						<div
+							ng-show="productSearchController.hasHierarchySearch(productSearchController.SUB_DEPARTMENT)"
+							style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeHierarchySearch(productSearchController.SUB_DEPARTMENT)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getHierarchySearchText(productSearchController.SUB_DEPARTMENT)}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasHierarchySearch(productSearchController.CLASS)"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeHierarchySearch(productSearchController.CLASS)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getHierarchySearchText(productSearchController.CLASS)}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasHierarchySearch(productSearchController.COMMODITY)"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeHierarchySearch(productSearchController.COMMODITY)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getHierarchySearchText(productSearchController.COMMODITY)}}
+							</div>
+						</div>
+						<div
+							ng-show="productSearchController.hasHierarchySearch(productSearchController.SUB_COMMODITY)"
+							style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeHierarchySearch(productSearchController.SUB_COMMODITY)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getHierarchySearchText(productSearchController.SUB_COMMODITY)}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasCustomerHierarchySearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeCustomerHierarchySearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getCustomerHierachySearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasBdmSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeBdmSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getBdmSearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasVendorSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeVendorSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getVendorSearchText()}}
+							</div>
+						</div>
+						<div ng-show="productSearchController.hasDescriptionSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeDescriptionSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{productSearchController.getDescriptionSearchText()}}
+							</div>
+						</div>
+
+						<div ng-repeat="byosObject in productSearchController.getByosObjects()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="productSearchController.removeByos(byosObject)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{byosObject.description}}
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<button data-ng-click="productSearchController.clearComplexSearch()"
+								class="btn btn-primary btn-block">Clear
+						</button>
+						<button data-ng-click="productSearchController.doComplexSearch()"
+								class="btn btn-primary btn-block">Search
+						</button>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

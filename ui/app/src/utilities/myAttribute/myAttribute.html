@@ -1,0 +1,35 @@
+<!--
+myAttribute.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.17.0
+  -->
+<div id="myAttribute" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="MyAttributeController as $ctrl" ng-init="$ctrl.init(false)">
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<!-- The title modal -->
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block"><strong>Find My Attribute</strong></h4>
+			</div>
+			<div class="panel-body">
+				<div style="width: 100%;max-height: 600px;border: 1px solid black;">
+					<div ng-include="'src/utilities/myAttribute/myAttributeContent.html'"></div>
+				</div><div >
+				<div class="pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+					<button class="btn btn-primary"
+							ng-if="filter.attributeName || filter.existingApplication || filter.newScreen"
+							data-ng-click="$ctrl.clearFilter()">Clear Filter
+					</button>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>

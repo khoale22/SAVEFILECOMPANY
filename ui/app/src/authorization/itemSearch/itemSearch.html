@@ -1,0 +1,109 @@
+<!--
+  ~ itemSearch.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div  ng-init="$ctrl.init()">
+<div id="authorization" class="row" style="padding-top: 10px;">
+	<div class="form-group col-lg-3">
+		<label style="font-weight: bold; width: 100%">Store</label>
+			<ui-select ng-model="$ctrl.selectedStore"
+					   theme="bootstrap" search-enabled="false">
+				<ui-select-match placeholder="Select">
+					<span style="margin-top:5px"> {{$select.selected.label}} </span>
+				</ui-select-match>
+				<ui-select-choices refresh-delay="0"
+								   repeat="store in $ctrl.stores">
+					{{store.label}}
+				</ui-select-choices>
+			</ui-select>
+	</div>
+	<div class="form-group col-lg-2">
+		<label style="font-weight: bold; width: 100%">UPC/PLU</label>
+		<div class="form-group">
+			<input class="form-control"
+				   type="text" numeric-only
+				   ng-model="$ctrl.upc"
+				   maxlength="13" style="border-color: #ccc!important;">
+		</div>
+	</div>
+
+	<div class="col-lg-2" style="vertical-align: bottom;">
+		<label style="text-align: center;font-weight: bold; width: 100%">&nbsp;</label>
+		<div class="inline-block" style="vertical-align: bottom">
+			<button type="button" class="btn btn-primary" aria-label="Search"
+					ng-click="$ctrl.search()" data-ng-disabled="$ctrl.isWaiting"> Search
+			</button>
+		</div>
+	</div>
+</div>
+<div data-ng-if="!$ctrl.isWaiting && $ctrl.authorizeItems != null">
+	<div data-ng-if="$ctrl.authorizeItems.length > 0">
+		<div>{{$ctrl.productDescription}}</div>
+		<!-- isUPCSupplied == true-->
+		<div data-ng-if="$ctrl.isUPCSupplied" class="text-center"><span color="red"><b>UPC was supplied by Scan Based Vendor.</b></span>&nbsp;&nbsp;&nbsp;
+		</div>
+		<!-- isUPCSupplied == false-->
+		<div data-ng-if="!$ctrl.isUPCSupplied">
+			<table class="table table-heb table-condensed table-striped">
+				<thead style="font-size: 12px !important;">
+				<tr style="border-bottom:hidden; height: 25px;">
+					<th style="width: 8%;text-align: center;">Type</th>
+					<th style="width: 8%;text-align: center;">Item</th>
+					<th style="width: 28% ;text-align: center;">Description</th>
+					<th style="width: 8%;text-align: center;">Status</th>
+					<th style="width: 8%;">Vendor ID</th>
+					<th style="width: 14%;">Vendor Name</th>
+					<th style="width: 8%;">Pack</th>
+					<th style="width: 10%;">Size</th>
+					<th style="width: 8%;">List Cost($)</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="authorizeItem in $ctrl.authorizeItems | orderBy:'vendorId':false">
+					<td style="width: 8%;text-align: center;"><input type="radio" ng-disabled="!$ctrl.canEditAuthorizeItem()"
+																	 ng-model="$ctrl.selectedItem"
+																	 ng-value="authorizeItem"><span style="line-height: 19px;vertical-align: inherit;">&nbsp;{{$ctrl.getDisplayItemType(authorizeItem.itemType)}}</span></td>
+					<td style="width: 8%;text-align: center;vertical-align: middle">{{authorizeItem.itemId}}</td>
+					<td style="width: 28% ;text-align: center;vertical-align: middle">{{authorizeItem.productDescription}}</td>
+					<td ng-if="authorizeItem.status" style="width: 8%;text-align: center;vertical-align: middle">ACTIVE</td>
+					<td ng-if="!authorizeItem.status"  style="width: 8%;text-align: center;vertical-align: middle">INACTIVE</td>
+					<td style="width: 8%;vertical-align: middle">{{authorizeItem.vendorId}}</td>
+					<td style="width: 14%;vertical-align: middle">{{authorizeItem.vendorName}}</td>
+					<td style="width: 8%;vertical-align: middle">{{authorizeItem.packQuantity}}</td>
+					<td style="width: 10%;vertical-align: middle">{{authorizeItem.itemSizeQuantity}}{{authorizeItem.itemSizeUom}}</td>
+					<td ng-if="authorizeItem.listCost > 0" style="width: 8%;vertical-align: middle">{{authorizeItem.listCost | number:2}}</td>
+					<td ng-if="authorizeItem.listCost <= 0" style="width: 8%;vertical-align: middle">{{authorizeItem.listCost | number:1}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="inline-block pull-right" ng-if="!$ctrl.canEditAuthorizeItem()">
+			<button data-ng-if="!$ctrl.isUPCSupplied" type="button" class="btn btn-primary" style="font-weight: bold"
+					aria-label="Authorize" disabled
+					> Authorize
+			</button>
+		</div>
+		<div class="inline-block pull-right" can-edit="AT_JVSS_01">
+			<button data-ng-if="!$ctrl.isUPCSupplied" type="button" class="btn btn-primary" style="font-weight: bold"
+					aria-label="Authorize"
+					ng-click="$ctrl.showAuthorizeItemScreen()"> Authorize
+			</button>
+		</div>
+	</div>
+	<!-- empty authorizeItems-->
+	<div data-ng-if="$ctrl.authorizeItems.length == 0">
+		<!-- isUPCSupplied == true-->
+		<div data-ng-if="$ctrl.isUPCSupplied" class="text-center"><span color="red"><b>UPC was supplied by Scan Based Vendor.</b></span>&nbsp;&nbsp;&nbsp;
+		</div>
+		<!-- isUPCSupplied == false-->
+		<div data-ng-if="!$ctrl.isUPCSupplied" class="text-center"><Strong>UPC does not exist.</Strong></div>
+	</div>
+</div>
+	<loading-spinner ng-show="$ctrl.isWaiting">
+	</loading-spinner>
+</div>

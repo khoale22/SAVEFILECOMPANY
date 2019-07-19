@@ -1,0 +1,56 @@
+<!--
+  ~ associatedProductTable.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div ng-init="$ctrl.init()" id="associated-product-table" ng-if="$ctrl.product !== undefined">
+	<div style="margin: 0 auto;padding: 20px ;" ng-show="$ctrl.isWaiting">
+		<!-- Waiting spinner. -->
+		<loading-spinner style="">
+		</loading-spinner>
+
+	</div>
+	<div class="form-group" ng-show="!$ctrl.isWaiting"  ng-class="{avoidClicks:$ctrl.isWaitLoadAssociatedProductDetail}">
+
+		<table ng-table-dynamic="$ctrl.tableParams with $ctrl.cols"
+			   class="table-heb table-bordered table table-condensed table-bordered table-striped">
+			<tr id="row{{$index}}" ng-repeat="row in $data track by $index" ng-click="$ctrl.itemClick(row)"
+
+				ng-class="{active: isActive(row)}" >
+				<td ng-repeat="col in $columns" bind-compiled-html="col.getValue(this, row)"></td>
+			</tr>
+		</table>
+	</div>
+	<div class="form-group" style="    display: inline-block;    float: right;" ng-show="!$ctrl.isWaiting">
+		<button view-only="PG_MENU_00" disabled= "disabled" class="btn pull-right btn-primary">Clear</button>
+		<button can-edit="PG_MENU_00" class="btn pull-right btn-primary" ng-click="$ctrl.doClearAssociatedProduct()" ng-disabled="!$ctrl.isEnabledClearButton() || $ctrl.isWaitLoadAssociatedProductDetail">Clear</button>
+	</div>
+
+</div>
+<div id="confirmationModalSave" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messagePopup}}</h5>
+			</div>
+
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.clearAssociatedProduct()">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							data-dismiss="modal">No
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,1290 @@
+/*update logout button to poitner*/
+.pointer {
+	cursor: pointer;
+}
+
+.margin {
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.text-center {
+	text-align: center;
+}
+
+/* non-resizable content class */
+.noresize {
+	resize: none;
+}
+
+.loader {
+	position: relative;
+	left: 50%;
+	top: 50%;
+	margin: 15px 0 0 -75px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.underline-text-with-padding {
+	text-decoration: underline;
+	padding-left: 15px;
+}
+
+.red-text {
+	color: red;
+}
+
+.green-text {
+	color: #5dd742;
+}
+
+.table-heb th.sortable .sort-indicator:after, .table-heb th.sortable .sort-indicator:before,
+.table-heb th.sortable.sort-desc .sort-indicator:after,
+.table-heb th.sortable.sort-asc .sort-indicator:after {
+	border-color: white transparent;
+	opacity: 1;
+}
+
+.yellow-underline-text-with-padding {
+	color: #fdfd01;
+	text-decoration: underline;
+	padding-left: 15px;
+}
+
+.top-buffer {
+    margin-top: 20px;
+}
+
+/*
+ * Overwriting some of (not all) bootstraps's modal-content and modal-header class's default behaviour. Class to  be
+ * used  along with bootstrap's modal-content and modal-header.
+*/
+.pm-modal-header {
+	padding: 10px;
+	color: #ffffff;
+	background-color: #337ab7;
+	border-radius: 4px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.ng-table-pager-none div[ng-table-pagination] {
+	display: none !important;
+}
+
+.ng-table-pager ul {
+	margin-top: 15px;
+	margin-bottom: 0;
+}
+
+/*
+ * Bootstrap 3 removed sub-menus, but we have a requirement to use them. The below CSS comes from Stack Overflow
+ * with a few minor modifications. The original thread is here: http://stackoverflow.com/questions/18023493/bootstrap-3-dropdown-sub-menu-missing.
+ * Authors: http://stackoverflow.com/users/2411320/gsamaras and http://stackoverflow.com/users/171456/zimsystem
+ */
+
+.dropdown-submenu {
+	position:relative;
+	font-size: 12px;
+}
+.dropdown-submenu>.dropdown-menu {
+	top:0;
+	left:100%;
+	margin-top:-6px;
+	margin-left:-1px;
+	-webkit-border-radius:0 6px 6px 6px;
+	-moz-border-radius:0 6px 6px 6px;
+	border-radius:0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+	display:block;
+}
+.dropdown-submenu>a:after {
+	display:block;
+	content:" ";
+	float:right;
+	width:0;
+	height:0;
+	border-color:transparent;
+	border-style:solid;
+	border-width:5px 0 5px 5px;
+	border-left-color:#cccccc;
+	margin-top:5px;
+	margin-right:-10px;
+}
+.dropdown-submenu:hover>a:after {
+	border-left-color:#ffffff;
+}
+.dropdown-submenu.pull-left {
+	float:none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+	left:-100%;
+	margin-left:10px;
+	-webkit-border-radius:6px 0 6px 6px;
+	-moz-border-radius:6px 0 6px 6px;
+	border-radius:6px 0 6px 6px;
+}
+
+.panel {
+	border-color: #000000;
+}
+/** Code Table styles customization-- Starts*/
+#codeTableGrid > .col-md-3 {
+	padding-right: 3px;
+	padding-left: 3px;
+}
+#codeTableGrid > .col-md-9 {
+	padding-right: 3px;
+	padding-left: 3px;
+}
+.editable-ng-table td:last-child {
+	min-width: 90px;
+}
+.editable-table > tbody > tr > td {
+	padding: 1px;
+}
+.editable-text {
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	display: inline-block;
+}
+.editable-table tbody > tr > td > .controls {
+//width: 100%
+}
+.editable-input {
+	padding-left: 3px;
+}
+.editable-input.input-sm {
+	height: 30px;
+	font-size: 14px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.code-table-message-container {
+	padding-bottom: 2px;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+.code-table-message-table{
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+.code-table-message-display-cell{
+	float: none;
+	display: inline-block;
+	vertical-align: bottom;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.code-table-message-alert {
+	padding: 7px;
+	margin-bottom: 2px;
+}
+.col-centered {
+	display:inline-block;
+	float:none;
+}
+/** Code Table styles customization-- Ends*/
+
+#pd-main-container {
+	background-color: #fff; /*#D5D8DC;*/
+	padding-top: 1%;
+}
+
+#pdRibbon {
+	background-color:#005A86;
+	color: #fff;
+}
+
+/** product details -customization -- Starts*/
+
+#pdTabsContainer > .nav > label {
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#pdTabsContainer > .nav > li > a {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+	padding-right: 0px;
+}
+
+#pdTabsContainer > .nav-pills > li > a {
+	border-radius: 0px;
+}
+
+#pdSummary .panel {
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+}
+#pdSummary > .panel-primary{
+	border-color: #ddd;
+}
+
+#pdSummary  > .panel-primary > .panel-heading {
+	border-radius: 0%;
+	border-color: #ddd;
+	padding: 3px 9px;
+	background: #005A86;
+}
+
+#pdWorkArea .panel {
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+}
+#pdWorkArea > .panel-primary{
+	border-color: #ddd;
+}
+
+#pdWorkArea > .panel-primary > .panel-heading {
+	border-radius: 0%;
+	border-color: #ddd;
+	padding: 3px 9px;
+	background: #005A86;
+	/**background: linear-gradient(to bottom, rgba(0, 65, 98, 1) 0%, rgba(0, 80, 120, 1) 100%);*/
+	/*background: #D6DBDF;*/
+}
+
+.divider-horizontal{
+	margin-top:5px;
+	margin-bottom:5px;
+	height:1px;
+	width:100%;
+	border-top:1px solid gray;
+}
+
+#pdTabsContainer .glyphicon-triangle-left {
+	color: #ffffff;
+	font-size: large;
+}
+.pd-tabs-container {
+	padding: 0px;
+}
+
+/** Table Row - Selected Row style */
+.row-selected {
+	background-color: #337ab7 !important;
+}
+
+/** Table Row - Candidated Row style */
+.row-candidated {
+	background-color: #ff0000 !important;
+}
+
+/** Link is disabled */
+.linkDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: grey;
+}
+
+input.ng-invalid.ng-touched {
+	outline: none;
+	border-color: red;
+}
+
+button.uib-clear {
+	display: none;
+}
+/** product details -customization - ends*/
+.input-no-spinner::-webkit-outer-spin-button, .input-no-spinner::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/*lower font size of bootstrap legend (default was 21px)*/
+.legend-small {
+	font-size: 15px;
+}
+
+/*Removes borders from tables sets a minimum length*/
+.table-warehouse > tbody > tr > td,
+.table-warehouse > tbody > tr > th,
+.table-warehouse > tfoot > tr > td,
+.table-warehouse > tfoot > tr > th,
+.table-warehouse > thead > tr > td,
+.table-warehouse > thead > tr > th {
+	border: none;
+	min-width: 200px;
+}
+
+/* Home - Task Summary screen associated class -- starts. */
+.task {}
+/* Removes extra margins about the sides of the summary row. */
+.task .row {
+	margin-left: 0%;
+	margin-right: 0%;
+}
+/* Verticl divider. */
+.task .v-divider{
+	height: 30px;
+	border-left: 1px solid #ADB2B5;
+	float: left;
+	opacity: 0.5;
+	margin: 0 15px;
+}
+/* Task count font defintion.*/
+.task .task-number {
+	font-size: 200%;
+	line-height: 100%;
+	font-family: arial;
+	color: #73879C;
+}
+/* Task Name font defintion.*/
+.task .task-name {
+	font-size: 100%;
+	font-weight: 600;
+}
+.task-img-thumbnail {
+	width: 40px;
+	height: 40px;
+}
+/* Home - Task Summary screen associated class -- ends */
+/* Adds light blue background on hover*/
+.add-hover-background:hover {
+	background: #a8d6ed;
+}
+
+/* Adds dark blue background and white text*/
+.add-click-background {
+	background: #5d7c8b !important;
+	color: white;
+}
+
+/*To be able to have 5 equal columns without losing border*/
+/*source: https://stackoverflow.com/questions/10387740/five-equal-columns-in-twitter-bootstrap @Fizzix solution*/
+.col-md-5ths {
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+@media (min-width: 992px) {
+	.col-md-5ths {
+		width: 20%;
+		float: left;
+	}
+}
+
+#code-table #code-table-left-panel ul li{    list-style: none;}
+#code-table #code-table-left-panel ul li button.btn{ text-align: left;}
+#code-table #code-table-left-panel ul li button.active{background: #337ab7; color: white !important;}
+#code-table .filter-btn-style {
+	background: transparent url(../images/clear-filter-flat.png) no-repeat center;
+	height: 25px;
+	width: 25px;
+	border: none;
+	/* 	background-size: 13px 13px; */
+}
+#code-table th button{
+	background: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+#code-table .ui-select-bootstrap span.ui-select-toggle {
+	height: 25px;
+}
+
+#code-table .input-group-sm.ui-select-match.ng-scope .ui-select-search {
+	display: none;
+}
+
+#code-table .panel-body .ui-select-bootstrap .ui-select-toggle > a.btn-link {
+	margin-top: 3px;
+}
+
+#code-table .ui-select-match-text {
+	padding-top: 4px;
+	display: inline-block;
+}
+
+#code-table table th{
+	padding:5px !important;
+	font-size: 12px;
+}
+#code-table table th input{
+	margin-top: 5px !important;
+}
+
+/* Begin Batch Upload. */
+.batchUpload{}
+.image-preview-input {
+	/*position: relative;*/
+	overflow: hidden;
+	margin: 0px;
+}
+
+.image-preview-input input[type=file] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.batchUpload .btn{
+	padding: 7px 12px;
+}
+
+.image-preview-input-title {
+	margin-left: 2px;
+}
+
+.btn-generate-template{
+	width:150px; border-radius: 4px !important;
+}
+
+.btn-browser{
+	width:70px;
+	border-top-left-radius: 0px !important;
+	border-bottom-left-radius: 0px !important;
+}
+
+.btn-upload{
+	width:70px; border-radius: 4px !important;
+}
+.margin-top-10{
+	margin-top:10px !important;
+}
+.margin-top-20{
+	margin-top:20px !important;
+}
+.margin-left-10{
+	margin-left:10px !important;
+}
+
+.margin-right-10{
+	margin-right:10px !important;
+}
+
+.batchUploadConfirmation{}
+.batchUploadConfirmation .modal-header{
+	background-color: #337ab7;
+}
+
+.batchUploadConfirmation .modal-header  h5{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	color: #ffffff;
+}
+.batchUploadConfirmation .col-md-3{
+	line-height:2.7em; padding-left:0px!important;padding-right:0px!important;
+}
+.batchUploadConfirmation .col-md-9{
+	padding-left:0px!important;padding-right:0px!important;
+}
+.batchUploadResults{}
+.batchUploadResults  .modal-header{
+	background-color: #337ab7;
+}
+
+.batchUploadResults .modal-header  h5{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	color: #ffffff;
+}
+/* End Batch Upload. */
+.table-heb-filter > thead > tr >th{
+	border-bottom-width: 0px;
+	border-top-width: 0px;
+	padding: 5px !important;
+	font-size: 12px;
+}
+.white-text{
+	color: white;
+}
+.table-heb-filter th.filter .input-filter {
+	height: 25px;
+	min-height: 25px;
+}
+.has-error-popup.active-tooltip .ui-select{
+	border: 2px solid red;
+	border-radius: 7px;
+}
+.has-error-popup.active-tooltip .tooltip .tooltip-arrow{
+	border:0px solid #d1d1d1;
+}
+.has-error-popup.active-tooltip .tooltip .tooltip-inner{
+	background: #f1f1f1;
+	color:black;
+	border:1px solid #d1d1d1;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1), 0 3px 20px 0 rgba(0, 0, 0, 0.1);
+}
+.has-error-popup.active-tooltip .form-control{
+	border:2px solid red;
+}
+textarea.ng-invalid.ng-touched {
+	 outline: none;
+	 border-color: red;
+	 border:2px solid red;
+}
+.tooltip .tooltip-inner{
+	background: #f1f1f1;
+	color:black;
+	border:1px solid #d1d1d1;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1), 0 3px 20px 0 rgba(0, 0, 0, 0.1);
+}
+.tooltip .tooltip-arrow{
+	border:0px solid #d1d1d1!important;
+}
+.has-error-popup input.ng-valid {
+	border-color: #ccc!important;
+	-webkit-appearance: textfield;
+	background-color: white;
+	-webkit-rtl-ordering: logical;
+	user-select: text!important;
+	cursor: auto;
+	padding: 1px!important;
+	border-width: 1px!important;
+	border-style: solid!important;
+}
+.has-error-popup textarea.ng-valid {
+	border-color: #ccc!important;
+	-webkit-appearance: textfield;
+	background-color: white;
+	-webkit-rtl-ordering: logical;
+	user-select: text!important;
+	cursor: auto;
+	padding: 1px!important;
+	border-width: 1px!important;
+	border-style: solid!important;
+}
+#code-table table th select {
+	margin-top: 5px !important;
+}
+
+/*HL CSS for Choice Image Upload  */
+#upload-choice-image .modal-header {
+	background-color: #337ab7;
+	color: white;
+}
+
+.upload-choice-image{
+	visibility: hidden;
+	position: absolute;
+}
+
+.browse-btn {
+	height: 25px;
+}
+
+.icon-image {
+	font-size: 9px;
+}
+
+.margin-bottom-5 {
+	margin-bottom: 5px;
+}
+
+.form-upload-image {
+	padding: 10px 30px;
+}
+
+.form-lable{
+	font-size: 12px;
+	font-weight: 600px;
+}
+/*End CSS for Choice Image Upload  */
+
+/*HL CSS for Choice Detail*/
+.img-choice-detail{
+	height: 40px;
+	width: 40px;
+	cursor: hand;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.icon-warning {
+	color: orange;
+	margin-top: 5px;
+	font-size: 12px;
+	float: right;
+}
+
+/*End CSS for Choice Detail  */
+.ui-select-bootstrap .ui-select-toggle > .caret{
+	right: 5px !important;
+	pointer-events: none;
+}
+
+/*HL CSS for Choice Image Upload  */
+#upload-choice-image .modal-header {
+	background-color: #337ab7;
+	color: white;
+}
+
+.upload-choice-image{
+	visibility: hidden;
+	position: absolute;
+}
+
+.browse-btn {
+	height: 25px;
+}
+
+.icon-image {
+	font-size: 9px;
+}
+
+.margin-bottom-5 {
+	margin-bottom: 5px;
+}
+
+.form-upload-image {
+	padding: 10px 30px;
+}
+
+.form-lable{
+	font-size: 12px;
+	font-weight: 600px;
+}
+/*End CSS for Choice Image Upload  */
+
+/*HL CSS for Choice Detail*/
+.img-choice-detail{
+	height: 40px;
+	width: 40px;
+	cursor: hand;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.icon-warning {
+	color: orange;
+	margin-top: 5px;
+	font-size: 12px;
+	float: right;
+}
+
+/*End CSS for Choice Detail  */
+.ui-select-bootstrap .ui-select-toggle > .caret{
+	right: 5px !important;
+}
+
+/*HL CSS for Product Group Type Details */
+#code-table .multiselect {
+	width: 30em;
+	height: 12.5em;
+	border: solid 1px #c0c0c0;
+	overflow: auto;
+	padding: 10px;
+}
+#code-table .multiselect label {
+	display: block;
+}
+
+.table-scroll thead {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.table-scroll tbody {
+	max-height: 100px;
+	overflow-y: auto;
+	display: block;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.table-scroll tr {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+
+#product-group-choice-type-table > tbody > tr > td{
+	border-top: none;
+}
+
+.padding-left-5 {
+	padding-left: 5px;
+}
+
+.padding-right-5 {
+	padding-right: 5px;
+}
+
+/*End HL CSS for Product Group Type Details  */
+.spelling-check-fix{color:green;}
+.spelling-check-banned{color:red;font-weight: bold;}
+.spelling-check-error{color:#a94442;text-decoration: underline;}
+
+.small-loader {
+	border: 5px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 5px solid #3498db;
+	width: 10px;
+	height: 10px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+.disabled-div {
+	pointer-events: none;
+	opacity: 0.8;
+}
+
+/* ecom view css starts */
+#ecom-view-tabs .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+	cursor: default;
+	color: #fff;
+	background-color: #337ab7;
+	border-radius: 4px;
+}
+#ecom-view-tabs .nav-tabs > li {
+	border: 0px;
+	margin: -1px -1px -1px -1px;
+}
+#ecom-view-tabs .nav-tabs > li > a {
+	padding: 5px 10px;
+}
+.card {
+	border-radius: 3px;
+	border: 1px solid rgba(0,0,0,.2);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+	transition: 0.3s;
+	margin-bottom: 7px;
+	background: #ffffff;
+}
+.card-primary {
+	/*border-top: 3px solid #3c8dbc;*/
+}
+.card-danger {
+	/*border-top: 3px solid #a94442;*/
+}
+.card:hover {
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
+.card-inline {
+	padding: 0px 2px 0px 2px;
+	margin: 3px 0px 3px 0px;
+}
+.card .card-header-primary{
+	background-color: #337ab7;
+	color: white;
+}
+.card-header {
+	/*background: #337ab7;*/
+	/*border-bottom: 1px solid #d9d9d9;*/
+	background: #e1e4ea;
+	padding: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #006666; /*#128dc2*/
+	display: block;
+	position: relative;
+	margin-bottom: 10px;
+}
+.card-header-no-border {
+	border-bottom: 0px;
+}
+.card-body {
+	padding: 3px 3px 3px 3px;
+	background: #ffffff;
+	font-size: 11px;
+}
+.card-header [class^="fa"], .card-header [class*="fa"],
+.card-header [class^="glyphicon"], .card-header [class*="glyphicon"] {
+	margin-right: 7px;
+	font-size: 14px;
+}
+.ecom-menu {
+	min-height: 20px;
+	padding: 5px;
+	margin-bottom: 1px;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+}
+.ecom-box {
+	display: block;
+	min-height: 50px;
+	font-size: 11px;
+	margin-bottom: 10px;
+}
+.ecom-box-title {
+	padding-left: 0px;
+	font-size: 11px;
+	font-weight: bold;
+}
+.ecom-img-pri {
+	margin-top: 5%;
+	margin-bottom: 5%;
+	text-align: center;
+	padding-left: 0px;
+}
+.ecom-img-alt {
+	height: 200px;
+	text-align: center;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-left:0px;
+}
+.selected{
+	background:#6d8192;
+	color:white;
+}
+.red {
+	border: solid 1px red;
+}
+/* ecom view css ends */
+
+/*
+https://stackoverflow.com/questions/27272595/multi-lined-word-wrap-select-choices-in-angular-ui-select
+Matthew S. solution
+*/
+.ui-select-bootstrap .ui-select-match > span {
+	white-space: normal;
+	height: auto;
+	min-height: 25px;
+}
+
+/**
+https://stackoverflow.com/questions/41614446/change-pointer-for-checkbox-html
+Mukesh Ram solution
+ */
+#taskButtonGroup .btn {
+	border-color: #3276b1;
+}
+#taskButtonGroup .btn.active {
+	background-color: #337ab7;
+	color: #ffffff;
+}
+
+.close-white {
+	color: #ffffff;
+	text-shadow: none;
+	opacity: 1;
+}
+/* ecom view css ends */
+#content-productGroupInfo .ui-select-match-text,#content-productGroupInfo .ui-select-placeholder, #data-mass-fill .ui-select-match-text,#data-mass-fill .ui-select-placeholder{
+	padding-top: 4px;
+	display: inline-block;
+}
+
+/* product group view css starts */
+.product-group-selected {
+	background-color: #337ab7 ;
+	color: white ;
+}
+
+.product-group-selected > td > a {
+	color: white ;
+}
+
+#productGroup .panel-body .ui-select-bootstrap .ui-select-toggle.form-control {
+	height: 30px;
+	font-size: 12px;
+}
+
+#productGroup .panel-body .ui-select-match-text {
+	padding-top: 1px;
+	display: inline-block;
+}
+.product-group-ui-select .ui-select-match-text{
+	padding-top: 5px;
+	display: inline-block;
+}
+
+.image-thumbnail{
+	height: 50px;
+	width: 50px;
+	cursor: hand;
+}
+
+/* product group view css end */
+#associated-product-table table .col1{
+	width:1%;
+}
+#associated-product-table table .col2{
+	width:20%;
+}
+table.table-heb tr.active td{
+	background-color: rgba(0, 65, 98, 0.22);
+}
+.pg-detail-header button.glyphicon[disabled]{
+	color:#a78d8db8;
+}
+
+/* product group view css starts */
+#productGroup .panel-body .ui-select-bootstrap .ui-select-toggle.form-control {
+	height: 30px;
+	font-size: 12px;
+}
+
+#productGroup .panel-body .ui-select-match-text {
+	padding-top: 1px;
+	display: inline-block;
+}
+
+.image-metadata-ui-select .ui-select-match-text{
+	white-space: nowrap;
+	padding-top: 5px;
+	display: inline-block;
+}
+
+.image-thumbnail{
+	height: 50px;
+	width: 50px;
+	cursor: hand;
+}
+
+/* product group view css end */
+#associated-product-table table .col1{
+	width:1%;
+}
+#associated-product-table table .col2{
+	width:20%;
+}
+table.table-heb tr.active td{
+	background-color: rgba(0, 65, 98, 0.22);
+}
+.pg-detail-header button.glyphicon[disabled]{
+	color:#a78d8db8;
+}
+
+/* product group view css starts */
+#productGroup .panel-body .ui-select-bootstrap .ui-select-toggle.form-control {
+	height: 30px;
+	font-size: 12px;
+}
+
+#productGroup .panel-body .ui-select-match-text {
+	padding-top: 1px;
+	display: inline-block;
+}
+/**
+https://stackoverflow.com/questions/41614446/change-pointer-for-checkbox-html
+Mukesh Ram solution
+ */
+input[type="checkbox"] {
+	cursor: pointer;
+}
+
+/* product group view css end */
+input[type="radio"] {
+	cursor: pointer;
+}
+
+.refresh-xs {
+	font-size:12px;
+}
+.refresh-sm {
+	font-size:24px;
+}
+.refresh-md {
+	font-size:36px;
+}
+.refresh-lg {
+	font-size:48px;
+}
+.choice-type-box h5{
+	margin:0;
+}
+
+.radio-ecom-view{
+	margin-bottom: 10px;
+	float: left;
+	padding-right: 0px;
+	margin-right: 10px;
+	margin-top: 10px;
+	max-width: 200px;
+}
+.radio-ecom-view:hover{
+	background-color:#ccc ;
+}
+.radio-ecom-view img{
+	width:30px;
+	height: 30px;
+}
+.radio-ecom-view .media-heading{
+	display: inline-block;
+	width: 100%;
+	padding-right: 25px;
+	float: left;
+	padding-left: 0;
+}
+.radio-ecom-view .media-body{
+	width:auto;
+	padding-top: 5px;
+}
+.choice-type-box{
+	background-color: transparent ;
+}
+.choice-type-box.active{
+	background-color: #337ab78c;
+}
+.choice-type-box.active .well-header-primary h5{
+	color:white;
+}
+
+.pg-ecom-img-alt{
+	height: 270px;
+}
+.header-variants{
+	padding-top: 10px;
+}
+.header-variants > div{
+	display:inline-block;
+	margin-bottom: 5px;
+}
+.red {
+	border: solid 1px red;
+}
+#addVariants .ui-select-match-text {
+	padding-top: 4px;
+	display: inline-block;
+}
+
+.date-picker {
+	height: 28px !important;
+	text-align: center;
+}
+
+.date-picker-ecommerceview {
+	height: 28px !important;
+	min-width: 67px;
+	text-align: center;
+}
+
+.narrow-left-column {
+	text-align: right !important;
+	padding-right: 5px !important;
+}
+
+.narrow-right-column {
+	text-align: left !important;
+	padding-left: 5px !important;
+}
+
+.narrow-middle-column {
+	padding-right: 0 !important;
+}
+.avoidClicks ul.pagination.ng-table-pagination{
+	pointer-events: none;
+}
+
+.packed-row {
+	margin-bottom: 5px;
+}
+/* Style for ecommerce task view */
+.dropdown-multiselect {
+	width: 100%
+}
+
+.dropdown-multiselect button.dropdown-toggle{
+	width: 100%;
+    text-align: left;
+    height: 25px;
+	padding: 0px 6px;
+}
+
+.dropdown-multiselect button.dropdown-toggle .caret{
+	float: right;
+    margin-top: 4px;
+}
+
+.dropdown-multiselect .dropdown-menu .checkbox {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.dropdown-multiselect .dropdown-menu label {
+	padding-top: 5px;
+}
+
+.dropdown-multiselect .dropdown-menu a[disabled]  input.checkboxInput{
+	pointer-events: none;
+	opacity: 0.5;
+}
+#productUpdatesForm table tbody tr.changed{
+	background-color:#f9dfdf ;
+}
+/* Style for ecommerce task view  End*/
+#taskManagement .dropdown-menu{
+	left: -76px;
+}
+#code-table table th input.ui-select-search{
+	margin-top:0px !important;
+}
+#code-table table th .ui-select-refreshing.ui-select-spin{
+	color:#337ab7 ;
+}
+#code-table table th .ui-select-container .ui-select-placeholder  {
+	line-height: 25px;
+}
+
+.green-background-white-text {
+	background: green !important;
+	color: white;
+}
+
+.dark-green-text {
+	color: green;
+}
+#taxCategoryModal .ui-select-container  .ui-select-match-text{
+	margin-top: 4px;
+}
+.multiple-destination-domains {
+	min-width: 100px;
+}
+.scrollable-menu {
+    height: auto;
+    max-height: 210px;
+    overflow-x: hidden;
+}
+#myAttribute .ng-table-pager{
+	 display: none;
+}
+
+.customLegend {
+	border: 1px solid #e5e5e5;
+	padding: 2em 0 1em;
+	margin-top: 2em;
+	position: relative;
+}
+.customLegend legend {
+	border: 0;
+	background: #fff;
+	width: auto;
+	transform: translateY(-50%);
+	position: absolute;
+	top: 0; left: 1em;
+	padding: 0 .5em;
+}
+.case-pack-collapse-button {
+	background-color: rgba(0, 65, 98, 1);border:1px solid #d3d3d3;
+	border-radius: 0 10px 10px 0;
+}
+
+.selling-unit-collapse-button {
+	background-color: rgba(0, 65, 98, 1);border:1px solid #d3d3d3;
+	border-radius: 10px 0 0 10px;
+}
+
+.case-pack-arrow-button {
+	padding-left: 0px !important;
+	width: 0;
+	display: inline-block;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-right:5px solid black;
+}
+.selling-unit-arrow-button{
+	padding-left: 0px !important;
+	width: 0;
+	display: inline-block;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 5px solid black;
+}
+
+.case-pack-expand-left {
+	overflow : hidden;
+}
+.selling-unit-collapse-right {
+ 	top: 0px;
+	position: absolute;
+	right: -15px;
+}
+.case-pack-collapse-left {
+	float : left;
+}
+.selling-unit-expand-right {
+	overflow : hidden;
+}
+#authorization .ui-select-match-text{
+	line-height: 1.3em;
+}
+#authorization .ui-select-bootstrap > .ui-select-match > .btn{
+	line-height: 23px;
+}
+.brandDisplayNameRomancy .ng-hide.ng-hide-animate {
+	display: none !important;
+}
+.brandDisplayNameRomancy .ng-animate.no-animate {
+	transition: 0s none;
+	-webkit-transition: 0s none;
+	animation: 0s none;
+	-webkit-animation: 0s none;
+}
+
+.img-zoom-container {
+	position: relative;
+}
+.img-zoom-lens {
+	position: absolute;
+	z-index: 999999;
+	opacity:0.4;
+	background-color:#FFFFFF;
+	border: 1px solid #d4d4d4;
+	/*set the size of the lens:*/
+	width:100px; height: 100px;
+	border-color: #2aabd2;
+	cursor: pointer;
+}
+.img-zoom-result {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	visibility :hidden;
+	width: 650px; height: 650px;
+	background-repeat: no-repeat;
+	border:1px solid rgb(191,191,191);
+	background-color: white;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+	transform: translate(-50%,-50%);
+}
+.img-zoom-frame{
+	z-index: 999999;
+	position: fixed;
+	top: 100px;
+	border: 1px solid #d4d4d4;
+	background-repeat: no-repeat;
+	background-color: white;
+	border:1px solid rgb(191,191,191);
+	width: 650px;
+	height: 650px;
+	visibility :hidden;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
+/* Style for check status view */
+#tracking-user-dropdown .ui-select-bootstrap input.ui-select-search {
+	width: 100% !important;
+}

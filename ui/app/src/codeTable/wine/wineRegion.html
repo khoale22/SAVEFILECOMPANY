@@ -1,0 +1,249 @@
+<!--
+  ~ wineRegion.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn87351
+  @since 2.12.0
+  -->
+<div can-view="CT_WINE_05" ng-init="$ctrl.init()">
+	<div class="row">
+		<div class="col-md-12" style="margin-top: 5px">
+			<loading-spinner data-ng-show="$ctrl.isWaiting">
+			</loading-spinner>
+			<div data-ng-hide="$ctrl.isWaiting">
+				<!--Error span-->
+				<div class="row" data-ng-if="$ctrl.success" style="text-align: center;display: block;">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+					  role="alert">{{$ctrl.success}}
+				</span>
+				</div>
+				<!--Success span-->
+				<div class="row" data-ng-if="$ctrl.error">
+				<span ng-bind-html="$ctrl.error" style="text-align: left"
+					  class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+					{{$ctrl.error}}
+				</span>
+				</div>
+				<button class="inline-block btn btn-primary btn-sm pull-right" style="margin-bottom: 10px"
+						data-ng-click="$ctrl.clearFilter()">Clear Filter
+				</button>
+				<table ng-table="tableParams"
+					   class="table-heb table-bordered table-striped" style="width: 100%">
+					<thead>
+					<tr >
+						<th style="width:15%;">Wine Region Id</th>
+						<th style="width:15%;">Wine Area Id</th>
+						<th style="width:25%;">Wine Region Name</th>
+						<th style="width:35%;">Wine Region Description</th>
+						<th style="width:10%;">Action</th>
+					</tr>
+					<tr>
+						<th style="width:15%;"><input ng-model="filter.wineRegionId" class="form-control"/>
+						</th>
+						<th style="width:15%;"><input ng-model="filter.wineArea.wineAreaSummary" class="form-control"/>
+						</th>
+						<th style="width:25%;"><input ng-model="filter.wineRegionName"
+													  class="form-control"/>
+						</th>
+						<th style="width:35%;"><input ng-model="filter.wineRegionDescription"
+													  class="form-control"/>
+						</th>
+						<th style="width:10%;"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="wineRegion in $data | orderBy:'wineRegionCode'">
+						<td data-title="'Wine Region Id'"> {{wineRegion.wineRegionId | number}}</td>
+
+						<td data-ng-show="!wineRegion.isEditing">
+							{{wineRegion.wineArea.wineAreaSummary}}
+						</td>
+						<td data-ng-show="wineRegion.isEditing" ng-class="wineRegion.addClass">
+							<ui-select ng-model="wineRegion.wineArea.wineAreaId"
+									   class = "{{wineRegion.wineArea.wineAreaId.length==0?wineRegion.addClass:''}}"
+									   ng-click="wineRegion.addClass='active-tooltip'"
+									   data-toggle="tooltip"
+									   ui-select-required theme="bootstrap"
+									   error-message="Wine Region Id is mandatory field."
+									   data-original-title="Wine Region Id is a mandatory field.">
+								<ui-select-match ng-required="true">
+									{{$select.selected.wineAreaSummary}}
+								</ui-select-match>
+								<ui-select-choices
+									repeat="element.wineAreaId as element in $ctrl.wineAreas">
+									<div
+										ng-bind-html="element.wineAreaSummary | highlight: $select.search"></div>
+								</ui-select-choices>
+							</ui-select>
+						</td>
+						<td data-ng-show="!wineRegion.isEditing">{{wineRegion.wineRegionName}}</td>
+						<td data-ng-show="wineRegion.isEditing">
+							<input type="text" style="width: 100%;height: 26px;" maxlength="30"
+								   empty-valid="Wine Region Name is mandatory field."
+								   ng-model="wineRegion.wineRegionName">
+						</td>
+						<td data-ng-show="!wineRegion.isEditing">{{wineRegion.wineRegionDescription}}</td>
+						<td data-ng-show="wineRegion.isEditing">
+							<input type="text" style="width: 100%;height: 26px;" maxlength="100"
+								   empty-valid="Wine Region Description is mandatory field."
+								   ng-model="wineRegion.wineRegionDescription">
+						</td>
+						<td style="text-align: center" can-edit="CT_WINE_03">
+							<button data-ng-click="$ctrl.enableRow(wineRegion)" class="glyphicon glyphicon-edit pointer"
+									ng-if="!wineRegion.isEditing" title="Edit"
+									style="{{$ctrl.getButtonStyle(wineRegion.wineRegionId)}}color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+									data-ng-disabled="$ctrl.hasOtherRowEditing"></button>
+							<button data-ng-click="$ctrl.showPopupConfirmDelete(wineRegion)" class="glyphicon glyphicon-remove pointer"
+									ng-if="!wineRegion.isEditing" title="Delete"
+									style="{{$ctrl.getButtonStyle(wineRegion.wineRegionId)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+									data-ng-disabled="$ctrl.hasOtherRowEditing"></button>
+							<i title="Save" data-ng-click="$ctrl.saveData(wineRegion)" class="glyphicon glyphicon-floppy-disk pointer" ng-if="wineRegion.isEditing" style="color: green; font-size: large"></i>
+							<i title="Reset" data-ng-click="$ctrl.resetCurrentRow()" class="glyphicon glyphicon-ban-circle pointer" ng-if="wineRegion.isEditing" style="color: red; font-size: large"></i>
+						</td>
+						<td style="text-align: center" view-only="CT_WINE_03">
+							<button class="glyphicon glyphicon-edit pointer"  data-ng-disabled="true" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+							<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="true" style="opacity: 0.5;color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+					<!-- View Mode-->
+					<button view-only="CT_WINE_03" class="btn btn-primary" data-ng-disabled="true">Add</button>
+					<!--Edit mode-->
+					<button can-edit="CT_WINE_03" class="btn btn-primary"
+							data-ng-disabled="$ctrl.hasOtherRowEditing"
+							ng-click="$ctrl.addWineRegion()()">Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add new/Edit popup-->
+<div id="wineRegionModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Add New Wine Region</h5>
+			</div>
+			<div class="modal-body" style="min-height:400px;">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addForm" id="addForm" novalidate>
+					<table ng-table="" class="table-heb table-bordered table-striped" style="width: 100%;">
+						<thead>
+						<tr style="border-bottom: hidden !important;height: 25px;">
+							<th style="width:30%;">Wine Area Id</th>
+							<th style="width:30%;">Wine Region Name</th>
+							<th style="width:40%;">Wine Region Description</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="wineRegion in $ctrl.wineRegionsHandle track by $index ">
+							<td ng-class="wineRegion.addClass" >
+								<ui-select ng-model="wineRegion.wineArea.wineAreaId"
+										   class = "{{wineRegion.wineArea.wineAreaId.length==0?wineRegion.addClass:''}}"
+										   ng-click="wineRegion.addClass='active-tooltip'"
+										   data-toggle="tooltip"
+										   ui-select-required theme="bootstrap"
+										   error-message="Wine Area Id is mandatory field."
+										   data-original-title="Wine Area Id is a mandatory field.">
+									<ui-select-match ng-required="true">
+										{{$select.selected.wineAreaSummary}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="element.wineAreaId as element in $ctrl.wineAreas">
+										<div
+											ng-bind-html="element.wineAreaSummary | highlight: $select.search"></div>
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td class="has-error-popup" >
+								<input type="text" style="width: 100%;height: 26px;" ng-model="wineRegion.wineRegionName"
+									   class="{{wineRegion.wineRegionName.length==0?wineRegion.addClass:'ng-valid'}}"
+									   maxlength="30" empty-valid="Wine Region Name is mandatory field."
+									   title="{{wineRegion.wineRegionName.length==0?'Wine Region Name is mandatory field.':''}}">
+							</td>
+							<td class="has-error-popup">
+								<input type="text" style="width: 100%;height: 26px;" ng-model="wineRegion.wineRegionDescription "
+									   class="{{wineRegion.wineRegionDescription.length==0?wineRegion.addClass:'ng-valid'}}"
+									   title="{{wineRegion.wineRegionDescription.length==0?'Wine Region Description is mandatory field.':''}}"
+									   maxlength="255" empty-valid="Wine Region Description is mandatory field."></td>
+						</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRow()">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAdd()">Save
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.closeAddPopup()">Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm delete message -->
+<div id="confirmationDelete" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body">
+				<h5 ng-bind-html="$ctrl.confirmMessage"></h5>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.doDeleteData($ctrl.wineRegionToDelete)">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div id="confirmationModalSave" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.MESSAGE_CONFIRM_CLOSE}}</h5>
+			</div>
+
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button ng-if="$ctrl.selectedRow==null"
+							type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.doAdd()">Yes
+					</button>
+					<button ng-if="$ctrl.selectedRow!=null"
+							type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveData($ctrl.findWineRegionById($ctrl.selectedRowId))">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,79 @@
+<!--
+  ~ taskSummary.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="panel-group" ng-controller="TaskSummaryController as taskSummaryController"
+	 ng-init="taskSummaryController.init()">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<i class="glyphicon glyphicon-tasks"></i> Task
+			<i id="taskView" ng-click="taskSummaryController.togglePanelView()"
+			   class="pull-right pointer" data-toggle="collapse" href="#taskBody"
+			   ng-class="{'glyphicon glyphicon-minus': taskSummaryController.showTaskPanel,
+			   'glyphicon glyphicon-plus': !taskSummaryController.showTaskPanel}">
+			</i>
+		</div>
+		<div class="panel-body panel-collapse collapse in" id="taskBody" style="background-color: #f5f5f5">
+			<div class="row">
+				<div class="col-lg-12" style="text-align: center">
+					<button type="button" class="btn btn-default task" style="margin-right: 20px" can-view="TK_PUDT_01"
+							ng-click="go('/task/productUpdatesTask')">
+						<div class="row">
+							<div class="col-lg-3" style="padding-left: 0%; padding-right: 0%">
+								<i class="glyphicon glyphicon-barcode pointer text-warning" style="font-size: 300%"></i>
+							</div>
+							<div class="col-lg-2" style="padding-left: 0%; padding-right: 0%">
+								<div class="v-divider"></div>
+							</div>
+							<div class="col-lg-6" style="padding-left: 0%; padding-right: 0%">
+								<i class="fa fa-refresh fa-spin refresh-xs text-primary"
+								   ng-class="{hidden : !taskSummaryController.loadingProductUpdatesCount}"></i>
+								<div class="task-number">{{taskSummaryController.productUpdatesCount}}</div>
+								<div class="task-name text-warning">Product Updates</div>
+							</div>
+						</div>
+					</button>
+					<button type="button" class="btn btn-default task" style="margin-right: 20px" can-view="TK_NUDT_01"
+							ng-click="go('/task/nutritionUpdatesTask')">
+						<div class="row">
+							<div class="col-lg-3" style="padding-left: 0%; padding-right: 0%">
+								<i class="glyphicon glyphicon-cutlery pointer text-info" style="font-size: 300%"></i>
+							</div>
+							<div class="col-lg-2" style="padding-left: 0%; padding-right: 0%">
+								<div class="v-divider"></div>
+							</div>
+							<div class="col-lg-6" style="padding-left: 0%; padding-right: 0%">
+								<i class="fa fa-refresh fa-spin refresh-xs text-primary"
+								   ng-class="{hidden : !taskSummaryController.loadingNutritionUpdatesCount}"></i>
+								<div class="task-number">{{taskSummaryController.nutritionUpdatesCount}}</div>
+								<div class="task-name text-info">Nutrition Updates</div>
+							</div>
+						</div>
+					</button>
+					<button type="button" class="btn btn-default task" can-view="TK_ECOM_01"
+							ng-click="taskSummaryController.displayEcommerceTaskSummary()">
+						<div class="row">
+							<div class="col-lg-3" style="padding-left: 0%; padding-right: 0%">
+								<i class="glyphicon glyphicon-shopping-cart pointer text-danger" style="font-size: 300%"></i>
+							</div>
+							<div class="col-lg-2" style="padding-left: 0%; padding-right: 0%">
+								<div class="v-divider"></div>
+							</div>
+							<div class="col-lg-6" style="padding-left: 0%; padding-right: 0%">
+								<i class="fa fa-refresh fa-spin refresh-xs text-primary"
+								   ng-class="{hidden : !taskSummaryController.loadingEcomTaskCount}"></i>
+								<div class="task-number">{{taskSummaryController.ecommerceTaskCount}}</div>
+								<div class="task-name text-danger">eCommerce Tasks</div>
+							</div>
+						</div>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

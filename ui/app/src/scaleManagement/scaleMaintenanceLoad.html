@@ -1,0 +1,367 @@
+<div class="col-md-12 container-fluid"
+	 can-edit="SM_MAINT_01"
+	 ng-controller="ScaleMaintenanceLoadController as scaleMaintenanceLoadController">
+	<div class="row" data-ng-if="scaleMaintenanceLoadController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert" style="padding: .5%">{{scaleMaintenanceLoadController.TRANSACTION_CREATED_PRE_TEXT}}
+			<a class="pointer"
+			   uib-tooltip="{{scaleMaintenanceLoadController.NAVIGATE_TO_CHECK_STATUS_TEXT}}"
+			   ng-click="scaleMaintenanceLoadController.navigateToCheckStatus()">{{scaleMaintenanceLoadController.transactionIdCreated}}
+			</a>{{scaleMaintenanceLoadController.TRANSACTION_CREATED_POST_TEXT}}</span>
+	</div>
+	<div class="row" data-ng-if="scaleMaintenanceLoadController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{scaleMaintenanceLoadController.error}}</span>
+	</div>
+	<div class="row" data-ng-if="scaleMaintenanceLoadController.waitingForUpdate">
+		<span class="alert alert-info col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{scaleMaintenanceLoadController.UPDATING_MESSAGE}}</span>
+	</div>
+	<div class="row">
+		<div class="col-md-8">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Send Load
+						<i ng-click="scaleMaintenanceLoadController.dataSearchToggle = !scaleMaintenanceLoadController.dataSearchToggle"
+						   ng-class="{'glyphicon glyphicon-minus': scaleMaintenanceLoadController.dataSearchToggle, 'glyphicon glyphicon-plus': !scaleMaintenanceLoadController.dataSearchToggle}"
+						   class="pull-right pointer">
+						</i>
+					</div>
+
+					<div ng-hide="!scaleMaintenanceLoadController.dataSearchToggle">
+						<div class="panel-heading">
+							<ul class="nav nav-pills">
+								<li class="active">
+									<a data-target="#tabBasic" data-toggle="tab"
+									   ng-click="scaleMaintenanceLoadController.initItemSearch()">PLU Search
+									</a>
+								</li>
+								<li>
+									<a data-target="#tabDescription" data-toggle="tab"
+									   ng-click="scaleMaintenanceLoadController.initDescriptionSearch()">Description Search
+									</a>
+								</li>
+								<li>
+									<a data-target="#tabDepartment" data-toggle="tab"
+									   ng-click="scaleMaintenanceLoadController.initDepartmentSearch()">Dept Search
+									</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="panel-body">
+							<div class="tab-content">
+								<div class="tab-pane active" id="tabBasic">
+									<div class="row">
+										<div class="col-md-8">
+											<label for="itemSearch">PLU(s) to search for:</label>
+											<textarea data-ng-model="scaleMaintenanceLoadController.searchText"
+													  placeholder="Please enter PLU(s) to search for..." id="itemSearch"
+													  class="noresize" rows="8" style="width: 100%">
+											</textarea>
+										</div>
+										<div class="col-md-4">
+											<label></label>
+											<button data-ng-click="scaleMaintenanceLoadController.newSearch()"
+													class="btn btn-primary btn-block"
+													data-ng-disabled="scaleMaintenanceLoadController.searchText == null">Search</button>
+											<button data-ng-click="scaleMaintenanceLoadController.initItemSearch()"
+													class="btn btn-primary btn-block"
+													data-ng-disabled="scaleMaintenanceLoadController.searchText == null">Clear</button>
+										</div>
+									</div>
+
+								</div>
+								<div class="tab-pane" id="tabDescription">
+									<div class="row">
+										<div class="col-md-8">
+											<label for="descriptionSearch">Description to search for:</label>
+											<input type="text" id="descriptionSearch" style="width: 100%"
+												   placeholder="Please enter description to search for..."
+												   ng-model="scaleMaintenanceLoadController.searchText">
+										</div>
+										<div class="col-md-4">
+											<label></label>
+											<button data-ng-click="scaleMaintenanceLoadController.newSearch()"
+													class="btn btn-primary btn-block"
+													data-ng-disabled="scaleMaintenanceLoadController.searchText == null">Search</button>
+											<button data-ng-click="scaleMaintenanceLoadController.initDescriptionSearch()"
+													class="btn btn-primary btn-block"
+													data-ng-disabled="scaleMaintenanceLoadController.searchText == null">Clear</button>
+										</div>
+									</div>
+								</div>
+								<!-- Load by Department Id tab -->
+								<div class="tab-pane " id="tabDepartment">
+									<div class="row" style="width: 90%; padding-left: 30%;">
+										<div class="col-md-6">
+											<span>
+													<h6>Enter the following information <span style="color: red">carefully</span></h6>
+												</span>
+										</div>
+									</div>
+
+									<div class="row" style="width: 90%">
+										<div class="col-md-4">
+											<label style="padding-left: 50%; padding-bottom: 5% ;text-align: right"
+												for="responseTypeDate">Effective Date:</label>
+										</div>
+										<div class="col-md-4">
+											<div class="input-group pull-right" id="responseTypeDate">
+												<input class="form-control date-picker" readonly="true"   
+													type="text" uib-datepicker-popup="MM/dd/yyyy"
+													is-open="scaleMaintenanceLoadController.effectiveDatePickerOpened"
+													datepicker-options="scaleMaintenanceLoadController.datePickerOptions" 
+													ng-model="scaleMaintenanceLoadController.responseDate"  
+													ng-required="true" close-text="Close" /> <span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="scaleMaintenanceLoadController.openEffectiveDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<button
+												data-ng-click="scaleMaintenanceLoadController.sendLoadByDept()"
+												data-ng-disabled="scaleMaintenanceLoadController.targetStrNumber==null"
+												class="btn btn-primary btn-block">Send Load</button>
+										</div>
+									</div>
+									<div class="row" style="width: 90%">
+										<div class="col-md-4">
+
+											<label style="padding-left: 9%;padding-bottom: 4% ;text-align: right">Build
+												Item File for Company Store Number:</label>
+										</div>
+										<div class="col-md-4">
+											<input type="number"
+												ng-model="scaleMaintenanceLoadController.strNumber" maxLength = "5"   min="0" max="99999"
+												class="form-control" placeholder="Enter Store Number"  >
+												
+												
+										</div>
+										
+										<div class="col-md-4">
+											<button
+												data-ng-click="scaleMaintenanceLoadController.clearValues()"
+												class="btn btn-primary btn-block">Clear</button>
+										</div>
+									</div>
+									<div class="row" style="width: 90%">
+										<div class="col-md-4">
+											<label style="padding-left: 15%; padding-bottom: 4% ;text-align: right">Build
+												Item File for Department Number:</label>
+										</div>
+										<div class="col-md-4">
+											<!-- <input type="text"
+												ng-model="scaleMaintenanceLoadController.deptNumber" ng-disabled="scaleMaintenanceLoadController.strNumber == null"
+												maxLength="3" class="form-control"
+												placeholder="Enter Dept Number"> -->
+											<select ng-model="scaleMaintenanceLoadController.deptNumber" class="form-control" data-ng-disabled="scaleMaintenanceLoadController.strNumber==null" ng-options="deptNumber for deptNumber in DeptList">
+											 <option value="">Select Dept.</option>
+											</select>
+											
+										</div>
+											
+
+									</div>
+
+									<div class="row" style="width: 90%">
+										<div class="col-md-4">
+											<label style="padding-left: 4.5%;text-align: right">And
+												Will Send This Item File To Store Number:</label>
+										</div>
+										<div class="col-md-4">
+											<input type="number"
+												ng-model="scaleMaintenanceLoadController.targetStrNumber"  min="0" max="99999" data-ng-disabled="scaleMaintenanceLoadController.deptNumber==null"
+												maxLength="5" class="form-control" ng-change="scaleMaintenanceLoadController.validateTargetStore()"
+												placeholder="Enter Target Store Number">
+										</div>
+											<div class="col-md-4" ng-show="scaleMaintenanceLoadController.inputError" >
+											<span style="color:red">Source Store and Target Store Cannot be Same.</span>
+										</div>
+									
+									</div>
+										<br>
+										
+									<div class="row" style="margin-left:1%; text-align:center;width: 56.5%;color:white; height:20px;background-color: #337ab7">
+									<div class="col-md-10 " style="padding-left:20px;padding-top:5px;">
+										<span><b> NOTE: &nbsp  &nbsp STORE 839 - FS LAB &nbsp  |   &nbsp  STORE 838 -	ELECTRONIC MAINT LAB </b></span>
+									</div>
+									</div>
+
+								</div>
+								<!-- Department tab ends here -->
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<loading-spinner ng-show="scaleMaintenanceLoadController.isWaiting">
+	</loading-spinner>
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">These are the PLUs that weren't found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="item in scaleMaintenanceLoadController.missingValues.noMatchList">{{item}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="row" data-ng-if="!scaleMaintenanceLoadController.isWaiting && scaleMaintenanceLoadController.modifyMessage">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleMaintenanceLoadController.modifyMessage}}</span>
+			</div>
+			<div class="row" data-ng-if="!scaleMaintenanceLoadController.isWaiting && scaleMaintenanceLoadController.modifyError">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleMaintenanceLoadController.modifyError}}</span>
+			</div>
+			<div class="panel-group" ng-show="scaleMaintenanceLoadController.data">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Results</b></h4>
+						<h5 class="panel-title inline-block">{{scaleMaintenanceLoadController.resultMessage}}</h5>
+						<div class="inline-block pull-right">
+							<h5 ng-if="scaleMaintenanceLoadController.missingValues.matchCount > 0"
+								class="green-text panel-title inline-block">
+								{{scaleMaintenanceLoadController.missingValues.matchCount}}
+								<span ng-if="scaleMaintenanceLoadController.missingValues.matchCount ==  1">PLU</span>
+								<span ng-if="scaleMaintenanceLoadController.missingValues.matchCount >  1">PLUs</span>
+								found</h5>
+							<h5 ng-if="scaleMaintenanceLoadController.missingValues.noMatchCount > 0"
+								data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{scaleMaintenanceLoadController.missingValues.noMatchCount}}
+								<span ng-if="scaleMaintenanceLoadController.missingValues.noMatchCount ==  1">PLU</span>
+								<span ng-if="scaleMaintenanceLoadController.missingValues.noMatchCount >  1">PLUs</span>
+								not	found</h5>
+							<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+								 ng-click="scaleMaintenanceLoadController.export()"
+								 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel"></div>
+							<div class="inline-block pull-right" ng-show="scaleMaintenanceLoadController.downloading"
+								 style="color: orange">Downloading...</div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-8 form-group">
+								<table ng-table="scaleMaintenanceLoadController.tableParams"
+									   class="table table-heb table-bordered table-striped">
+									<script type="text/ng-template" id="checkBoxHeader">
+										<input type="checkbox" ng-model="scaleMaintenanceLoadController.selectAll" ng-change="scaleMaintenanceLoadController.updateAllSelected(scaleMaintenanceLoadController.selectAll)">
+									</script>
+									<tr ng-repeat="scaleUpc in scaleMaintenanceLoadController.data track by $index">
+										<td data-header="'checkBoxHeader'">
+											<input type="checkbox" ng-model="scaleUpc.isChecked" ng-change="scaleMaintenanceLoadController.updateSelectAllSwitch(scaleUpc.isChecked)">
+										</td>
+										<td data-title="'PLU'"><a ng-click="scaleMaintenanceLoadController.getSingleView(scaleUpc, $index)"
+																  class="pointer">{{scaleUpc.plu}}</a>
+										</td>
+										<td data-title="'UPC'">{{scaleUpc.upc}}</td>
+										<td data-title="'Description 1'">{{scaleUpc.englishDescriptionOne}}</td>
+										<td data-title="'Description 2'">{{scaleUpc.englishDescriptionTwo}}</td>
+										<td data-title="'Department'">{{scaleUpc.associateUpc.sellingUnit.productMaster.subDepartment.displayName}}</td>
+										<td data-title="'Effective Date'">{{scaleUpc.effectiveDate | date : 'MM/dd/yyyy'}}</td>
+										<td data-title="'Ingredient Statement Number'">
+											<a class="pointer"
+											   ng-show="scaleMaintenanceLoadController.isFakeIngredientStatement(scaleUpc.ingredientStatement)"
+											   ng-click="scaleMaintenanceLoadController.navigateToIngredientStatements(scaleUpc.ingredientStatement)">
+												{{scaleUpc.ingredientStatement}}
+											</a>
+											<span
+												ng-show="!scaleMaintenanceLoadController.isFakeIngredientStatement(scaleUpc.ingredientStatement)">
+											{{scaleUpc.ingredientStatement}}
+										</span>
+										</td>
+										<td data-title="'Nutrient Statement Number'">
+											<a class="pointer"
+											   ng-show="scaleMaintenanceLoadController.isFakeNutrientStatement(scaleUpc.nutrientStatement)"
+											   ng-click="scaleMaintenanceLoadController.navigateToNutrientStatement(scaleUpc.nutrientStatement)">
+												{{scaleUpc.nutrientStatement}}
+											</a>
+											<span
+												ng-show="!scaleMaintenanceLoadController.isFakeNutrientStatement(scaleUpc.nutrientStatement)">
+											{{scaleUpc.nutrientStatement}}
+										</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-4 form-group">
+								<div class="row">
+									<div class="col-md-8 form-group">
+										<label for="storesSelected">Store(s) selected:</label>
+										<ui-select
+											id="storesSelected"
+											ng-model="scaleMaintenanceLoadController.selectedStores" theme="bootstrap"
+											multiple>
+											<ui-select-match placeholder="--Select--">
+												{{$item}}
+											</ui-select-match>
+											<ui-select-choices
+												repeat="store in scaleMaintenanceLoadController.loadStores">
+												{{store}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+									<div class="col-md-4 form-group">
+										<button class="btn btn-primary pull-right"
+												ng-click="scaleMaintenanceLoadController.submitLoad()"
+												data-ng-disabled="!scaleMaintenanceLoadController.isLoadValid()">Submit Load
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Result Div Tab -->
+	<div class="row" ng-hide="!scaleMaintenanceLoadController.resultDiv">
+		<div class="col-md-8">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Results
+						
+					</div>
+					<div class="row"
+							data-ng-if="scaleMaintenanceLoadController.loadSuccess">
+							<span
+								class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+								role="alert" style="padding: .5%">{{scaleMaintenanceLoadController.TRANSACTION_CREATED_PRE_TEXT}}
+								<a class="pointer"
+								uib-tooltip="{{scaleMaintenanceLoadController.NAVIGATE_TO_CHECK_STATUS_TEXT}}"
+								ng-click="scaleMaintenanceLoadController.navigateToCheckStatus()">{{scaleMaintenanceLoadController.transactionIdCreated}}
+							</a>{{scaleMaintenanceLoadController.TRANSACTION_CREATED_POST_TEXT}}
+							</span>
+						</div>
+					<div ng-hide="!scaleMaintenanceLoadController.resultDiv">
+						<div class="row" style="margin-left: 1%;">
+							<h6><b> i. A store
+								{{scaleMaintenanceLoadController.resultDivStrNbr}}/Dept
+								{{scaleMaintenanceLoadController.resultDivDeptNbr}} Load is
+								submitted for destination store
+								{{scaleMaintenanceLoadController.resultDivTargetStrNbr}} is
+								scheduled.</b> </h6>
+								<h6><b>
+								ii. An Email with the tracking Id and status will be
+								sent to you when the load is complete.</b>
+								</h6>
+						</div>
+						
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

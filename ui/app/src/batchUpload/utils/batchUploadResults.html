@@ -1,0 +1,39 @@
+<!--
+batchUploadResults.htmlhtml
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div class="batchUploadResults" data-ng-cloak="true">
+	<!-- The title modal -->
+	<div class="modal-header">
+		<button type="button" class="close" data-ng-click="batchUploadResultsController.close()"
+		>&times;
+		</button>
+		<h5>
+			Upload
+		</h5>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12 text-center control-label">
+				<b>Your upload request with ID {{trackingId}} is being processed. Would you like to check the
+					status?</b>
+			</div>
+		</div>
+	</div>
+	<!-- The modal footer -->
+	<div class="modal-footer">
+		<button class="btn btn-primary"
+				data-ng-click="batchUploadResultsController.checkStatus()">Check Status
+		</button>
+		<button class="btn btn-primary"  data-ng-click="batchUploadResultsController.close()">Cancel
+		</button>
+	</div>
+</div>

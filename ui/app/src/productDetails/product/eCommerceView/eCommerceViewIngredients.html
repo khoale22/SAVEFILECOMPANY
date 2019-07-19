@@ -1,0 +1,163 @@
+<!--
+ eCommerceViewIngredients.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn00602
+  ~  @since 2.14.0
+  -->
+<div class="card card-primary">
+	<div class="card-header">
+		<!--<span class="inline-block" id="titleIngredients">
+			<i class="glyphicon glyphicon-grain text-info"></i>Ingredients</span>
+		<span class="pointer margin-left-10" style="text-align: right" ng-click="$ctrl.editSourceIngredient()">
+			Edit Source
+		</span>
+		<span class="pointer margin-left-10" style="text-align: right" ng-click="$ctrl.editTextIngredient()">
+			Edit Text
+		</span>-->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-5" style="padding-left: 0px;">
+					<span class="inline-block" id="titleIngredients"
+						  style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+						<i class="glyphicon glyphicon-grain"></i>Ingredients</span>
+				</div>
+				<div class="col-md-7">
+					<div class="pull-right">
+						<span  view-only="PD_ECOM_03">
+						<a view-only="PD_ECOM_01" class="pointer margin-right-10 linkDisabled"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+							Edit Text
+						</a>
+						</span>
+						<a can-edit="PD_ECOM_01" class="pointer margin-right-10" data-ng-show="$ctrl.hasPermission"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.editTextIngredient()">
+							Edit Text
+						</a>
+						<a class="pointer"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.editSourceIngredient()">
+							Edit Source
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body" style="min-height: 30px;">
+		<div class="row">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse"></loading-spinner>
+		</div>
+		<!-- This area displays the Ingredients -->
+		<div style="padding: 5px 0; width: 100%; text-align: justify" ng-show="!$ctrl.isWaitingForResponse">
+			<div view-only="PD_ECOM_01" ng-show="!$ctrl.isEditingIngredient || !$ctrl.hasPermission"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.ingredients.content"
+				 data-ng-model="$ctrl.eCommerceViewDetails.ingredients.content"></div>
+			<div can-edit="PD_ECOM_01" ng-show="!$ctrl.isEditingIngredient || !$ctrl.hasPermission"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.ingredients.content"
+				 data-ng-model="$ctrl.eCommerceViewDetails.ingredients.content"></div>
+			<textarea can-edit="PD_ECOM_01" ng-show="$ctrl.isEditingIngredient && $ctrl.hasPermission" class="form-control" maxlength="{{$ctrl.MAX_LENGTH}}"
+					  style="text-align: justify; height: 90px; resize: vertical;" data-ng-change="$ctrl.checkChange()"
+					  ng-bind-html="$ctrl.eCommerceViewDetails.ingredients.content"
+					  data-ng-model="$ctrl.eCommerceViewDetails.ingredients.content"></textarea>
+		</div>
+	</div>
+</div>
+
+<!-- Ingredient Edit Source modal-->
+<div id="ingredientsModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Ingredients</h5>
+				<span class="glyphicon glyphicon-question-sign" style="font-size:12px;color:orange;margin-right:10px;"
+					  ng-click="$ctrl.findAttributeMappingByLogicalAttribute()"></span>
+			</div>
+			<div class="modal-body row">
+				<div class="alert alert-danger col-md-6 col-md-push-3 text-center"
+					 data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<!--<div class="alert alert-success col-md-6 col-md-push-3 text-center"-->
+				<!--data-ng-if="$ctrl.successPopup" ng-bind-html="$ctrl.successPopup"></div>-->
+				<div class="col-md-9" ng-show="!$ctrl.isWaitingModal">
+					<table class="table-heb table-bordered table-striped" style="width: 100%;">
+						<thead>
+						<tr style="height: 25px;">
+							<th style="width: 10%;">Select</th>
+							<th style="width: 25%;">Source</th>
+							<th style="width: 15%;">Created Date</th>
+							<th style="width: 50%;">Value</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="ingredient in $ctrl.ingredientsTableModal track by $index"
+							ng-show="!ingredient.noneDisplay">
+							<td ng-class="$ctrl.selectedSourceSystem == (ingredient.sourceSystemId + '_' + ingredient.physicalAttributeId)?'selected':''" style="text-align: center;">
+								<input type="radio" ng-model="$ctrl.selectedSourceSystem"
+									   ng-value="ingredient.sourceSystemId + '_' + ingredient.physicalAttributeId">
+							</td>
+							<td ng-class="$ctrl.selectedSourceSystem == (ingredient.sourceSystemId + '_' + ingredient.physicalAttributeId)?'selected':''">
+								<img ng-show="ingredient.sourceSystemDefault" style="width: 15px;"
+									 src="images/star-icon.png">
+								<div>{{ingredient.sourceSystemDescription}}</div>
+							</td>
+							<td ng-class="$ctrl.selectedSourceSystem == (ingredient.sourceSystemId + '_' + ingredient.physicalAttributeId)?'selected':''">{{ingredient.createdDate | date : 'MM/dd/yyyy'}}</td>
+							<td  style="text-align: justify" ng-class="$ctrl.selectedSourceSystem == (ingredient.sourceSystemId + '_' + ingredient.physicalAttributeId)?'selected':''">
+								<div ng-show="!ingredient.isEditable || !$ctrl.hasPermission"
+									 ng-bind-html="ingredient.content | limitTo:ingredient.numLimit"
+									 data-ng-model="ingredient.content"></div>
+								<a  class="pointer margin-right-10"
+									ng-show="(!ingredient.isEditable && ingredient.content.length > $ctrl.MIN_LENGTH_READ && ingredient.isReadMore) || (!$ctrl.hasPermission  && ingredient.content.length > $ctrl.MIN_LENGTH_READ && ingredient.isReadMore)"
+									ng-click="$ctrl.readMore(ingredient)">
+									read more
+								</a>
+								<a  class="pointer margin-right-10"
+									ng-show="(!ingredient.isEditable && ingredient.isReadLess) || (!$ctrl.hasPermission && ingredient.isReadLess)"
+									ng-click="$ctrl.readLess(ingredient)">
+									read less
+								</a>
+								<textarea ng-show="ingredient.isEditable && $ctrl.hasPermission" class="form-control"
+										  maxlength="{{$ctrl.MAX_LENGTH}}"
+										  style="text-align: justify; height: 90px; resize: vertical;"
+										  ng-bind-html="ingredient.content"
+										  data-ng-model="ingredient.content"></textarea>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-3" ng-show="!$ctrl.isWaitingModal">
+					<div class="margin-top-10" style="text-align: center">
+						HEB.com
+					</div>
+					<div class="margin-top-20">
+						<b>Posted Date</b>
+						{{$ctrl.ingredientsECommerceModal.postedDate | date : 'MM/dd/yyyy'}}
+					</div>
+					<div class="margin-top-10" style="text-align: justify"
+						 ng-bind-html="$ctrl.ingredientsECommerceModal.content"></div>
+				</div>
+				<loading-spinner ng-show="$ctrl.isWaitingModal"></loading-spinner>
+			</div>
+			<div class="modal-footer">
+				<button view-only="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm" disabled>
+					Select for HEB.com
+				</button>
+				<button can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.saveIngredientAttributePriorities()">
+					Select for HEB.com
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.resetIngredientModal()">Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.$onChanges()">Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,437 @@
+<div>
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert" >{{$ctrl.success}}</span>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse"></loading-spinner>
+			<div ng-show="!($ctrl.isWaitingForResponse)"
+				 style="overflow-x:auto;width:100%;">
+				<div style="display:table;">
+					<div style="display:table-row;">
+						<div style="border:solid 1px black;display:table-cell;"
+							 ng-if="$ctrl.unApprovedNutritionList != null && $ctrl.unApprovedNutritionList.length > 0">
+							<div style="display:table-cell;"
+								 ng-repeat="nutritionItem in $ctrl.unApprovedNutritionList">
+								<div style="width:360px;padding:5px;">
+									<div class="row">
+										<div class="col-md-12">
+											<label class="pull-left"
+												   style="color: red;">PENDING APPROVAL</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-5">
+											<label class="pull-left">UPC:</label>
+										</div>
+										<div class="col-md-7">
+											<div class="pull-left">{{nutritionItem.upc}}</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-5">
+											<label class="pull-left">Source:</label>
+										</div>
+										<div class="col-md-7">
+											<div class="pull-left"
+												 ng-if="nutritionItem.createdDate">{{nutritionItem.sourceSystemDescription}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As Of {{nutritionItem.createdDate | date : 'MM/dd/yyyy'}}</div>
+											<div class="pull-left"
+												 ng-if="!nutritionItem.createdDate">{{nutritionItem.sourceSystemDescription}}</div>
+										</div>
+									</div>
+									<div class="row"
+										 ng-if="nutritionItem.target">
+										<div class="col-md-5">
+											<label class="pull-left">Target:</label>
+										</div>
+										<div class="col-md-7">
+											<div class="pull-left">{{nutritionItem.target}}</div>
+										</div>
+									</div>
+									<div class="row"
+										 ng-if="!nutritionItem.target">
+										<div class="col-md-12">
+											<label class="pull-left">&nbsp;</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-5">
+											<label class="pull-left">Serving Size</label>
+										</div>
+										<div class="col-md-7">
+											<div class="pull-left">{{nutritionItem.servingSize}}</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-5">
+											<label class="pull-left">Serving Per Container</label>
+										</div>
+										<div class="col-md-7">
+											<div class="pull-left">{{nutritionItem.servingPerContainer}}</div>
+										</div>
+									</div>
+									<div class="divider-horizontal"></div>
+									<div class="row">
+										<div class="col-md-4">
+											<label class="pull-left">Amount Per Serving</label>
+										</div>
+										<div class="col-md-4">
+											<div class="pull-left">{{nutritionItem.amountPerServing}}</div>
+										</div>
+										<div class="col-md-4">
+											<label class="pull-left">Daily Value*</label>
+										</div>
+									</div>
+									<div ng-if="!nutritionItem.isSource17">
+										<table class="table-heb table-bordered table-striped table-hover"
+											   width="100%">
+											<colgroup>
+												<col width="40%" />
+												<col width="30%" />
+												<col width="30%" />
+											</colgroup>
+											<tbody>
+											<tr ng-repeat="item in nutritionItem.nutritionFactList">
+												<td style="text-align: left">{{item.nutrientMaster.nutrientName}}</td>
+												<td style="text-align: left">{{getQuantityValue(item.nutrientQuantity)}} {{item.servingSizeUOM.servingSizeUomDescription}}</td>
+												<td style="text-align: left">{{item.dalyValSrvngPct.toFixed(1)}}
+													<span ng-if="item.dalyValSrvngPct != null">%</span>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+									<div ng-if="nutritionItem.isSource17">
+										<table class="table-heb table-bordered table-striped table-hover"
+											   width="100%">
+											<colgroup>
+												<col width="40%" />
+												<col width="30%" />
+												<col width="30%" />
+											</colgroup>
+											<tbody>
+											<tr ng-repeat="item in nutritionItem.nutritionFactList">
+												<td style="text-align: left">{{item.nutrient.nutrientDescription}}</td>
+												<td style="text-align: left">{{getQuantityValue(item.nutrientStatementQuantity)}} {{item.nutrient.nutrientUom.nutrientUomDescription}}</td>
+												<td style="text-align: left"><div ng-if="item.nutrientDailyValue > 0">{{item.nutrientDailyValue.toFixed(1)}}
+													<span ng-if="item.nutrientDailyValue != null">%</span></div>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="row" ng-if="nutritionItem.isOrContains != null && nutritionItem.isOrContains != ''">
+										<br>
+										<div class="col-md-12">
+											<label>IS or Contains: </label>{{nutritionItem.isOrContains}}
+										</div>
+									</div>
+									<div class="divider-horizontal"></div>
+									<div>
+										<label>*Percentage Daily values are based on a 2,000 calorie diet. Your Daily values may be higher or lower depending on your calorie needs</label>
+									</div>
+									<div class="divider-horizontal"></div>
+									<div class="row">
+										<div class="col-md-12">
+											<label class="pull-left">Ingredients List</label>
+										</div>
+										<div class="col-md-12">
+											<div class="pull-left">{{nutritionItem.ingredients}}</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<label class="pull-left">Allergens</label>
+										</div>
+										<div class="col-md-12">
+											<div class="pull-left">{{nutritionItem.allergens}}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 text-center">
+									<button view-only="PD_NUTR_00" class="btn btn-primary" disabled="true">Approve</button>
+									<button can-edit="PD_NUTR_00" class="btn btn-primary"
+											ng-click="$ctrl.approveNutritionFactInformation()">Approve</button>
+								</div>
+							</div>
+						</div>
+						<div style="display:table-cell;"
+							 ng-repeat="nutritionItem in $ctrl.approvedNutritionList">
+							<div style="width:360px;padding:5px;">
+								<div class="row">
+									<div class="col-md-12">
+										<label class="pull-left">&nbsp;</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">UPC:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.upc}}</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">Source:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left"
+											 ng-if="nutritionItem.createdDate">{{nutritionItem.sourceSystemDescription}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;As Of {{nutritionItem.createdDate | date : 'MM/dd/yyyy'}}</div>
+										<div class="pull-left"
+											 ng-if="!nutritionItem.createdDate">{{nutritionItem.sourceSystemDescription}}</div>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="nutritionItem.target">
+									<div class="col-md-5">
+										<label class="pull-left">Target:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.target}}</div>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="!nutritionItem.target">
+									<div class="col-md-12">
+										<label class="pull-left">&nbsp;</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">Serving Size</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.servingSize}}</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">Serving Per Container</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.servingPerContainer}}</div>
+									</div>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div class="row">
+									<div class="col-md-4">
+										<label class="pull-left">Amount Per Serving</label>
+									</div>
+									<div class="col-md-4">
+										<div class="pull-left">{{nutritionItem.amountPerServing}}</div>
+									</div>
+									<div class="col-md-4">
+										<label class="pull-left">Daily Value*</label>
+									</div>
+								</div>
+								<div ng-if="!nutritionItem.isSource17">
+									<table class="table-heb table-bordered table-striped table-hover"
+										   width="100%">
+										<colgroup>
+											<col width="40%" />
+											<col width="30%" />
+											<col width="30%" />
+										</colgroup>
+										<tbody>
+										<tr ng-repeat="item in nutritionItem.nutritionFactList">
+											<td style="text-align: left">{{item.nutrientMaster.nutrientName}}</td>
+											<td style="text-align: left">{{getQuantityValue(item.nutrientQuantity)}} {{item.servingSizeUOM.servingSizeUomDescription}}</td>
+											<td style="text-align: left">{{item.dalyValSrvngPct.toFixed(1)}}
+												<span ng-if="item.dalyValSrvngPct != null">%</span>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div ng-if="nutritionItem.isSource17">
+									<table class="table-heb table-bordered table-striped table-hover"
+										   width="100%">
+										<colgroup>
+											<col width="40%" />
+											<col width="30%" />
+											<col width="30%" />
+										</colgroup>
+										<tbody>
+										<tr ng-repeat="item in nutritionItem.nutritionFactList">
+											<td style="text-align: left">{{item.nutrient.nutrientDescription}}</td>
+											<td style="text-align: left">{{getQuantityValue(item.nutrientStatementQuantity)}} {{item.nutrient.nutrientUom.nutrientUomDescription}}</td>
+											<td style="text-align: left"><div ng-if="item.nutrientDailyValue > 0">{{item.nutrientDailyValue.toFixed(1)}}
+												<span ng-if="item.nutrientDailyValue != null">%</span></div>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="row" ng-if="nutritionItem.isOrContains != null && nutritionItem.isOrContains != ''">
+									<br>
+									<div class="col-md-12">
+										<label>IS or Contains: </label>{{nutritionItem.isOrContains}}
+									</div>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div>
+									<label>*Percentage Daily values are based on a 2,000 calorie diet. Your Daily values may be higher or lower depending on your calorie needs</label>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div class="row">
+									<div class="col-md-12">
+										<label class="pull-left">Ingredients List</label>
+									</div>
+									<div class="col-md-12">
+										<div class="pull-left">{{nutritionItem.ingredients}}</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<label class="pull-left">Allergens</label>
+									</div>
+									<div class="col-md-12">
+										<div class="pull-left">{{nutritionItem.allergens}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div style="display:table-cell;"
+							 ng-repeat="nutritionItem in $ctrl.nutritionList">
+							<div style="width:360px;padding:5px;">
+								<div class="row">
+									<div class="col-md-12">
+										<label class="pull-left">&nbsp;</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">UPC:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.upc}}</div>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="nutritionItem.sourceSystemDescription">
+									<div class="col-md-5">
+										<label class="pull-left">Source:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.sourceSystemDescription}}</div>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="!nutritionItem.sourceSystemDescription">
+									<div class="col-md-12">
+										<label class="pull-left">&nbsp;</label>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="nutritionItem.target">
+									<div class="col-md-5">
+										<label class="pull-left">Target:</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.target}}</div>
+									</div>
+								</div>
+								<div class="row"
+									 ng-if="!nutritionItem.target">
+									<div class="col-md-12">
+										<label class="pull-left">&nbsp;</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">Serving Size</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.servingSize}}</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										<label class="pull-left">Serving Per Container</label>
+									</div>
+									<div class="col-md-7">
+										<div class="pull-left">{{nutritionItem.servingPerContainer}}</div>
+									</div>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div class="row">
+									<div class="col-md-4">
+										<label class="pull-left">Amount Per Serving</label>
+									</div>
+									<div class="col-md-4">
+										<div class="pull-left">{{nutritionItem.amountPerServing}}</div>
+									</div>
+									<div class="col-md-4">
+										<label class="pull-left">Daily Value*</label>
+									</div>
+								</div>
+								<div ng-if="!nutritionItem.isSource17">
+									<table class="table-heb table-bordered table-striped table-hover"
+										   width="100%">
+										<colgroup>
+											<col width="40%" />
+											<col width="30%" />
+											<col width="30%" />
+										</colgroup>
+										<tbody>
+										<tr ng-repeat="item in nutritionItem.nutritionFactList">
+											<td style="text-align: left">{{item.nutrientMaster.nutrientName}}</td>
+											<td style="text-align: left">{{getQuantityValue(item.nutrientQuantity)}} {{item.servingSizeUOM.servingSizeUomDescription}}</td>
+											<td style="text-align: left">{{item.dalyValSrvngPct.toFixed(1)}}
+												<span ng-if="item.dalyValSrvngPct != null">%</span>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div ng-if="nutritionItem.isSource17">
+									<table class="table-heb table-bordered table-striped table-hover"
+										   width="100%">
+										<colgroup>
+											<col width="40%" />
+											<col width="30%" />
+											<col width="30%" />
+										</colgroup>
+										<tbody>
+										<tr ng-repeat="item in nutritionItem.nutritionFactList">
+											<td style="text-align: left">{{item.nutrient.nutrientDescription}}</td>
+											<td style="text-align: left">{{getQuantityValue(item.nutrientStatementQuantity)}} {{item.nutrient.nutrientUom.nutrientUomDescription}}</td>
+											<td style="text-align: left"><div ng-if="item.nutrientDailyValue > 0">{{item.nutrientDailyValue.toFixed(1)}}
+												<span ng-if="item.nutrientDailyValue != null">%</span></div>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="row" ng-if="nutritionItem.isOrContains != null && nutritionItem.isOrContains != ''">
+									<br>
+									<div class="col-md-12">
+										<label>IS or Contains: </label>{{nutritionItem.isOrContains}}
+									</div>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div>
+									<label>*Percentage Daily values are based on a 2,000 calorie diet. Your Daily values may be higher or lower depending on your calorie needs</label>
+								</div>
+								<div class="divider-horizontal"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12"  data-ng-show="$ctrl.isWaitingForResponse == false">
+		<!--Edit mode-->
+		<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+		</div>
+	</div>
+</div>

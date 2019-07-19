@@ -1,0 +1,41 @@
+<loading-spinner ng-show="pluPanelDirective.isWaitingForPlus">
+</loading-spinner>
+<div class="col-md-12 container-fluid" ng-show="pluPanelDirective.isViewPluPanel()" ng-init="pluPanelDirective.init()">
+	<div class="row">
+		<div data-ng-if="pluPanelDirective.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{pluPanelDirective.error}}</span>
+		</div>
+		<div class="col-md-12" ng-show="!pluPanelDirective.isWaitingForPlus && pluPanelDirective.data != null">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h5 class="panel-title inline-block">{{pluPanelDirective.pluResultMessage}}</h5>
+						<div class="inline-block pull-right" ng-if="pluPanelDirective.downloading" style="color: orange">Downloading...</div>
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer" ng-click="pluPanelDirective.exportPLUs()" style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel (includes all PLUs)"></div>
+					</div>
+					<div class="panel-body">
+						<table ng-table="pluPanelDirective.pluTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr ng-repeat="scaleUpc in pluPanelDirective.data">
+								<td data-title="'PLU'">
+									<a class="pointer ng-binding" ng-click="pluPanelDirective.getSinglePlu(scaleUpc, $index)">
+										{{scaleUpc.plu}}
+									</a>
+								</td>
+								<td data-title="'Product Description Line 1'">{{scaleUpc.englishDescriptionOne}}</td>
+								<td data-title="'Product Description Line 2'">{{scaleUpc.englishDescriptionTwo}}</td>
+								<td data-title="'Product Description Line 3'">{{scaleUpc.englishDescriptionThree}}</td>
+								<td data-title="'Product Description Line 4'">{{scaleUpc.englishDescriptionFour}}</td>
+								<td data-title="'Ingredient Statement Number'">{{scaleUpc.ingredientStatement}}</td>
+								<td data-title="'Nutrient Statement Number'">{{scaleUpc.nutrientStatement}}</td>
+								<td data-title="'Effective Date'">{{scaleUpc.effectiveDate}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12 col-sm-12">
+	<single-Plu-Panel ng-if="pluPanelDirective.isViewingSinglePlu()"></single-Plu-Panel>
+</div>

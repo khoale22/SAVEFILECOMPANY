@@ -1,0 +1,197 @@
+<!--
+wineScoringOrganization.htmlhtml
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div can-view="CT_WINE_01" id="wineScoringOrganization" ng-init="$ctrl.init()"  style="margin-top: 10px;">
+	<!-- Spinner panel for when getting data. -->
+	<div class="margin-top-20" ng-show="$ctrl.isWaitingForResponse">
+		<loading-spinner>
+		</loading-spinner>
+	</div>
+	<div class="row" data-ng-hide="$ctrl.isWaitingForResponse">
+		<!--Error span-->
+		<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+		</div>
+		<!--Success span-->
+		<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+		</div>
+		<div class="col-md-12">
+			<div class="panel-body" style="display: inline-block;width: 100%;">
+			<!--Custom Templates for Ng Table-->
+			<table class="table table-heb table-condensed table-bordered table-striped "
+				   style="margin-top: 10px; margin-bottom: 0px;"
+				   ng-table="tableParams" >
+				<thead>
+				<tr style="border-bottom: hidden !important; height: 25px;">
+					<th style="width: 15%;text-align: center;">Scoring Organization ID</th>
+					<th style="width: 30%;text-align: center;">Scoring Organization Name</th>
+					<th style="width: 44%;text-align: center;">Scoring Organization Description</th>
+					<th style="width:11%;">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-ng-repeat="item in $data | orderBy:'scoringOrganizationId'">
+					<td data-title="'Scoring Organization ID'">
+						<label>{{item.scoringOrganizationId}}</label>
+					</td>
+					<td data-title="'Scoring Organization Name'">
+						<label ng-if="!item.isEditing">{{item.scoringOrganizationName}}</label>
+						<input ng-if="item.isEditing" type="text" value={{item.scoringOrganizationName}} style="width: 100%;height: 26px"
+							   ng-model="item.scoringOrganizationName"
+							   empty-valid="State is a mandatory field."
+							   title="{{item.scoringOrganizationName.length==0?'State is a mandatory field.':''}}"
+							   class="{{item.scoringOrganizationName==0?item.addClass:'ng-valid'}}">
+					</td>
+					<td data-title="'Scoring Organization Description'">
+						<label ng-if="!item.isEditing">{{item.scoringOrganizationDescription}}</label>
+						<input ng-if="item.isEditing" type="text" value={{item.scoringOrganizationDescription.trim()}} style="width: 100%;height: 26px"
+						   ng-model="item.scoringOrganizationDescription"
+						   empty-valid="State is a mandatory field."
+						   title="{{item.scoringOrganizationDescription.length==0?'State is a mandatory field.':''}}"
+						   class="{{item.scoringOrganizationDescription==0?item.addClass:'ng-valid'}}">
+					</td>
+					<td data-title="'Action'" style="text-align: center" can-edit="CT_WINE_01">
+						<button class="glyphicon glyphicon-edit pointer" title="{{$ctrl.isEditing?'':'Edit'}}" data-ng-disabled="$ctrl.isEditing" style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};border-width:0px;padding: 0px;color: orange;background: transparent; font-size: large"   data-ng-click="$ctrl.edit(item)" ng-if="!item.isEditing">
+						</button>
+						<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="$ctrl.isEditing" title="{{$ctrl.isEditing?'':'Delete'}}" style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};border-width:0px;padding: 0px;color: red;background: transparent; font-size: large" data-ng-click="$ctrl.delete(item)" ng-if="!item.isEditing">
+						</button>
+						<button class="glyphicon glyphicon-floppy-disk pointer" title="Save" style="border-width:0px;background: transparent;padding: 0px;color: green; font-size: large" data-ng-click="$ctrl.updateWineScoringOrganization(item)" ng-if="item.isEditing">
+						</button>
+						<button class="glyphicon glyphicon-ban-circle pointer" title="Reset" style="border-width:0px;background: transparent;padding: 0px;color: red; font-size: large" data-ng-click="$ctrl.cancel(item)" ng-if="item.isEditing">
+						</button>
+					</td>
+					<td data-title="'Action'" style="text-align: center" view-only="CT_WINE_01">
+						<button class="glyphicon glyphicon-edit pointer" disabled="disabled" style="opacity: 0.5;border-width:0px;padding: 0px;color: orange;background: transparent; font-size: large">
+						</button>
+						<button class="glyphicon glyphicon-remove pointer" disabled="disabled" style="opacity: 0.5;border-width:0px;padding: 0px;color: red;background: transparent; font-size: large">
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+				<!-- View Mode-->
+				<button view-only="CT_WINE_01" class="btn btn-primary" disabled="true">Add</button>
+				<!--Edit mode-->
+				<button can-edit="CT_WINE_01" data-ng-disabled="$ctrl.isEditing" class="btn btn-primary" ng-click="$ctrl.addNewWineScoringOrganization()">Add</button>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Add new/Edit popup-->
+<!--Modal Add New/Edit WineScoringOrganization-->
+<div id="wineScoringOrganizationModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.titleModel}}
+				</h5>
+			</div>
+			<div id="addEditContainer" class="modal-body" style="overflow-y: auto;">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addEditForm" id="addEditForm"  >
+				<table ng-table="tableParamsForAddEditMode"  class="table-heb table-bordered table-striped" style="width: 100%; margin-bottom: 0px;">
+					<thead>
+					<tr style="border-bottom: hidden !important;height: 25px;">
+						<th class="col-md-2" data-ng-show="$ctrl.action == $ctrl.EDIT_ACTION" style="vertical-align: middle;padding: 8px!important;">Scoring Organization ID</th>
+						<th class="col-md-3" style="vertical-align: middle;" >Scoring Organization Name</th>
+						<th class="col-md-7" style="vertical-align: middle;">Scoring Organization Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="wineScoringOrganization in $data track by $index">
+						<td class="col-md-3" data-ng-show="$ctrl.action == $ctrl.EDIT_ACTION">{{wineScoringOrganization.scoringOrganizationId > 0? wineScoringOrganization.scoringOrganizationId:''}}</td>
+						<td class="col-md-3">
+							<input type="text" id="scoringOrganizationName{{$index}}"
+								   disable-enter-begin-with-space-char style="width: 100%;height: 26px;"
+								   maxlength="30" ng-model="wineScoringOrganization.scoringOrganizationName"
+								   required title="{{wineScoringOrganization.scoringOrganizationName.length == 0?$ctrl.SCORING_ORG_NAME_MANDATORY_FIELD_ERROR:''}}"  empty-valid="{{$ctrl.SCORING_ORG_NAME_MANDATORY_FIELD_ERROR}}"
+								   class="{{wineScoringOrganization.scoringOrganizationName.length==0?wineScoringOrganization.addClass:'ng-valid'}}"
+							        ></td>
+						<td class="col-md-6">
+							<input type="text" style="width: 100%;height: 26px;" id="scoringOrganizationDescription{{$index}}" disable-enter-begin-with-space-char required
+								   ng-model="wineScoringOrganization.scoringOrganizationDescription" maxlength="80"
+								   title="{{wineScoringOrganization.scoringOrganizationDescription.length == 0?$ctrl.SCORING_ORG_DESCRIPTION_MANDATORY_FIELD_ERROR:''}}"  empty-valid="{{$ctrl.SCORING_ORG_DESCRIPTION_MANDATORY_FIELD_ERROR}}"
+								   class="{{wineScoringOrganization.scoringOrganizationDescription.length==0?wineScoringOrganization.addClass:'ng-valid'}}"
+							></td>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRowWineScoringOrganization()" ng-show="$ctrl.action == 'ADD'">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAddwineScoringOrganizations()">Save
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.resetDataOrigForPopUp()" data-ng-show="$ctrl.action == $ctrl.EDIT_ACTION">Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-ng-click="$ctrl.closeModalUnsavedData()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.titleConfirm}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.updateWineScoringOrganizationTabchange()">
+					Yes
+				</button>
+				<button type="button" data-ng-show="$ctrl.isDelete" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doDeleteWineScoringOrganization()">
+					Yes
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isDelete&&!$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAddStateWarnings()">
+					Yes
+				</button>
+				<button type="button" ng-show="$ctrl.isDelete" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.doCloseModal()">
+					No
+				</button>
+				<button type="button" ng-show="!$ctrl.isDelete&&!$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.doCloseModal()">
+					No
+				</button>
+				<button type="button" ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.returnToTab()">
+					No
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isDelete" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.closeConfirmPopup()">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

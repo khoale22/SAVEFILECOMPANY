@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ db-config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+		xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		"
+	>
+
+    <!-- Data source to connect to ARBAF -->
+    <bean id="arbafDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="${arbaf.driver-class-name}" />
+        <property name="url" value="${arbaf.url}" />
+        <property name="username" value="${arbaf.username}" />
+        <property name="password" value="${arbaf.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from appl_nm" />
+    </bean>
+
+	<!-- Data source to connect to DB2 -->
+	 <!-- <bean id="db2DataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+		<property name="driverClassName" value="${db2.driver-class-name}" />
+		<property name="url" value="${db2.url}" />
+		<property name="username" value="${db2.user}" />
+		<property name="password" value="${db2.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from sysibm.sysdummy1	" /> 
+	</bean>  -->
+	<!-- Data source to connect to Oracle -->
+<!-- DB2ToOracle Changess by vn76717-->
+	<bean id="dataSourceOracle" class="org.apache.commons.dbcp2.BasicDataSource"
+		primary="true">
+		<property name="driverClassName" value="${oracle.driver-class-name}" />
+		<property name="url" value="${oracle.url}" />
+		<property name="username" value="${oracle.username}" />
+		<property name="password" value="${oracle.password}" />
+		<property name="maxIdle" value="50" />
+		<property name="maxTotal" value="50" />
+		<property name="validationQuery" value="select 1 from dual" />
+		<!-- <property name="connectionInitSqls">
+			<list>
+				<value>ALTER SESSION SET CURRENT_SCHEMA = EMD</value>
+			</list>
+		</property> -->
+	</bean>
+
+    <!-- Data source to connect to TIM -->
+    <bean id="timDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+        <property name="driverClassName" value="${tim.driver-class-name}" />
+        <property name="url" value="${tim.url}" />
+        <property name="username" value="${tim.username}" />
+        <property name="password" value="${tim.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <!-- Data source to connect to GDSN Staging DB -->
+    <bean id="gdsnDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+        <property name="driverClassName" value="${gdsn.driver-class-name}" />
+        <property name="url" value="${gdsn.url}" />
+        <property name="username" value="${gdsn.username}" />
+        <property name="password" value="${gdsn.password}" />
+        <property name="testOnBorrow" value="true" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <!-- Data source to connect to Dictionary DB -->
+    <bean id="dictionaryDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+        <property name="driverClassName" value="${dictionary.driver-class-name}" />
+        <property name="url" value="${dictionary.url}" />
+        <property name="username" value="${dictionary.username}" />
+        <property name="password" value="${dictionary.password}" />
+        <property name="testOnBorrow" value="true" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <!-- Data source to connect to EPlum DB -->
+    <bean id="ePlumDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+        <property name="driverClassName" value="${ePlum.driver-class-name}" />
+        <property name="url" value="${ePlum.url}" />
+        <property name="username" value="${ePlum.username}" />
+        <property name="password" value="${ePlum.password}" />
+        <property name="testOnBorrow" value="true" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+    
+    <!-- Data source to connect to Jbatjob DB -->
+    <bean id="jbatJobDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+        <property name="driverClassName" value="${jbatJob.driver-class-name}" />
+        <property name="url" value="${jbatjob.url}" />
+        <property name="username" value="${jbatjob.username}" />
+        <property name="password" value="${jbatjob.password}" />
+        <property name="testOnBorrow" value="true" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+</beans>

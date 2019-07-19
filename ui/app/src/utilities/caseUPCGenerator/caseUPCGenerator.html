@@ -1,0 +1,192 @@
+<!--
+  ~ dictionary.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-controller="CaseUPCGeneratorController as caseUPCGeneratorController" style="min-width: 700px">
+	<div class="col-md-12">
+		<!--- The main part where to show main information for screen -->
+		<div class="panel-group" can-view="UT_CUPC_01">
+			<div class="panel panel-primary">
+				<div class="panel-heading"><h3 class="panel-title">Case UPC Generator</h3></div>
+				<!--- The header where to show message success or error -->
+				<div class="row" data-ng-if="caseUPCGeneratorController.success&&!caseUPCGeneratorController.isWaiting">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">
+				{{caseUPCGeneratorController.success}}
+				</span>
+				</div>
+				<div class="row" data-ng-if="caseUPCGeneratorController.error&&!caseUPCGeneratorController.isWaiting">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+				{{caseUPCGeneratorController.error}}
+				</span>
+				</div>
+				<loading-spinner ng-if="caseUPCGeneratorController.isWaiting">
+				</loading-spinner>
+				<div class="panel-body" style="height: 500px">
+					<div ng-if="!caseUPCGeneratorController.isWaiting">
+						<label style="margin-left:18%; font-size: 	14px;">Case Pack:</label>
+						<div class="row" style="margin-left:25%;width: 50%">
+							<h6 class="row col-md-4" style="margin-top: 4px">Enter
+								Selling Unit UPC</h6>
+							<div class="row col-md-3">
+								<input type="text" maxlength="13"
+									   class="form-control"
+									   onkeypress="return (event.charCode >=48 && event.charCode <=57) || event.charCode === 46"
+									   style="height:30px;margin-left: -20px;width: 150px;font-size: 14px"
+									   ng-model="caseUPCGeneratorController.inputNumber">
+							</div>
+							<button class="btn btn-primary row col-md-2" style="margin-left: 5%;"
+									ng-click="caseUPCGeneratorController.generateUpcNumber(false)">
+								Generate
+							</button>
+						</div>
+						<h6 style="margin-left:25%;width: 50%">Case UPC generated is :
+							<span style="color: red;margin-left: 20px">{{caseUPCGeneratorController.upcGeneratedIsNotMRT}}</span></h6>
+						<label style="font-size: 14px;margin-left:25%;width: 50%">UPC - Item details</label>
+						<!-- The table where the dictionary information returned. -->
+						<div class="row col-md-6 col-md-offset-3">
+							<table ng-table="dictionaryController.tableParams"
+								   class="table-heb table-bordered table-striped" style="margin-left: -14px">
+								<thead>
+								<tr style="color: white; background-color: #00476b; width: 100%; height: 25px; border: solid 1px black">
+									<th style="width: 10%">Item ID</th>
+									<th style="width: 30%">Description</th>
+									<th style="width: 10%">Pack</th>
+									<th style="width: 10%">Channel</th>
+									<th style="width: 15%">UPC</th>
+									<th style="width: 15%">Case UPC</th>
+									<th style="width: 10%">Alt-Pack?</th>
+								</tr>
+								</thead>
+								<tbody
+									ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList)"
+									ng-init="lstTd=['1','2','3','4','5','6','7']">
+								<tr style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								</tbody>
+								<tbody
+									ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList)"
+									ng-init="lstTd=['1','2','3','4','5','6','7']">
+								<tr ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[0])"
+									style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[0])" style="height: 22px;">
+									<td>{{caseUPCGeneratorController.casePackList[0].key.itemCode}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].description}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].pack}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].key.itemType === 'ITMCD'?'WHS':caseUPCGeneratorController.casePackList[0].key.itemType}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].orderingUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].caseUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[0].mrtAltPack}}</td>
+								</tr>
+								<tr ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[1])"
+									style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[1])"
+									style="height: 22px;">
+									<td>{{caseUPCGeneratorController.casePackList[1].key.itemCode}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].description}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].pack}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].key.itemType === 'ITMCD'?'WHS':caseUPCGeneratorController.casePackList[1].key.itemType}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].orderingUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].caseUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[1].mrtAltPack}}</td>
+								</tr>
+								<tr ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[2])"
+									style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[2])"
+									style="height: 22px;">
+									<td>{{caseUPCGeneratorController.casePackList[2].key.itemCode}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].description}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].pack}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].key.itemType === 'ITMCD'?'WHS':caseUPCGeneratorController.casePackList[2].key.itemType}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].orderingUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].caseUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[2].mrtAltPack}}</td>
+								</tr>
+								<tr ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[3])"
+									style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[3])"
+									style="height: 22px;">
+									<td>{{caseUPCGeneratorController.casePackList[3].key.itemCode}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].description}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].pack}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].key.itemType === 'ITMCD'?'WHS':caseUPCGeneratorController.casePackList[3].key.itemType}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].orderingUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].caseUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[3].mrtAltPack}}</td>
+								</tr>
+								<tr ng-if="caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[4])"
+									style="height: 22px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-if="!caseUPCGeneratorController.isNullOrEmpty(caseUPCGeneratorController.casePackList[4])"
+									style="height: 22px;">
+									<td>{{caseUPCGeneratorController.casePackList[4].key.itemCode}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].description}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].pack}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].key.itemType === 'ITMCD'?'WHS':caseUPCGeneratorController.casePackList[4].key.itemType}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].orderingUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].caseUpc}}</td>
+									<td>{{caseUPCGeneratorController.casePackList[4].mrtAltPack}}</td>
+								</tr>
+								</tbody>
+								<tr ng-show="dictionaryController.isWaiting">
+									<td colspan="5">
+										<loading-spinner
+											ng-show="dictionaryController.isWaiting"></loading-spinner>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="row" style="margin-top: 100px">
+							<div class="col-md-6">
+								<div class="divider-horizontal"></div>
+							</div>
+							<div class="col-md-1" style="text-align: center;margin-left: -50px">(OR)</div>
+							<div class="col-md-5">
+								<div class="divider-horizontal" style="margin-left: -50px; width:120%"></div>
+							</div>
+						</div>
+						<label style="margin-left:18%;margin-top: 10px;font-size: 14px">MRT:</label>
+						<div class="row" style="margin-left:25%;">
+							<h6 class="row col-md-5" style="margin-top: 4px">Click
+								on generate to get the next available Case UPC</h6>
+							<button type="button" class="btn btn-primary row col-md-2" style="width: 105px"
+									ng-click="caseUPCGeneratorController.generateUpcNumber(true)">Generate
+							</button>
+						</div>
+						<h6 style="margin-left:25%;width: 50%">Case UPC generated is :
+							<span style="color: red;margin-left: 20px">{{caseUPCGeneratorController.upcGeneratedIsMRT}}</span></h6>
+					</div>
+				</div>
+				<!-- End main part -->
+			</div>
+		</div>
+	</div>
+</div>
+
+

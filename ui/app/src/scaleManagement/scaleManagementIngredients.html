@@ -1,0 +1,376 @@
+<div class="row" ng-controller="ScaleManagementIngredientsController as scaleManagementIngredientsController"
+	 ng-init="scaleManagementIngredientsController.init()" xmlns="http://www.w3.org/1999/html">
+	<div class="col-md-12 container-fluid">
+		<div class="row" data-ng-if="scaleManagementIngredientsController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementIngredientsController.success}}</span>
+		</div>
+		<div class="row" data-ng-if="scaleManagementIngredientsController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementIngredientsController.error}}</span>
+		</div>
+		<div class="col-md-8">
+			<div class="panel-group">
+				<div class="panel panel-primary" style="min-width: 1247px" >
+					<div class="panel-heading">Ingredients Search
+						<i ng-click="scaleManagementIngredientsController.searchPanelVisible = !scaleManagementIngredientsController.searchPanelVisible" data-toggle="collapse"
+						   data-target="#searchPanelToggle" class="pull-right pointer"
+						   ng-class="{'glyphicon glyphicon-minus': scaleManagementIngredientsController.searchPanelVisible, 'glyphicon glyphicon-plus': !scaleManagementIngredientsController.searchPanelVisible}">
+						</i>
+					</div>
+					<div class="panel-collapse collapse in" id="searchPanelToggle">
+						<div class="panel-body">
+							<div class="row">
+								<!-- Radio buttons for list type (IngredientCode, Ingredient Statement, Description) . -->
+								<div class="col-md-12">
+									<label>
+										<input type="radio" ng-model="scaleManagementIngredientsController.selectionType"
+											   value="{{scaleManagementIngredientsController.INGREDIENT_CODE}}"
+										/>Ingredient Code
+									</label>
+									<label>
+										<input type="radio" ng-model="scaleManagementIngredientsController.selectionType"
+											   value="{{scaleManagementIngredientsController.DESCRIPTION}}"
+										/>Description
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="row">
+										<!-- The text box for the user input. -->
+										<div class="col-md-6" style="min-width: 349px">
+													<textarea data-ng-model="scaleManagementIngredientsController.searchSelection" rows="8" style="min-width: 334px"
+															  placeholder="{{scaleManagementIngredientsController.getTextPlaceHolder()}}" class="col-md-12 noresize">
+													</textarea>
+										</div>
+										<div class="col-md-3" style="min-width: 302px">
+											<div class="row">
+												<label class="col-md-12">Include/Exclude
+													<select ng-model="scaleManagementIngredientsController.includeCategorySwitch" ng-options="o.name for o in scaleManagementIngredientsController.ingredientCategoryIncludeOptions track by o.value">
+													</select>
+												</label>
+												<label class="col-md-12">Ingredient Category
+													<ui-select ng-model="scaleManagementIngredientsController.categorySelected"
+															   theme="bootstrap"
+															   title="Choose a category">
+														<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+														<ui-select-choices repeat="category in scaleManagementIngredientsController.currentCategoryList"
+																		   refresh="scaleManagementIngredientsController.getCurrentCategoryList($select.search)"
+																		   refresh-delay="0">{{category.displayName}}
+														</ui-select-choices>
+													</ui-select>
+												</label>
+											</div>
+										</div>
+										<div class="col-md-3" style="min-width: 302px">
+											<button data-ng-click="scaleManagementIngredientsController.newSearch(false)"
+													class="btn btn-primary btn-block"
+													title="Search by ingredient code, description, or statement code"
+													data-ng-disabled="scaleManagementIngredientsController.searchSelection == null">Search</button>
+											<button data-ng-click="scaleManagementIngredientsController.newSearch(true)"
+													title="Search all ingredients"
+													class="btn btn-primary btn-block">Search All</button>
+											<button data-ng-click="scaleManagementIngredientsController.clearBasicSearch()"
+													title="Clear all options"
+													class="btn btn-primary btn-block">Clear</button>
+											<button data-ng-click="scaleManagementIngredientsController.createIngredient()"
+													title="Add an ingredient"
+													data-toggle="modal" data-target="#ingredientModal" class="btn btn-primary btn-block"
+													data-ng-disabled="!scaleManagementIngredientsController.canEditIngredients()">Add</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<loading-spinner ng-show="scaleManagementIngredientsController.isWaiting">
+		</loading-spinner>
+
+		<div class="col-md-12" ng-show="!scaleManagementIngredientsController.isWaiting && scaleManagementIngredientsController.deleteMessage != null">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementIngredientsController.deleteMessage}}</span>
+		</div>
+
+		<div class="col-md-12">
+			<div class="panel-group" ng-show="!scaleManagementIngredientsController.isWaiting && scaleManagementIngredientsController.data != null">
+				<div class="row" data-ng-if="scaleManagementIngredientsController.modifyMessage">
+					<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementIngredientsController.modifyMessage}}</span>
+				</div>
+				<div class="row" data-ng-if="scaleManagementIngredientsController.modifyError">
+					<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementIngredientsController.modifyError}}</span>
+				</div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<div ng-if="scaleManagementIngredientsController.resultsMessage != null">
+							<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+							<h5 class="panel-title inline-block">{{scaleManagementIngredientsController.resultsMessage}}</h5>
+							<div class="inline-block pull-right" ng-if="scaleManagementIngredientsController.downloadingIngredientList" style="color: orange">Downloading...</div>
+
+							<!-- The new download Ingredient to CSV Glyph -->
+							<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+								 ng-click="scaleManagementIngredientsController.exportIngredientList()"
+								 style="color: orange; padding-left: 10px; padding-bottom: 5px;
+								 font-size: medium" data-toggle="tooltip" title="Export Ingredients to Excel (includes all SOIs, IS#s, and PLUs)">
+
+							</div>
+						</div>
+					</div>
+					<!-- The table with the list of ingredients that match the search. -->
+					<div class="panel-body" ng-class="{'ng-table-pager-none' : scaleManagementIngredientsController.noPagination}">
+						<table ng-table="scaleManagementIngredientsController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr style="color: white; background-color: #00476b">
+								<th style="min-width: 100px">Ingredient Code</th>
+								<th style="min-width: 100px">Category</th>
+								<th style="min-width: 100px">Ingredient Description</th>
+								<th style="min-width: 100px">Extended Description</th>
+								<th>Sub Ingredients</th>
+								<th></th>
+							</tr>
+							<tr ng-repeat="ingredient in scaleManagementIngredientsController.data">
+								<td><a class="pointer" ng-click="scaleManagementIngredientsController.showSuperIngredients(ingredient, true)">{{ingredient.ingredientCode}}</a></td>
+								<td>{{ingredient.ingredientCategory.displayText}}</td>
+								<td>{{ingredient.ingredientDescription}}</td>
+								<td>{{ingredient.ingredientCatDescription}}</td>
+								<td>{{ingredient.subIngredientsDisplayText}}</td>
+								<td>
+									<i data-ng-click="scaleManagementIngredientsController.editIngredient(ingredient, $index)" data-toggle="modal" data-target="#ingredientModal" class="glyphicon glyphicon-edit pointer" style="color: orange; font-size: large"></i>
+									<i data-toggle="modal" data-target="#removeIngredientModal"
+									   ng-click="scaleManagementIngredientsController.setRemoveIngredient(ingredient)"
+									   class="glyphicon glyphicon-remove pointer" style="color: red; font-size: large"
+									   can-edit="SM_INGR_01"></i>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- The table with the list of ingredients a selected ingredient is part of. -->
+		<loading-spinner ng-show="scaleManagementIngredientsController.superIngredientsWaiting">
+		</loading-spinner>
+		<div class="col-md-12" ng-show="scaleManagementIngredientsController.superIngredientsData">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4 class="panel-title inline-block"><b>SOIs including {{scaleManagementIngredientsController.selectedIngredient.displayName}}</b></h4>
+					<h5 class="panel-title inline-block">{{scaleManagementIngredientsController.superIngredientsResultMessage}}</h5>
+					<div class="inline-block pull-right" ng-if="scaleManagementIngredientsController.downloading" style="color: orange">Downloading...</div>
+					<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer" ng-click="scaleManagementIngredientsController.exportSuperIngredients()" style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel (includes all SOIs, IS#s, and PLUs)"></div>
+				</div>
+				<div class="panel-body" >
+					<div ng-if="scaleManagementIngredientsController.superIngredientStack.length > 0" class="glyphicon glyphicon-arrow-left inline-block pointer" ng-click="scaleManagementIngredientsController.showPreviousSuperIngredients()" style="padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Go to previous SOI"></div>
+
+					<table ng-table="scaleManagementIngredientsController.superIngredientsTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr style="color: white; background-color: #00476b">
+							<th style="min-width: 100px">Ingredient Code</th>
+							<th style="min-width: 100px">Category</th>
+							<th style="min-width: 100px">Ingredient Description</th>
+							<th style="min-width: 100px">Extended Description</th>
+							<th>Sub Ingredients</th>
+							<th></th>
+						</tr>
+						<tr ng-repeat="ingredient in scaleManagementIngredientsController.superIngredientsData">
+							<td><a class="pointer" ng-click="scaleManagementIngredientsController.showSuperIngredients(ingredient, false)">{{ingredient.ingredientCode}}</a></td>
+							<td>{{ingredient.ingredientCategory.displayText}}</td>
+							<td>{{ingredient.ingredientDescription}}</td>
+							<td>{{ingredient.ingredientCatDescription}}</td>
+							<td>{{ingredient.displayText}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div id="ingredientModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<h5 class="modal-title inline-block" style="color: #ffffff" ng-show="scaleManagementIngredientsController.isAddingIngredient">New Ingredient Detail</h5>
+						<h5 class="modal-title inline-block" style="color: #ffffff" ng-show="scaleManagementIngredientsController.isEditingIngredient">Ingredient Detail</h5>
+					</div>
+					<div class="modal-body">
+						<div class="well" style="margin-bottom: 0">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="ingredientCode">Ingredient Code<strong style="color: red"> **</strong></label>
+										<input id="ingredientCode" class="form-control"
+											   ng-model="scaleManagementIngredientsController.ingredient.ingredientCode"
+											   disabled ng-if="scaleManagementIngredientsController.isEditingIngredient">
+										<ui-select ng-model="scaleManagementIngredientsController.ingredient.ingredientCode"
+												   theme="bootstrap"
+												   ng-if="scaleManagementIngredientsController.isAddingIngredient"
+												   id="ingredientCode"
+												   title="Choose an ingredient code">
+											<ui-select-match>{{$select.selected}}</ui-select-match>
+											<ui-select-choices repeat="ingredient in scaleManagementIngredientsController.nextIngredientCodeList"
+															   refresh="scaleManagementIngredientsController.getNextIngredientCodeList($select.search)"
+															   refresh-delay="0">{{ingredient}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group" can-edit="SM_INGR_01">
+										<label for="ingredientCategoryCode">Category Code<strong style="color: red"> **</strong></label>
+										<ui-select ng-model="scaleManagementIngredientsController.ingredient.ingredientCategory"
+												   theme="bootstrap"
+												   id="ingredientCategoryCode"
+												   title="Choose a category">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices repeat="category in scaleManagementIngredientsController.currentCategoryList"
+															   refresh="scaleManagementIngredientsController.getCurrentCategoryList($select.search)"
+															   refresh-delay="0">{{category.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+									<div view-only="SM_INGR_01" >
+										<label for="ingredientCategoryCode">Category Code<strong style="color: red"> **</strong></label>
+										<div id="ingredientCategoryCode"> {{scaleManagementIngredientsController.ingredient.ingredientCategory.displayName}}</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6" can-edit="SM_INGR_01">
+									<div class="form-group">
+										<label for="ingredientDescription">Ingredient Description<strong style="color: red"> **</strong></label>
+										<input id="ingredientDescription"
+											   class="form-control"
+											   type="text"
+											   ng-model="scaleManagementIngredientsController.ingredient.ingredientDescription"
+											   maxlength="50">
+									</div>
+								</div>
+								<div view-only="SM_INGR_01" class="col-md-6">
+									<label for="ingredientDescription">Ingredient Description<strong style="color: red"> **</strong></label>
+									<div id="ingredientDescription">{{scaleManagementIngredientsController.ingredient.ingredientDescription}}</div>
+								</div>
+								<div class="col-md-6" can-edit="SM_INGR_01">
+									<div class="form-group" >
+										<label for="ingredientExtendedDescription">Extended Description</label>
+										<input id="ingredientExtendedDescription"
+											   class="form-control"
+											   type="text"
+											   ng-model="scaleManagementIngredientsController.ingredient.ingredientCatDescription"
+											   maxlength="20">
+									</div>
+								</div>
+								<div view-only="SM_INGR_01" class="col-md-6">
+									<label for="ingredientExtendedDescription">Extended Description<strong style="color: red"> **</strong></label>
+									<div id="ingredientExtendedDescription">{{scaleManagementIngredientsController.ingredient.ingredientCatDescription}}</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-12">
+											<button type="button" class="btn btn-primary btn-sm"
+													ng-disabled="scaleManagementIngredientsController.isAnySubIngredientNull()"
+													title="{{scaleManagementIngredientsController.isAnySubIngredientNull() ? 'Please select the empty sub-ingredient before adding another.' : null}}"
+													ng-click="scaleManagementIngredientsController.addSubIngredient(0)"
+													can-edit = "SM_INGR_01">Add First Sub Ingredient
+											</button>
+											<i class="glyphicon glyphicon-info-sign"
+											   style="color: blue"
+											   title="{{scaleManagementIngredientsController.SUB_INGREDIENT_TEXT}}"
+											   can-edit = "SM_INGR_01"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group pull-right">
+										<input type="checkbox"
+											   ng-model="scaleManagementIngredientsController.ingredient.soiFlag" disabled>
+										<strong>SOI</strong>
+									</div>
+								</div>
+							</div>
+							<div class="row" ng-show="scaleManagementIngredientsController.ingredient.soiFlag">
+								<div class="col-md-12">
+									<div ng-repeat="subIngredient in scaleManagementIngredientsController.ingredient.ingredientSubs track by $index">
+										<div class="row" view-only="SM_INGR_01" class="form-group">
+											<div class="col-md-12">
+												{{subIngredient.subIngredient.displayName}}
+											</div>
+										</div>
+										<div class="row" can-edit = "SM_INGR_01">
+											<br>
+											<div class="col-md-8">
+												<ui-select ng-model="subIngredient.subIngredient"
+														   theme="bootstrap"
+														   id="{{'subIngredientCode' + $index}}"
+														   autofocus
+														   on-select="scaleManagementIngredientsController.subIngredientSelected(subIngredient)">
+													<ui-select-match title="{{$select.selected.displayText}}">{{$select.selected.displayName}}</ui-select-match>
+													<ui-select-choices repeat="ingredient in scaleManagementIngredientsController.currentIngredientList"
+																	   refresh="scaleManagementIngredientsController.getCurrentIngredientList($select.search)"
+																	   refresh-delay="0">
+														<div uib-tooltip="{{ingredient.displayText}}" tooltip-placement="bottom" tooltip-append-to-body="true">{{ingredient.displayName}}</div>
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div class="col-md-2">
+												<div class="row">
+													<div class="col-md-6">
+														<button class="glyphicon glyphicon-plus" style="color: green; padding-top: 5px; padding-bottom: 5px; background: none; border: none; font-size: large;"
+																ng-click="scaleManagementIngredientsController.addSubIngredient($index + 1)"
+																ng-disabled="scaleManagementIngredientsController.isAnySubIngredientNull()"
+																title="{{scaleManagementIngredientsController.isAnySubIngredientNull() ? 'Please select the empty sub-ingredient before adding another.' : 'Add sub-ingredient just below this position'}}"
+																ng-style="{'cursor': scaleManagementIngredientsController.isAnySubIngredientNull()?  'not-allowed': 'pointer'}">
+														</button>
+													</div>
+													<div class="col-md-6">
+														<button ng-click="scaleManagementIngredientsController.moveSubIngredient($index, $index - 1)"
+																ng-show="!($index == 0)"
+																class="glyphicon glyphicon-triangle-top pointer">
+														</button>
+														<button ng-click="scaleManagementIngredientsController.moveSubIngredient($index, $index + 1)"
+																ng-show="!($index == scaleManagementIngredientsController.ingredient.ingredientSubs.length - 1)"
+																class="glyphicon glyphicon-triangle-bottom pointer">
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-2">
+												<button ng-click="scaleManagementIngredientsController.removeSubIngredient($index)"
+														class="btn btn-danger btn-sm">Remove</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<strong class="inline-block pull-left" style="color: red">** Required</strong>
+						<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+								ng-click="scaleManagementIngredientsController.resetModal()">Cancel</button>
+						<button can-edit="SM_INGR_01"
+								type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+								ng-click="scaleManagementIngredientsController.saveIngredient()"
+								title="{{scaleManagementIngredientsController.isRequiredIngredientInfoFilled() ? 'Please enter all required information, and select any added sub-ingredients.' : null}}"
+								data-ng-disabled="scaleManagementIngredientsController.isRequiredIngredientInfoFilled()">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="removeIngredientModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<h5 class="modal-title inline-block" style="color: #ffffff">Please Confirm</h5>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to remove: {{scaleManagementIngredientsController.ingredient.displayName}}?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" ng-click="scaleManagementIngredientsController.cancelRemove()" class="btn btn-danger" data-dismiss="modal">No</button>
+						<button type="button" ng-click="scaleManagementIngredientsController.removeIngredient()" class="btn btn-success" data-dismiss="modal">Yes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

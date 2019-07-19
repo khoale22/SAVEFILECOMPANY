@@ -1,0 +1,1026 @@
+<div style="height: 250px">
+	<div class="row">
+		<div data-ng-if="$ctrl.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.success}}</span>
+		</div>
+		<div data-ng-if="$ctrl.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.error}}</span>
+		</div>
+		<div data-ng-if="$ctrl.waitingForUpdate">
+			<span class="alert alert-info col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.UPDATING_MESSAGE_TEXT}}</span>
+		</div>
+		<form novalidate name="$ctrl.productInfoForm" id="productInfoForm">
+			<div class="col-md-12">
+				<div class="row col-md-offset-10 col-md-2 pull-right" >
+					<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showProductInfoAuditInfo()"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-2 text-right">
+						<label>Product ID </label>
+					</div>
+					<div class="col-md-2" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.prodId}} </div>
+					<div class="col-md-4" can-view="PD_INFO_02">
+						<label>Receipt Description</label>
+						<span style="margin-left: 8px"><strong style="color: green">{{$ctrl.currentProductMasterParams.productMaster.description.substring(0,25)}}</strong></span>
+						<div class="inline-block glyphicon glyphicon-question-sign" style="color: blue"
+							 data-toggle="tooltip" title="{{$ctrl.PRODUCT_DESCRIPTION_RECEIPT_TEXT}}">
+						</div>
+						<div view-only = "PD_INFO_02">
+							<label style="margin-top: 5px">Product Description</label>
+							<span style="margin-left: 8px">{{$ctrl.currentProductMasterParams.productMaster.description}}</span>
+						</div>
+						<div class="row" can-edit="PD_INFO_02">
+							<div class = "col-md-5">
+								<label style="margin-top: 5px">Product Description</label>
+							</div>
+							<div class = "col-md-7" style="margin-left: -13%">
+								<input type="text"
+									   class="form-control"
+									   name="description"
+									   maxlength="30"
+									   required
+									   id="productDescription"
+									   style="width: 120%"
+									   ng-model="$ctrl.currentProductMasterParams.productMaster.description">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<span class="red-text col-md-12 text-center"
+								  ng-show="$ctrl.productInfoForm.description.$error.required">{{$ctrl.REQUIRED_FIELD_ERROR_TEXT}}</span>
+						</div>
+					</div>
+					<div class="col-md-2 text-right">
+						<label>Size</label>
+					</div>
+					<div class="col-md-2" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.productSizeText}}</div>
+				</div>
+				<div class=row">
+					<div class="col-md-12 divider-horizontal"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-9">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Department</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.subDepartment.displayName}}</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Commodity</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.classCommodity.displayName}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1 text-right">
+						<label>BDM</label>
+					</div>
+					<div class="col-md-2" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.classCommodity.bdm.displayName}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-9">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Class</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.classCommodity.itemClassMaster.displayName}}</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row" can-view="PD_INFO_21">
+									<div class="col-md-4 text-right">
+										<label>Sub-Commodity</label>
+									</div>
+									<div class="col-md-8">
+										<div class="row">
+											<div view-only="PD_INFO_21">{{$ctrl.currentProductMasterParams.productMaster.subCommodity.displayName}}</div>
+											<div can-edit="PD_INFO_21">
+												<ui-select id="productSubCommodityId"
+														   theme="bootstrap"
+														   ng-model="$ctrl.currentProductMasterParams.productMaster.subCommodityCode"
+														   title="Choose a sub-commodity."
+														   data-toggle="tooltip"
+														   spinner-enabled="true"
+														   search-enabled="true"
+														   spinner-class="ui-select-refreshing glyphicon-refresh ui-select-spin"
+														   uis-open-close="$ctrl.onOpenCloseSubCommodity(isOpen, $select.selected)"
+														   ng-change="$ctrl.changeSelectedSubCommodity($select.selected)">
+													<ui-select-match placeholder="--Select--">
+														{{$select.selected.displayName}}
+													</ui-select-match>
+													<ui-select-choices repeat="element.key.subCommodityCode as element in $ctrl.subCommodityValues track by $index"
+																	   refresh="$ctrl.findSubCommoditiesBySearchText($select.open, $select.search)"
+																	   refresh-delay="500">
+														{{element.displayName}}
+													</ui-select-choices>
+												</ui-select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1 text-right">
+						<label>Brand</label>
+					</div>
+					<div class="col-md-2" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.productBrand.displayName}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-9">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>eBM</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">{{$ctrl.currentProductMasterParams.productMaster.ebmName}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=row">
+					<div class="col-md-12 divider-horizontal"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_27">
+							<label class="col-md-8 text-right" for="productFoodStamp">Food Stamp</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-disabled="$ctrl.isFoodStampDisabled()"
+								   title="{{$ctrl.canUserEditResource('PD_INFO_27') ? $ctrl.EDIT_PRODUCT_FOOD_STAMP_MESSAGE_TEXT: $ctrl.EDIT_PRODUCT_FOOD_STAMP_ERROR_MESSAGE_TEXT}}"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.foodStampSwitch" 
+								   id="productFoodStamp">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled 
+								   title="{{$ctrl.canUserEditResource('PD_INFO_27') ? $ctrl.EDIT_PRODUCT_FOOD_STAMP_MESSAGE_TEXT: $ctrl.EDIT_PRODUCT_FOOD_STAMP_ERROR_MESSAGE_TEXT}}"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.foodStampSwitch"
+								   id="productFoodStamp">
+							<div class="glyphicon glyphicon-warning-sign"
+								 style="color: orange; left: 2%"
+								 title="Food Stamp (selected as N=No) is different than the default for the Sub-commodity (set at Y=Yes)."
+								 ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								 ng-hide="$ctrl.isFoodStampSameAsSubCommodityFoodStamp()">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productRetail">
+								<a class="pointer"
+								   ng-class="{'linkDisabled': ($ctrl.isLoadingVertexTaxCategory || $ctrl.currentProductMasterParams.productMaster.goodsProduct === null)}"
+								   ng-click="$ctrl.getAllVertexTaxCategoryEffectiveMaintenanceForProduct()"
+								   data-target="#taxCategoryModal"
+								   data-toggle="modal">Retail Tax</a></label>
+							<input type="checkbox"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.retailTaxSwitch"
+								   disabled 
+								   id="productRetail">
+							<span ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null 
+										&& ($ctrl.currentProductMasterParams.productMaster.goodsProduct.retailTaxSwitch != $ctrl.productMaster.subCommodity.taxEligible)"
+								  class="glyphicon glyphicon-warning-sign inline-block"
+								  style="color: orange"
+								  title="{{$ctrl.getRetailTaxWarningMessage()}}"></span>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">
+								<a class="pointer" 
+								   ng-class="{'linkDisabled': ($ctrl.isLoadingVertexTaxCategory || $ctrl.currentProductMasterParams.productMaster.goodsProduct === null)}"
+								   ng-click="$ctrl.getAllVertexTaxCategoryEffectiveMaintenanceForProduct()"
+								   data-target="#taxCategoryModal"
+								   data-toggle="modal">Tax Category</a></label>
+							<div style="padding-left: 0" class="col-md-6">
+								<div>
+									<div ng-class="{'small-loader': $ctrl.isLoadingVertexTaxCategory}"></div>
+									<a class="pointer {'linkDisabled': ($ctrl.currentProductMasterParams.productMaster.goodsProduct === null)}" 
+									   ng-if="!$ctrl.isLoadingVertexTaxCategory"
+									   ng-click="$ctrl.getAllVertexTaxCategoryEffectiveMaintenanceForProduct()"
+									   data-target="#taxCategoryModal"
+									   data-toggle="modal">{{$ctrl.currentProductMasterParams.vertexTaxCategory.displayName}}</a>
+									<span ng-if="$ctrl.isTaxCategoryDifferentThanSubCommodityDefault() && !$ctrl.isLoadingVertexTaxCategory"
+										  class="glyphicon glyphicon-warning-sign inline-block"
+										  style="color: orange"
+										  title="{{$ctrl.getTaxCategoryDefaultWarningMessage()}}"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_07">
+							<label for="productDepositUpc" class="col-md-6 text-right">Deposit UPC</label>
+							<div class="col-md-6">
+								<div class="row">
+									<div ng-class="{'small-loader': $ctrl.isLoadingDepositRelatedProduct}"></div>
+									<div ng-if="!$ctrl.isLoadingDepositRelatedProduct">
+										<div view-only="PD_INFO_07">{{$ctrl.currentProductMasterParams.depositRelatedProduct.productPrimaryScanCodeId}}</div>
+										<input type="text"
+											   name="productDepositUpc"
+											   can-edit="PD_INFO_07"
+											   ng-pattern="/^\d{1,17}$/"
+											   maxlength="17"
+											   id="productDepositUpc"
+											   style="width: 100%"
+											   class="form-control"
+											   ng-model="$ctrl.currentProductMasterParams.depositRelatedProduct.productPrimaryScanCodeId">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<span class="red-text col-md-12 text-center" ng-show="$ctrl.productInfoForm.productDepositUpc.$error.pattern">{{$ctrl.SEVENTEEN_NUMBER_REGEX_ERROR_TEXT}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_09">
+							<label for="productColor" class="col-md-6 text-right">Color</label>
+							<div class="col-md-6">
+								<div class="row" style="padding-right: 15px">
+									<div view-only="PD_INFO_09">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.colorCode}}</div>
+									<input type="text"
+										   can-edit="PD_INFO_09"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   name="productColor"
+										   maxlength="10"
+										   id="productColor"
+										   style="width: 100%"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.colorCode">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productOwnBrand">Own Brand</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.ownBrand" id="productOwnBrand" disabled>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_05">
+							<label class="col-md-8 text-right" for="productGenericProduct">Generic Product</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.genericProductSwitch"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_05')"
+								   name="productGenericProduct"
+								   id="productGenericProduct">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.genericProductSwitch"
+								   name="productGenericProduct"
+								   id="productGenericProduct">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_24">
+							<label class="col-md-6 text-right" for="productQualifyingCondition">Qualifying Condition</label>
+							<div class="col-md-6">
+								<div class="row">
+									<div ng-class="{'small-loader': $ctrl.isLoadingVertexTaxQualifyingCode}"></div>
+									<div ng-if="!$ctrl.isLoadingVertexTaxQualifyingCode">
+										<div view-only="PD_INFO_24">{{$ctrl.selectedVertexTaxQualifyingCondition.displayName}}</div>
+										<div can-edit="PD_INFO_24">
+											<ui-select ng-model="$ctrl.selectedVertexTaxQualifyingCondition"
+													   theme="bootstrap"
+													   id="productQualifyingCondition"
+													   title="Choose a qualifying condition."
+													   ng-change="$ctrl.updateQualifyingConditionCode()">
+												<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+												<ui-select-choices repeat="element in $ctrl.qualifyingConditionValues"
+																   refresh="$ctrl.getCurrentQualifyingConditionDropDownResults($select.search)"
+																   refresh-delay="0">{{element.displayName}}
+												</ui-select-choices>
+											</ui-select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">Deposit UPC Description</label>
+							<div style="padding-left: 0">{{$ctrl.currentProductMasterParams.depositRelatedProduct.description}}</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_10">
+							<label for="productModel" class="col-md-6 text-right">Model</label>
+							<div class="col-md-6">
+								<div class="row" style="padding-right: 15px">
+									<div view-only="PD_INFO_10">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.productModelText}}</div>
+									<input type="text"
+										   can-edit="PD_INFO_10"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   name="productModel"
+										   maxlength="20"
+										   id="productModel"
+										   style="width: 100%"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.productModelText">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productIsSelect">Select Ingredients</label>
+							<input view-only="PD_INFO_26" type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.selectIngredients" disabled id="productIsSelect">
+							<input can-edit="PD_INFO_26" type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.selectIngredients" id="productIsSelect">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productDistinctive">Distinctive</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.distinctive" id="productDistinctive" disabled>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right" for="productPrimoPick">Primo Pick</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.primoPick" disabled id="productPrimoPick">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_08">
+							<label for="productQuantityRequired" class="col-md-6 text-right">Quantity Required</label>
+							<div class="col-md-6">
+								<div class="row">
+									<div view-only="PD_INFO_08">{{$ctrl.selectedQuantityRequired.description}}</div>
+									<div can-edit="PD_INFO_08">
+										<select data-ng-change="$ctrl.updateSelectedQuantityRequired()" class="form-control" ng-model="$ctrl.selectedQuantityRequired.id">
+											<option ng-repeat="element in $ctrl.quantityRequiredCodeTable"
+													value="{{element.id}}">
+												{{element.description}}
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_11">
+							<label class="col-md-6 text-right" for="productStyleDescription">Style</label>
+							<div class="col-md-6">
+								<div class="row" style="padding-right: 15px">
+									<div view-only="PD_INFO_11">{{$ctrl.styleDescription}}</div>
+									<input type="text"
+										   name="productModel"
+										   can-edit="PD_INFO_11"
+										   id="productStyleDescription"
+										   style="width: 100%"
+										   class="form-control"
+										   ng-change="$ctrl.updateProductStyleDescription()"
+										   ng-model="$ctrl.styleDescription">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_06">
+							<label class="col-md-8 text-right" for="productSelfManufacture">Self Manufactured</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.selfManufactureSwitch"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_06')"
+								   id="productSelfManufacture">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.selfManufactureSwitch"
+								   id="productSelfManufacture">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+					</div>
+					<div class="col-md-5ths">
+					</div>
+					<div class="col-md-5ths"></div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_12">
+							<label class="col-md-6 text-right" for="productCriticalProduct">Critical Product</label>
+							<div class="col-md-6">
+								<div class="row" style="padding-right: 15px">
+									<div view-only="PD_INFO_12">{{$ctrl.selectedCriticalProduct.description}}</div>
+									<div can-edit="PD_INFO_12">
+										<select data-ng-change="$ctrl.updateSelectedCriticalProduct()" 
+												class="form-control" 
+												ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+												ng-model="$ctrl.selectedCriticalProduct.id">
+											<option ng-repeat="element in $ctrl.criticalProductCodeTable"
+													value="{{element.id}}">
+												{{element.description}}
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=row">
+					<div class="col-md-12 divider-horizontal"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productPharmacy">Pharmacy?</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.rxProductFlag" disabled id="productPharmacy">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-8 text-right" for="productTobacco">Tobacco?</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.tobaccoProductSwitch" disabled id="productTobacco">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right" for="productCodeDate">Code Dated?</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.codeDate" disabled id="productCodeDate">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right" for="productWine">Wine?</label>
+							<input type="checkbox" ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.wineProductSwitch" disabled id="productWine">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_20">
+							<label class="col-md-6 text-right" for="productShowCalories">Show Calories</label>
+							<input type="checkbox"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.showCalories"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_20')"
+								   id="productShowCalories">
+						</div>
+					</div>
+				</div>
+				<div class=row">
+					<div class="col-md-12 divider-horizontal"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_23">
+							<label class="col-md-8 text-right" for="productPriceRequired">Price Required</label>
+							<input type="checkbox"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.priceRequiredFlag"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_23')"
+								   id="productPriceRequired">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_13">
+							<label for="productPrePrice" class="col-md-8 text-right">Pre Price $</label>
+							<div class="col-md-4">
+								<div class="row">
+									<div view-only="PD_INFO_13">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.prePrice | number : 2}}</div>
+									<input type="number"
+										   can-edit="PD_INFO_13"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   name="productPrePrice"
+										   ng-pattern="/^[0-9]{1,7}([.][0-9]{1,2})?$/"
+										   id="productPrePrice"
+										   style="width: 100%"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.prePrice">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">Retail Link Code</label>
+							<div style="padding-left: 0" class="col-md-6">
+								<p ng-if="$ctrl.currentProductMasterParams.productMaster.retailLink == 0">{{$ctrl.currentProductMasterParams.productMaster.retailLink}}</p>
+								<a ng-if="$ctrl.currentProductMasterParams.productMaster.retailLink != 0" class="pointer"
+								   ng-click="$ctrl.getAllProductRetailLinksByRetailLinkCode()"
+								   data-target="#productRetailLinkModal"
+								   data-toggle="modal">{{$ctrl.currentProductMasterParams.productMaster.retailLink}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" style="text-align: center">
+							<label class="col-md-4 text-right">Retail</label>
+							<div ng-if="$ctrl.retailPrice == null && !$ctrl.isLoadingPriceDetail"
+								 class="col-md-8" style="padding-left: 0" >
+								<span>Retail not available</span>
+							</div>
+							<div ng-if="$ctrl.retailPrice != null" title="Zone {{$ctrl.retailPrice.zone}}"
+								 class="col-md-8 text-left" style="padding-left: 0" >
+								<span style="padding-left: 0">{{$ctrl.retailPrice.xFor}}</span>
+								<span><label>For</label></span>
+								<span style="padding-left: 0">{{$ctrl.retailPrice.retailPrice | currency}}</span>
+							</div>
+							<div class="inline-block" ng-class="{'small-loader': $ctrl.isLoadingPriceDetail}"></div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_14" style="padding-right: 15px">
+							<div ng-class="{'small-loader': $ctrl.isLoadingMapPrice}"></div>
+							<div ng-if="!$ctrl.isLoadingMapPrice">
+								<table class="table-heb table-bordered table-striped table-hover"
+									   style="width: 100%">
+									<thead>
+									<tr>
+										<th colspan="2">MAP Retail</th>
+									</tr>
+									<tr>
+										<th>Effective</th>
+										<th>Amount</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr	ng-repeat="mapPrice in $ctrl.currentProductMasterParams.mapPrices track by $index">
+										<td>
+											<div ng-if="$index === 0" style="height: 25px;">Today</div>
+											<div ng-if="$index === 1">Tomorrow</div>
+										</td>
+										<td style="display: flex">
+											<strong>$</strong>
+											<div ng-if="$index === 0" style="height: 25px">{{mapPrice.mapAmount}}</div>
+											<div ng-if="$index === 1">
+												<div view-only="PD_INFO_14">{{mapPrice.mapAmount}}</div>
+												<div can-edit="PD_INFO_14">
+													<input title="Product Map Retail Price"
+														   type="text"
+														   class="pull-left form-control"
+														   ng-pattern="/^([0-9]{1,7})?([.][0-9]{1,2})?$/"
+														   ng-blur="$ctrl.formatMapPrice(mapPrice)"
+														   ng-change="$ctrl.resetMapAmountIfEmpty(mapPrice)"
+														   style="width: 100%"
+														   ng-model="mapPrice.mapAmount">
+												</div>
+											</div>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class=row">
+					<div class="col-md-12 divider-horizontal"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_15">
+							<label class="col-md-8 text-right" for="productDrugFactPanel">Drug Fact Panel</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.drugFactPanelSwitch"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_15')"
+								   id="productDrugFactPanel">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.drugFactPanelSwitch"
+								   id="productDrugFactPanel">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_16">
+							<label class="col-md-8 text-right" for="productFSA">FSA</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.fsaCode"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_16')"
+								   id="productFSA">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.fsaCode"
+								   id="productFSA">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">SSA Count</label>
+							<span style="padding-left: 0">{{$ctrl.currentProductMasterParams.productAssortment.storeCount}}</span>
+							<div class="inline-block" ng-class="{'small-loader': $ctrl.isLoadingProductAssortment}"></div>
+							<div class="inline-block glyphicon glyphicon-question-sign" style="color: blue"
+								 data-toggle="tooltip" title="{{$ctrl.SSA_HELP_TEXT}}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">Seasonality</label>
+							<div style="padding-left: 0" class="col-md-6">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.seasonality.seasonalityName}}</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_19">
+							<label class="col-md-6 text-right" for="productPackagingText">Packaging</label>
+							<div class="col-md-6">
+								<div class="row" style="padding-right: 15px">
+									<div view-only="PD_INFO_19">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.packagingText}}</div>
+									<input name="productPackagingText"
+										   can-edit="PD_INFO_19"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   type="text"
+										   maxlength="30"
+										   style="width: 100%"
+										   required
+										   id="productPackagingText"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.packagingText">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_17">
+							<label class="col-md-8 text-right" for="productFamilyCodeOne">Family Code 1:</label>
+							<div class="col-md-4">
+								<div class="row">
+									<div view-only="PD_INFO_17">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.familyCode1}}</div>
+									<input name="productFamilyCodeOne"
+										   can-edit="PD_INFO_17"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   type="text"
+										   ng-pattern="/^[0-9]{1,5}$/"
+										   maxlength="5"
+										   style="width: 100%"
+										   id="productFamilyCodeOne"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.familyCode1">
+								</div>
+							</div>
+							<div class="col-md-12">
+								<span class="red-text col-md-12 text-center" ng-show="$ctrl.productInfoForm.productFamilyCodeOne.$error.pattern">{{$ctrl.FIVE_NUMBER_REGEX_ERROR_TEXT}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_18">
+							<label class="col-md-8 text-right" for="productFamilyCodeTwo">Family Code 2:</label>
+							<div class="col-md-4">
+								<div class="row">
+									<div view-only="PD_INFO_18">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.familyCode2}}</div>
+									<input name="productFamilyCodeTwo"
+										   can-edit="PD_INFO_18"
+										   ng-disabled="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+										   type="text"
+										   ng-pattern="/^[0-9]{1,5}$/"
+										   maxlength="5"
+										   style="width: 100%"
+										   id="productFamilyCodeTwo"
+										   class="form-control"
+										   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.familyCode2">
+								</div>
+							</div>
+							<div class="col-md-12">
+								<span class="red-text col-md-12 text-center" ng-show="$ctrl.productInfoForm.productFamilyCodeTwo.$error.pattern">{{$ctrl.FIVE_NUMBER_REGEX_ERROR_TEXT}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row" can-view="PD_INFO_22">
+							<label class="col-md-6 text-right" for="productScaleLabel">Scale Label</label>
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct !== null"
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.scaleLabelSwitch"
+								   ng-disabled="!$ctrl.canUserEditResource('PD_INFO_22')"
+								   id="productScaleLabel">
+							<input type="checkbox"
+								   ng-if="$ctrl.currentProductMasterParams.productMaster.goodsProduct === null"
+								   disabled
+								   ng-model="$ctrl.currentProductMasterParams.productMaster.goodsProduct.scaleLabelSwitch"
+								   id="productScaleLabel">
+						</div>
+					</div>
+					<div class="col-md-5ths">
+						<div class="row">
+							<label class="col-md-6 text-right">Seasonality Year</label>
+							<div style="padding-left: 0" class="col-md-6">{{$ctrl.currentProductMasterParams.productMaster.goodsProduct.seasonalityYear}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="inline-block pull-right">
+					<button class="btn btn-primary"
+							ng-disabled="$ctrl.isSaveOrResetDisabled()"
+							ng-if="$ctrl.areSaveAndResetButtonsVisible()"
+							ng-click="$ctrl.updateProductInfo()">Save</button>
+					<button class="btn btn-default"
+							ng-disabled="$ctrl.isSaveOrResetDisabled()"
+							ng-if="$ctrl.areSaveAndResetButtonsVisible()"
+							ng-click="$ctrl.resetProductInfo()">Reset</button>
+					<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+
+				</div>
+			</div>
+		</form>
+		<div class="inline-block pull-left" style="margin-left: 5px">
+			Created On <b>{{$ctrl.getAddedDate()}}</b>
+			Created By <b>{{$ctrl.getCreateUser()}}</b>
+		</div>
+	</div>
+</div>
+<!--vertex tax category modal start-->
+<div id="taxCategoryModal" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header pm-modal-header">Effective Dates for Tax Categories on Product ID: {{$ctrl.productMaster.prodId}}
+			</div>
+			<div class="modal-body">
+				<div data-ng-if="$ctrl.vertexTaxCategoryError">
+					<span class="alert alert-danger col-md-8 col-md-push-2 text-center myfade" role="alert" style="padding: .5%" ng-bind-html="$ctrl.vertexTaxCategoryError"></span>
+				</div>
+				<div>
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+						<thead>
+						<tr>
+							<th style="width: 15%">Retail Taxable</th>
+							<th style="width: 50%">Tax Category</th>
+							<th style="width: 30%">Effective Date</th>
+							<th style="width: 5%" can-edit="PD_INFO_25"></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="effectiveTaxCategory in $ctrl.allEffectiveVertexTaxCategories track by $index">
+							<td style="text-align: center">
+								<input ng-hide="true"
+									   id="effectiveRetailTaxable"
+									   type="checkbox"
+									   ng-model="effectiveTaxCategory.retailTaxable">
+								<ui-select theme="bootstrap"
+										   title="{{$ctrl.canUserEditResource('PD_INFO_25') ? $ctrl.isTaxCategoryReadOnly(effectiveTaxCategory) ? $ctrl.EDIT_PRODUCT_RETAIL_ERROR_MESSAGE_TEXT: $ctrl.EDIT_PRODUCT_RETAIL_TAXABLE_MESSAGE_TEXT : ''}}"
+										   ng-model="effectiveTaxCategory.selectedRetailTaxable" ng-change="$ctrl.onRetailTaxable(effectiveTaxCategory)">
+									<ui-select-match>
+										{{$select.selected.label}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="retailTaxable in $ctrl.retailTaxables" >{{retailTaxable.label}}
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td>
+								<div view-only="PD_INFO_25" class="inline-block">{{effectiveTaxCategory.vertexTaxCategory.displayName}}
+								</div>
+								<div can-edit="PD_INFO_25" class="inline-block">
+									<a class="pointer"
+									   ng-click="$ctrl.initSelectedVertexTaxCategory(effectiveTaxCategory)"
+									   title="{{$ctrl.EDIT_PRODUCT_RETAIL_TAX_CATEGORY_MESSAGE_TEXT}}"
+									   style="cursor: pointer"
+									   data-target="#taxCategoryChangeModal"
+									   data-toggle="modal">{{effectiveTaxCategory.vertexTaxCategory.displayName == null ? "Unknown ID: [" + effectiveTaxCategory.vertexTaxCategoryCode + "]" : effectiveTaxCategory.vertexTaxCategory.displayName}}</a>
+								</div>
+								<div ng-if="$ctrl.isTaxCategoryDifferentThanSubCommodityDefaultOnPopup(effectiveTaxCategory)
+								&& !(effectiveTaxCategory.vertexTaxCategory.displayName == 'Select' && effectiveTaxCategory.vertexTaxCategory.dvrCode == null)"
+									 class="glyphicon glyphicon-warning-sign inline-block"
+									 style="color: orange"
+									 title="{{$ctrl.getTaxCategoryDefaultWarningMessageOnPopup(effectiveTaxCategory)}}"></div>
+								<div ng-if="effectiveTaxCategory.vertexTaxCategory.displayName == 'Select' && effectiveTaxCategory.vertexTaxCategory.dvrCode == null"
+									 class="glyphicon glyphicon-warning-sign inline-block"
+									 style="color: orange"
+									 title="Please selects Tax Category for Product."></div>
+							</td>
+							<td>
+								<div view-only="PD_INFO_25">{{effectiveTaxCategory.effectiveDateAsDate | date_standard}}
+								</div>
+								<div can-edit="PD_INFO_25">
+									<div class="input-group">
+										<input class="form-control" type="text" readonly="true"
+											   name="effectiveDate"
+											   uib-datepicker-popup="MM/dd/yyyy" style="height: 28px;width: 100%;"
+											   datepicker-options="$ctrl.effectiveTaxCategoryDatePickerOptions"
+											   show-button-bar="false"
+											   is-open="effectiveTaxCategory.showEffectiveDatePopup"
+											   ng-change="$ctrl.updateEffectiveDate(effectiveTaxCategory)"
+											   ng-model="effectiveTaxCategory.effectiveDateAsDate"
+											   ng-required="false" close-text="Close"/>
+										<span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+														ng-click="$ctrl.openDatePicker($index)">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+									</div>
+								</div>
+							</td>
+							<td can-edit="PD_INFO_25">
+								<div class="btn glyphicon glyphicon-remove" style="color: red;cursor:pointer"
+									 data-ng-click="$ctrl.removeEffectiveTaxMaintenance($index)">
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="inline-block" style="padding-right: 5px">
+					<button can-edit="PD_INFO_25" class="btn btn-primary" data-ng-click="$ctrl.addEffectiveTaxMaintenance()" data-ng-disabled="$ctrl.isLoadingAllVertexTaxCategories">Add</button>
+					<button can-edit="PD_INFO_25" class="btn btn-primary" data-ng-click="$ctrl.saveEffectiveTaxMaintenance()" data-ng-disabled="$ctrl.isTaxCategorySaveAndResetButtonsDisabled(false) || $ctrl.isLoadingAllVertexTaxCategories">Save</button>
+					<button can-edit="PD_INFO_25" class="btn btn-default" data-ng-click="$ctrl.resetEffectiveTaxMaintenance()" data-ng-disabled="$ctrl.isTaxCategorySaveAndResetButtonsDisabled(false)">Reset</button>
+				</div>
+				<!--<button class="btn btn-default" data-dismiss="modal" ng-click="">Close</button>-->
+				<button class="btn btn-default"  ng-click="$ctrl.closeOrShowSaveConfirmTaxCategoryModal()">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--vertex tax category modal end-->
+<!--product retail link modal start-->
+<div id="productRetailLinkModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header pm-modal-header">
+				List of Retail Linked Products for Retail Link: {{$ctrl.productMaster.retailLink}}
+				<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+					 style="color: orange; margin-top: -5px; font-size: medium" data-toggle="tooltip"
+					 title="Export to Excel" ng-click="$ctrl.downloading?'':$ctrl.export()" ng-show="!$ctrl.waitLoadProductRetailLink"></div>
+				<div class="inline-block pull-right"
+					 ng-show="$ctrl.downloading" style="color: orange">
+					Downloading...
+				</div>
+			</div>
+			<div class="modal-body" style="overflow-y: auto; overflow-x: hidden; max-height: 250px">
+				<div data-ng-if="$ctrl.productRetailLinkError">
+					<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.productRetailLinkError}}</span>
+				</div>
+				<div data-ng-if="!$ctrl.productRetailLinkError">
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+						<thead>
+						<tr>
+							<th style="width: 12%">Product ID</th>
+							<th style="width: 12%">Item ID</th>
+							<th style="width: 12%">UPC</th>
+							<th style="width: 20%">Product Description</th>
+							<th style="width: 8%">Size</th>
+							<th style="width: 8%">Quantity</th>
+							<th style="width: 8%">UOM</th>
+							<th style="width: 20%">Sub Commodity</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="productRetailLink in $ctrl.allProductRetailLinks">
+							<td>{{productRetailLink.productId}}</td>
+							<td>{{productRetailLink.itemId}}</td>
+							<td>{{productRetailLink.upc}}</td>
+							<td>{{productRetailLink.productDescription}}</td>
+							<td>{{productRetailLink.size}}</td>
+							<td>{{productRetailLink.quantity}}</td>
+							<td>{{productRetailLink.unitOfMeasure}}</td>
+							<td>{{productRetailLink.subCommodityDescription}}</td>
+						</tr>
+						</tbody>
+					</table>
+					<div style="display:inline-block"></div> <loading-spinner ng-show="$ctrl.waitLoadProductRetailLink"></loading-spinner>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--product retail link modal end-->
+<!--tax category change modal start-->
+<div id="taxCategoryChangeModal" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header pm-modal-header">Set Vertex Tax Category
+			</div>
+			<div class="modal-body" style="overflow-y: auto; overflow-x: hidden; height: 290px">
+				<div data-ng-if="$ctrl.vertexTaxCategorySelectedError">
+					<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.productRetailLinkError}}</span>
+				</div>
+				<div data-ng-if="!$ctrl.vertexTaxCategorySelectedError" class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-6" style="text-align: right">
+								<label for="taxCategoryChangeModalSearch">Search</label>
+								<input class="form-control" type="text" id="taxCategoryChangeModalSearch" ng-model="taxCategoryChangeModalSearch">
+								<i class="glyphicon glyphicon-refresh pointer" style="color: blue" title="Reset Search" ng-click="taxCategoryChangeModalSearch = ''"></i>
+							</div>
+							<div class="col-md-6">
+								<input
+									id="taxCategoryChangeModalSuggested"
+									type="radio"
+									name="taxCategoryChangeModalSuggested"
+									ng-click="$ctrl.getSuggestedTaxCategories()"
+									ng-model="$ctrl.selectedVertexTaxCategoryList"
+									value="SUGGESTED">
+								<label for="taxCategoryChangeModalSuggested">Suggested</label>
+								<input
+									id="taxCategoryChangeModalAll"
+									type="radio"
+									name="taxCategoryChangeModalAll"
+									ng-model="$ctrl.selectedVertexTaxCategoryList"
+									ng-click="$ctrl.getAllTaxCategories()"
+									value="ALL">
+								<label for="taxCategoryChangeModalAll">Show All</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+							<thead>
+							<tr>
+								<th style="width: 10%"></th>
+								<th style="width: 90%">Tax Category</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="vertexTaxCategory in $ctrl.allAvailableTaxCategories | filter : {displayName: taxCategoryChangeModalSearch}">
+								<td style="text-align: center">
+									<input
+										type="radio"
+										name="selectedVertexTaxCategory"
+										ng-model="$ctrl.selectedVertexTaxCategory"
+										ng-click="$ctrl.resetProductTable(vertexTaxCategory.dvrCode)"
+										value="{{vertexTaxCategory.dvrCode}}">
+								</td>
+								<td>
+									<a ng-click="$ctrl.resetProductTable(vertexTaxCategory.dvrCode)"
+									   class="pointer">{{vertexTaxCategory.displayName}}</a>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<div ng-show="!$ctrl.isWaitingForProducts">
+							<!-- The table with the list of products. -->
+							<table id="homeProductDetailTable" ng-table="$ctrl.vertexTaxCategoryProductParams"
+								   class="table-heb table-bordered table-striped" style="width: 100%">
+								<thead>
+								<tr>
+									<th style="width: 25%">Product ID</th>
+									<th style="width: 60%">Product Description</th>
+									<th style="width: 15%">Size</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="product in $data">
+									<td>{{product.prodId}}</td>
+									<td>{{product.description}}</td>
+									<td>{{product.productPrimarySellingUnit.tagSize}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<loading-spinner ng-show="$ctrl.isWaitingForProducts"></loading-spinner>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal"
+						ng-click="$ctrl.setEffectiveVertexTaxCategory()"
+						title="{{$ctrl.getSelectedVertexTaxCategoryApplyMessage()}}">Apply</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--tax category change modal end-->
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog  ">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				Unsaved data will be lost.
+				<br/>
+				Do you want to save the changes before continuting?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.saveTaxCategoryOnConfirmationPopup()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"data-ng-click="$ctrl.cancelConfirmationPopup()">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

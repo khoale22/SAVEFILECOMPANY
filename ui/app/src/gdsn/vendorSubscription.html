@@ -1,0 +1,197 @@
+<!--
+  ~ vendorSubscription.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div class="col-md-12 container-fluid" ng-cloak="true" id="ingredientsReportDiv"
+	 ng-controller="VendorSubscriptionController as vendorSubscriptionController">
+	<div class="row" data-ng-if="vendorSubscriptionController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{vendorSubscriptionController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="vendorSubscriptionController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{vendorSubscriptionController.error}}</span>
+	</div>
+
+	<!-- Search pane. -->
+	<div class="col-md-5">
+		<div class="panel-group">
+			<div class="panel panel-primary" >
+				<div class="panel-heading">Vendor Subscription Search
+					<i data-toggle="collapse" data-target="#searchPanelToggle" class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': vendorSubscriptionController.searchPanelVisible, 'glyphicon glyphicon-plus': !vendorSubscriptionController.searchPanelVisible}">
+					</i>
+				</div>
+				<div class="panel-collapse collapse in" id="searchPanelToggle">
+					<div class="panel-body">
+						<div class="row">
+							<!-- Radio buttons for search (GLN or vendor name). -->
+							<div class="col-md-8">
+								<label>
+									<input type="radio" ng-model="vendorSubscriptionController.selectionType"
+										   value="{{vendorSubscriptionController.GLN}}"
+										   ng-click="vendorSubscriptionController.resetData()"/>GLN
+								</label>
+								<label>
+									<input type="radio" ng-model="vendorSubscriptionController.selectionType"
+										   value="{{vendorSubscriptionController.VENDOR_NAME}}"
+										   ng-click="vendorSubscriptionController.resetData()"/>Vendor Name
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-9" ng-show="vendorSubscriptionController.selectionType == vendorSubscriptionController.GLN">
+										<textarea data-ng-model="vendorSubscriptionController.searchText" rows="1"
+												  placeholder="{{vendorSubscriptionController.getTextPlaceHolder()}}" class="col-md-12 form-control noresize"
+												  style="height: 25px" numbers-only="">
+										</textarea>
+									</div>
+									<div class="col-md-9" ng-show="vendorSubscriptionController.selectionType != vendorSubscriptionController.GLN">
+										<textarea data-ng-model="vendorSubscriptionController.searchText" rows="1"
+												  placeholder="{{vendorSubscriptionController.getTextPlaceHolder()}}" class="col-md-12 form-control noresize"
+												  style="height: 25px" >
+										</textarea>
+									</div>
+
+									<div class="col-md-3" >
+										<button data-ng-click="vendorSubscriptionController.newSearch(false)"
+												class="btn btn-primary btn-block"
+												title="Search by GLN or vendor name"
+												data-ng-disabled="vendorSubscriptionController.searchText == '' || vendorSubscriptionController.searchText == null">Search</button>
+										<button data-ng-click="vendorSubscriptionController.newSearch(true)"
+												title="Show all vendor subscriptions"
+												class="btn btn-primary btn-block">Show All</button>
+										<button data-ng-click="vendorSubscriptionController.clearSearch()"
+												title="Clear all options"
+												class="btn btn-primary btn-block">Clear</button>
+										<button data-ng-click="vendorSubscriptionController.addSubscription()"
+												title="Add vendor subscription message"
+												data-toggle="modal" data-target="#addVendorModal"
+												class="btn btn-primary btn-block"
+												can-edit="GD_VEND_01">Add</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="vendorSubscriptionController.isWaiting">
+	</loading-spinner>
+
+	<!-- Report pane. -->
+	<div class="col-md-12" ng-show="vendorSubscriptionController.data != null">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4 class="panel-title inline-block"><b>Search Results</b>
+						Result {{vendorSubscriptionController.startRecord + 1}} -
+						{{vendorSubscriptionController.startRecord + vendorSubscriptionController.recordsVisible}} of
+						{{vendorSubscriptionController.totalRecords}}</h4>
+					<!--<div class="inline-block pull-right glyphicon glyphicon-download-alt pointer" style="color: orange" ng-click="ingredientsReportController.export()"></div>-->
+					<!--<div class="inline-block pull-right" ng-show="ingredientsReportController.downloading" style="color: orange">Downloading...</div>-->
+				</div>
+
+				<div class="panel-body">
+					<table ng-table="vendorSubscriptionController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr ng-repeat="vendorRecord in vendorSubscriptionController.data track by $index">
+							<td data-title="'GLN'" >{{vendorRecord.vendorGln}}</td>
+							<td data-title="'Vendor'">{{vendorRecord.vendorName}}</td>
+							<td data-title="'Subscription Status'">{{vendorRecord.subscriptionStatus}}</td>
+							<td data-title="'Message Status'">{{vendorRecord.messageStatus}}</td>
+							<td data-title="'Errors'">
+								<div ng-repeat="error in vendorRecord.message.messageErrors">[{{error.errorCode}}] {{error.errorMessage}}</div>
+							</td>
+							<td data-title="'Process Time'">{{vendorRecord.processTime}}</td>
+							<td data-title="'User ID'">{{vendorRecord.createUserId}}</td>
+							<td data-title="'Send CICs'">
+								<label for="sendReceived{{$index}}">RECEIVED </label>&nbsp;<input id="sendReceived{{$index}}" type="checkbox" disabled ng-model="vendorRecord.sendReceivedCic" /><br/>
+								<label>REVIEW</label>&nbsp;<input  type="checkbox" disabled ng-model="vendorRecord.sendReviewCic" /><br/>
+								<label>SYNCHRONIZED</label>&nbsp;<input type="checkbox" disabled ng-model="vendorRecord.sendSynchronizedCic" />
+							</td>
+
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for adding vendors. -->
+	<div id="addVendorModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Add Vendor Record</h5>
+				</div>
+				<div class="modal-body">
+					<div class="well" style="margin-bottom: 0">
+						<div class="row form-group">
+							<div class="col-md-12">
+								<label for="vendorGln"><strong>GLN</strong><strong class="inline-block" style="color: red">**</strong></label>
+								<input id="vendorGln" class="form-control" type="text"
+									ng-model="vendorSubscriptionController.newVendorGln"
+									ng-change="vendorSubscriptionController.addSearchGln()"
+									/>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-12">
+								<label for="vendorGln"><strong>Name</strong><strong class="inline-block" style="color: red">**</strong></label>
+								<input id="vendorName" class="form-control" type="text"
+									   ng-model="vendorSubscriptionController.newVendorName"
+									   ng-disabled="vendorSubscriptionController.newGlnFound"/>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-12">
+								<label for="vendorGln"><strong>Subscription Status</strong><strong class="inline-block" style="color: red">**</strong></label>
+								<ui-select ng-model="vendorSubscriptionController.newSubscriptionStatus"
+									theme="bootstrap" id="subscriptionStatus"
+									title="Subscription Status">
+									<ui-select-match>{{vendorSubscriptionController.newSubscriptionStatus}}</ui-select-match>
+									<ui-select-choices repeat="subscriptionStatus in vendorSubscriptionController.subscriptionStatusList">
+										{{subscriptionStatus}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div  class="col-md-4">
+								<label for="cicReceived"><strong>Send RECEIVED CICs</strong></label>
+								<input id="cicReceived" type="checkbox" ng-model="vendorSubscriptionController.newCicReceived" />
+							</div>
+							<div  class="col-md-4">
+								<label for="cicReview"><strong>Send REVIEW CICs</strong></label>
+								<input id="cicReview" type="checkbox" ng-model="vendorSubscriptionController.newCicReview" />
+							</div>
+							<div  class="col-md-4">
+								<label for="cicSynchronized"><strong>Send SYNCHRONIZED CICs</strong></label>
+								<input id="cicSynchronized"  type="checkbox" ng-model="vendorSubscriptionController.newCicSynchronized" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<strong class="inline-block pull-left" style="color: red">** Required</strong>
+					<button title="Cancel" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click = "vendorSubscriptionController.resetNewVendorData()">Cancel</button>
+					<button data-ng-click="vendorSubscriptionController.addVendor()" title="Add vendor"
+						class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						data-ng-disabled="!vendorSubscriptionController.isValidVendor()">Add Vendor</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

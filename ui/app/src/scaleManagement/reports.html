@@ -1,0 +1,84 @@
+<div class="col-md-12 container-fluid" ng-controller="ScaleReportController as scaleReportController"
+	 ng-init="scaleReportController.init()">
+
+	<div class="row" data-ng-if="scaleReportController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleReportController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="ingscaleReportControllerredientsReportController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleReportController.error}}</span>
+	</div>
+
+	<div class="col-md-8" can-view="SM_INGR_03">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Ingredients Search
+				</div>
+				<div class="panel-collapse collapse in" id="searchPanelToggle">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-6">
+										<textarea data-ng-model="scaleReportController.ingredients" rows="2"
+												  placeholder="Enter an ingredient" class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<button data-ng-click="scaleReportController.doExportIngredientReport()" class="btn btn-primary btn-block"
+												data-ng-disabled="scaleReportController.ingredients == null">Search</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-8" can-view="SM_INGR_03">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">2016 Compliance Report
+				</div>
+				<div class="panel-collapse collapse in" id="2016ComplianceReport">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-6">
+										<button data-ng-click="scaleReportController.doExport2016ComplianceReport()" class="btn btn-primary btn-block">Export Report</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-8" can-view="SM_INGR_03">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Ingredients Not In Statements Report
+				</div>
+				<div class="panel-collapse collapse in" id="IngredientsNotInStatementsReport">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-6">
+										<button data-ng-click="scaleReportController.doExportIngredientsNotInStatementsReport()" class="btn btn-primary btn-block">Export Report</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<loading-spinner ng-show="scaleReportController.isWaiting">
+	</loading-spinner>
+</div>

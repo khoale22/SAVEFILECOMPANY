@@ -1,0 +1,7 @@
+<span class="glyphicon glyphicon-arrow-right" ng-style="{'color': data.defaultParent == true ?  'green': 'black'}"></span>
+<span class="pointer" style="text-decoration: underline" ng-style="{'color': data.defaultParent == true ?  'green': 'black'}"
+	  ng-click="$ctrl.changeToThePathSpecified(path)"
+	  ng-init="path = $ctrl.getPathToCurrentLevel(path, data)">{{data.childDescription.shortDescription}}</span>
+<span ng-show="child.childRelationships != null"></span>
+<span ng-repeat="data in data.childRelationships" ng-include="'src/customHierarchy/pathRendererChild.html'">
+</span>

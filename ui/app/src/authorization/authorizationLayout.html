@@ -1,0 +1,40 @@
+<!--
+  ~ authorizationLayout.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-cloak="true"  style="min-width: 700px">
+	<div class="row" can-view="AS_JOEV_00">
+		<!--- The header where to show message success or error -->
+		<div class="row" data-ng-if="$ctrl.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert" ng-bind-html="$ctrl.success">
+			</span>
+		</div>
+		<div class="row" data-ng-if="$ctrl.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" ng-bind-html="$ctrl.error">
+			</span>
+		</div>
+		<!--- The main part where to show main information for screen -->
+		<div class="col-md-12">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading"><h3 class="panel-title">Authorizations > Joe V.'s - {{$ctrl.selectedScreen.title}}</h3></div>
+					<div class="panel-body"  >
+						<item-search-component upc="$ctrl.upc" authorize-upc="$ctrl.authorizeUpc" stores="$ctrl.stores" authorize-items="$ctrl.authorizeItems" success="$ctrl.success" error="$ctrl.error" selected-screen="$ctrl.selectedScreen"
+											   selected-store="$ctrl.selectedStore"
+											   flex-weight-switch="$ctrl.flexWeightSwitch" handle-error="$ctrl.handleError(error)"
+											   selected-item="$ctrl.selectedItem" ng-if="$ctrl.selectedScreen.id=='itemSearch'" ></item-search-component>
+						<authorize-item-component  upc="$ctrl.authorizeUpc" selected-store="$ctrl.selectedStore" success="$ctrl.success"  error="$ctrl.error"  selected-screen="$ctrl.selectedScreen"
+												   selected-item="$ctrl.selectedItem" flex-weight-switch="$ctrl.flexWeightSwitch"
+												   ng-if="$ctrl.selectedScreen.id=='authorizeItem'" on-authorize-item-success="$ctrl.onAuthorizeItemSuccess(result)"  handle-error="$ctrl.handleError(error)"></authorize-item-component>
+					</div>
+				</div>
+			</div>
+			<!-- End main part -->
+		</div>
+	</div>
+</div>

@@ -1,0 +1,308 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div class="container-fluid" ng-show="!$ctrl.isWaitingForResponse && !$ctrl.details.isShowing">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<!--This Row holds the item master information like Item code and its description span-->
+	<div class="row" style="width: 100%;">
+		<div class="inline-block pull-right" style="margin-bottom: 10px;">
+			<button class="btn btn-primary" ng-click="$ctrl.clearFilter()">Clear Filter</button>
+		</div>
+		<table ng-table="$ctrl.choiceTableParams" class="table-heb table-bordered table-striped" style="width: 100%;" show-filter="true">
+			<thead style="font-size: 12px !important;">
+			<tr style="border-bottom:hidden; height: 25px;">
+				<th style="width: 15%;text-align: center;">Choice Option Code</th>
+				<th style="width: 40px;text-align: center;">Image</th>
+				<th style="min-width: 100px;text-align: center;">Choice Type</th>
+				<th style="min-width: 100px;text-align: center;">Choice Option Text</th>
+				<th style="width:10%;">Action</th>
+			</tr>
+			<tr style="border-bottom:hidden; height: 25px;">
+				<th style="width: 15%;text-align: center;"><input ng-model="filter.key.choiceOptionCode" class="form-control"/></th>
+				<th style="width: 40px;text-align: center;"></th>
+				<th style="min-width: 100px;text-align: center;"><input ng-model="filter.choiceType.displayName" class="form-control" /></th>
+				<th style="min-width: 100px;text-align: center;"><input ng-model="filter.productChoiceText" class="form-control"/></th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="choiceOption in $data">
+				<td style="width: 15%;">
+					<a class="pointer" ng-click="$ctrl.gotoChoiceOptionDetails('choice-option-details',choiceOption)">
+						{{choiceOption.key.choiceOptionCode}}
+					</a>
+				</td>
+				<td style="width: 40px;text-align: center;">
+					<div ng-show="$ctrl.imageAvailable(choiceOption.key.choiceOptionCode)" style="height: 40px;width: 40px;">
+						<img data-ng-show="$ctrl.findImageByChoiceCode(choiceOption.key.choiceOptionCode)"
+							 data-ng-src="{{$ctrl.findImageByChoiceCode(choiceOption.key.choiceOptionCode) == ' '?'images/no_image.png':$ctrl.findImageByChoiceCode(choiceOption.key.choiceOptionCode)}}"
+							 style="height: 40px; width: 40px; cursor: hand"
+							 ng-click="$ctrl.showFullImage(choiceOption.key.choiceOptionCode)">
+						<div data-ng-show="!$ctrl.findImageByChoiceCode(choiceOption.key.choiceOptionCode)">
+							<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+						</div>
+					</div>
+					<img ng-show="!$ctrl.imageAvailable(choiceOption.key.choiceOptionCode)"
+						 data-ng-src="images/no_image.png"
+						 style="height: 40px; width: 40px;">
+				</td>
+
+				<td>
+					{{choiceOption.choiceType.displayName}}
+				</td>
+
+				<td data-ng-show="!choiceOption.isEditing">
+					{{choiceOption.productChoiceText}}
+				</td>
+				<td data-ng-show="choiceOption.isEditing">
+					<input type="text" style="width: 100%;height: 26px;" maxlength="255"
+						   class = "{{choiceOption.productChoiceText.length==0?choiceOption.addClass:''}}"
+						   title="{{choiceOption.productChoiceText.length==0?'Choice Option Text is mandatory field.':''}}"
+						   empty-valid="Choice Option Text is a mandatory field."
+						   ng-model="choiceOption.productChoiceText">
+				</td>
+
+				<td style="text-align: center" can-edit="CT_CHOI_01">
+					<button data-ng-click="$ctrl.enableRow(choiceOption)" class="glyphicon glyphicon-edit pointer"
+							ng-if="!choiceOption.isEditing" title="Edit"
+							style="{{$ctrl.getButtonStyle(choiceOption.key.choiceOptionCode)}}color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+							data-ng-disabled="$ctrl.hasOtherRowEditing"></button>
+					<button data-ng-click="$ctrl.deleteChoiceOption(choiceOption)" class="glyphicon glyphicon-remove pointer"
+							ng-if="!choiceOption.isEditing" title="Delete" data-ng-disabled="$ctrl.hasOtherRowEditing"
+							style="{{$ctrl.getButtonStyle(choiceOption.key.choiceOptionCode)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;">
+					</button>
+					<i title="Save" data-ng-click="$ctrl.saveData(choiceOption)" class="glyphicon glyphicon-floppy-disk pointer"
+					   ng-if="choiceOption.isEditing" style="color: green; font-size: large"></i>
+					<i title="Reset" data-ng-click="$ctrl.resetCurrentRow()" class="glyphicon glyphicon-ban-circle pointer"
+					   ng-if="choiceOption.isEditing" style="color: red; font-size: large"></i>
+				</td>
+				<td style="text-align: center" view-only="CT_CHOI_01">
+					<button class="glyphicon glyphicon-edit pointer"  data-ng-disabled="true" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+					<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="true" style="opacity: 0.5;color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="inline-block pull-right">
+					<!--View Mode-->
+					<button view-only="CT_CHOI_01" class="btn btn-primary" disabled="true"> Add </button>
+					<!--Edit Mode-->
+					<button can-edit="CT_CHOI_01" class="btn btn-primary" data-ng-disabled="$ctrl.hasOtherRowEditing"
+							ng-click="$ctrl.addNewChoiceOptions()">Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.confirmMessage}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.confirmActionHandle()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.noConfirmActionHandle()">
+					No
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-show="$ctrl.confirmAction == 'SAVE'">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add new/Edit popup-->
+<div id="choiceOptionModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.titleModel}}
+				</h5>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addEditForm" id="addEditForm" novalidate>
+					<div ng-if="$ctrl.action == 'EDIT'">
+						<table ng-table="$ctrl.choiceSelectedTableParams" class="table-heb table-bordered table-striped"
+							   style="width: 100%;" >
+							<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="min-width: 100px;text-align: center;">Choice Option Code</th>
+								<th style="min-width: 100px;text-align: center;">Choice Type</th>
+								<th style="min-width: 100px;text-align: center;">Choice Option Text </th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="choiceOption in $data">
+								<td>{{choiceOption.key.choiceOptionCode}}</td>
+								<td ng-show="$ctrl.action == 'EDIT'">{{choiceOption.choiceType.displayName}}</td>
+								<td class="has-error-popup"><input type="text" style="width: 100%;height: 26px;"
+																   class="{{choiceOption.productChoiceText.length==0?choiceOption.addClass:'ng-valid'}}"
+																   ng-model="choiceOption.productChoiceText"
+																   empty-valid="Choice Option Text is mandatory field."
+																   title="{{choiceOption.productChoiceText.length==0?'Choice Option Text is mandatory field.':''}}">
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div ng-if="$ctrl.action == 'ADD'">
+						<table class="table-heb table-bordered table-striped" style="width: 100%;"  >
+							<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="min-width: 100px;text-align: center;">Choice Type</th>
+								<th style="min-width: 100px;text-align: center;">Choice Option Text </th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="choiceOption in $ctrl.choiceOptionsHandle track by $index">
+								<td ng-show="$ctrl.action == 'ADD'" ng-class="choiceOption.addClass">
+									<ui-select ng-model="choiceOption.choiceType"
+											   class="{{choiceOption.addClass}}"
+											   error-message="Choice Type Id is mandatory field."
+											   ng-click="choiceOption.addClass='active-tooltip'" search-enabled="true"
+											   theme="bootstrap" ui-select-required data-toggle="tooltip"
+											   id="choiceType"
+											   data-original-title="Choice Type Id is mandatory field.">
+										<ui-select-match allow-clear="true">
+											{{$select.selected.displayName.trim()}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="choiceType in $ctrl.choiceTypes">
+											<div
+												ng-bind-html="choiceType.displayName | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+								</td>
+								<td><input type="text" style="width: 100%;height: 26px;"
+										   class="{{choiceOption.addClass}}"
+										   ng-model="choiceOption.productChoiceText"
+										   empty-valid="Choice Option Text is mandatory field."
+										   title="{{choiceOption.productChoiceText.length==0?'Choice Option Text is mandatory field.':''}}">
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"  ng-show="$ctrl.action == 'ADD'"
+						ng-click="$ctrl.addMoreRowChoiceOption()">
+					Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.updateChoiceOptions()">
+					Save
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-show="$ctrl.action == 'EDIT'"
+						ng-click="$ctrl.resetDataOrigForPopUp()">
+					Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" ng-click="$ctrl.closePopupHandle()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message-->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr><loading-spinner ng-show="$ctrl.waitingImage"/></tr>
+				<tr ng-show="!$ctrl.waitingImage">
+					<td>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0"
+								data-dismiss="modal" aria-label="Close">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr ng-show="!$ctrl.waitingImage">
+					<td>
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message-->
+<div id="confirmDeleteModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.confirmMessage}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doDeleteChoiceOption($ctrl.choiceOptionToDelete)">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="changeTabConfirmation" class="modal fade" role="dialog" style="z-index: 999999;" ng-if="!$ctrl.details || !$ctrl.details.isShowing">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body"><h5>{{$ctrl.MESSAGE_CONFIRM_CLOSE}}</h5></div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveData($ctrl.findChoiceOptionByCode($ctrl.selectedRowId))">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<choice-option-details ng-if="$ctrl.details.isShowing"
+										   item-sending="$ctrl.details">
+</choice-option-details>

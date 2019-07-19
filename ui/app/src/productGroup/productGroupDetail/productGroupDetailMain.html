@@ -1,0 +1,27 @@
+<!--
+  ~ productGroupDetailMain.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="panel panel-primary" style="border-color: #ddd;box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);border-radius: 0px;">
+	<div class="panel-body">
+		<div class="well" style="display: inline-block;width: 100%; ">
+			<div  style="min-height: 500px;display: inline-block;width: 100%;" >
+				<product-groupe-commerce-view ng-if="$ctrl.selectedTab=='eCommerceView'" id="content-eCommerceView"
+											  product-group-selected="$ctrl.selectedProduct" is-list="$ctrl.listOfProducts.length>1"></product-groupe-commerce-view>
+				<product-group-image ng-if="$ctrl.selectedTab=='imageInfo'" id="content-imageInfo"
+									 product-group-selected="$ctrl.selectedProduct"
+									 product-group-ids="$ctrl.listOfProducts"></product-group-image>
+				<product-group-info ng-if="$ctrl.selectedTab=='productGroupInfo'" id="content-productGroupInfo"
+									product-group-selected="$ctrl.selectedProduct" is-list="$ctrl.listOfProducts.length>1"></product-group-info>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

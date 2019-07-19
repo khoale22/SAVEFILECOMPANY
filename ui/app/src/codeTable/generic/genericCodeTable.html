@@ -1,0 +1,161 @@
+<!--
+  ~ genericCodeTable.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author m314029
+  ~	@since 2.21.0
+  -->
+<div class="container-fluid" style="margin-top:10px;">
+	<div class="row">
+		<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+		</loading-spinner>
+		<!--Error span-->
+		<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert"
+					  ng-bind-html="$ctrl.error"></span>
+		</div>
+		<!--Success span-->
+		<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+					  role="alert">{{$ctrl.success}}</span>
+		</div>
+		<div ng-show="!$ctrl.isWaitingForResponse">
+			<table ng-table="$ctrl.codeTableParams"
+				   class="table-heb table-bordered table-striped" style="width: 100%">
+				<thead>
+				<tr>
+					<th style="width:20%;">Code</th>
+					<th style="width:70%;">Description</th>
+					<th style="width:10%;">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="item in $data">
+					<td data-title="'Code'">
+						<div view-only="CT_COMMON_01" style="width: 100%">
+							{{item.id}}
+						</div>
+						<div can-edit="CT_COMMON_01" style="width: 100%">
+							{{item.id}}
+						</div>
+					</td>
+					<td data-title="'Description'">
+						<div view-only="CT_COMMON_01" style="width: 100%">
+							{{item.description}}
+						</div>
+						<div can-edit="CT_COMMON_01">
+							<input type="text" style="width: 100%" ng-disabled="!$ctrl.compareEditingIndexToCurrentIndex($index)" ng-model="item.description">
+						</div>
+					</td>
+					<td data-title="'Action'" can-edit="CT_COMMON_01">
+						<i data-ng-click="$ctrl.editCode(item, $index)" class="glyphicon glyphicon-edit pointer" style="color: orange; font-size: large" ng-if="!$ctrl.compareEditingIndexToCurrentIndex($index)"></i>
+						<fieldset data-ng-click="$ctrl.saveCode(item)" class="glyphicon glyphicon-floppy-disk pointer" ng-if="$ctrl.compareEditingIndexToCurrentIndex($index)"
+								  data-ng-disabled="!$ctrl.isCodeChangesAndNotEmpty(item)" style="color: green; font-size: large"
+								  ng-style="{'cursor': !$ctrl.isCodeChangesAndNotEmpty(item) ? 'not-allowed': 'pointer'}"></fieldset>
+						<i data-ng-click="$ctrl.cancelEdit(item, $index)" class="glyphicon glyphicon-ban-circle pointer"  ng-if="$ctrl.compareEditingIndexToCurrentIndex($index)" style="color: red; font-size: large"></i>
+						<i data-toggle="modal" data-target="#removeCodeModal"
+						   ng-click="$ctrl.setRemoveCode(item)"
+						   class="glyphicon glyphicon-remove pointer" style="color: red; font-size: large"
+						   ng-if="!$ctrl.compareEditingIndexToCurrentIndex($index)" ></i>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="pull-right" can-edit="CT_COMMON_01">
+				<button class="btn btn-primary" ng-click="$ctrl.addCodeModal()" data-toggle="modal" data-target="#addCodeModal">Add</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="removeCodeModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Please Confirm</h5>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to delete '{{$ctrl.codeToRemove.description}}' from the '{{$ctrl.tableSelected.codeTableName}}' table?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" ng-click="$ctrl.cancelRemove()" class="btn btn-danger" data-dismiss="modal">No</button>
+					<button type="button" ng-click="$ctrl.removeCode()" class="btn btn-success" data-dismiss="modal">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="addCodeModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Add New {{$ctrl.tableSelected.codeTableName}} Code</h5>
+				</div>
+				<div class="modal-body">
+					<loading-spinner ng-show="$ctrl.isWaitingAddingCodes">
+					</loading-spinner>
+					<div ng-show="!$ctrl.isWaitingAddingCodes">
+						<div class="row" data-ng-if="$ctrl.newCodesError">
+							<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.newCodesError}}</span>
+						</div>
+						<table class="table-heb table-bordered table-striped" style="width: 100%">
+							<thead>
+							<tr style="color: white; background-color: #00476b">
+								<th style="width: 30%">Code</th>
+								<th style="width: 70%">Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="code in $ctrl.newCodes track by $index">
+								<td data-title="'Code'">
+									<div>
+										<input class="text-uppercase" type="text" ng-model="code.id" style="width: 40%"
+											   ng-change="$ctrl.isCodeAvailable($index)">
+										<strong>
+											<strong ng-if="$ctrl.newCodes[$index].isCodeAvailable" style="color: green">Available</strong>
+											<strong ng-if="$ctrl.newCodes[$index].isCodeAvailable === false" style="color: darkorange">Not Available</strong>
+										</strong>
+									</div>
+
+								</td>
+								<td data-title="'Description'">
+									<div>
+										<input style="width: 100%" type="text" ng-model="code.description">
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" ng-click="$ctrl.addNewCodeRow()" class="btn btn-success">Add</button>
+						<button type="button" ng-click="$ctrl.saveNewCodes()" class="btn btn-success">Save</button>
+						<button type="button" ng-click="$ctrl.confirmAddNewCodeModalClose()" class="btn btn-danger">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="cancelAddCodeModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Please Confirm</h5>
+				</div>
+				<div class="modal-body">
+					<p>Unsaved data will be lost. Do you want to save the changes before continuing?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" ng-click="$ctrl.saveNewCodes()" class="btn btn-success" data-dismiss="modal">Yes</button>
+					<button type="button" ng-click="$ctrl.closeAddNewCodeModals()" class="btn btn-danger" data-dismiss="modal">No</button>
+					<button type="button" ng-click="$ctrl.closeAddNewCodeConfirmModal()" class="btn btn-success" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

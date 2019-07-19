@@ -1,0 +1,185 @@
+<!--
+  ~ dsdToBoth.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12" ng-controller="DsdToBothController as dsdToBothController" ng-init="dsdToBothController.init()">
+
+	<div class="row" data-ng-if="dsdToBothController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{dsdToBothController.error}}</span>
+	</div>
+
+	<div class="panel-group" style="min-width: 1195px" can-edit="PD_SWAP_02" ng-show="!dsdToBothController.isWaitingForResponse">
+		<div class="panel panel-primary" ng-if="dsdToBothController.showSwapPanel()">
+			<div class="panel-heading">
+				<h4 class="panel-title">DSD to Both</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+					<colgroup style="border: solid">
+						<col span="{{dsdToBothController.hasSourceError ? 7 : 6}}">
+					</colgroup>
+					<colgroup>
+						<col span="1">
+					</colgroup>
+					<colgroup style="border: solid">
+						<col span="{{dsdToBothController.hasRecord ? dsdToBothController.hasDestinationError ? 8 : 7 : 6}}">
+					</colgroup>
+					<thead>
+					<tr>
+						<th colspan="{{dsdToBothController.hasSourceError ? 7 : 6}}" style="background: #f1f1f1; color: black">Source</th>
+						<th colspan="1" style="background: none; border: none"></th>
+						<th colspan="{{dsdToBothController.hasRecord ? dsdToBothController.hasDestinationError ? 8 : 7 : 6}}" style="background: #f1f1f1; color: black">Destination</th>
+					</tr>
+					<tr>
+						<th>Product ID</th>
+						<th>UPC</th>
+						<th>Description</th>
+						<th>Size</th>
+						<th>POG</th>
+						<th>Retail Link</th>
+						<th ng-show="dsdToBothController.hasSourceError">Message</th>
+						<th style="background: none; border: none"></th>
+						<th>Product ID</th>
+						<th>Item Code</th>
+						<th>Description</th>
+						<th>Current Primary UPC</th>
+						<th>Make Primary</th>
+						<th>More Info</th>
+						<th ng-show="dsdToBothController.hasDestinationError">Message</th>
+						<th ng-show="dsdToBothController.hasRecord">Remove</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="dsdToBoth in dsdToBothController.dsdToBothList track by $index" style="width: 100%">
+						<td><a class="pointer" ng-click="dsdToBothController.showProductInfo(dsdToBoth.source.productId)">{{dsdToBoth.source.productId}}</a></td>
+						<td><input type="text" ng-change="dsdToBothController.setUpcDataRows($index)"
+								   class="form-control"
+								   ng-paste="dsdToBothController.setUpcDataRowsPaste($index)"
+								   ng-model="dsdToBoth.sourceUpc" id="{{'upc' + $index}}" style="width: 100%"></td>
+						<td>{{dsdToBoth.source.itemDescription}}</td>
+						<td>{{dsdToBoth.source.itemSize}}</td>
+						<!--<td>{{dsdToBothController.alreadyFetchedDetails(dsdToBoth)? dsdToBoth.source.onLiveOrPendingPog? 'YES' : 'NO' : null}}</td>-->
+						<td>{{dsdToBoth.source.onLiveOrPendingPog | boolean_yn}}</td>
+						<td>{{dsdToBoth.source.productRetailLink}}</td>
+						<td style="color: red" ng-show="dsdToBothController.hasSourceError">{{dsdToBoth.source.errorMessage}}</td>
+						<td style="background: none; border: none"></td>
+						<td><a class="pointer" ng-click="dsdToBothController.showProductInfo(dsdToBoth.destination.productId)">{{dsdToBoth.destination.productId}}</a></td>
+						<td>
+							<input type="text" ng-change="dsdToBothController.setItemCodeDataRows($index)"
+								   class="form-control"
+								   ng-paste="dsdToBothController.setItemCodeDataRowsPaste($index)"
+								   ng-model="dsdToBoth.destination.itemCode" id="{{'newItemCode' + $index}}" style="width: 100%">
+						</td>
+						<td>{{dsdToBoth.destination.itemDescription}}</td>
+						<td>{{dsdToBoth.destinationPrimaryUpc}}</td>
+						<td>
+							<input class="inline-block" type="checkbox" value="" ng-show="dsdToBoth.makeDestinationPrimaryUpc != null" ng-model="dsdToBoth.makeDestinationPrimaryUpc">
+						</td>
+						<td>
+							<i class="glyphicon glyphicon-info-sign" style="color: blue"
+							   title="{{dsdToBoth.destinationInformation}}"
+							   ng-if="dsdToBothController.alreadyFetchedDetails(dsdToBoth)">
+							</i>
+						</td>
+						<td  style="color: red" ng-show="dsdToBothController.hasDestinationError">{{dsdToBoth.destination.errorMessage}}</td>
+						<td ng-show="dsdToBothController.hasRecord">
+							<div class="glyphicon glyphicon-remove pointer" style="color: red; padding-left: 15px"
+								 ng-click="dsdToBothController.removeDataRow($index)">
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="inline-block pull-right" style="padding-top: 10px">
+					<button class="btn btn-info"
+							ng-click="dsdToBothController.clearData()"
+							ng-disabled="dsdToBothController.isEmptyData()">Clear
+					</button>
+					<button class="btn btn-info" ng-click="dsdToBothController.addEmptyDataRow()">Add Row</button>
+					<button class="btn btn-info" ng-click="dsdToBothController.getDsdToBothDetails()">Fetch Details</button>
+					<button class="btn btn-primary" ng-click="dsdToBothController.submitDsdToBoth()">Submit</button>
+				</div>
+			</div>
+		</div>
+		<div ng-if="dsdToBothController.isViewingProductInfo()">
+			<div ng-include src="'src/productInfo/productInfo.html'"></div>
+		</div>
+		<div class="panel panel-primary" ng-if="dsdToBothController.showAfterUpdate">
+
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block">Details after swap</h4>
+				<div class="inline-block pull-right">
+					<span ng-if="dsdToBothController.errorResultList.length > 0" class="inline-block"
+						  style="color: orange; padding-right: 10px">{{dsdToBothController.errorResultList.length}} errors (close to redo)</span>
+					<div ng-click="dsdToBothController.closePage()" class="glyphicon glyphicon-remove pointer pull-right"></div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="panel panel-default">
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+						<colgroup style="border: solid">
+							<col span="5">
+						</colgroup>
+						<colgroup>
+							<col span="1">
+						</colgroup>
+						<colgroup style="border: solid">
+							<col span="6">
+						</colgroup>
+						<thead>
+						<tr>
+							<th colspan="5" style="background: #f1f1f1; color: black">Source</th>
+							<th colspan="1" style="background: none; border: none"></th>
+							<th colspan="6" style="background: #f1f1f1; color: black">Destination</th>
+						</tr>
+						<tr>
+							<th>Product ID</th>
+							<th>UPC</th>
+							<th>Item Code</th>
+							<th>Description</th>
+							<th>Size</th>
+							<th style="background: none; border: none"></th>
+							<th>Product ID</th>
+							<th>Item Code</th>
+							<th>Description</th>
+							<th>Size</th>
+							<th>UPCs</th>
+							<th>Messages</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="dsdToBothAfterUpdate in dsdToBothController.afterUpdateList" style="width: 100%">
+							<td>{{dsdToBothAfterUpdate.source.productId}}</td>
+							<td>{{dsdToBothAfterUpdate.sourceUpc}}</td>
+							<td>{{dsdToBothAfterUpdate.source.itemCode}}</td>
+							<td>{{dsdToBothAfterUpdate.source.itemDescription}}</td>
+							<td>{{dsdToBothAfterUpdate.source.itemSize}}</td>
+							<td style="background: none; border: none"></td>
+							<td>{{dsdToBothAfterUpdate.destination.productId}}</td>
+							<td>{{dsdToBothAfterUpdate.destination.itemCode}}</td>
+							<td>{{dsdToBothAfterUpdate.destination.itemDescription}}</td>
+							<td>{{dsdToBothAfterUpdate.destination.itemSize}}</td>
+							<td>
+								<div ng-repeat="associate in dsdToBothAfterUpdate.destination.associatedUpcList track by $index">
+									<strong ng-if="$index === 0">{{associate}}</strong>
+									<div ng-if="$index != 0">{{associate}}</div>
+								</div>
+							</td>
+							<td ng-style="{'color': dsdToBothAfterUpdate.statusMessage != 'Success' ? 'red' : 'green'}">{{dsdToBothAfterUpdate.statusMessage}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<loading-spinner ng-show="dsdToBothController.isWaitingForResponse">
+	</loading-spinner>
+
+</div>

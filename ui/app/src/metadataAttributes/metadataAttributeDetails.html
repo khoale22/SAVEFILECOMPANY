@@ -1,0 +1,352 @@
+<div class="row">
+	<div id="metadataAttributeDetails" can-view="CT_MTDA_01" class="col-md-12 container-fluid" ng-cloak="true">
+		<div class="row" data-ng-if="metadataAttributeDetailsDirective.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+				{{metadataAttributeDetailsDirective.error}}
+			</span>
+		</div>
+		<div class="row" data-ng-if="metadataAttributeDetailsDirective.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{metadataAttributeDetailsDirective.success}}</span>
+		</div>
+		<loading-spinner ng-show="metadataAttributeDetailsDirective.isWaiting">
+		</loading-spinner>
+		<div class="col-md-12" style="margin-bottom: 30px" ng-show="!metadataAttributeDetailsDirective.isWaiting">
+			<div class="panel-group" >
+				<div class="panel panel-primary" >
+					<div class="panel-heading" >
+						<h4 class="panel-title inline-block"><b>Metadata Details</b></h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Name:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.name}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="text" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.name">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Minimum Size:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.minimumLength}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="number" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.minimumLength">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Attribute Added Date:</label>
+										</div>
+										<div>
+											{{metadataAttributeDetailsDirective.attribute.addedDate | date_standard}}
+										</div>
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Table:</label>
+										</div>
+										<div class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.key.table}}
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Maximum Length:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.maximumLength}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="number" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.maximumLength">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Precision:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.precision}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="text" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.precision">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Field:</label>
+										</div>
+										<div class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.key.field}}
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Code Table:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.codeTableName}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="text" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.codeTableName">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Audience:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.audienceCode}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<ui-select ng-model="metadataAttributeDetailsDirective.selectedAudience">
+												<ui-select-match>{{$select.selected.description}}</ui-select-match>
+												<ui-select-choices repeat="audience in metadataAttributeDetailsDirective.audiences | filter: $select.search">
+													<span ng-bind-html="audience.description"></span>
+												</ui-select-choices>
+											</ui-select>
+										</div>
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Domain Code:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.domainCode}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<ui-select ng-model="metadataAttributeDetailsDirective.selectedAttributeDomain">
+												<ui-select-match>{{$select.selected.attributeDomainDescription}}</ui-select-match>
+												<ui-select-choices repeat="domainCode in metadataAttributeDetailsDirective.attributeDomains | filter: $select.search">
+													<span ng-bind-html="domainCode.attributeDomainDescription"></span>
+												</ui-select-choices>
+											</ui-select>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Resource:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.attribute.resourceTied}}
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<input type="text" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.resourceTied">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Applicable to:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											{{metadataAttributeDetailsDirective.selectedApplicableType.description}}
+										</div>
+
+
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<ui-select ng-model="metadataAttributeDetailsDirective.selectedApplicableType">
+												<ui-select-match>{{$select.selected.description}}</ui-select-match>
+												<ui-select-choices repeat="applicableType in metadataAttributeDetailsDirective.applicableTypes | filter: $select.search">
+													<span ng-bind-html="applicableType.description"></span>
+												</ui-select-choices>
+											</ui-select>
+										</div>
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Description:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<textarea type="text" style="width: 100%;" rows="8" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.description" disabled>
+												</textarea>
+											</div>
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<textarea type="text" style="width: 100%;" rows="8" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.description">
+												</textarea>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="row" style="margin-bottom: 50px">
+											<div class="col-md-12">
+												<div class="col-md-3 narrow-left-column">
+													<label>Status:</label>
+												</div>
+												<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+													{{metadataAttributeDetailsDirective.selectedApplicableType.description}}
+												</div>
+
+												<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+													<ui-select ng-model="metadataAttributeDetailsDirective.selectedAttributeStatus">
+														<ui-select-match>{{$select.selected.description}}</ui-select-match>
+														<ui-select-choices repeat="attributeStatus in metadataAttributeDetailsDirective.attributeStatuses | filter: $select.search">
+															<span ng-bind-html="attributeStatus.description"></span>
+														</ui-select-choices>
+													</ui-select>
+												</div>
+											</div>
+										</div>
+
+										<div class="row" style="margin-bottom: 5px">
+											<div class="col-md-12">
+												<div class="col-md-3 narrow-left-column">
+													<label>Standard Code Table:</label>
+												</div>
+												<div class="col-md-1" style="padding-left: 5px">
+													<div view-only="CT_MTDA_01">
+														<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.codeTableStandard" disabled>
+													</div>
+													<div can-edit="CT_MTDA_01">
+														<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.codeTableStandard">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="row" style="margin-bottom: 50px">
+											<div class="col-md-12">
+												<div class="col-md-3 narrow-left-column">
+													<label>Status Change Date:</label>
+												</div>
+												<div class="col-md-9 narrow-right-column">
+													{{metadataAttributeDetailsDirective.attribute.attributeStatusChangedDate | date_standard}}
+												</div>
+											</div>
+										</div>
+										<div class="row" style="margin-bottom: 5px">
+											<div class="col-md-12">
+												<div class="col-md-3 narrow-left-column">
+													<label>Customer Facing:</label>
+												</div>
+												<div class="col-md-1" style="padding-left: 5px">
+													<div view-only="CT_MTDA_01">
+														<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.customerFacing" disabled>
+													</div>
+													<div can-edit="CT_MTDA_01">
+														<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.customerFacing">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row"  style="margin-bottom: 5px">
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Help Text:</label>
+										</div>
+										<div view-only="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<textarea type="text" style="width: 100%;" rows="8" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.helpText" disabled>
+												</textarea>
+											</div>
+										</div>
+										<div can-edit="CT_MTDA_01" class="col-md-9 narrow-right-column">
+											<div>
+												<textarea type="text" style="width: 100%;" rows="8" class="form-control" ng-model="metadataAttributeDetailsDirective.attribute.helpText">
+												</textarea>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Global:</label>
+										</div>
+										<div class="col-md-1" style="padding-left: 5px">
+											<div view-only="CT_MTDA_01">
+												<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.global" disabled>
+											</div>
+											<div can-edit="CT_MTDA_01">
+												<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.global">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="col-md-3 narrow-left-column">
+											<label>Required:</label>
+										</div>
+										<div class="col-md-1" style="padding-left: 5px">
+											<div view-only="CT_MTDA_01">
+												<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.required" disabled>
+											</div>
+											<div can-edit="CT_MTDA_01">
+												<input type="checkbox" ng-model="metadataAttributeDetailsDirective.attribute.required">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="divider-horizontal"></div>
+								<div class="row">
+									<div class="col-md-2">
+										<b>Created On: {{metadataAttributeDetailsDirective.attribute.created | date_standard}}</b>
+									</div>
+									<div class="col-md-2">
+										<b>Created By: {{metadataAttributeDetailsDirective.attribute.createdUserId}}</b>
+									</div>
+									<div class="col-md-2">
+										<b>Last Updated On: {{metadataAttributeDetailsDirective.attribute.lastUpdated | date_standard}}</b>
+									</div>
+									<div class="col-md-2">
+										<b>Last Updated By: {{metadataAttributeDetailsDirective.attribute.lastUpdateUserId}}</b>
+									</div>
+									<div class="col-md-2">
+										<b>Source ID: {{metadataAttributeDetailsDirective.attribute.sourceSystemId}}</b>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="pull-right" style="padding-top:0px;">
+				<button can-edit="CT_MTDA_01" class="btn btn-primary" ng-click="metadataAttributeDetailsDirective.save()" ng-disabled="!metadataAttributeDetailsDirective.isDifference()">
+					<label style="margin-bottom: 0px">Save</label>
+				</button>
+
+				<button can-edit="CT_MTDA_01" class="btn btn-primary" ng-click="metadataAttributeDetailsDirective.reset()" ng-disabled="!metadataAttributeDetailsDirective.isDifference()">
+					<label style="margin-bottom: 0px">Reset</label>
+				</button>
+				<button class="btn btn-primary"
+						ng-click="metadataAttributeDetailsDirective.returnToList()">Return to List
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

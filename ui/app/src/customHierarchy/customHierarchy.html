@@ -1,0 +1,62 @@
+<div class="col-md-12 container-fluid"
+	 can-view="CH_HIER_01"
+	 ng-cloak="true"
+	 ng-controller="CustomHierarchyController as customHierarchyController">
+	<div class="row" ng-show="!customHierarchyController.selectedAttributeId">
+		<custom-hierarchy-search class="col-md-4"
+								 on-custom-hierarchy-page="true"
+								 on-select="customHierarchyController.setCurrentLevel(selectedLevel, requestNumber, keepCurrentMessages)">
+		</custom-hierarchy-search>
+		<div class="col-md-8">
+			<div class="row" data-ng-if="customHierarchyController.success">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{customHierarchyController.success}}</span>
+			</div>
+			<div class="row" data-ng-if="customHierarchyController.error">
+				<span class="alert alert-danger col-md-6 col-md-push-3 text-center myfade" role="alert" style="padding: .5%">{{customHierarchyController.error}}</span>
+			</div>
+			<div class="row" data-ng-if="customHierarchyController.waitingForUpdate">
+				<span class="alert alert-info col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{customHierarchyController.waitingForUpdate}}</span>
+			</div>
+			<div class="row" ng-if="customHierarchyController.isCurrentLevelDefined()">
+				<div class="well" style="min-height: 100px; margin-bottom: 5px; overflow-y: auto; margin-right: 10px; padding: 10px"
+					 ng-style="{'max-height': getHeight(100, 0)}">
+					<loading-spinner ng-if="customHierarchyController.isWaitingForHierarchyContextResponse"></loading-spinner>
+					<all-parent-panel ng-if="customHierarchyController.isIntermediateLevel()"
+									  current-level="customHierarchyController.currentLevel"></all-parent-panel>
+					<current-level-panel current-level="customHierarchyController.currentLevel"
+										 intermediate-view="customHierarchyController.intermediateView"
+										 attribute-id="customHierarchyController.selectedAttributeId"></current-level-panel>
+					<product-panel ng-if="customHierarchyController.isProductLevel()"
+								   current-level="customHierarchyController.currentLevel"></product-panel>
+					<children-panel ng-if="customHierarchyController.isNonProductChildrenLevel()"
+									current-level="customHierarchyController.currentLevel"></children-panel>
+					<div>
+						<div class="text-right">
+							<span can-edit="CH_HIER_01">
+								<span ng-if="customHierarchyController.isIntermediateLevel()">
+									<button class="btn btn-primary"
+											ng-disabled="customHierarchyController.isDifferent()"
+											ng-click="customHierarchyController.save()">Save
+									</button>
+									<button class="btn btn-primary"
+											ng-disabled="customHierarchyController.isDifferent()"
+											ng-click="customHierarchyController.reset()">Reset
+									</button>
+								</span>
+							</span>
+							<button ng-if="customHierarchyController.isShowingReturnToListButton()"
+									class="btn btn-primary" data-ng-click="customHierarchyController.returnToList()">
+								Return To List
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<attribute-maintenance-details-directive
+		ng-if="customHierarchyController.selectedAttributeId"
+		attribute-id="customHierarchyController.selectedAttributeId"
+		on-return="customHierarchyController.returnFromDirective()"></attribute-maintenance-details-directive>
+</div>
+

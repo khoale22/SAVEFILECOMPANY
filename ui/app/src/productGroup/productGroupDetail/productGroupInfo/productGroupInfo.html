@@ -1,0 +1,455 @@
+<!--
+  ~ productGroupInfo.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div active="active" id="ecom-view-tabs" class="col-md-12" style="padding:0;" ng-init="$ctrl.init()">
+	<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingLoadProductGroupType">
+		<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert" ng-bind-html="$ctrl.error"></span>
+	</div>
+	<div class="row" data-ng-show="$ctrl.isEffectiveDateError || $ctrl.isExpirationDateError" ng-show="!$ctrl.isWaitingLoadProductGroupType">
+		<span class="alert alert-danger col-md-4 col-md-push-4 myfade" role="alert">
+			<ul>
+				Show On Site
+				<li data-ng-show="$ctrl.isEffectiveDateError">{{$ctrl.messEffectiveDateError}}</li>
+				<li data-ng-show=" $ctrl.isExpirationDateError">{{$ctrl.messExpirationDateError}}</li>
+			</ul>
+		</span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingLoadProductGroupType">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="ecom-menu">
+		<uib-tabset active="active" id="ecom-view-tabs" style="margin-right: 30px;">
+			<uib-tab index="$index" ng-repeat="tab in $ctrl.domainTabBarDataProvider  track by $index"
+					 deselect="$ctrl.handleChangeTab(tab, $event, $selectedIndex)" select="$ctrl.tabSelected(tab)">
+				<uib-tab-heading >{{tab.displayName}}</uib-tab-heading>
+			</uib-tab>
+		</uib-tabset>
+		<span class="glyphicon glyphicon-folder-open pointer" ng-show="!$ctrl.isWaiting && !$ctrl.isCreateProductGroup" style="float: right;color : blue;top: -20px;margin-right: 5px;font-size: 13px;" ng-click="$ctrl.showProductGroupInfoChangeLog()"></span>
+	</div>
+	<div style="margin: 0 auto;padding: 20px ;" ng-show="$ctrl.isWaiting">
+		<!-- Waiting spinner. -->
+		<loading-spinner style="">
+		</loading-spinner>
+	</div>
+	<div class="row" style="min-height: 400px;padding-top: 20px;"  ng-show="!$ctrl.isWaiting">
+		<div class="col-md-8">
+			<div class="card">
+				<div style="width: 100%;padding:15px;">
+					<div class="customer-hierarchy" style="" ng-if="!$ctrl.isWaiting">
+						<label class="label"  style="color:black;font-size: 10px;width:100%;padding-left: 0px;"><strong>Customer Hierarchy:</strong></label>
+						<span ng-bind-html="$ctrl.customerHierarchyPrimaryPath"></span>
+						<div class="row pull-right" style="margin-bottom: 5px;margin-right: 5px" data-ng-show="$ctrl.currentTab.id!='Google'">
+							<product-group-hierarchy-assignment
+								customer-hierarchy-primary-path="$ctrl.customerHierarchyPrimaryPath"
+								product-group-id-selected="$ctrl.productGroupSelected" current-tab="$ctrl.currentTab"
+								add-new-mode="$ctrl.isCreateProductGroup" selected-hierarchy-contexts="$ctrl.selectedHierarchyContexts"
+								product-associated="$ctrl.dataForm.dataAssociatedProduct" >
+							</product-group-hierarchy-assignment>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div style="display: inline-block;width: 100%;padding:15px;">
+					<div class="form-group col-md-6 pull-left" >
+						<div class="product-group-data pull-left" style="width:100%;">
+							<div class="form-group">
+								<label for="inputProductGroupId" class="control-label" style="width:100%;">Product Group Id</label>
+								<div style="width:100%;display: inline-block;">
+									<label class="form-control disabled" id="inputProductGroupId"
+										   ng-bind-html="$ctrl.dataForm.customerProductGroup.custProductGroupId" style="  margin:0;  line-height: 25px;"></label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputProductGroupName" class="control-label" style="width:100%;">Product Group Name</label>
+								<div style="width:100%;display: inline-block;" ng-class="$ctrl.isProductGroupNameError?'has-error':''">
+									<input view-only="PG_MENU_00" disabled="disabled" type="text" class="form-control"   maxlength="50" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupName">
+									<input can-edit="PG_MENU_00" type="text" class="form-control"   maxlength="50" data-ng-trim="false" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupName"
+										   title="{{$ctrl.isProductGroupNameError?'Product Group Name is a mandatory field.':''}}"
+										   ng-change="$ctrl.validateProductGroupInfo('Product Group Name')" id="inputProductGroupName" placeholder="Product Group Name">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputProductGroupDescription" class="control-label" style="width:100%;">Product Group Description</label>
+								<div style="width:100%;display: inline-block;">
+									<textarea view-only="PG_MENU_00" disabled="disabled" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescription"
+												type="text" class="form-control" style="min-height: 200px;" maxlength="255"></textarea>
+
+									<textarea can-edit="PG_MENU_00" data-ng-trim="false" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescription"
+												type="text" class="form-control" id="inputProductGroupDescription"
+											  	style="min-height: 200px;" placeholder="Product Group Description" maxlength="255"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-6 pull-left " style="">
+						<label for="inputProductGroupType" class="control-label col-md-5" style="padding: 0px;padding-right:5px;width:100%;">
+							Product Group Type</label>
+						<div view-only="PG_MENU_00" class="col-md-12 form-group" style="padding: 0px;" ng-class="$ctrl.isProductGroupTypeError?'has-error':''">
+							<ui-select ng-disabled="true"
+								theme="bootstrap"
+								data-toggle="tooltip"
+								ng-model="$ctrl.dataForm.customerProductGroup.productGroupType">
+								<ui-select-match allow-clear="false" placeholder="--Select--">
+									{{$select.selected.productGroupType}}
+								</ui-select-match>
+								<ui-select-choices
+									repeat="productGroupType in $ctrl.currentproductGroupTypeData"
+									refresh="$ctrl.getCurrentDropDownResults($select.search)"
+									refresh-delay="0">{{productGroupType.productGroupType}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						<div can-edit="PG_MENU_00" class="col-md-12 form-group" style="padding: 0px;" ng-class="$ctrl.isProductGroupTypeError?'has-error':''">
+							<ui-select ng-change="$ctrl.validateProductGroupInfo('Product Group Type'); $ctrl.getAssociatedProduct() "
+								ng-disabled="$ctrl.checkDisableBtnProductGroupType()"
+								title="{{$ctrl.isProductGroupTypeError?'Product Group Type is a mandatory field.':''}}" required theme="bootstrap"
+									   id="inputProductGroupType"
+									   theme="bootstrap"
+									   data-toggle="tooltip"
+									   ng-model="$ctrl.dataForm.customerProductGroup.productGroupType">
+								<ui-select-match allow-clear="false" placeholder="--Select--">
+									{{$select.selected.productGroupType}}
+								</ui-select-match>
+								<ui-select-choices
+									repeat="productGroupType in $ctrl.currentproductGroupTypeData"
+									refresh="$ctrl.getCurrentDropDownResults($select.search)"
+									refresh-delay="0">{{productGroupType.productGroupType}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						<div class="form-group">
+							<label for="inputProductGroupLongDescription" class="control-label" style="width:100%;">Product Group Long Description</label>
+							<div style="width:100%;display: inline-block;">
+								<textarea view-only="PG_MENU_00" disabled="disabled" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescriptionLong"
+										  type="text" class="form-control"
+										  maxlength="1000" style="min-height: 254px;"
+										  ></textarea>
+								<textarea can-edit="PG_MENU_00" data-ng-trim="false" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescriptionLong"
+										  type="text" class="form-control"
+										  id="inputProductGroupLongDescription" maxlength="1000" style="min-height: 254px;"
+										  placeholder="Product Group Long Description"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card card-danger"  style=" display: inline-block;width: 100%;" ng-show="!$ctrl.isCreateProductGroup && ($ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage)">
+				<div class="card-body">
+					<div class="text-warning">
+						<i class="glyphicon glyphicon-warning-sign"></i>&nbsp;"Show on site" Product Group must have:
+					</div>
+					<div class="col-md-12" ng-show="$ctrl.isWarningCustomerHierarchyPath()">
+						<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+							<span class="glyphicon glyphicon-triangle-right"></span>
+							Customer Hierarchy Path
+						</div>
+					</div>
+					<div class="col-md-12" ng-show="!$ctrl.isCreateProductGroup && !$ctrl.dataForm.retailDrivingPicker">
+						<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+							<span class="glyphicon glyphicon-triangle-right"></span>
+							Retail Driving Picker
+						</div>
+					</div>
+					<div class="col-md-12" ng-show="$ctrl.isWarningAssociatedProduct()">
+						<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+							<span class="glyphicon glyphicon-triangle-right"></span>
+							Associated Product
+						</div>
+					</div>
+					<div class="col-md-12" ng-show="!$ctrl.isCreateProductGroup && !$ctrl.dataForm.customerProductGroup.activeOnlineImage">
+						<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+							<span class="glyphicon glyphicon-triangle-right"></span>
+							Active Online Image
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-header card-header-primary" style="margin: 0px;    display: inline-block;    width: 100%;" >
+					<i class="glyphicon glyphicon-eye-open" ng-show="$ctrl.dataForm.productOnline.showOnSiteByExpirationDate" style=""></i>
+					<i class="glyphicon glyphicon glyphicon-eye-close ng-hide" ng-show="!$ctrl.dataForm.productOnline.showOnSiteByExpirationDate" style=""></i>
+							Show On Site &nbsp;
+					<div class="form-group" style="    display: inline-block;    margin-bottom: 0;    vertical-align: middle;">
+						<input view-only="PG_MENU_00" disabled="disabled" class="input-group ng-scope ng-hide"
+							   type="checkbox"style="margin-right: 5px;display: block !important;"
+							   >
+						<input can-edit="PG_MENU_00" class="input-group ng-scope ng-hide"
+							   type="checkbox" ng-change="$ctrl.changeShowOnSiteSw()" style="margin-right: 5px;display: block !important;"
+							   ng-model="$ctrl.dataForm.productOnline.showOnSiteByExpirationDate" ng-disabled="$ctrl.isCreateProductGroup || $ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage">
+					</div>
+				</div>
+				<div class="card-body" style="padding:20px 3px 15px 3px;display: inline-block;width: 100%;">
+					<div class="startDateGroup col-md-6" style="display: inline-block;padding:0;">
+						<label for="inputStartDate" class="control-label" style="padding-right:5px;">Start Date</label>
+						<div class="input-group" ng-class="$ctrl.isEffectiveDateError?'has-error':''" id="inputStartDate">
+							<input class="form-control date-picker"
+									ng-change="$ctrl.validateProductGroupInfo('Effective Date')"
+								   title = "{{$ctrl.messEffectiveDateError}}"
+								   type="text"
+								   readonly="false"
+								   uib-datepicker-popup = "MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.showOnSiteStartDateOpen"
+								   ng-model="$ctrl.dataForm.productOnline.key.effectiveDate"
+								   ng-value="$ctrl.dataForm.productOnline.key.effectiveDate"
+								   ng-required="false"
+								   close-text="Close" ng-disabled="$ctrl.isCreateProductGroup || $ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage || !$ctrl.dataForm.productOnline.showOnSiteByExpirationDate"/>
+							<span class="input-group-btn">
+								<button view-only="PG_MENU_00" ng-disabled="true" type="button"
+														class="btn btn-default calendar"
+								>
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+								<button can-edit="PG_MENU_00" type="button" style="padding: 5px;height: 25px;"
+														class="btn btn-default calendar"
+														ng-click="$ctrl.openDatePicker('showOnSiteStartDate')" ng-disabled="$ctrl.isCreateProductGroup || $ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage || !$ctrl.dataForm.productOnline.showOnSiteByExpirationDate">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+							</span>
+
+						</div>
+					</div>
+					<div class="endDateGroup col-md-6" style="display: inline-block;padding:0;padding-left:10px;">
+						<label for="inputEndDate" class="control-label" style="padding-right:5px;">End Date</label>
+						<div class="input-group" ng-class="$ctrl.isExpirationDateError?'has-error':''" id="inputEndDate">
+							<input class="form-control date-picker"
+									ng-change="$ctrl.validateProductGroupInfo('Expiration Date')"
+								   type="text"
+								   title="{{$ctrl.messExpirationDateError}}"
+								   readonly="false"
+								   uib-datepicker-popup = "MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.showOnSiteEndDateOpen"
+								   ng-model="$ctrl.dataForm.productOnline.expirationDate"
+								   ng-value="$ctrl.dataForm.productOnline.expirationDate"
+								   ng-required="false"
+								   close-text="Close"
+								   ng-disabled="$ctrl.isCreateProductGroup || $ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage || !$ctrl.dataForm.productOnline.showOnSiteByExpirationDate"/>
+							<span class="input-group-btn">
+								<button view-only="PG_MENU_00" ng-disabled="true" type="button"
+										class="btn btn-default calendar">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+								<button can-edit="PG_MENU_00" type="button"
+														class="btn btn-default calendar"
+														ng-click="$ctrl.openDatePicker('showOnSiteEndDate')"
+														ng-disabled="$ctrl.isCreateProductGroup  || $ctrl.isWarningCustomerHierarchyPath() || !$ctrl.dataForm.retailDrivingPicker || $ctrl.isWarningAssociatedProduct() || !$ctrl.dataForm.customerProductGroup.activeOnlineImage || !$ctrl.dataForm.productOnline.showOnSiteByExpirationDate">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="card " style="display: inline-block;width: 100%;">
+				<div class="card-header card-header-primary" style="margin: 0px;    display: inline-block;    width: 100%;">
+					<span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+					Associated Products &nbsp;
+				</div>
+				<div class="card-body" style="padding: 5px;">
+					<div style="margin: 0 auto;padding: 20px ;" ng-show="$ctrl.isWaitLoadAssociatedProduct">
+						<!-- Waiting spinner. -->
+						<loading-spinner style="">
+						</loading-spinner>
+					</div>
+					<div class="col-md-6  table-associate-product" ng-hide="$ctrl.isWaitLoadAssociatedProduct || $ctrl.dataForm.customerProductGroup.productGroupType.productGroupTypeCode==undefined" >
+						<associated-product-table is-wait-load-associated-product-detail="$ctrl.isWaitLoadAssociatedProductDetail"
+												  is-not-duplicate-product-id-or-upc="$ctrl.isNotDuplicateProductIdOrUpc(product)"
+												  product="$ctrl.dataForm.dataAssociatedProduct"
+												  product-group-type="$ctrl.dataForm.customerProductGroup.productGroupType"
+												  show-message-for-conflict-product-id="$ctrl.showMessageForConflictProductId(product)"
+												  show-associated-product-details-by-index="$ctrl.showAssociatedProductDetailsByIndex(index)"
+												  product-group-data = "$ctrl.dataForm"
+												  product-group-data-temp = "$ctrl.dataFormTemp"
+												  clear-product-error = "$ctrl.clearProductError"
+												  show-error-message-on-popup="$ctrl.showErrorMessageOnPopup(message)"
+												  is-new="$ctrl.isCreateProductGroup"
+												  hierarchy-data="$ctrl.hierarchyData"
+												  primary-path="$ctrl.customerHierarchyPrimaryPath"
+												  show-message="$ctrl.showMessage(error,success)"
+												  current-associated-product-position="$ctrl.currentAssociatedProductPosition">
+						</associated-product-table>
+					</div>
+					<div class="col-md-6 well product-detail panel-primary" ng-hide="$ctrl.isWaitLoadAssociatedProduct || $ctrl.dataForm.customerProductGroup.productGroupType.productGroupTypeCode==undefined" style="background: transparent;box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);padding-top: 0px;padding-left: 0px;padding-right: 0px;">
+							<div class="panel-heading product-group-details-header" style="text-align: center;padding: 5px 15px;">
+								<span class="white-text" style="left: 41%;font-weight: bold;">Product Details</span>
+								<div class="pull-right pg-detail-header">
+									<label style="font-weight:normal;background: white;color: black;padding: 2px 6px;border-radius: 3px;min-width:50px;height: 17px;display: inline-block;">
+										{{$ctrl.dataForm.dataAssociatedProduct.rows[$ctrl.currentAssociatedProductPosition].productId}}
+									</label>
+									<div class="pull-right">
+										<button class="glyphicon glyphicon-backward" ng-disabled="!$ctrl.isEnablePrevProductSelect()" aria-hidden="true" style="padding: 0 3px;text-decoration: underline;cursor: pointer;}  ;    border: none;  background: transparent;"
+												ng-click="$ctrl.previousProduct()" disabled="disabled"></button>
+										<button class="glyphicon glyphicon-forward" aria-hidden="true" style="padding: 0 3px;    border: none;  background: transparent;text-decoration: underline;cursor: pointer;}" ng-click="$ctrl.nextProduct()"
+												ng-disabled="!$ctrl.isEnableNextProductSelect()"></button>
+					</div>
+				</div>
+
+			</div>
+						<associated-product-detail cus-product-group="$ctrl.dataForm" cus-product-group-org="$ctrl.dataFormTemp"
+												   is-wait-load-associated-product-detail="$ctrl.isWaitLoadAssociatedProductDetail"
+												   request-focus-to-current-product-id="$ctrl.requestFocusToCurrentProductId()"
+												   is-not-duplicate-product-id-or-upc="$ctrl.isNotDuplicateProductIdOrUpc(product)"
+												   update-product-id-to-view="$ctrl.updateProductIdToView(productId, upc)"
+												   get-action-code="$ctrl.getActionCode()"
+												   show-error-message-on-popup="$ctrl.showErrorMessageOnPopup(message)"
+												   show-message-for-conflict-product-id="$ctrl.showMessageForConflictProductId(product)"
+												   current-tab="$ctrl.currentTab"
+												   is-create-product-group = "$ctrl.isCreateProductGroup"
+												   selected="$ctrl.dataForm.dataAssociatedProduct"
+												   clear-product-error = "$ctrl.clearProductError"
+												   show-associated-product-details-by-index="$ctrl.showAssociatedProductDetailsByIndex(index)"
+												   current-associated-product-position="$ctrl.currentAssociatedProductPosition"
+												   set-data-associated-products = "$ctrl.getDataSaveAssociatedProduct()"></associated-product-detail>
+		</div>
+	</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div class="pull-right" style="display: inline-block; " ng-show="!$ctrl.isWaiting">
+	<button view-only="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" disabled="true">Save</button>
+	<button can-edit="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" ng-click="$ctrl.saveProductGroup()">Save</button>
+	<button view-only="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" disabled="true">Delete</button>
+	<button can-edit="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" ng-show="!$ctrl.isCreateProductGroup" ng-click="$ctrl.showConfirmModalDelete()">Delete</button>
+	<button view-only="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" disabled="true">Reset</button>
+	<button can-edit="PG_MENU_00" class="btn btn-primary" style="min-width: 60px;" ng-click="$ctrl.resetData()">Reset</button>
+	<button class="btn btn-primary" style="min-width: 60px;" ng-disabled="$ctrl.disableReturnToList" ng-click="$ctrl.navigateSearchForm()">Return to List</button>
+	<button class="btn" style="display : none" ng-disabled="$ctrl.checkChangedData()"></button>
+</div>
+
+<!-- Common confirm modal -->
+<div id="common-confirm-modal" class="modal fade">
+	<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+				<!--					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+-->
+				<h5 class="modal-title" style="color: #ffffff">{{$ctrl.commonConfirmModalTitle}}</h5>
+							</div>
+			<div class="modal-body" style="font-size:14px;">
+				<p>{{$ctrl.commonConfirmModalContent}}</p>
+						</div>
+			<div class="modal-footer">
+				<button ng-if="$ctrl.typeModal === 'changeTab'" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.saveProductGroup()">Yes
+					</button>
+				<button ng-if="$ctrl.typeModal === 'changeTab'" type="button" data-dismiss="modal" class="btn btn-success" ng-click="$ctrl.resetDataAndChangeTabView()">No
+					</button>
+				<button ng-if="$ctrl.typeModal === 'changeTab'" type="button" data-dismiss="modal" class="btn btn-danger" ng-click="$ctrl.isChangedTab = false" >
+						Cancel
+				</button>
+
+				<button ng-if="$ctrl.typeModal === 'delete'" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.deleteProductGroup()">Yes
+					</button>
+				<button ng-if="$ctrl.typeModal === 'delete'" type="button" data-dismiss="modal" class="btn btn-danger" >No
+					</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- message-->
+<div id="errorMessageModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Error</h5>
+			</div>
+			<div class="modal-body">
+				<h5 style="text-align: center;">{{$ctrl.errorPopup}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.closeErrorMessagePopup()">
+					Ok
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- message-->
+<div id="product-group-info-change-log">
+	<div id="product-group-info-change-log-modal" class="modal fade">
+		<div class="modal-dialog" style="min-width: 850px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Product Group Info: Change Log</h5>
+				</div>
+				<div class="modal-body">
+					<div class="row" style="font-size: 12px; margin-bottom: 15px;">
+						<div class="col-md-3">
+							Product Group ID &nbsp; <b>{{$ctrl.dataForm.customerProductGroup.custProductGroupId}}</b>
+						</div>
+						<div class="col-md-9">
+							Product Group Name &nbsp; <b>{{$ctrl.dataForm.customerProductGroup.custProductGroupName}}</b>
+						</div>
+					</div>
+					<div class="row" ng-show="$ctrl.isWaitingGetProductGroupInfoAudit" style="margin-top: 10px">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div class="product-group-info-log-table" ng-show="!$ctrl.isWaitingGetProductGroupInfoAudit">
+						<table ng-table="productGroupInfoLogTableParams" show-filter="true" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+							<thead>
+								<tr style="min-height:25px">
+									<th style="width:15%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+										Attribute Name
+										<input type="text" ng-model="filter.attributeName"
+																   class="form-control" style="height:20px;">
+									</th>
+									<th style="width:13%; vertical-align: middle;">Attribute Value</th>
+									<th style="width:14%; vertical-align: middle;">Changed From</th>
+									<th style="width:14%; vertical-align: middle;">Changed To</th>
+									<th style="width:11%; vertical-align: middle;">Action Code</th>
+									<th style="width:15%; vertical-align: middle;" ng-click="$ctrl.changeSort()">
+										Changed On
+										<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+										<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+									</th>
+									<th style="width:18%; vertical-align: middle;">Changed By</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr data-ng-repeat="audit in $data track by $index">
+									<td style="width:15%; padding: 5px;">{{audit.attributeName}}</td>
+									<td style="width:13%; padding: 5px;">{{audit.attributeValue}}</td>
+									<td style="width:14%" ng-if="audit.attributeName !== 'Show On Site - End Date' && audit.attributeName !== 'Show On Site - Start Date'">
+										<div ng-if="audit.changedFrom !== 'N/A' && audit.changedFrom !== 'null'" title="{{audit.changedFrom}}" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{audit.changedFrom}}</div>
+									</td>
+									<td style="width:14%" ng-if="audit.attributeName !== 'Show On Site - End Date' && audit.attributeName !== 'Show On Site - Start Date'">
+										<div ng-if="audit.attributeName !== 'Show On Site - End Date' && audit.attributeName !== 'Show On Site - Start Date' && audit.changedTo !== 'N/A' && audit.changedTo !== 'null'" title="{{audit.changedTo}}" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{audit.changedTo}}</div>
+									</td>
+									<td style="width:14%" ng-if="audit.attributeName == 'Show On Site - End Date' || audit.attributeName == 'Show On Site - Start Date'">
+										<div ng-if="audit.changedFrom !== 'N/A' && audit.changedFrom !== 'null'" title="{{audit.changedFrom}}" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{audit.changedFrom | date: "MM/dd/yyyy"}}</div>
+									</td>
+									<td style="width:14%" ng-if="audit.attributeName == 'Show On Site - End Date' || audit.attributeName == 'Show On Site - Start Date'">
+										<div ng-if="(audit.attributeName == 'Show On Site - End Date' || audit.attributeName == 'Show On Site - Start Date') && audit.changedTo !== 'N/A' && audit.changedTo !== 'null'" title="{{audit.changedTo}}" style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{audit.changedTo| date: "MM/dd/yyyy"}}</div>
+									</td>
+									<td style="width:11%">{{audit.action}}</td>
+									<td style="width:15%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+									<td style="width:18%">{{audit.changedBy}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button" class="btn btn-primary" ng-show="!$ctrl.isWaitingGetProductGroupInfoAudit && filter.attributeName !==''" ng-click="filter.attributeName=''">Clear Filter</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

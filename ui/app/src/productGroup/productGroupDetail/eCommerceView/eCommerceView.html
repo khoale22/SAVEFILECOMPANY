@@ -1,0 +1,295 @@
+<!--
+  ~ eCommerceView.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div active="active" id="ecom-view-tabs" class="col-md-12" style="padding:0;" ng-init="$ctrl.init()">
+	<!--Error span-->
+	<div class="row" data-ng-if="!$ctrl.isWaiting && $ctrl.error" style="display: inline;">
+		<div class="col-md-12" style="text-align: center;">
+			<span class="alert alert-danger text-center myfade" style="display: inline-block;" role="alert" ng-bind-html="$ctrl.error"></span>
+		</div>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="!$ctrl.isWaiting && $ctrl.success" style="display: inline;">
+		<div class="col-md-12" style="text-align: center;">
+			<span class="alert alert-success text-center myfade" style="display: inline-block;" role="alert">{{$ctrl.success}}</span>
+		</div>
+	</div>
+	<div class="ecom-menu">
+		<uib-tabset active="active" id="ecom-view-pg-tabs">
+			<uib-tab index="$index" ng-repeat="tab in $ctrl.domainTabBarDataProvider  track by $index"
+					 select="$ctrl.tabSelected(tab)" deselect="$ctrl.handleChangeTab($event, $selectedIndex)">
+				<uib-tab-heading>{{tab.displayName}}</uib-tab-heading>
+			</uib-tab>
+		</uib-tabset>
+	</div>
+	<div style="margin: 0 auto;padding: 20px ;" ng-show="$ctrl.isWaiting">
+		<!-- Waiting spinner. -->
+		<loading-spinner style="">
+		</loading-spinner>
+
+	</div>
+	<div class="row" style="min-height: 400px;padding-top: 20px;"  ng-show="!$ctrl.isWaiting">
+
+		<div class="col-md-12">
+			<div class="card">
+				<div style="display: inline-block;width: 100%;padding:15px;">
+					<div class="customer-hierarchy" style="" ng-if="!$ctrl.isWaiting">
+						<label class="label"  style="color:black;font-size: 10px;width:100%;padding-left: 0px;"><strong>Customer Hierarchy:</strong></label>
+						<span ng-bind-html="$ctrl.customerHierarchyPrimaryPath"></span>
+						<div class="row pull-right" style="margin-bottom: 5px;margin-right: 5px" data-ng-show="$ctrl.currentTab.id!='Google'">
+							<product-group-hierarchy-assignment
+								customer-hierarchy-primary-path="$ctrl.customerHierarchyPrimaryPath"
+								product-group-id-selected="$ctrl.productGroupSelected" current-tab="$ctrl.currentTab" >
+							</product-group-hierarchy-assignment>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div style="display: inline-block;width: 100%;padding:15px;">
+					<div  class="col-md-12" style="margin-top:5px" >
+						<div class="col-md-4" style="padding-left: 0px;">
+							<div class="" style="padding-left: 0px;">
+								<div class="vcenter">
+
+									<div class="col-md-12" style="padding: 0px">
+										<div class="col-md-8 ecom-img-pri pg-ecom-img-pri">
+											<img data-ng-show="$ctrl.primaryImage.image"
+												 data-ng-src="{{$ctrl.primaryImage.image}}"
+												 ng-click="$ctrl.showFullImage($ctrl.primaryImage.image)"
+												 style="max-width:100%; max-height: 90%;">
+											<img data-ng-show="$ctrl.primaryImage==null || !$ctrl.primaryImage.image"
+												 data-ng-src="images/no_image.png"
+												 style="max-width:100%; max-height: 90%;">
+										</div>
+										<div class="col-md-4 ecom-img-alt pg-ecom-img-alt" data-ng-show="$ctrl.imageAlternates">
+											<div class="row" ng-repeat="imageAlternate in $ctrl.imageAlternates | filter:{ imagePriorityCode: 'A',activeOnline:true} ">
+												<div class="col-md-12" ng-show="imageAlternate.image" style="margin: 5px;">
+													<img data-ng-src="{{imageAlternate.image}}"
+														 ng-click="$ctrl.showFullImage(imageAlternate.image)" style="max-width:95%;
+										 max-height: 70px;">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-7" ng-show="$ctrl.isWaitingForResponse">
+								<loading-spinner></loading-spinner>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="inputProductGroupName" class="control-label" style="width:100%;">Product Group Name</label>
+								<div style="width:100%;display: inline-block;">
+									<input type="text" class="form-control"
+										   ng-class="{red: $ctrl.dataForm.customerProductGroup.custProductGroupName == ''? true : false}"
+										   title="{{$ctrl.dataForm.customerProductGroup.custProductGroupName == ''? 'Product Group Name is a mandatory field.' : ''}}"
+										   data-ng-trim="false"
+										   data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupName"
+										   ng-bind-html="$ctrl.dataForm.customerProductGroup.custProductGroupName"
+										   id="inputProductGroupName" placeholder="Product Group Name">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputProductGroupDescription" class="control-label" style="width:100%;">Product Group Description</label>
+								<div style="width:100%;display: inline-block;">
+									<textarea data-ng-trim="false" data-ng-trim="false" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescription"
+												 ng-bind-html="$ctrl.dataForm.customerProductGroup.custProductGroupDescription"
+												 type="text" class="form-control" id="inputProductGroupDescription"
+												 style="min-height: 200px;" placeholder="Product Group Description"></textarea>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="inputProductGroupLongDescription" class="control-label" style="width:100%;">Product Group Long Description</label>
+								<div style="width:100%;display: inline-block;">
+								<textarea data-ng-trim="false" data-ng-model="$ctrl.dataForm.customerProductGroup.custProductGroupDescriptionLong"
+										  ng-bind-html="$ctrl.dataForm.customerProductGroup.custProductGroupDescriptionLong"
+										  type="text" class="form-control"
+										  id="inputProductGroupLongDescription" style="min-height: 254px;"
+										  placeholder="Product Group Long Description"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-header card-header-primary" style="margin: 0px;    display: inline-block;    width: 100%;" >
+					Picker Choices
+				</div>
+				<div class="card-body" style="padding:10px;display: inline-block;width: 100%;">
+
+					<div class="well choice-type-box"  style="width: 100%;box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);display: inline-block; padding: 10px;"
+						ng-repeat="col in $ctrl.dataForm.customerProductGroup.productGroupType.productGroupChoiceTypes | filter:{ pickerSwitch: true} " ng-class="{active: col.pickerSwitch}">
+						<form>
+						<div class="well-header-primary">
+							<h5 style="    text-align: center;  font-weight: bold;">{{col.choiceType.description}}</h5>
+						</div>
+						<div class="choice-opt-box">
+							<div class="radio radio-ecom-view well well-sm" style="margin-top: 10px;"
+								ng-repeat="opt in col.productGroupChoiceOptions">
+
+								<div class="media-left">
+									<div  ng-show="opt.choiceOption.imageMetaDataChoiceOption.image!=null">
+										<img data-ng-src="{{opt.choiceOption.imageMetaDataChoiceOption.image}}"
+											 ng-click="$ctrl.showFullImage(opt.choiceOption.imageMetaDataChoiceOption.image)"
+											 style="max-width:100%; max-height: 90%;    margin: 0 auto;   display: block;">
+									</div>
+									<div data-ng-show="opt.choiceOption.imageMetaDataChoiceOption==null || opt.choiceOption.imageMetaDataChoiceOption.image===null"  >
+										<img data-ng-src="images/no_image.png"
+											 style="max-width:100%; max-height: 90%;    margin: 0 auto;   display: block;">
+									</div>
+									<div class="spinner-image" ng-show="opt.choiceOption.imageMetaDataChoiceOption!=null
+										&& opt.choiceOption.imageMetaDataChoiceOption.image===undefined" style="height:30px;">
+										<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+									</div>
+								</div>
+								<div class="media-body">
+									<label class="media-heading">{{opt.choiceOption.productChoiceText}}</label>
+									<input type="radio" name="optionsRadios"
+										   	ng-click="$ctrl.getProductImageByPickerOption()"
+										   	ng-model="col.choiceType.selectedOption"
+										   	data-ng-value="opt.choiceOption.key.choiceOptionCode"
+										  	style="margin-top: 0;">
+								</div>
+
+							</div>
+						</div>
+						</form>
+					</div>
+
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-header card-header-primary" style="margin: 0px;    display: inline-block;    width: 100%;" >
+					Non Picker Choices
+				</div>
+				<div class="card-body" style="padding:10px;display: inline-block;width: 100%;">
+					<div class="well choice-type-box"  style="width: 100%;box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);display: inline-block; padding: 10px;"
+						 ng-repeat="col in $ctrl.dataForm.customerProductGroup.productGroupType.productGroupChoiceTypes | filter:{ pickerSwitch: false} " ng-class="{active: col.pickerSwitch}">
+						<div class="well-header-primary">
+							<h5 style="    text-align: center;  font-weight: bold;">{{col.choiceType.description}}</h5>
+						</div>
+						<div class="choice-opt-box">
+							<div class="radio radio-ecom-view well well-sm" style="margin-top: 10px;"
+								 ng-repeat="opt in col.productGroupChoiceOptions">
+								<div class="media-left">
+									<div  ng-show="opt.choiceOption.imageMetaDataChoiceOption.image!=null">
+										<img data-ng-src="{{opt.choiceOption.imageMetaDataChoiceOption.image}}"
+											 ng-click="$ctrl.showFullImage(opt.choiceOption.imageMetaDataChoiceOption.image)"
+											 style="max-width:100%; max-height: 90%;    margin: 0 auto;   display: block;">
+									</div>
+									<div data-ng-show="opt.choiceOption.imageMetaDataChoiceOption==null || opt.choiceOption.imageMetaDataChoiceOption.image===null"  >
+										<img data-ng-src="images/no_image.png"
+											 style="max-width:100%; max-height: 90%;    margin: 0 auto;   display: block;">
+									</div>
+									<div class="spinner-image" ng-show="opt.choiceOption.imageMetaDataChoiceOption!=null
+										&& opt.choiceOption.imageMetaDataChoiceOption.image===undefined" style="height:30px;">
+										<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+									</div>
+								</div>
+								<div class="media-body">
+									<label class="media-heading">{{opt.choiceOption.productChoiceText}}</label>
+									<input type="radio" name="optionsRadios" value="option1" style="margin-top: 0;" disabled>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="pull-right" style="display: inline-block; " ng-show="!$ctrl.isWaiting">
+		<button view-only="PD_ECOM_01" class="btn btn-primary" disabled="true" >Save</button>
+		<button can-edit="PD_ECOM_01" class="btn btn-primary" ng-click="$ctrl.handleForUpdatingProductGroup()">Save</button>
+		<button view-only="PD_ECOM_01" class="btn btn-primary" disabled="true" >Delete</button>
+		<button can-edit="PD_ECOM_01" class="btn btn-primary" ng-click="$ctrl.handleForDeletingProductGroup()">Delete</button>
+		<button class="btn btn-primary" data-ng-click="$ctrl.resetData()">Reset</button>
+		<button class="btn btn-primary" ng-disabled="$ctrl.disableReturnToList" ng-click="$ctrl.goToSearchForm()">Return to List</button>
+		<button class="btn" style="display : none" ng-disabled="$ctrl.isDataChanged()"></button>
+		<button class="btn" style="display : none" ng-disabled="$ctrl.isDataChanged()"></button>
+	</div>
+
+</div>
+<!-- Popup show and download image-->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td >
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" title="Delete"
+								data-dismiss="modal" aria-label="Close" >
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px" title="Download"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td >
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm deleting message--->
+<div id="confirmDeletingModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.CONFIRM_TITLE}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.CONFIRM_MESSAGE}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.confirmForDeletingProductGroup()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.noConfirmForDeletingProductGroup()">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Common confirm modal -->
+<div id="confirm-change-tab-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title" style="color: #ffffff">{{$ctrl.commonConfirmModalTitle}}</h5>
+			</div>
+			<div class="modal-body" style="font-size:14px;">
+				<p>{{$ctrl.commonConfirmModalContent}}</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.handleForUpdatingProductGroup()">Yes</button>
+				<button type="button" data-dismiss="modal" class="btn btn-success" ng-click="$ctrl.resetDataAndChangeTab()">No</button>
+				<button type="button" data-dismiss="modal" class="btn btn-danger" ng-click="$ctrl.isChangedTab = false" >Cancel</button>
+
+			</div>
+		</div>
+	</div>
+</div>

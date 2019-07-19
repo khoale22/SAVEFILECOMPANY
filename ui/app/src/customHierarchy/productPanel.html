@@ -1,0 +1,304 @@
+<div class="container-fluid"
+	 can-view="CH_HIER_01"
+	 ng-cloak="true">
+	<div class="row">
+		<div ng-if="$ctrl.transactionMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.transactionMessage}}</span>
+		</div>
+	</div>
+	<div class="row">
+		<ul id="productLevelTabs" class="nav nav-tabs nav-pills" style="padding-bottom: 0">
+			<li ng-class="$ctrl.activeProductTabClass">
+				<a  data-toggle="tab" ng-click="$ctrl.toggleProductOrProductGroupTab('PRODUCT')">Product</a>
+			</li>
+			<li  ng-class="$ctrl.activeProductGroupTabClass">
+				<a  data-toggle="tab" ng-click="$ctrl.toggleProductOrProductGroupTab('PRODUCT_GROUP')">Product Group</a>
+			</li>
+		</ul>
+		<div class="well" style="min-height: 100px; background-color: white ">
+			<div class="tab-content">
+				<div id="product" ng-class="$ctrl.productTabPaneClass" >
+					<div ng-show="!$ctrl.isWaitingForData">
+						<div ng-show="$ctrl.hasData">
+							<table style="width: 100%" can-edit="CH_HIER_02">
+								<thead>
+								<tr>
+									<td style="text-align: center; font-weight: bold">Current Level</td>
+									<td style="text-align: center; font-weight: bold">Mass Update Description</td>
+									<td></td>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td style="text-align: center; color: green">
+										<span class="glyphicon glyphicon-arrow-right"></span>
+										<span>{{$ctrl.currentLevel.childDescription.shortDescription}}</span>
+									</td>
+									<td style="text-align: center">
+										<input class="form-control" type="text" ng-model="$ctrl.massUpdateDescription">
+									</td>
+
+									<td>
+										<button type="button" class="btn btn-default"
+												ng-click="$ctrl.massFillButtonClicked()"
+												ng-disabled="!$ctrl.productsSelected()">
+											Set Primary Path
+										</button>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+							<div class="text-left">
+								<strong class="text-right">{{$ctrl.resultMessage}}</strong>
+							</div>
+							<table style="width: 100%" ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped">
+								<thead>
+								<tr>
+									<th style="text-align: center" can-edit="CH_HIER_02">
+										<input type="checkbox" ng-model="$ctrl.allSelected" ng-change="$ctrl.selectAll()"></th>
+									<th style="min-width:40px">Product Id</th>
+									<th style="min-width:130px">Description</th>
+									<th style="min-width:130px">Primary Path</th>
+									<th style="min-width:130px">Sub Commodity[ID]</th>
+									<th style="min-width:130px">Fulfillment Program</th>
+									<th style="max-width:150px">PDP Template ID</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="product in $data">
+									<td style="text-align: center" can-edit="CH_HIER_02">
+										<input type="checkbox" ng-model="product.selected" ng-change="$ctrl.updateSelected(product)">
+									</td>
+									<td style="text-align: center"><a class="pointer" ng-click="$ctrl.navigateToEcommerceViewPage(product.productMaster.prodId)">{{product.productMaster.prodId}}</a>
+									</td>
+									<td style="text-align: center"><label style="font-weight: normal">{{product.productMaster.description}}</label></td>
+									<td style="text-align: center">
+										<div ng-switch="product.defaultParentRelationships.length">
+											<a ng-switch-when="1" class="pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(product)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">
+												<span class="glyphicon glyphicon-arrow-right"></span>
+												<span>{{product.defaultParentRelationships[0].parentDescription.shortDescription}}</span>
+											</a>
+											<a ng-switch-when="0" class="red-text pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(product)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">{{$ctrl.PRIMARY_PATH_NOT_FOUND_ERROR}}</a>
+											<a ng-switch-default class="red-text pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(product)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">{{$ctrl.MORE_THAN_ONE_PRIMARY_PATH_ERROR}}</a>
+										</div>
+									</td>
+									<td class=input-group" style="text-align: center; max-width:100px" >{{product.productMaster.subCommodity.displayName}}
+									</td>
+									<td style="text-align: center; max-width: 100px" ng-init="$ctrl.getFullfilmentPrograms(product.productMaster)">
+										<label style="font-weight: normal">{{product.productMaster.fullfilmentProgramString}}</label>
+									</td>
+									<td style="max-width: 150px">
+										<label style="font-weight: normal;">{{product.productMaster.pdpTemplate.attributeValueText}}</label>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div ng-if="!$ctrl.hasData" style="text-align: center;">
+							<span><label>No data for this hierarchy level</label></span>
+						</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isWaitingForData"></loading-spinner>
+					<div can-edit="CH_HIER_02" class="text-right">
+						<button class="btn btn-primary btn-sm" style="margin-left: 3px"
+								data-toggle="modal" data-target="#descriptionModal"
+								ng-click="$ctrl.clearModal(); $ctrl.setRemoveValue(true)">Remove Products
+						</button>
+						<add-move-component callback="$ctrl.massUpdateSuccess(data)" current-level="$ctrl.currentLevel"></add-move-component>
+					</div>
+				</div>
+				<div ng-class="$ctrl.productGroupTabPaneClass" id="productGroup">
+					<div ng-show="!$ctrl.isWaitingForData">
+						<div ng-if="!$ctrl.hasData" style="text-align: center;">
+							<span><label>No data for this hierarchy level</label></span>
+						</div>
+						<div ng-show="$ctrl.hasData">
+							<div class="text-left">
+								<strong class="text-right">{{$ctrl.resultMessage}}</strong>
+							</div>
+							<!-- The table with the list of products. -->
+							<table id="productPanelProductGroups" ng-table="$ctrl.tableParams"
+								   class="table-heb table-bordered table-striped" style="width: 100%">
+								<thead>
+								<tr>
+									<th style="width: 5%" can-edit="CH_HIER_02">
+										<input type="checkbox" ng-model="$ctrl.allSelected" ng-change="$ctrl.selectAll()">
+									</th>
+									<th ng-style="{'width': $ctrl.canEditProductsAndProductGroups() ? '20%' : '25%'}">Product Group ID</th>
+									<th style="width: 25%">Product Group Name</th>
+									<th style="width: 25%">Product Group Type</th>
+									<th style="width: 25%">Primary Path</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="productGroupData in $data">
+									<td ng-if="$ctrl.canEditProductsAndProductGroups()" style="text-align: center">
+										<input type="checkbox" ng-model="productGroupData.selected" ng-change="$ctrl.updateSelected(productGroupData)">
+									</td>
+									<td><a class="pointer" ng-click="$ctrl.goToProductGroup(productGroupData.customerProductGroup.custProductGroupId)">{{productGroupData.customerProductGroup.custProductGroupId}}</a></td>
+									<td>{{productGroupData.customerProductGroup.custProductGroupName}}</td>
+									<td>{{productGroupData.customerProductGroup.productGroupType.productGroupType}}</td>
+									<td>
+										<div ng-switch="productGroupData.defaultParentRelationships.length">
+											<a ng-switch-when="1" class="pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(productGroupData)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">→{{productGroupData.defaultParentRelationships[0].parentDescription.shortDescription}}
+											</a>
+											<a ng-switch-when="0" class="red-text pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(productGroupData)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">{{$ctrl.PRIMARY_PATH_NOT_FOUND_ERROR}}</a>
+											<a ng-switch-default class="red-text pointer"
+											   ng-click="$ctrl.setCurrentSelectedProductData(productGroupData)"
+											   data-toggle="modal" data-target="#viewAllParentsPanel">{{$ctrl.MORE_THAN_ONE_PRIMARY_PATH_ERROR}}</a>
+										</div>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div can-edit="CH_HIER_02" class="text-right">
+							<button class="btn btn-primary btn-sm"
+									ng-click="$ctrl.getAllCustomerProductGroups()"
+									data-toggle="modal"
+									data-target="#viewAllCustomerProductGroupsPanel">Add Product Group(s)</button>
+							<button class="btn btn-primary btn-sm"
+									ng-click="$ctrl.removeProductGroups()"
+									data-toggle="modal" data-target="#descriptionModal"
+									ng-disabled="$ctrl.isRemoveProductGroupsDisabled()">Remove Product Group(s)</button>
+						</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isWaitingForData"></loading-spinner>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="descriptionModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title inline-block" style="color: #ffffff">Update Message.
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="panel-body">
+						<strong>You have selected {{$ctrl.totalUpdates}} record/s for update. Would you like to continue with the update?</strong>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<strong>Mass Update Description:</strong>
+					</div>
+					<div class="col-md-6">
+						<input type="text" ng-model="$ctrl.description" can-edit="CH_HIER_01">
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" data-dismiss="modal"
+						ng-click="$ctrl.alterProducts()"
+						class="inline-block btn btn-success btn-sm">Submit</button>
+				<button type="button" data-dismiss="modal"
+						ng-click="$ctrl.clearDescription()"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="viewAllParentsPanel" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title inline-block" style="color: #ffffff">{{$ctrl.getViewAllParentsTitle()}}
+				</div>
+			</div>
+			<div class="modal-body">
+				<product-level-paths ng-if="$ctrl.pathList" path-list="$ctrl.pathList" primary-path="$ctrl.primaryPath"
+									 changed-primary-path="$ctrl.changedPrimaryPath" entity-list="$ctrl.entityList" multiple-parents="$ctrl.multipleParents">
+				</product-level-paths>
+				<div data-ng-if="$ctrl.parentPathError">
+					<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.parentPathError}}</span>
+				</div>
+				<loading-spinner ng-if="$ctrl.isWaitingForParentPaths"></loading-spinner>
+			</div>
+
+			<div class="modal-footer" can-edit="CH_HIER_02">
+				<button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				<button class="btn btn-warning" ng-click="$ctrl.changedPrimaryPath = $ctrl.primaryPath">Reset</button>
+				<button class="btn btn-success" data-dismiss="modal" ng-click="$ctrl.savePrimaryPath()">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="viewAllCustomerProductGroupsPanel" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title inline-block" style="color: #ffffff">Add Product Groups
+				</div>
+			</div>
+			<div class="modal-body">
+				<div ng-if="!$ctrl.isWaitingForAllProductGroups">
+					<div style="text-align: center">
+						<label for="customerProductGroupsModalSearch">Search</label>
+						<input type="text" id="customerProductGroupsModalSearch" ng-model="customerProductGroupsModalSearch">
+					</div>
+					<div style="overflow-y: auto; max-height: 300px">
+						<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+							<thead>
+							<tr>
+								<th>
+									<input
+										id="customProductGroupsCheckAll"
+										type="checkbox"
+										title="(Check/ uncheck all)"
+										style="text-align: center"
+										ng-model="$ctrl.allCustomProductGroupsChecked"
+										ng-click="$ctrl.setAllCustomProductGroups()">
+								</th>
+								<th>Product Group Code</th>
+								<th>Product Group Name</th>
+								<th>Product Group Type</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="customerProductGroup in $ctrl.allCustomerProductGroups | filter : customerProductGroupsModalSearch">
+								<td style="text-align: center">
+									<input
+										id="customerProductGroupSelectedCheckbox"
+										type="checkbox"
+										ng-model="customerProductGroup.isChecked">
+								</td>
+								<td>{{customerProductGroup.custProductGroupId}}</td>
+								<td>{{customerProductGroup.custProductGroupName}}</td>
+								<td>{{customerProductGroup.productGroupType.productGroupType}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<loading-spinner ng-if="$ctrl.isWaitingForAllProductGroups"></loading-spinner>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" data-dismiss="modal"
+						ng-click="$ctrl.addCustomerProductGroups()"
+						data-toggle="modal" data-target="#descriptionModal"
+						class="inline-block btn btn-success btn-sm">Submit</button>
+				<button type="button" data-dismiss="modal"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,185 @@
+<!--
+  ~  productSubBrand.html
+  ~
+  ~  Copyright (c) 2019 H-E-B
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of H-E-B.
+  ~  @author vn87351
+  ~  @since 2.43.0
+  -->
+<div can-view="CT_BRND_04">
+    <!--Error span-->
+    <div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+              ng-bind-html="$ctrl.error"></span>
+    </div>
+    <!-- Success span -->
+    <div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+              role="alert">{{$ctrl.success}}</span>
+    </div>
+    <!-- This area displays the table of Product Brands-->
+    <div class="row" style="height: 660px; width: 100%; /*overflow-y: scroll;*/">
+        <div class="col-md-12 margin-top-10">
+            <div class="margin-top-10">
+                <div class="glyphicon glyphicon-download-alt inline-block pull-right pointer" ng-click="$ctrl.exportBrandTierCode()"
+                     style="color: orange; padding: 5px 0 5px 10px;  font-size: medium; margin-bottom: 20px;"
+                     data-toggle="tooltip" title="Export to CSV"></div>
+                <div class="inline-block pull-right" ng-if="$ctrl.isDownloading"
+                     style="color: orange; font-size: 12px;">
+                    Downloading...
+                </div>
+                <div class="inline-block pull-right margin-right-10">
+                    <button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.doClearFilter()">
+                        Clear Filter
+                    </button>
+                </div>
+            </div>
+            <table ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped margin-top-20"
+                   style="width: 100%;">
+                <thead>
+                <tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+                    <th style="width: 45%; border-bottom-color: transparent;">Brand
+                    </th>
+                    <th style="width: 45%; border-bottom-color: transparent;">Tier Code
+                    </th>
+                    <th style="width: 10%; border-bottom-color: transparent;">Action
+                    </th>
+                </tr>
+                <tr style="background-color: #00476b; height: 25px; text-align: center;">
+                    <th>
+                        <input type="text" class="form-control input-group-sm"
+                               ng-model="$ctrl.brandTierCodeId"
+                               title="Input a Product Brand Id to filter"
+                               ng-change="$ctrl.refreshBrandTierCodeTable()">
+                    </th>
+                    <th>
+                        <input type="text" class="form-control input-group-sm"
+                               ng-model="$ctrl.brandTierCodeName"
+                               title="Input a Product Sub Brand Name to filter"
+                               ng-change="$ctrl.refreshBrandTierCodeTable()">
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody ng-show="!$ctrl.isWaitingForResponse">
+                <tr ng-repeat="brandTierCode in $ctrl.brandTierCodes track by $index">
+                    <td>
+                        {{brandTierCode.displayName}}
+                    </td>
+                    <td>
+                        {{brandTierCode.productBrandTier.displayName}}
+                    </td>
+                    <td style="width:7%;text-align: center" data-title="'Action'" can-edit="CT_PRLN_01" style="width: 10%">
+                        <button data-ng-click="$ctrl.deleteBrandTierCode(brandTierCode)"
+                                class="glyphicon glyphicon-remove pointer"  ng-if="!item.isEditing"
+                                style="color: red; font-size: large; background: transparent; border-width: 0px; padding: 0px;"
+                                title="Delete"
+                                data-ng-disabled="$ctrl.isDisabledButton(item.id)">
+                        </button>
+                    </td>
+                </tr>
+                <tr ng-if="$ctrl.allowAddBrandTierCode">
+                    <td>
+                        <ui-select ng-model="$ctrl.addBrandTierCodeName" theme="bootstrap" autofocus>
+                            <ui-select-match style="width: 100%;height: 26px;"
+                                             empty-valid="Product Line Name is a mandatory field."
+                                             title="{{$select.selected.addBrandTierCodeName.length==0?'Product Line Name is a mandatory field.':''}}">{{$select.selected.displayName}}</ui-select-match>
+                            <ui-select-choices repeat="productBrand in $ctrl.productBrandsList"
+                                               refresh="$ctrl.getProductBrandsList($select.search)">
+                                <div uib-tooltip="{{productBrand.displayName}}">{{productBrand.displayName}}</div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td>
+                        <ui-select ng-model="$ctrl.addProdLineBrandId" theme="bootstrap" autofocus>
+                            <ui-select-match style="width: 100%;height: 26px;"
+                                             empty-valid="Product Line Name is a mandatory field."
+                                             title="{{$select.selected.displayName.length==0?'Product Line Name is a mandatory field.':''}}">{{$select.selected.displayName}}</ui-select-match>
+                            <ui-select-choices repeat="productBrandTier in $ctrl.productBrandTiersList"
+                                               refresh="$ctrl.getProductBrandTiersList($select.search)">
+                                <div uib-tooltip="{{productBrandTier.displayName}}">{{productBrandTier.displayName}}</div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td style="width:7%;text-align: center">
+                        <button data-ng-click="$ctrl.doAddModal()"
+                                class="glyphicon glyphicon-save pointer"  ng-if="!item.isEditing"
+                                style="color: green; font-size: large; background: transparent; border-width: 0px; padding: 0px;"
+                                title="Delete"
+                                data-ng-disabled="$ctrl.isDisabledButton(item.id)">
+                        </button>
+                        <button data-ng-click="$ctrl.doNotAddBrandTierCode()"
+                                class="glyphicon glyphicon-remove pointer"  ng-if="!item.isEditing"
+                                style="color: red; font-size: large; background: transparent; border-width: 0px; padding: 0px;"
+                                title="Delete"
+                                data-ng-disabled="$ctrl.isDisabledButton(item.id)">
+                        </button>
+
+                    </td>
+                    <td style="width:7%;text-align: center" data-title="'Action'" can-edit="CT_PRLN_01" style="width: 10%">
+                        <button data-ng-click="$ctrl.deleteBrandTierCode(brandTierCode)"
+                                class="glyphicon glyphicon-remove pointer"  ng-if="!item.isEditing"
+                                style="color: red; font-size: large; background: transparent; border-width: 0px; padding: 0px;"
+                                title="Delete"
+                                data-ng-disabled="$ctrl.isDisabledButton(item.id)">
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row margin-top-20">
+                <loading-spinner ng-show="$ctrl.isWaitingForResponse">
+                </loading-spinner>
+            </div>
+        </div>
+        <!-- Footer -- Contain buttons -->
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="inline-block pull-right">
+                </div>
+            </div>
+        </div>
+        <div ng-show="!$ctrl.isWaiting" class="inline-block pull-right"  style="padding-top: 10px;">
+            <button view-only="CT_PRLN_01" type="button" class="btn btn-primary" disabled="disabled">Add</button>
+            <button can-edit="CT_PRLN_01" type="button" class="btn btn-primary" ng-click="$ctrl.addBrandTierCode()">Add</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #337ab7">
+                <h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.titleConfirm}}</h5>
+            </div>
+            <div class="modal-body">
+                <h5>{{$ctrl.messageConfirm}}</h5>
+            </div>
+            <div class="modal-footer">
+                <div ng-if="$ctrl.allowDeleteBrandTierCode">
+                    <button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+                            ng-click="$ctrl.doDeleteBrandTierCode()">
+                        Yes
+                    </button>
+                    <button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+                            ng-click="$ctrl.doCloseModal()">
+                        No
+                    </button>
+                </div>
+                <div ng-if="$ctrl.allowAddBrandTierCode">
+                    <button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+                            ng-click="$ctrl.doAddBrandTierCode()">
+                        Yes
+                    </button>
+                    <button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+                            ng-click="$ctrl.doCloseModal()">
+                        No
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

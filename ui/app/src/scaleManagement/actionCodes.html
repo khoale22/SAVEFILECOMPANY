@@ -1,0 +1,164 @@
+<!--
+  ~  actionCodes.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-cloak="true" ng-controller="ActionCodesController as actionCodesController"
+	 ng-init="actionCodesController.init()" can-view="SM_CODE_01">
+	<div class="row" data-ng-if="actionCodesController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{actionCodesController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="actionCodesController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{actionCodesController.error}}</span>
+	</div>
+
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Action Code Search
+					<i ng-click="actionCodesController.searchPanelVisible = !actionCodesController.searchPanelVisible" class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': actionCodesController.searchPanelVisible, 'glyphicon glyphicon-plus': !actionCodesController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="actionCodesController.searchPanelVisible">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<label>
+									<input type="radio" ng-model="actionCodesController.selectionType" value="{{actionCodesController.ACTION_CODE}}" />Action Code
+								</label>
+								<label>
+									<input type="radio" ng-model="actionCodesController.selectionType" value="{{actionCodesController.DESCRIPTION}}" />Description
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-6">
+										<textarea data-ng-model="actionCodesController.searchSelection" rows="8"
+												  placeholder="{{actionCodesController.getTextPlaceHolder()}}" class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<!--Buttons to do the search or clear the user input. -->
+											<div class="col-md-6">
+												<button data-ng-click="actionCodesController.newSearch()" class="btn btn-primary btn-block" data-ng-disabled="actionCodesController.searchSelection == null">Search</button>
+												<button data-ng-click="actionCodesController.searchAll()" class="btn btn-primary btn-block">Search All</button>
+											</div>
+											<div class="col-md-6">
+												<button data-ng-click="actionCodesController.clearSearch()" class="btn btn-primary btn-block" data-ng-disabled="actionCodesController.searchSelection == null">Clear</button>
+												<button data-ng-click="actionCodesController.addRow()" class="btn btn-primary btn-block" can-edit="SM_CODE_01">Add</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="actionCodesController.isWaiting">
+	</loading-spinner>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+
+						These are the {{actionCodesController.selectionType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="actionCodes in actionCodesController.missingValues.noMatchList">{{actionCodes}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="!actionCodesController.isWaiting && actionCodesController.deleteMessage != null">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{actionCodesController.deleteMessage}}</span>
+	</div>
+
+	<div class="col-md-12" ng-show="!actionCodesController.isWaiting && actionCodesController.data != null">
+		<div class="row" data-ng-if="actionCodesController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{actionCodesController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="actionCodesController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{actionCodesController.modifyError}}</span>
+		</div>
+		<div class="panel-group">
+			<div class="panel panel-primary" ng-show="actionCodesController.isNotViewingSinglePlu()">
+				<div class="panel-heading">
+					<div ng-if="!actionCodesController.isAddingActionCode && actionCodesController.resultMessage != null">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{actionCodesController.resultMessage}}
+
+						</h5>
+
+						<div class="inline-block pull-right" ng-if="actionCodesController.showMatchCount()">
+							<h5 ng-if="actionCodesController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{actionCodesController.missingValues.matchCount}}
+								<span ng-if="actionCodesController.missingValues.matchCount ==  1">{{actionCodesController.selectionType}}</span>
+								<span ng-if="actionCodesController.missingValues.matchCount >  1">{{actionCodesController.selectionType}}s</span>
+								found</h5>
+							<h5 ng-if="actionCodesController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{actionCodesController.missingValues.noMatchCount}}
+								<span ng-if="actionCodesController.missingValues.noMatchCount ==  1">{{actionCodesController.selectionType}}</span>
+								<span ng-if="actionCodesController.missingValues.noMatchCount >  1">{{actionCodesController.selectionType}}s</span>
+								not	found</h5>
+						</div>
+					</div>
+					<div ng-if="actionCodesController.isAddingActionCode || actionCodesController.resultMessage == null">New Action Code</div>
+				</div>
+				<div class="panel-body">
+					<table ng-table="actionCodesController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr ng-repeat="actionCode in actionCodesController.data track by $index">
+							<td data-title="'Action Code'">
+								<div ng-if="!actionCodesController.isAddingActionCode" ng-model="actionCode.actionCode">{{actionCode.actionCode}}</div>
+								<input type="text" ng-model="actionCode.actionCode" maxlength="5"
+									   ng-if="actionCodesController.isAddingActionCode"
+									   ng-disabled="(!actionCodesController.isAddingActionCode && !actionCode.isEditing)">
+							</td>
+							<td data-title="'Action Code Description'">
+								<input type="text" ng-model="actionCode.description" ng-disabled="(!actionCodesController.isAddingActionCode && !actionCode.isEditing)">
+							</td>
+
+							<td data-title="'Total PLUs'">
+
+								<div ng-if="actionCode.countOfActionCodeUpcs > 0">
+									<a class="pointer" ng-click="actionCodesController.getPlus(actionCode)">{{actionCode.countOfActionCodeUpcs | number}}</a>
+								</div>
+								<div ng-if="actionCode.countOfActionCodeUpcs === 0">{{actionCode.countOfActionCodeUpcs}}</div>
+							</td>
+							<td can-edit="SM_CODE_01">
+								<i data-ng-click="actionCodesController.editActionCode($index)" class="glyphicon glyphicon-edit pointer"  ng-if="!actionCodesController.isAddingActionCode && !actionCode.isEditing" style="color: orange; font-size: large"></i>
+								<i data-ng-click="actionCodesController.removeActionCode($index)" class="glyphicon glyphicon-remove pointer"  ng-if="!actionCodesController.isAddingActionCode && !actionCode.isEditing" style="color: red; font-size: large"></i>
+								<i data-ng-click="actionCodesController.actionCodeChanges()" class="glyphicon glyphicon-floppy-disk pointer"  ng-if="actionCodesController.isAddingActionCode || actionCode.isEditing" style="color: green; font-size: large"></i>
+								<i data-ng-click="actionCodesController.cancel($index)" class="glyphicon glyphicon-ban-circle pointer" ng-if="actionCodesController.isAddingActionCode || actionCode.isEditing" style="color: red; font-size: large"></i>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<plu-panel current-code="actionCodesController.pluActionCode" code-type="actionCodesController.ACTION_CODE"
+			   ng-show="actionCodesController.pluActionCode != null">
+	</plu-panel>
+</div>

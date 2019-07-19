@@ -1,0 +1,278 @@
+<div can-view="PG_MENU_00" class="container-fluid" style="margin-top:10px;">
+	<div class="col-md-4" id="left-panel" ng-style="{'max-height': getHeight(100, 0)}">
+		<div class="row">
+			<div class="col-md-12 ">
+				<div class="panel panel-primary">
+					<div class="panel-heading" style="padding:5px;">
+						<strong>Product Group Search</strong>
+						<span class="pull-right">
+							<u data-ng-click="productGroupSearchController.browserAll()" style="cursor: pointer">Browse All</u>
+						</span>
+					</div>
+					<div class="panel-body" style="min-height: 500px; padding:0px;">
+						<div id="productGroupSearchForm" style="margin: 10px 5px 10px;">
+							<h6><b>Product Group ID</b></h6>
+							<div class="input-group input-group-sm">
+								<input class="form-control"
+									   aria-label="Text input with multiple buttons"
+									   type="text" numbers-only="numbers-only" maxlength="13"
+									   ng-model="productGroupSearchController.productGroupIdInput">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default" aria-label="Search"
+											ng-click="productGroupSearchController.checkEnableSearching()">
+										<span class="glyphicon glyphicon-search"></span>
+									</button>
+								</div>
+							</div>
+							<h6><b>Product Group Name</b></h6>
+							<div class="input-group input-group-sm">
+								<input class="form-control"
+									   type="text"
+									   ng-model="productGroupSearchController.productGroupNameInput"
+									   maxlength="50">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default" aria-label="Search"
+											ng-click="productGroupSearchController.checkEnableSearching()">
+										<span class="glyphicon glyphicon-search"></span>
+									</button>
+								</div>
+							</div>
+							<h6><b>Product Group Type</b></h6>
+							<ui-select ng-model="productGroupSearchController.productGroupTypeInput"
+									   theme="bootstrap" search-enabled="true" data-toggle="tooltip">
+								<ui-select-match class="input-group-sm">
+									{{$select.selected.productGroupTypeSummary}}
+								</ui-select-match>
+								<ui-select-choices refresh-delay="0"
+												   repeat="productGroupType in productGroupSearchController.productGroupTypes | propsFilter: {productGroupTypeSummary: $select.search} | orderBy:'productGroupTypeCode'">
+									<div
+										ng-bind-html="productGroupType.productGroupTypeSummary | highlight: $select.search"></div >
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						<div id="customerHierarchy" style="margin: 10px 5px 50px;">
+							<div class="panel panel-primary">
+								<div class="panel-heading" style="padding:5px;" ng-click="productGroupSearchController.showHideCustomerHierarchy()">
+										<span class="glyphicon glyphicon-collapse-down"
+											  data-ng-show="productGroupSearchController.isShowCustomerHierarchy"></span>
+									<span class="glyphicon glyphicon-expand"
+										  data-ng-show="!productGroupSearchController.isShowCustomerHierarchy"></span>
+									Customer Hierarchy
+								</div>
+								<div class="panel-body" style="padding:5px; max-height: 310px"
+									 ng-hide="!productGroupSearchController.isShowCustomerHierarchy">
+									<div class="col-md-12"
+										 style="width: 100%"
+										 can-view="CH_HIER_01" ng-cloak="true">
+										<div class="input-group input-group-sm">
+											<input class="form-control" type="text"
+												   aria-label="Input Customer Hierarchy to search."
+												   ng-disabled="productGroupSearchController.customerHierarchyContext.length === 0"
+												   ng-change="productGroupSearchController.isNullOrEmpty(productGroupSearchController.customHierarchySearchText)?productGroupSearchController.clearCustomHierarchySearchOnClientSide():''"
+												   title="Please enter name of custom hierarchy level to search for."
+												   ng-model="productGroupSearchController.customHierarchySearchText">
+											<div class="input-group-btn">
+												<button type="button" class="btn btn-default" aria-label="Search"
+														ng-disabled="productGroupSearchController.isNullOrEmpty(productGroupSearchController.customHierarchySearchText)"
+														title="Search for entered text within custom hierarchy."
+														ng-click="productGroupSearchController.searchOnClient()">
+													<span class="glyphicon glyphicon-search"></span>
+												</button>
+											</div>
+										</div>
+										<div class="input-group-btn">
+											<button class="inline-block btn btn-primary btn-sm pull-right"
+													style="margin-top: 2px"
+													ng-disabled="productGroupSearchController.isNullOrEmpty(productGroupSearchController.customHierarchySearchText)"
+													title="{{!productGroupSearchController.isNullOrEmpty(productGroupSearchController.customHierarchySearchText) ? 'Clear search for custom hierarchy.' : ''}}"
+													ng-click="productGroupSearchController.clearCustomHierarchySearchOnClientSide()">Clear
+												Filter
+											</button>
+										</div>
+										<loading-spinner ng-if="productGroupSearchController.isWaitingForLoadCustomerHierarchyResponse"></loading-spinner>
+										<div style="margin-top: 2px">
+											<div class="panel-group">
+												<strong ng-if="productGroupSearchController.searchingForCustomHierarchy">{{productGroupSearchController.searchingForCustomHierarchyText}}</strong>
+												<div class="nav nav-list"
+													 ng-if="!productGroupSearchController.isWaitingForLoadCustomerHierarchyResponse&&!productGroupSearchController.searchingForCustomHierarchy">
+													<div class="panel panel-primary">
+														<div class="panel-heading"
+															 ng-click="productGroupSearchController.showHideDetailCustomerHierarchy()">
+															<h4 class="panel-title">
+																<a><strong>{{productGroupSearchController.customerHierarchyContext[0].description}}</strong></a>
+																<strong class="pull-right"
+																		ng-class="{'fa fa-minus' : !productGroupSearchController.isHierarchyLevelCollapsed(productGroupSearchController.customerHierarchyContext), 'fa fa-plus' : productGroupSearchController.isHierarchyLevelCollapsed(productGroupSearchController.customerHierarchyContext)}">
+																</strong>
+															</h4>
+														</div>
+														<div class="panel-body" style="max-height: 150px; overflow-y: auto"
+															 ng-hide="!productGroupSearchController.isShowDetailCustomerHierarchy">
+															<div
+																ng-repeat="(firstIndex, firstLevel) in productGroupSearchController.customerHierarchyContext[0].childRelationships">
+																<div
+																	ng-click="productGroupSearchController.highlightCurrentSelectedHierarchyLevel(firstIndex, null, null, null, null);productGroupSearchController.selectCustomHierarchyLevel(firstLevel)"
+																	style="padding-left: 15px" class="add-hover-background"  ng-class="productGroupSearchController.getSelectedCustomHierarchyCss(firstLevel)"
+																	id="{{productGroupSearchController.getUniqueElementIdFromIndices(firstIndex, null, null, null, null)}}">
+																	<strong
+																		ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(firstLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(firstLevel)">[-]</strong>
+																	<strong
+																		ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(firstLevel) && productGroupSearchController.isHierarchyLevelCollapsed(firstLevel)">[+]</strong>
+																	<strong
+																		ng-if="productGroupSearchController.checkLowestBranchOrHasNoRelationships(firstLevel)">&emsp;&nbsp;</strong>
+																	<strong>{{firstLevel.childDescription.shortDescription}}</strong>
+																</div>
+																<div
+																	ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(firstLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(firstLevel)">
+																	<div
+																		ng-repeat="(secondIndex, secondLevel) in firstLevel.childRelationships">
+																		<div
+																			ng-click="productGroupSearchController.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, null, null, null);productGroupSearchController.selectCustomHierarchyLevel(secondLevel)"
+																			style="padding-left: 30px"
+																			class="add-hover-background"  ng-class="productGroupSearchController.getSelectedCustomHierarchyCss(secondLevel)"
+																			id="{{productGroupSearchController.getUniqueElementIdFromIndices(firstIndex, secondIndex, null, null, null)}}">
+																			<strong
+																				ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(secondLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(secondLevel)">[-]</strong>
+																			<strong
+																				ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(secondLevel) && productGroupSearchController.isHierarchyLevelCollapsed(secondLevel)">[+]</strong>
+																			<strong
+																				ng-if="productGroupSearchController.checkLowestBranchOrHasNoRelationships(secondLevel)">&emsp;&nbsp;</strong>
+																			<strong>{{secondLevel.childDescription.shortDescription}}</strong>
+																		</div>
+																		<div
+																			ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(secondLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(secondLevel)">
+																			<div
+																				ng-repeat="(thirdIndex, thirdLevel) in secondLevel.childRelationships">
+																				<div
+																					ng-click="productGroupSearchController.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, null, null);productGroupSearchController.selectCustomHierarchyLevel(thirdLevel)"
+																					style="padding-left: 45px"
+																					class="add-hover-background" ng-class="productGroupSearchController.getSelectedCustomHierarchyCss(thirdLevel)"
+																					id="{{productGroupSearchController.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, null, null)}}">
+																					<strong
+																						ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(thirdLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(thirdLevel)">[-]</strong>
+																					<strong
+																						ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(thirdLevel) && productGroupSearchController.isHierarchyLevelCollapsed(thirdLevel)">[+]</strong>
+																					<strong
+																						ng-if="productGroupSearchController.checkLowestBranchOrHasNoRelationships(thirdLevel)">&emsp;&nbsp;</strong>
+																					<strong>{{thirdLevel.childDescription.shortDescription}}</strong>
+																				</div>
+																				<div
+																					ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(thirdLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(thirdLevel)">
+																					<div
+																						ng-repeat="(fourthIndex, fourthLevel) in thirdLevel.childRelationships">
+																						<div
+																							ng-click="productGroupSearchController.selectCustomHierarchyLevel(productGroupSearchController.customerHierarchyContext[0], firstLevel, secondLevel, thirdLevel, fourthLevel, null);productGroupSearchController.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, fourthIndex, null);productGroupSearchController.selectCustomHierarchyLevel(fourthLevel)"
+																							style="padding-left: 60px"
+																							class="add-hover-background" ng-class="productGroupSearchController.getSelectedCustomHierarchyCss(fourthLevel)"
+																							id="{{productGroupSearchController.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, fourthIndex, null)}}">
+																							<strong
+																								ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(fourthLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(fourthLevel)">[-]</strong>
+																							<strong
+																								ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(fourthLevel) && productGroupSearchController.isHierarchyLevelCollapsed(fourthLevel)">[+]</strong>
+																							<strong
+																								ng-if="productGroupSearchController.checkLowestBranchOrHasNoRelationships(fourthLevel)">&emsp;&nbsp;</strong>
+																							<strong>{{fourthLevel.childDescription.shortDescription}}</strong>
+																						</div>
+																						<div
+																							ng-if="!productGroupSearchController.checkLowestBranchOrHasNoRelationships(fourthLevel) && !productGroupSearchController.isHierarchyLevelCollapsed(fourthLevel)">
+																							<div
+																								ng-repeat="(fifthIndex, fifthLevel) in fourthLevel.childRelationships">
+																								<div
+																									ng-click="productGroupSearchController.selectCustomHierarchyLevel(productGroupSearchController.customerHierarchyContext[0], firstLevel, secondLevel, thirdLevel, fourthLevel, fifthLevel);productGroupSearchController.highlightCurrentSelectedHierarchyLevel(firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex);productGroupSearchController.selectCustomHierarchyLevel(fifthLevel)"
+																									style="padding-left: 75px"
+																									class="add-hover-background" ng-class="productGroupSearchController.getSelectedCustomHierarchyCss(fifthLevel)"
+																									id="{{productGroupSearchController.getUniqueElementIdFromIndices(firstIndex, secondIndex, thirdIndex, fourthIndex, fifthIndex)}}">
+																									<strong>{{fifthLevel.childDescription.shortDescription}}</strong>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="buttonFooter" class="pull-right" style="position: absolute; bottom: 25px; right: 20px;">
+							<button class="btn btn-primary" ng-click="productGroupSearchController.clearCustomHierarchySearchOnClientSide();productGroupSearchController.clearSearchForm()">Clear</button>
+							<button class="btn btn-primary" ng-click="productGroupSearchController.checkEnableSearching()">Search</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8" data-ng-include="'/src/productGroup/productGroupSearch/productGroupSearchResult.html'"
+		 ng-style="{'max-height': getHeight(100, 0)}">
+	</div>
+</div>
+<div id="popupWarning" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>Search criteria cannot be combined.<br>
+					Please remove additional search criteria and try again.</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td>
+						<button type="button" class="btn btn-link"
+								style="float: right; font-size: medium;color:orange;padding: 0" data-dismiss="modal" title="Close"
+								aria-label="Close">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" title="Download"
+								style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+								ng-click="productGroupSearchController.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img data-ng-src="{{productGroupSearchController.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="hierarchyErrorPopup" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Customer Hierarchy Error</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{productGroupSearchController.MESSAGE_CUSTOMER_HIERARCHY_ERROR}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

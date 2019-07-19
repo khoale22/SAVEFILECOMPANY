@@ -1,0 +1,146 @@
+<div class="row">
+    <div class="col-md-12">
+        <div ng-show="$ctrl.changedRelatedProductsList.length === 0">
+            <label class="col-md-offset-4">There aren't any related products.</label>
+        </div>
+        <div ng-show="$ctrl.changedRelatedProductsList.length > 0">
+            <div>
+                <table id="relatedProductsTable"
+                       ng-table="$ctrl.relatedProductsTableParams"
+                       class="table table-heb table-bordered table-striped">
+                    <thead>
+                    <th style="width: 15px">
+                        <input type="checkbox"
+                               ng-model="$ctrl.allRelatedProductsChecked"
+                               ng-click="$ctrl.toggleAllCheckedRelatedProducts()"></th>
+                    <th>Product ID</th>
+                    <th>Product Description</th>
+                    <th>Product Primary UPC</th>
+                    <th>Add on Sellable?</th>
+                    <th>Product Relationship Type</th>
+                    </thead>
+                    <tr ng-repeat="relatedProduct in $ctrl.currentRelatedProductsList | notDeleted">
+                        <td data-title="">
+                            <input type="checkbox"
+                                   ng-model="relatedProduct.isChecked"
+                                   ng-click="$ctrl.validateAllCheckedRelatedProducts()"></td>
+                        <td data-title="'Product ID'"
+                            ng-if="relatedProduct.toAdd!==true">
+                            <a class="pointer"
+                               ng-click="$ctrl.switchToProductInfo(relatedProduct)">{{relatedProduct.key.relatedProductId}}</a>
+                        </td>
+                        <td data-title="'Product ID'"
+                            ng-if="relatedProduct.toAdd===true">{{relatedProduct.key.relatedProductId}}
+                        </td>
+                        <td data-title="'Product Description'">{{relatedProduct.relatedProduct.description}}</td>
+                        <td data-title="'Product Primary UPC'"
+                            ng-if="relatedProduct.toAdd!==true">
+                            <a class="pointer"
+                               ng-click="$ctrl.switchToUPCInfo(relatedProduct)">{{relatedProduct.relatedProduct.productPrimaryScanCodeId}}</a>
+                        </td>
+                        <td data-title="'Product Primary UPC'"
+                            ng-if="relatedProduct.toAdd===true">
+                            {{relatedProduct.relatedProduct.productPrimaryScanCodeId}}
+                        </td>
+                        <td data-title="'Add on Sellable?'">
+                            <div ng-if="relatedProduct.key.productRelationshipCode === 'ADDON'">
+                                <input type="checkbox"
+                                       ng-model="relatedProduct.relatedProduct.goodsProduct.sellableProduct">
+                            </div>
+                        </td>
+                        <td data-title="'Product Relationship Type'">
+                            <div view-only="PD_OLAT_02">
+                                {{$ctrl.productRelationshipCodeToString(relatedProduct.key.productRelationshipCode)}}
+                            </div>
+                            <select can-edit="PD_OLAT_02"
+                                    class="form-control"
+                                    ng-model="relatedProduct.key.productRelationshipCode"
+                                    ng-options="code.id as code.displayName for code in $ctrl.relatedProductCodes"></select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-right: 15px" can-edit="PD_OLAT_02">
+    <div class="inline-block pull-right">
+        <button class="btn btn-primary dropdown-toggle "
+                ng-click="$ctrl.addNewRelatedProduct()">
+            Add
+        </button>
+        <button class="btn btn-primary dropdown-toggle"
+                ng-disabled="!$ctrl.enableDeleteButton()"
+                ng-click="$ctrl.deleteRelatedProduct()">
+            Delete
+        </button>
+    </div>
+</div>
+<!-- Product Relationship Type modal for add related product -->
+<div id="selectRelationshipTypeModal" class="modal fade" role="dialog" style="z-index: 999999;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #337ab7">
+                <h5 class="modal-title inline-block" style="color:#ffffff;">{{$ctrl.relationshipTypeTitle}}</h5>
+            </div>
+            <div class="modal-body">
+                <h5 class="text" ng-bind-html="$ctrl.selectRelationshipTypeMessage"></h5>
+                <br>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="typeSelect">{{$ctrl.relationshipTypeTitle}}</label><br>
+                        <select class="form-control"
+                                id="typeSelect"
+                                ng-model="$ctrl.selectedRelationshipType"
+                                ng-options="code.id as code.displayName for code in $ctrl.relatedProductCodes"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="inline-block btn btn-success btn-sm"
+                        ng-click="$ctrl.continueAdd()"
+                        ng-disabled="$ctrl.selectedRelationshipType === ''">
+                    Continue
+                </button>
+                <button type="button"
+                        class="inline-block btn btn-success btn-sm btn-danger"
+                        data-dismiss="modal"
+                        ng-click="$ctrl.cancelAdd()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Relationship Type modal for add related product search -->
+<div id="searchRelationshipModal" class="modal fade" role="dialog" style="z-index: 999999;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #337ab7">
+                <div class="row">
+                    <div class="col-lg-6" style="text-align: left">
+                        <h5 class="modal-title inline-block"
+                            style="color:#ffffff;">Search</h5></div>
+                    <div class="col-lg-6" style="text-align: right">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 1">
+                            <span style="color:white">×</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <product-search-criteria init="$ctrl.init"
+                                             on-update="$ctrl.updateSearchCriteria(searchCriteria)"></product-search-criteria>
+                    <div ng-if="$ctrl.searchSelectionResultsVisible === true">
+                        <product-search-selection search-criteria="$ctrl.searchCriteria"
+                                                  on-update="$ctrl.updateSearchSelection(selectedProducts)"></product-search-selection>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

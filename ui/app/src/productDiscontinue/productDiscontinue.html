@@ -1,0 +1,251 @@
+<div class="row">
+	<div class="col-md-12 container-fluid" ng-cloak="true" id="productDeleteDiv"
+		 ng-controller="ProductDeleteController as productDeleteController" ng-init=productDeleteController.init()>
+		<div class="row" data-ng-if="productDeleteController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{productDeleteController.success}}</span>
+		</div>
+		<div class="row" data-ng-if="productDeleteController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{productDeleteController.error}}</span>
+		</div>
+		<div class="col-md-6">
+			<div class="panel-group">
+				<div ng-include="'src/search/productSearch.html'"></div>
+			</div>
+		</div>
+
+
+		<loading-spinner ng-show="productDeleteController.isWaiting">
+		</loading-spinner>
+
+		<div id="notFoundModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<div class="modal-title inline-block" style="color: #ffffff">
+							These are the {{productDeleteController.discontinueDataSearchBtnSwitch}}s that weren't
+							found:
+						</div>
+						<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+					</div>
+					<div class="modal-body">
+						<div ng-repeat="item in productDeleteController.missingValues.noMatchList">{{item}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-12" ng-show="!productDeleteController.isWaiting && productDeleteController.data != null  && !productDeleteController.isViewingProductInfo()">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{productDeleteController.resultMessage}}
+						</h5>
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer" ng-click="productDeleteController.export()" style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium" data-toggle="tooltip" title="Export to Excel"></div>
+						<div class="inline-block pull-right" ng-show="productDeleteController.downloading" style="color: orange">Downloading...</div>
+						<div class="inline-block pull-right" ng-if="productDeleteController.showMatchCount()">
+							<h5 ng-if="productDeleteController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{productDeleteController.missingValues.matchCount}}
+								<span ng-if="productDeleteController.missingValues.matchCount ==  1">{{productDeleteController.discontinueDataSearchBtnSwitch}}</span>
+								<span ng-if="productDeleteController.missingValues.matchCount >  1">{{productDeleteController.discontinueDataSearchBtnSwitch}}s</span>
+								found</h5>
+							<h5 ng-if="productDeleteController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{productDeleteController.missingValues.noMatchCount}}
+								<span ng-if="productDeleteController.missingValues.noMatchCount ==  1">{{productDeleteController.discontinueDataSearchBtnSwitch}}</span>
+								<span ng-if="productDeleteController.missingValues.noMatchCount >  1">{{productDeleteController.discontinueDataSearchBtnSwitch}}s</span>
+								not	found</h5>
+						</div>
+					</div>
+
+					<div class="panel-body">
+						<table ng-table="productDeleteController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%" ng-table-columns-binding="productDeleteController.myColumns">
+							<tr ng-repeat="productDeleteRecord in productDeleteController.data track by $index">
+								<td data-title="'Product ID'" style="width: 7%">
+									<span can-view="PD_INFO_01">
+										<a class="pointer" ng-click="productDeleteController.showProductInfo(productDeleteRecord.key.productId)">{{productDeleteRecord.key.productId}}</a>
+									</span>
+									<span cant-view="PD_INFO_01">
+										{{productDeleteRecord.key.productId}}
+									</span>
+								</td>
+								<td data-title="'UPC'" sortable="'UPC'" style="width: 8%">{{productDeleteRecord.key.upc}}</td>
+								<td data-title="'Size'" style="width: 5%">{{productDeleteRecord.sellingUnit.tagSize}}</td>
+								<td data-title="'Item Code'" sortable="'ITEM_CODE'" style="width: 8%">{{productDeleteRecord.key.itemCode}}
+									<i class="pull-right" ng-class="{'fa fa-key': productDeleteRecord.sellingUnit.primaryUpc}">
+									</i>
+								</td>
+								<td data-title="'Channel'" style="width: 5%">{{productDeleteRecord.displayItemType}}</td>
+								<td data-title="'Item Description'" style="width: 15%">{{productDeleteRecord.itemMaster.description}}</td>
+								<td data-title="'Discontinue Eligibility'" style="width: 40%">
+									<div ng-switch="productDeleteRecord.discontinued">
+										<div ng-switch-when="true">
+											<div ng-if="productDeleteController.isDiscontinuedPrimary(productDeleteRecord)">
+												Discontinued on {{productDeleteRecord.itemMaster.normalizedDiscontinueDate | date: 'MM/dd/yyyy'}} by {{productDeleteRecord.itemMaster.normalizedDiscontinuedByUID}}
+												<strong  ng-if="!productDeleteRecord.isDiscontinueCriteriaExisting" class="inline-block" style="padding-left: 15px" ng-style="{'color': productDeleteController.shouldBeDeleted(productDeleteRecord) ?  'red': 'black'}">Estimated delete date: {{productDeleteRecord.projectedDeleteDate | date: 'MM/dd/yyyy'}}</strong>
+											</div>
+											<div ng-if="productDeleteController.isDiscontinuedAssociate(productDeleteRecord)">
+												Discontinued on {{productDeleteRecord.sellingUnit.discontinueDate | date: 'MM/dd/yyyy'}}
+												<strong ng-if="!productDeleteRecord.isDiscontinueCriteriaExisting" class="inline-block" style="padding-left: 15px" ng-style="{'color': productDeleteController.shouldBeDeleted(productDeleteRecord) ?  'red': 'black'}">Estimated delete date: {{productDeleteRecord.projectedDeleteDate | date: 'MM/dd/yyyy'}}</strong>
+											</div>
+											<div ng-if="productDeleteController.isDiscontinuedAssociateAtCasepack(productDeleteRecord)">
+												Discontinued at primary level
+											</div>
+											<div ng-if="productDeleteRecord.isDiscontinueCriteriaExisting">
+												<div class="inline-block red-text" style="width: 15%">
+													Not Eligible
+												</div>
+												<div class="inline-block" style="width: 75%">
+													<div ng-if="!productDeleteRecord.salesSet" class="inline-block">
+														<a class="pointer underline-text-with-padding" uib-popover="Last Scan Date: {{productDeleteRecord.sellingUnit.lastScanDate | date: 'MM/dd/yyyy'}}"
+														   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_SALES_CONSTANT}}">Has Sales</a>
+													</div>
+													<div ng-if="!productDeleteRecord.storeReceiptsSet" class="inline-block">
+														<a class="pointer underline-text-with-padding" uib-popover="Last store receipt on {{productDeleteRecord.lastReceivedDate | date: 'MM/dd/yyyy'}}"
+														   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_RECEIPTS_CONSTANT}}">Has Store Receipts</a>
+													</div>
+													<div ng-if="!productDeleteRecord.inventorySet" class="inline-block">
+														<div ng-if="productDeleteRecord">
+															<a class="pointer underline-text-with-padding" uib-popover="Total Store Inventory: {{productDeleteController.storeInventory}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.STORE_INVENTORY_CONSTANT}}"
+															   ng-click="productDeleteController.setStoreInventory(productDeleteRecord.productMaster.prodId)">Has Store Inventory</a>
+														</div>
+													</div>
+													<div ng-if="!productDeleteRecord.warehouseInventorySet" class="inline-block">
+														<div ng-if="productDeleteRecord">
+															<a class="pointer underline-text-with-padding" title="{{productDeleteController.warehouseInventoryString}}"
+															   ng-click="productDeleteController.setSelectedItem(productDeleteRecord)" data-toggle="modal" data-target="#warehouseInventoryModal">Has WHS Inventory</a>
+														</div>
+													</div>
+													<div ng-if="!productDeleteRecord.vendorInventory" class="inline-block">
+														<div ng-if="productDeleteRecord">
+															<a class="pointer underline-text-with-padding" uib-popover="Total DSV Inventory: {{productDeleteController.vendorInventory}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.DSV_INVENTORY_CONSTANT}}"
+															   ng-click="productDeleteController.setDsvInventory(productDeleteRecord.productMaster.prodId)">Has DSV Inventory</a>
+														</div>
+													</div>
+													<div ng-if="!productDeleteRecord.newItemSet" class="inline-block">
+														<a class="pointer underline-text-with-padding" uib-popover="Item set up on {{productDeleteRecord.itemMaster.addedDate | date: 'MM/dd/yyyy'}}"
+														   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NEW_PRODUCT_CONSTANT}}">New Item</a>
+													</div>
+													<div ng-if="!productDeleteRecord.openPoSet" class="inline-block">
+														<a class="pointer underline-text-with-padding"
+														   uib-popover="{{productDeleteController.purchaseOrderDate !== null ? 'Last purchase order: ' +
+															    productDeleteController.purchaseOrderNumber +
+															    ' on ' +
+															    (productDeleteController.purchaseOrderDate | date: 'MM/dd/yyyy') +
+															    '.' : 'No purchase order found.'}}"
+														   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_PO_CONSTANT}}" ng-click="productDeleteController.getPurchaseOrder(productDeleteRecord)">Has PO</a>
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div ng-switch-when="false">
+											<div ng-switch="productDeleteRecord.inProgress">
+												<div ng-switch-when="true">In Progress</div>
+												<div ng-switch-when="false">
+													<div class="inline-block red-text" style="width: 15%">
+														Not Eligible
+													</div>
+													<div class="inline-block" style="width: 75%">
+														<div ng-if="!productDeleteRecord.salesSet" class="inline-block">
+															<a class="pointer underline-text-with-padding" uib-popover="Last Scan Date: {{productDeleteRecord.sellingUnit.lastScanDate | date: 'MM/dd/yyyy'}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_SALES_CONSTANT}}">Has Sales</a>
+														</div>
+														<div ng-if="!productDeleteRecord.storeReceiptsSet" class="inline-block">
+															<a class="pointer underline-text-with-padding" uib-popover="Last store receipt on {{productDeleteRecord.lastReceivedDate | date: 'MM/dd/yyyy'}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_RECEIPTS_CONSTANT}}">Has Store Receipts</a>
+														</div>
+														<div ng-if="!productDeleteRecord.inventorySet" class="inline-block">
+															<div ng-if="productDeleteRecord">
+																<a class="pointer underline-text-with-padding" uib-popover="Total Store Inventory: {{productDeleteController.storeInventory}}"
+																   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.STORE_INVENTORY_CONSTANT}}"
+																   ng-click="productDeleteController.setStoreInventory(productDeleteRecord.productMaster.prodId)">Has Store Inventory</a>
+															</div>
+														</div>
+														<div ng-if="!productDeleteRecord.warehouseInventorySet" class="inline-block">
+															<div ng-if="productDeleteRecord">
+																<a class="pointer underline-text-with-padding" title="{{productDeleteController.warehouseInventoryString}}"
+																   ng-click="productDeleteController.setSelectedItem(productDeleteRecord)" data-toggle="modal" data-target="#warehouseInventoryModal">Has WHS Inventory</a>
+															</div>
+														</div>
+														<div ng-if="!productDeleteRecord.vendorInventory" class="inline-block">
+															<div ng-if="productDeleteRecord">
+																<a class="pointer underline-text-with-padding" uib-popover="Total DSV Inventory: {{productDeleteController.vendorInventory}}"
+																   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.DSV_INVENTORY_CONSTANT}}"
+																   ng-click="productDeleteController.setDsvInventory(productDeleteRecord.productMaster.prodId)">Has DSV Inventory</a>
+															</div>
+														</div>
+														<div ng-if="!productDeleteRecord.newItemSet" class="inline-block">
+															<a class="pointer underline-text-with-padding" uib-popover="Item set up on {{productDeleteRecord.itemMaster.addedDate | date: 'MM/dd/yyyy'}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NEW_PRODUCT_CONSTANT}}">New Item</a>
+														</div>
+														<div ng-if="!productDeleteRecord.openPoSet" class="inline-block">
+															<a class="pointer underline-text-with-padding"
+															   uib-popover="{{productDeleteController.purchaseOrderDate !== null ? 'Last purchase order: ' +
+															    productDeleteController.purchaseOrderNumber +
+															    ' on ' +
+															    (productDeleteController.purchaseOrderDate | date: 'MM/dd/yyyy') +
+															    '.' : 'No purchase order found.'}}"
+															   popover-trigger="'outsideClick'" popover-title="{{productDeleteController.NO_PO_CONSTANT}}" ng-click="productDeleteController.getPurchaseOrder(productDeleteRecord)">Has PO</a>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</td>
+								<!--Delete Remarks column definition -- starts -->
+								<td data-title="'Delete Eligibility'" style="width: 10%" >
+									<div ng-repeat="itemNotDeleted in productDeleteRecord.itemMaster.itemNotDeleted" class="inline-block">
+										<span class="text-left"
+											  title="{{itemNotDeleted.itemNotDeletedReason.userInstructions}}" >
+											{{itemNotDeleted.itemNotDeletedReason.description}}</span>&nbsp;
+									</div>
+								</td>
+								<td data-title="'Remove from Stores'" style="width: 3%; text-align: center" ng-if="productDeleteController.myColumns.showRemovedInStores">
+									<input class="active" type="checkbox" id="{{'removedInStores' + $index}}" ng-checked="{{!productDeleteRecord.sellingUnit.processedByScanMaintenance}}">
+								</td>
+								<!--Delete Remarks column definition -- ends -->
+							</tr>
+						</table>
+						<div ng-if="productDeleteController.myColumns.showRemovedInStores" class="pull-right">
+							<button data-ng-click="productDeleteController.removeFromStore()" class="btn btn-primary btn-block">Remove</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-if="productDeleteController.isViewingProductInfo()">
+			<div ng-include="'src/productInfo/productInfo.html'"></div>
+		</div>
+		<div id="warehouseInventoryModal" class="modal fade" role="dialog"  style="width: 100%">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<div class="modal-title inline-block" style="color: #ffffff; width: 100%">
+							<div class="inline-block pull-left">Has Warehouse Inventory</div>
+							<div class="glyphicon glyphicon-remove pointer pull-right inline-block" data-toggle="modal" data-target="#warehouseInventoryModal"></div>
+						</div>
+					</div>
+					<div class="modal-body">
+						<table class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr style="color: white; background-color: #00476b">
+								<th style="text-align: center">Warehouse</th>
+								<th style="text-align: center">Inventory</th>
+							</tr>
+							<tr ng-repeat="whs in productDeleteController.selectedItem.itemMaster.warehouseLocationItems" style="width: 100%">
+								<td style="text-align: center">{{whs.key.warehouseNumber}}</td>
+								<td style="text-align: center">{{whs.totalOnHandInventory}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

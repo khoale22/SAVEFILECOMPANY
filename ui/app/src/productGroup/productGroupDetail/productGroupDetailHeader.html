@@ -1,0 +1,72 @@
+<!--
+  ~ productGroupDetailHeader.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div id="pdRibbon" style="padding-left: 1%; padding-top: 0.2%; margin-bottom: 0" class="ng-scope pg-detail-header" >
+	<div class="row">
+		<div class="col-md-2">
+			<div class="row">
+				<div class="col-md-4" style="text-align: right">
+					Go to:
+				</div>
+				<div class="col-md-8" style="padding-left: 1%">
+					<div class="col-md-8" style="padding-left: 1%">
+						<!--Go To Product:  List of searched products drop down and navigation goes here-->
+						<button class="btn btn-primary dropdown-toggle" style="background: white;
+    color: black;font-size: 10px; padding: 0; margin-bottom: 2px" type="button" data-toggle="dropdown">
+							{{$ctrl.selectedProduct}}
+							<span class="caret"></span></button>
+						<ul class="dropdown-menu" style="max-height: 250px;overflow: auto;">
+							<li style="font-size: 10px" ng-repeat="product in $ctrl.listOfProducts"
+								ng-click="$ctrl.confirmChangeProduct(product)"
+								class="pointer" ng-class="product===$ctrl.selectedProduct?'active':''"><a>{{product}}</a>
+							</li>
+						</ul>
+					</div>
+					<div style="width: 31%;float: right;">
+						<button class="glyphicon glyphicon-backward" ng-disabled="!$ctrl.isEnablePrevProductSelect()"
+							  aria-hidden="true" style="padding: 0 3px;text-decoration: underline;cursor: pointer;}  ;    border: none;  background: transparent;"
+							  ng-click="$ctrl.confirmPreviousProduct()"></button>
+						<button class="glyphicon glyphicon-forward"
+								aria-hidden="true" style="padding: 0 3px; border: none;  background: transparent;text-decoration: underline;cursor: pointer;}"
+								ng-click="$ctrl.confirmNextProduct()"
+							  	ng-disabled="!$ctrl.isEnableNextProductSelect()"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-3" style="padding-left: 1%; padding-right: 1%">
+			Product Group Id:<label class="ng-binding" style="padding-left: 5px;"> {{$ctrl.selectedProduct}}</label>
+		</div>
+
+		<div class="modal fade" id="confirmationNextPG" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" style="color:#000000;" id="myModalLabel">Are you sure?</h4>
+					</div>
+					<div class="modal-body" style="color:#000000;">
+						There are unsaved changes on this page. Are you sure you want to continue?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal"
+								ng-if="!$ctrl.isSelectedFromList && !$ctrl.isNextProduct" ng-click='$ctrl.prevProductSelect()'>Yes</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal"
+								ng-if="!$ctrl.isSelectedFromList && $ctrl.isNextProduct" ng-click='$ctrl.nextProductSelect()'>Yes</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal"
+								ng-if="$ctrl.isSelectedFromList" ng-click='$ctrl.handleProductChange($ctrl.currentProductId)'>Yes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

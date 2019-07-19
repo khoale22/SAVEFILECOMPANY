@@ -1,0 +1,732 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div ng-show="!$ctrl.isLoading">
+	<div class="row" data-ng-if="$ctrl.error">
+		<span ng-bind-html="$ctrl.error" class="alert alert-danger col-md-6 col-md-push-3 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+</div>
+<div ng-show="!$ctrl.isLoading">
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-body panel-collapse">
+				<div ng-if="$ctrl.showAuditFolder()" class="row col-md-offset-11 col-md-1 pull-right" >
+					<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showSpecialAttributesAuditInfo()"></div>
+				</div>
+				<!--Tabs-->
+				<ul class="nav nav-tabs nav-pills">
+					<li class="active">
+						<a data-toggle="tab" data-target="#pharmacy" ng-click="$ctrl.chooseTab('pharmacy')" can-view="PD_SPCL_03">Pharmacy</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#tobacco" ng-click="$ctrl.chooseTab('tobacco')" can-view="PD_SPCL_05">Tobacco</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#codeDate" ng-click="$ctrl.chooseTab('codeDate')" can-view="PD_SPCL_02">Code Date</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#shippingHandling" ng-click="$ctrl.chooseTab('shippingHandling')" can-view="PD_SPCL_02">Shipping and Handling</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#ratingRestrictions" ng-click="$ctrl.chooseTab('rating/restrictions')" can-view="PD_SPCL_04">Rating/Restrictions</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<!--HTML for the pharmacy tab-->
+					<div id="pharmacy" class="row tab-pane active" can-view="PD_SPCL_03">
+						<div class="row">
+							<div class="col-md-1 col-md-offset-1">
+								<label>Pharmacy</label>
+							</div>
+							<div class="col-md-1" view-only="PD_SPCL_03">
+								<input type="checkbox" ng-model="$ctrl.currentRx.goodsProduct.rxProductFlag" disabled>
+								<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+									  ng-if="$ctrl.differentProductDefault()"
+									  title="Pharmacy(selected as Y=Yes) is different than the default for the commodity (set as N=No)"></span>
+							</div>
+							<div class="col-md-1" can-edit="PD_SPCL_03">
+								<input type="checkbox" 
+									   ng-disabled="$ctrl.currentRx.goodsProduct === null"
+									   ng-model="$ctrl.currentRx.goodsProduct.rxProductFlag"
+									   ng-change="$ctrl.uncheckablePharmacySw()">
+								<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+									  ng-if="$ctrl.differentProductDefault()"
+									  title="Pharmacy(selected as Y=Yes) is different than the default for the commodity (set as N=No)"></span>
+							</div>
+						</div>
+						<br>
+						<div ng-show="$ctrl.currentRx.goodsProduct !== null && $ctrl.currentRx.goodsProduct.rxProductFlag">
+							<div class="row">
+							<div class="col-md-1 col-md-offset-1">
+								<label>Drug Schedule</label>
+							</div>
+							<div class="col-md-1" view-only="PD_SPCL_03">
+								{{$ctrl.currentRx.goodsProduct.rxProduct.drugScheduleDisplay}}
+							</div>
+							<div class="col-md-1" can-edit="PD_SPCL_03">
+								<select ng-model="$ctrl.currentRx.goodsProduct.rxProduct.drugScheduleTypeCode"
+										data-ng-disabled="!$ctrl.currentRx.goodsProduct.rxProductFlag">
+									<option ng-repeat="schedule in $ctrl.drugSchedule"
+											value="{{schedule.id}}">
+										{{schedule.description}}
+									</option>
+								</select>
+							</div>
+							<div class="col-md-1 col-md-offset-1 clearfix">
+								<label>Medicaid</label>
+							</div>
+							<div class="col-md-2" view-only="PD_SPCL_03">
+								{{$ctrl.currentRx.goodsProduct.medicaidDisplay}}
+							</div>
+							<div class="col-md-2" can-edit="PD_SPCL_03">
+								<select ng-model="$ctrl.currentRx.goodsProduct.medicaidCode"
+										data-ng-disabled="!$ctrl.currentRx.goodsProduct.rxProductFlag">
+									<option value="">--Select--</option>
+									<option value="D">Acquisition Cost</option>
+									<option value="W">Average Wholesale Price</option>
+									<option value="N">Not Medicaid Eligible</option>
+								</select>
+							</div>
+							<div class="col-md-1 ">
+								<label>NDC</label>
+							</div>
+							<div class="col-md-1" view-only="PD_SPCL_03">
+								{{$ctrl.currentRx.goodsProduct.rxProduct.ndc}}
+							</div>
+							<div class="col-md-1" can-edit="PD_SPCL_03">
+								<input ng-model="$ctrl.currentRx.goodsProduct.rxProduct.ndc" style="width: 98%"
+									   data-ng-disabled="!$ctrl.currentRx.goodsProduct.rxProductFlag">
+							</div>
+							<br>
+						</div>
+							<br>
+							<div class="row">
+							<div class="col-md-1 col-md-offset-1">
+								<label>PSE</label>
+							</div>
+							<div class="col-md-1 " view-only="PD_SPCL_03">
+								{{$ctrl.currentRx.goodsProduct.pseDisplay}}
+							</div>
+							<div class="col-md-1 " can-edit="PD_SPCL_03">
+								<select ng-model="$ctrl.currentRx.goodsProduct.pseTypeCode"
+										data-ng-change="$ctrl.pseTypeCodeChanged()">
+									<option value="">--Select--</option>
+									<option value="N">No PSE</option>
+									<option value="S">PSE Solid</option>
+									<option value="L">PSE Non-Solid</option>
+								</select>
+							</div>
+							<div class="col-md-4 col-md-offset-2">
+								<table class="table-heb table-bordered table-striped"
+									   width="100%">
+									<thead>
+									<tr>
+										<th style="text-align: center">UPC</th>
+										<th style="text-align: center">Size</th>
+										<th style="text-align: center">PSE Grams</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="sellingUnit in $ctrl.currentRx.sellingUnits">
+										<td style="text-align: center">{{sellingUnit.upc}}</td>
+										<td style="text-align: center">{{sellingUnit.tagSizeDescription}}</td>
+										<td style="text-align: center">
+											<div view-only="PD_SPCL_03">
+												{{sellingUnit.pseGramWeight}}
+											</div>
+											<div can-edit="PD_SPCL_03">
+												<input type="text" ng-model="sellingUnit.pseGramWeight"
+													   number-validator="^[0-9]{1,4}\.?([0-9]{1,4})?$"
+													   data-ng-disabled="$ctrl.currentRx.goodsProduct.pseTypeCode === 'N'"
+													   title="PSE Grams value must be number (#####.####), greater 0 and less than or equal to 99999.9999">
+											</div>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						</div>
+					</div>
+					<!--HTML for the Code Date tab-->
+					<div id="codeDate" class="row tab-pane" can-view="PD_SPCL_02">
+						<div style="margin-top: 1%">
+							<div class="row">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Code Date</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									<input type="checkbox" ng-model="$ctrl.currentCodeDate.goodsProduct.codeDate" disabled>
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input type="checkbox" 
+										   ng-disabled="$ctrl.currentCodeDate.goodsProduct === null" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.codeDate" 
+										   ng-click="$ctrl.currentCodeDateHandle($ctrl.currentCodeDate.goodsProduct.codeDate)" >
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Max Shelf Life Days</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									{{$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays}}
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input id="maxSelf" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct !== null" 
+										   class="form-control {{$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays.length==0?'active-tooltip ng-invalid ng-touched':' '}}" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays" 
+										   type="number"
+										   title="{{$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays.length==0?'Max Shelf Days must be entered.':''}}"
+										   ng-disabled="!$ctrl.currentCodeDate.goodsProduct.codeDate"
+										   empty-valid = "Max Shelf Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+									<input id="maxSelf" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct === null" 
+										   disabled
+										   class="form-control" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays" 
+										   type="number"
+										   title="{{$ctrl.currentCodeDate.goodsProduct.maxShelfLifeDays.length==0?'Max Shelf Days must be entered.':''}}"
+										   empty-valid = "Max Shelf Days must be entered."
+										   min="0"
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Inbound Specification Days</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									{{$ctrl.currentCodeDate.goodsProduct.inboundSpecificationDays}}
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input id="inboundSpecification" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct !== null" 
+										   class="form-control {{$ctrl.currentCodeDate.goodsProduct.codeDate.length==0?'active-tooltip ng-invalid ng-touched':' '}}" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.inboundSpecificationDays"
+										   type="number" 
+										   ng-disabled="!$ctrl.currentCodeDate.goodsProduct.codeDate"
+										   title="{{$ctrl.currentCodeDate.goodsProduct.codeDate.length==0?'Inbound Specification Days must be entered.':''}}"
+										   empty-valid = "Inbound Specification Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+									<input id="inboundSpecification" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct === null" 
+										   disabled
+										   class="form-control" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.inboundSpecificationDays"
+										   type="number" 
+										   title="{{$ctrl.currentCodeDate.goodsProduct.codeDate.length==0?'Inbound Specification Days must be entered.':''}}"
+										   empty-valid = "Inbound Specification Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Warehouse Reaction Days</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									{{$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays}}
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input id="warehouseReaction" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct !== null"  
+										   class="form-control {{$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays.length==0?'active-tooltip ng-invalid ng-touched':' '}}" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays"
+										   type="number" 
+										   ng-disabled="!$ctrl.currentCodeDate.goodsProduct.codeDate"
+										   title="{{$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays.length==0?'Warehouse Reaction Days must be entered.':''}}"
+										   empty-valid = "Warehouse Reaction Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+									<input id="warehouseReaction" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct === null"  
+										   disabled
+										   class="form-control" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays"
+										   type="number" 
+										   title="{{$ctrl.currentCodeDate.goodsProduct.warehouseReactionDays.length==0?'Warehouse Reaction Days must be entered.':''}}"
+										   empty-valid = "Warehouse Reaction Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Guarantee To Store Days</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									{{$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays}}
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input id="guaranteeToStore" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct !== null" 
+										   class="form-control {{$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays.length==0?'active-tooltip ng-invalid ng-touched':' '}}" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays"
+										   type="number" 
+										   ng-disabled="!$ctrl.currentCodeDate.goodsProduct.codeDate"
+										   title="{{$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays.length==0?'Guarantee To Store Days must be entered.':''}}"
+										   empty-valid = "Guarantee To Store Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+									<input id="guaranteeToStore" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct === null" 
+										   disabled
+										   class="form-control" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays"
+										   type="number" 
+										   title="{{$ctrl.currentCodeDate.goodsProduct.guaranteeToStoreDays.length==0?'Guarantee To Store Days must be entered.':''}}"
+										   empty-valid = "Guarantee To Store Days must be entered."
+										   min="0" 
+										   onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+								</div>
+							</div>
+							<div class="row" style="margin-top: 10px; margin-bottom: 1%">
+								<div class="col-md-2 col-md-offset-1">
+									<label>Send Code Date Data to EXE</label>
+								</div>
+								<div class="col-md-1" view-only="PD_SPCL_02">
+									<input type="checkbox" ng-model="$ctrl.currentCodeDate.goodsProduct.sendCodeDate" disabled>
+								</div>
+								<div class="col-md-1" can-edit="PD_SPCL_02">
+									<input type="checkbox" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct !== null" 
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.sendCodeDate"
+										   ng-disabled="!$ctrl.currentCodeDate.goodsProduct.codeDate">
+									<input type="checkbox" 
+										   ng-if="$ctrl.currentCodeDate.goodsProduct === null" 
+										   disabled
+										   ng-model="$ctrl.currentCodeDate.goodsProduct.sendCodeDate">
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--HTML for the shippingHandlingRestrictions Tab-->
+					<div id="shippingHandling" class="row tab-pane" can-view="PD_SPCL_04">
+						<div class="row" style="margin-bottom: 1%; margin-top: 1%">
+							<div class="col-md-2 col-md-offset-1">
+								<div class="row">
+									<label class="col-md-6 text-right">Fragile</label>
+									<div view-only="PD_SPCL_11">
+										<input type="checkbox" ng-model="$ctrl.currentShipping.goodsProduct.fragile" disabled>
+									</div>
+									<div can-edit="PD_SPCL_11">
+										<input type="checkbox" 
+											   ng-disabled="$ctrl.currentShipping.goodsProduct === null"
+											   ng-model="$ctrl.currentShipping.goodsProduct.fragile">
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-md-6 text-right">ORMD</label>
+									<div view-only="PD_SPCL_13">
+										<input type="checkbox" ng-model="$ctrl.currentShipping.goodsProduct.ormd" disabled>
+									</div>
+									<div can-edit="PD_SPCL_13">
+										<input type="checkbox" 
+											   ng-disabled="$ctrl.currentShipping.goodsProduct === null"
+											   ng-model="$ctrl.currentShipping.goodsProduct.ormd">
+									</div>
+								</div>
+								<div class="row">
+									<label class="col-md-6 text-right">Ship By Itself</label>
+									<div view-only="PD_SPCL_12">
+										<input type="checkbox" ng-model="$ctrl.currentShipping.goodsProduct.shipByItself" disabled>
+									</div>
+									<div can-edit="PD_SPCL_12">
+										<input type="checkbox" 
+											   ng-disabled="$ctrl.currentShipping.goodsProduct === null"
+											   ng-model="$ctrl.currentShipping.goodsProduct.shipByItself">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="row">
+									<div class="col-md-4">
+										<table class="table-heb table-bordered table-striped table-hover"
+											   style="width: 100%">
+											<thead>
+											<tr>
+												<th>Shipping Restrictions</th>
+											</tr>
+											</thead>
+											<tbody style="display: block; overflow-y:auto; max-height: 50px">
+											<tr style="display: block"
+												ng-repeat="restriction in $ctrl.productShippingRestrictions | filter:{restriction:{restrictionGroupCode : 9}}">
+												<td style="display: block">{{restriction.restriction.restrictionDescription}}</td>
+											</tr>
+											</tbody>
+										</table>
+										<div class="pull-right">
+											<i can-view="PD_SPCL_08"
+											   data-ng-click="$ctrl.getSellingRestrictionsForUpdate()"
+											   class="glyphicon glyphicon-edit pointer"
+											   style="color: orange; font-size: large"
+											   data-target="#shippingRestrictionModal" data-toggle="modal">
+											</i>
+											<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+										  		  ng-if="$ctrl.differentThanDefaultByShippingRestriction()"
+										  		  title="The Shipping Restriction is different than the default for the Sub-commodity"></span>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<table class="table-heb table-bordered table-striped table-hover"
+											   style="width: 100%">
+											<thead>
+											<tr>
+												<th>Shipping Method Exception</th>
+											</tr>
+											</thead>
+											<tbody style="display: block; overflow-y:auto; max-height: 50px">
+											<tr style="display: block"
+												ng-repeat="exception in $ctrl.shippingMethodExceptions">
+												<td style="display: block">{{exception.customShippingMethod.customShippingMethodDescription}}</td>
+											</tr>
+											</tbody>
+										</table>
+										<div class="pull-right" can-view="PD_SPCL_09">
+											<i data-ng-click="$ctrl.getShippingMethodExceptionsForUpdate()"
+											   class="glyphicon glyphicon-edit pointer"
+											   style="color: orange; font-size: large"
+											   data-target="#shippingMethodExceptionModal" data-toggle="modal">
+											</i>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<table class="table-heb table-bordered table-striped table-hover"
+											   style="width: 100%">
+											<thead>
+											<tr>
+												<th>State Warnings</th>
+											</tr>
+											</thead>
+											<tbody style="display: block; overflow-y:auto; max-height: 50px">
+											<tr style="display: block"
+												ng-repeat="warning in $ctrl.productStateWarnings">
+												<td style="display: block">{{warning.productStateWarning.description}}</td>
+											</tr>
+											</tbody>
+										</table>
+										<div class="pull-right">
+											<i can-view="PD_SPCL_10"
+											   data-ng-click="$ctrl.getStateWarningsForUpdate()"
+											   class="glyphicon glyphicon-edit pointer"
+											   style="color: orange; font-size: large"
+											   data-target="#stateWarningsModal" data-toggle="modal">
+											</i>
+											<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+										  		  ng-if="$ctrl.differentThanDefaultByStateWarning()"
+										  		  title="The State Warning is different than the default for the Sub-commodity"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--HTML for the RatingRestrictions Tab-->
+					<div id="ratingRestrictions" class="row tab-pane" can-view="PD_SPCL_04">
+						<!--add new restriction row-->
+						<div style="margin-top: 1%; margin-bottom: 1%" class="row" can-edit="PD_SPCL_04">
+
+							<div class="row">
+								<div class="col-md-1 col-md-offset-1 text-right" style="padding-right: 5px">
+									<label>Rating Type</label>
+								</div>
+								<div class="col-md-3" style="padding-left: 0">
+									<select class="form-control" ng-model="$ctrl.restrictionGroup" ng-click="$ctrl.ratingTypeSelected(restrictionGroup)">
+										<option ng-repeat="group in $ctrl.restrictionGroups" value="{{group.restrictionGroupCode}}">{{group.restrictionDescription}}</option>
+									</select>
+								</div>
+								<div ng-if="$ctrl.restrictionGroup">
+
+										<div class="col-md-1 text-right" style="padding-right: 5px">
+											<label>Rating</label>
+										</div>
+										<div class="col-md-3" style="padding-left: 0">
+											<select class="form-control" id="restrictionSelect" ng-if="$ctrl.restrictionGroup">
+												<option ng-repeat="restriction in $ctrl.restrictionFilter">
+													{{restriction.restrictionDescription}}
+												</option>
+											</select>
+										</div>
+
+										<div class="col-md-2">
+											<div class="inline-block pull-left">
+												<button class="btn btn-primary"
+														ng-disabled="$ctrl.validAdd()"
+														ng-click="$ctrl.addRestriction()">
+													Add
+												</button>
+											</div>
+										</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="divider-horizontal"></div>
+						<div ng-if="!$ctrl.currentRestrictions.restrictions.length > 0">
+							<span class="alert col-md-4 col-md-push-4 text-center myfade" role="alert">
+								Selected Product does not have any Restrictions
+							</span>
+						</div>
+						<!--table holding all current restrictions-->
+						<div class="row" ng-if="$ctrl.currentRestrictions.restrictions.length > 0">
+							<div class="col-md-10 col-md-offset-1">
+								<table id="restrictionsTable" class="table-heb table-bordered table-striped"
+									   width="100%">
+									<thead>
+									<tr>
+										<th can-edit="PD_SPCL_04" style="text-align: center">
+											<input ng-click="$ctrl.checkAllRows()" ng-model="$ctrl.allChecked" type="checkbox"></th>
+										<th style="text-align: center">Rating Type</th>
+										<th style="text-align: center">Rating</th>
+										<th style="text-align: center">Age</th>
+										<th style="text-align: center">Quantity</th>
+										<th style="text-align: center">Time</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr ng-repeat="restriction in $ctrl.currentRestrictions.restrictions" ng-if="!restriction.restriction.shippingRestriction">
+										<td can-edit="PD_SPCL_04" style="text-align: center">
+											<input ng-click="$ctrl.updateDeleteList($index)" type="checkbox">
+										</td>
+										<td style="text-align: center">
+											<div>{{restriction.restriction.sellingRestriction.restrictionDescription}}</div>
+										</td>
+										<td style="text-align: center">{{restriction.restriction.restrictionDescription}}</td>
+										<td style="text-align: center">{{restriction.restriction.minimumRestrictedAge}}</td>
+										<td style="text-align: center">{{restriction.restriction.restrictedQuantity}}</td>
+										<td style="text-align: center">
+											<input type="checkbox" ng-model="restriction.restriction.dateTimeRestriction" disabled>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							<br>
+							<div class="col-md-1 col-md-offset-10" style="padding-top: 5px" can-edit="PD_SPCL_04">
+								<button class="btn btn-primary dropdown-toggle pull-right"
+										ng-click="$ctrl.deleteRestrictions()"
+										style="padding: 0; width: 75%;">
+									<label style="margin-bottom: 0px">Delete</label>
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--HTML for the tobacco Tab-->
+					<div id="tobacco" class="row tab-pane" can-view="PD_SPCL_05">
+						<div style="margin-top: 1%; margin-bottom: 1%;" >
+							<div class="row">
+								<div class="col-md-1 col-md-offset-1">
+									<label>Tobacco Product</label>
+								</div>
+								<div class="col-md-2" style="text-align: start" view-only="PD_SPCL_05">
+									<input type="checkbox"
+										   ng-model="$ctrl.currentTobaccoProduct.goodsProduct.tobaccoProductSwitch" disabled>
+									<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+										  ng-if="$ctrl.differentThanDefault($ctrl.tobaccoDefault)"
+										  title="Tobacco(selected as Y=Yes) is different than the default for the commodity (set as N=No)"></span>
+								</div>
+								<div class="col-md-2" style="text-align: start" can-edit="PD_SPCL_05">
+									<input type="checkbox" 
+										   ng-disabled="$ctrl.currentTobaccoProduct.goodsProduct === null"
+										   ng-click="$ctrl.changeTobaccoProduct($ctrl.currentTobaccoProduct.goodsProduct.tobaccoSwitch)"
+										   ng-model="$ctrl.currentTobaccoProduct.goodsProduct.tobaccoProductSwitch" >
+									<span class="glyphicon glyphicon-warning-sign" style="font-size: 13px; color: orange"
+										  ng-if="$ctrl.differentThanDefault($ctrl.tobaccoDefault)"
+										  title="Tobacco(selected as Y=Yes) is different than the default for the commodity (set as N=No)"></span>
+								</div>
+							</div>
+							<div class="row" ng-if="$ctrl.currentTobaccoProduct.goodsProduct !== null && $ctrl.currentTobaccoProduct.goodsProduct.tobaccoProductSwitch">
+								<div class="col-md-1 col-md-offset-1">
+									<label>Tobacco Product Type</label>
+								</div>
+								<div class="col-md-2" style="text-align: start" view-only="PD_SPCL_05">
+									{{$ctrl.currentTobaccoProduct.goodsProduct.tobaccoProduct.tobaccoProductType.description}}
+								</div>
+								<div class="col-md-2" style="text-align: start" can-edit="PD_SPCL_05">
+									<select ng-model="$ctrl.currentTobaccoProduct.goodsProduct.tobaccoProduct.tobaccoProductTypeCode">
+										<option ng-repeat="type in $ctrl.tobaccoProductTypes"
+												value="{{type.tobaccoProductTypeCode}}">
+											{{type.description}}
+										</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--save and Reset Buttons-->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="inline-block pull-right"  >
+				<button class="btn btn-primary dropdown-toggle" can-edit="PD_SPCL_07"
+						ng-disabled="!$ctrl.isDifference($ctrl.currentTab)"
+						ng-click="$ctrl.saveChanges($ctrl.currentTab)">
+					Save
+				</button>
+
+				<button class="btn btn-primary dropdown-toggle" can-edit="PD_SPCL_07"
+						ng-disabled="!$ctrl.isDifference($ctrl.currentTab)"
+						ng-click="$ctrl.reset($ctrl.currentTab)">
+					Reset
+				</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+	<div class="inline-block pull-left">
+		Created On <b>{{$ctrl.getAddedDate()}}</b>
+		Created By <b>{{$ctrl.getCreateUser()}}</b>
+	</div>
+	<div id="shippingRestrictionModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Shipping Restrictions
+					</div>
+				</div>
+				<div class="modal-body">
+					<div style="text-align: center">
+						<label for="shippingRestrictionModalSearch">Search</label>
+						<input class="form-control" type="text" id="shippingRestrictionModalSearch" ng-model="shippingRestrictionModalSearch" style="margin-bottom: 5px; width: 50%; display: inline-block">
+					</div>
+					<div style=" height:300px; overflow-y:auto" >
+						<table id="shippingRestrictionsTable" class="table-heb table-bordered table-striped"
+							   style="width: 100%">
+							<thead>
+							<tr>
+								<th can-edit="PD_SPCL_04" style="text-align: center">
+									<input ng-click="$ctrl.checkAllShippingRestrictionRows()" ng-model="$ctrl.allShippingRestrictionChecked" type="checkbox"></th>
+								<th style="text-align: center">Shipping Location</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="shippingRestriction in $ctrl.currentShippingRestrictions | filter : {restrictionDescription: shippingRestrictionModalSearch}">
+								<td can-edit="PD_SPCL_04" style="text-align: center">
+									<input
+										ng-click="$ctrl.resetCheckAllRestrictions()"
+										id="shippingRestrictionsCheckbox"
+										ng-model="shippingRestriction.isChecked"
+										type="checkbox">
+								</td>
+								<td style="display: block" height="22px">{{shippingRestriction.restrictionDescription}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.updateShippingRestrictions()"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="shippingMethodExceptionModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Shipping Method Exception
+					</div>
+				</div>
+				<div class="modal-body">
+					<div style="text-align: center">
+						<label for="shippingMethodExceptionModalSearch">Search</label>
+						<input class="form-control" type="text" id="shippingMethodExceptionModalSearch" ng-model="shippingMethodExceptionModalSearch" style="margin-bottom: 5px; width: 50%; display: inline-block">
+					</div>
+					<div style=" height:300px; overflow-y:auto" >
+						<table id="shippingMethodExceptions" class="table-heb table-bordered table-striped"
+							   width="100%">
+							<thead>
+							<tr>
+								<th can-edit="PD_SPCL_04" style="text-align: center">
+									<input
+										ng-click="$ctrl.checkAllShippingMethodRows()"
+										ng-model="$ctrl.allShippingMethodChecked"
+										type="checkbox"></th>
+								<th style="text-align: center">Shipping Methods</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="shippingMethod in $ctrl.currentShippingMethodExceptions | filter : {customShippingMethodDescription: shippingMethodExceptionModalSearch}">
+								<td can-edit="PD_SPCL_04" style="text-align: center">
+									<input
+										ng-click="$ctrl.resetCheckAllShippingMethod()"
+										id="shippingMethodCheckbox"
+										ng-model="shippingMethod.isChecked"
+										type="checkbox">
+								</td>
+								<td style="display: block" height="22px">{{shippingMethod.customShippingMethodDescription}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.updateShippingMethodExceptions()"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="stateWarningsModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">State Warnings
+					</div>
+				</div>
+				<div class="modal-title inline-block" style="color: #ffffff">State Warnings</div>
+				<div class="modal-body">
+					<div style="text-align: center">
+						<label for="stateWarningsModalSearch">Search</label>
+						<input class="form-control" type="text" id="stateWarningsModalSearch" ng-model="stateWarningsModalSearch" style="margin-bottom: 5px; width: 50%; display: inline-block">
+					</div>
+					<table id="stateWarningsTable" class="table-heb table-bordered table-striped"
+						   width="100%" style=" height:300px; overflow-y:scroll; display:block;">
+						<thead>
+						<tr>
+							<th can-edit="PD_SPCL_04" style="text-align: center">
+								<input ng-click="$ctrl.checkAllStateWarningsRows()" ng-model="$ctrl.allStateWarningsChecked" type="checkbox"></th>
+							<th style="text-align: center; width: 100%">State Warnings</th>
+							<th>State</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="stateWarning in $ctrl.currentStateWarnings  | filter : {abbreviation: stateWarningsModalSearch}">
+							<td can-edit="PD_SPCL_04" style="text-align: center">
+								<input
+									ng-click="$ctrl.resetCheckAllStateWarnings()"
+									ng-model="stateWarning.isChecked"
+									type="checkbox"></td>
+							<td height="22px">{{stateWarning.abbreviation}}</td>
+							<td height="22px">{{stateWarning.key.stateCode}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.updateStateWarnings()"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

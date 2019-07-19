@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ jpa-config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+
+	   xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+       ">
+
+	<!-- Configuration for master data connection. -->
+
+	<!-- Entity manager -->
+	<bean id="emfOracle" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" primary="true">
+		<property name="dataSource" ref="dataSourceOracle" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.pm</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.Oracle10gDialect
+				</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${jpa.schema.oracle}</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager -->
+	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="emfOracle"/>
+	</bean>
+
+	<!-- Package to search for JPA objects. -->
+	<jpa:repositories base-package="com.heb.pm"
+					  entity-manager-factory-ref="emfOracle"
+					  transaction-manager-ref="jpaTransactionManager"/>
+
+	<!-- End configuration for master data connection. -->
+
+	<!-- Configuration for GDSN connection. -->
+
+	<!-- Entity manager -->
+	<bean id="gdsnEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="gdsnDataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.gdsn</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.Oracle10gDialect
+				</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${gdsn.schema}</prop>
+				<prop key="hibernate.ejb.entitymanager_factory_name">gdsnEmf</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager -->
+	<bean id="gdsnTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="gdsnEmf"/>
+	</bean>
+
+	<!-- Package to search for JPA objects. -->
+	<jpa:repositories base-package="com.heb.gdsn"
+					  entity-manager-factory-ref="gdsnEmf"
+					  transaction-manager-ref="gdsnTransactionManager"/>
+
+	<!-- End configuration for GDSN connection. -->
+
+	<!-- Configuration for Dictionary connection. -->
+
+	<!-- Entity manager -->
+	<bean id="dictionaryEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dictionaryDataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.pm.dictionary</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.Oracle10gDialect
+				</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${dictionary.schema}</prop>
+				<prop key="hibernate.ejb.entitymanager_factory_name">dictionaryEmf</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager -->
+	<bean id="dictionaryTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="dictionaryEmf"/>
+	</bean>
+
+	<!-- Package to search for JPA objects. -->
+	<jpa:repositories base-package="com.heb.pm.dictionary"
+					  entity-manager-factory-ref="dictionaryEmf"
+					  transaction-manager-ref="dictionaryTransactionManager"/>
+	<!-- End configuration for Dictionary connection. -->
+
+	<!-- DB2 database configuration -->
+	<!-- <bean id="db2Emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="db2DataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.db2</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.DB2390Dialect</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${db2.region}</prop>
+				<prop key="hibernate.ejb.entitymanager_factory_name">db2Emf</prop>
+			</props>
+		</property>
+	</bean> -->
+	<!-- DB2 Transaction manager -->
+	<!-- <bean id="db2TransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="db2Emf"/> 
+	</bean> -->
+	<!-- Package to search for DB2 JPA objects. -->
+	<!-- <jpa:repositories base-package="com.heb.db2"
+					  entity-manager-factory-ref="db2Emf"
+					  transaction-manager-ref="db2TransactionManager"/>  -->
+	<!-- End configuration for DB2 connection. -->
+
+	<!-- Configuration for EPlum connection. -->
+
+	<!-- Entity manager -->
+	<bean id="ePlumEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="ePlumDataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.scaleMaintenance</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.Oracle10gDialect
+				</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${ePlum.schema}</prop>
+				<prop key="hibernate.ejb.entitymanager_factory_name">ePlumEmf</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager -->
+	<bean id="ePlumTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="ePlumEmf"/>
+	</bean>
+
+	<!-- Package to search for JPA objects. -->
+	<jpa:repositories base-package="com.heb.scaleMaintenance"
+					  entity-manager-factory-ref="ePlumEmf"
+					  transaction-manager-ref="ePlumTransactionManager"/>
+
+	<!-- End configuration for EPlum connection. -->
+	
+	
+	
+	<!-- Configuration for Jbatjob connection. -->
+
+	<!-- Entity manager -->
+	<bean id="jbatJobEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="jbatJobDataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan">
+			<array>
+				<value>com.heb.scaleMaintenanceSetUp</value>
+				<value>com.heb.util.jpa</value>
+			</array>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.Oracle10gDialect
+				</prop>
+				<prop key="hibernate.max_fetch_depth">3</prop>
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">10</prop>
+				<prop key="hibernate.show_sql">${jpa.showSql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.default_schema">${jbatJob.schema}</prop>
+				<prop key="hibernate.ejb.entitymanager_factory_name">jbatJobEmf</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager -->
+	<bean id="jbatJobTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="jbatJobEmf"/>
+	</bean>
+
+	<!-- Package to search for JPA objects. -->
+	<jpa:repositories base-package="com.heb.scaleMaintenanceSetUp"
+					  entity-manager-factory-ref="jbatJobEmf"
+					  transaction-manager-ref="jbatJobTransactionManager"/>
+
+	<!-- End configuration for EPlum connection. -->
+</beans>

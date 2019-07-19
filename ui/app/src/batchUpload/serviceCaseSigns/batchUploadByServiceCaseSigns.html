@@ -1,0 +1,74 @@
+<!--
+excelUploadByServiceCaseSigns.htmlhtml
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div class="container-fluid batchUpload"
+	 ng-controller="BatchUploadByServiceCaseSignsController as batchUploadByServiceCaseSignsController">
+	<div class="panel panel-primary">
+		<div class="panel-heading"><h3 class="panel-title">Excel Upload by Service Case Signs</h3>
+		</div>
+		<div class="panel-body" can-view="BU_SCST_01">
+			<!-- Spinner panel for when getting data. -->
+			<loading-spinner ng-show="isWaitingForResponse">
+			</loading-spinner>
+			<!--- The header where to show message success or error -->
+			<div class="alert alert-success col-md-12 text-center"
+				 data-ng-if="batchUploadByServiceCaseSignsController.success" role="alert">
+				{{batchUploadByServiceCaseSignsController.success}}
+			</div>
+			<div class="col-md-12 alert alert-danger text-center"
+				 data-ng-if="batchUploadByServiceCaseSignsController.error" role="alert">
+				{{batchUploadByServiceCaseSignsController.error}}
+			</div>
+			<div class="row" data-ng-hide="isWaitingForResponse">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div can-edit="BU_SCST_01" class="input-group margin-top-20">
+						<div class="form-group input-group-sm">
+							<input type="text" id="excelFileName"
+								   class="form-control image-preview-filename"
+								   disabled="disabled">
+						</div>
+						<div class="input-group-btn input-group-sm">
+							<div class="btn btn-primary image-preview-input btn-browser">
+								<span class="glyphicon glyphicon-folder-open"></span>
+								<span class="image-preview-input-title"> Browse</span>
+								<input type="file" id="fileUpload" title="Browse"
+									   data-upload-file-model="batchUploadByServiceCaseSignsController.fileUpload"
+									   image-preview-filename="image-preview-filename"
+									   accept="{{batchUploadByServiceCaseSignsController.allowedUploadFileTypes}}"/>
+							</div>
+						</div>
+						<div class="input-group-btn  input-group-sm">
+							<button type="button" title="Upload"
+									class="btn btn-primary btn-upload margin-left-10"
+									data-batch-upload-confirmation
+									data-is-empty-upload-file="{{batchUploadByServiceCaseSignsController.fileUpload == null}}"><span
+								class="glyphicon glyphicon glyphicon-upload"></span> Upload
+							</button>
+						</div>
+					</div>
+					<div class="input-group margin-top-10">
+						<form method="get"
+							  action="{{batchUploadByServiceCaseSignsController.downloadTemplateURL}}"
+							  id="generate-template" class="form-group">
+							<button type="submit" title="Download template"
+									class="btn btn-primary"
+							>
+								Download excel template
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

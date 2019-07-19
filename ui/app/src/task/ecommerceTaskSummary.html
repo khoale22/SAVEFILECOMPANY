@@ -1,0 +1,119 @@
+<div ng-if="!homeController.isWaiting && $ctrl.showEcommerceTaskSummary">
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block"><b>Displaying Results: </b></h4>
+				<h5 class="panel-title inline-block">{{$ctrl.resultMessage}}</h5>
+			</div>
+			<div class="panel-body" style="width: 100%">
+				<div class="row" style="margin-bottom: 5px;">
+					<div class="col-md-8" style="text-align: center; vertical-align: middle; padding-top: 0.7%;
+													margin-bottom: 15px; padding-left: 33.33%;">
+						<div ng-show="$ctrl.message">
+							<span ng-class="{'alert' : true,
+							'alert-danger' : $ctrl.isError,
+							'alert-success' : !$ctrl.isError}"
+								  style="padding: 1%" role="alert">{{$ctrl.message}}</span>
+						</div>
+					</div>
+					<!--<div class="col-md-1" style="text-align: right">
+
+					</div>-->
+					<div class="col-md-4" style="text-align: right;">
+						<button style="margin-right: 5px;" type="button" class="btn btn-success" ng-click="$ctrl.openPopupCreateNewTask()" can-edit="TK_ECOM_01">
+							<span class="glyphicon glyphicon-plus"></span>&nbsp;Create New</button>
+						<div id="taskButtonGroup" class="btn-group" data-toggle="buttons">
+							<label class="btn active" ng-click="$ctrl.fetchTasksByStatus(false ,$ctrl.taskStatusMap.ACTIV)">
+								<input type="radio" ng-value="active" ng-model="taskStatus" ng-checked="checked"> Active Only
+							</label>
+							<label class="btn" ng-click="$ctrl.fetchTasksByStatus(false ,$ctrl.taskStatusMap.CLOSD)">
+								<input type="radio" ng-value="closed" ng-model="taskStatus"> Closed Only
+							</label>
+							<label class="btn" ng-click="$ctrl.fetchTasksByStatus(true , $ctrl.taskStatusMap.ACTIVEANDCLOSED)">
+								<input type="radio" ng-value="all" ng-model="taskStatus"> All Tasks
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<table ng-table="$ctrl.tableParams"
+					   class="table-heb table-bordered table-striped" style="width: 100%">
+					<thead>
+						<tr style="text-align: center">
+							<th>Task Description</th>
+							<th>Task Type</th>
+							<th>Initiated By</th>
+							<th>Initiated Date</th>
+						</tr>
+					</thead>
+					<tr ng-repeat="alert in $data track by $index" ng-show="!$ctrl.isWaiting"
+						style="text-align: center">
+						<td data-title="'Task Description'" width="40%">
+							<a id="{{alert.alertID}}" class="pointer" ng-click="go(alert.alertID)">
+								{{alert.alertDataTxt}}
+							</a>
+						</td>
+						<td data-title="'Task Type'" width="30%">
+							<label>{{$ctrl.taskTypeMap[alert.alertTypeCD]}}</label>
+						</td>
+						<td data-title="'Initiated By'" width="15%" style="text-align: center">
+							<label>{{alert.delegatedByUserID}}</label>
+						</td>
+						<td data-title="'Initiated Date'" width="15%" style="text-align: center">
+							<label>{{alert.responseByDate | date:"MM/dd/yyyy"}}</label>
+						</td>
+					</tr>
+				</table>
+				<div ng-show="!$ctrl.isWaiting && $ctrl.isNoRecordsFound" style="text-align: center">
+					No Records found!!
+				</div>
+				<!-- Waiting spinner. -->
+				<loading-spinner ng-show="$ctrl.isWaiting"></loading-spinner>
+			</div>
+		</div>
+	</div>
+	<div id="createNewTaskModal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header pm-modal-header">
+					<div class="row">
+						<div class="col-lg-6" style="text-align: left" ><h5 class="modal-title">Create New Task</h5></div>
+						<div class="col-lg-6" style="text-align: right">
+							<span class="close close-white" data-dismiss="modal" aria-hidden="true" style="color: #ffffff">&times;</span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12" ng-show="$ctrl.errorMessageCreateTask" style="margin-bottom: 15px">
+						<div class="col-md-2" style="" ></div>
+						<div class="col-md-7" style="text-align: center; vertical-align: middle; padding-top: 0.7%">
+							<div>
+							<span class = "alert alert-danger"
+								style="padding: 2%; padding-left: 10px; padding-right: 10px;" role="alert">{{$ctrl.errorMessageCreateTask}}</span>
+							</div>
+						</div>
+						<div class="col-md-3" style="margin-bottom: 0.5%;text-align: right"></div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 form-group" style="" >
+							<form id="new-task-validation" novalidate name="$ctrl.createTaskForm">
+								<div class="col-md-7 col-md-offset-2">
+									<input type="text" name="createNewTask" class="form-control" ng-model="$ctrl.newTaskDescription"
+										   placeholder="Task Description" maxlength="20" required/>
+								</div>
+								<div class="col-md-3">
+									<button type="button" class="btn btn-primary" data-loading-text="Please wait..."
+											ng-click="$ctrl.createTask()" autocomplete="off"
+											can-edit="TK_ECOM_01">Create</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+</div>

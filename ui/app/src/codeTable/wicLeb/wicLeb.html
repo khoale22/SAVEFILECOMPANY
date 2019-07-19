@@ -1,0 +1,181 @@
+<!--
+wicLeb.htmlhtml
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12.0
+  -->
+<div can-view="CT_WICL_01" id="wicLeb" ng-init="$ctrl.init()" style="margin-top: 10px;">
+	<!-- Spinner panel for when getting data. -->
+	<div class="margin-top-20" ng-show="$ctrl.isWaitingForResponse">
+		<loading-spinner>
+		</loading-spinner>
+	</div>
+	<div class="row" data-ng-hide="$ctrl.isWaitingForResponse">
+		<div class="row" data-ng-if="$ctrl.success" data-ng-hide="$ctrl.isWaitingForResponse" style="text-align: center;display: block;">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+					  role="alert">{{$ctrl.success}}</span>
+		</div>
+		<!--Success span-->
+		<div class="row" data-ng-if="$ctrl.error" data-ng-hide="$ctrl.isWaitingForResponse">
+				<span ng-bind-html="$ctrl.error" style="text-align: left"
+					  class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+					{{$ctrl.error}}</span>
+		</div>
+		<div class="col-md-12">
+			<button type="button" class="inline-block btn btn-primary btn-sm pull-right" style="margin-bottom: 10px;"
+					data-ng-click="$ctrl.clearFilter()">
+				Clear Filter
+			</button>
+			<table id="tableWicLeb" data-ng-hide="$ctrl.isWaitingForResponse" show-filter="true"
+				   class="table table-heb table-heb-filter table-condensed table-bordered table-striped "
+				   style="margin-top: 10px;margin-bottom: 0px;"
+				   ng-table="tableParams">
+				<tr data-ng-repeat="item in $data track by $index "
+					class="{{$ctrl.isRowSelected($index) ?'row-selected':''}}"
+					data-ng-click="$ctrl.selectRow($event, $index)"   style="cursor: pointer">
+
+					<td data-title="'WIC Category'" filter="{ 'wicCategoryDisplayName': 'text'}"
+						class="col-md-4 {{$index == $ctrl.selectedRowIndex?'white-text':''}}"
+						style="vertical-align: middle;">
+						{{item.wicCategory.displayName}}
+					</td>
+					<td data-title="'WIC Sub Category'" filter="{ 'displayName': 'text'}"
+						class="col-md-6  {{$index == $ctrl.selectedRowIndex?'white-text':''}}"
+						style="vertical-align: middle;">
+						{{item.displayName}}
+					<td data-title="'LEB'" filter="{ 'displayLebSwitch': 'select'}"
+						filter-data="$ctrl.LEB_FILTER_VALUES"
+						class="col-md-2 {{$index == $ctrl.selectedRowIndex?'white-text':''}}"
+						style="vertical-align: middle;"
+					>{{item.displayLebSwitch}}
+					</td>
+				</tr>
+			</table>
+			<div can-edit="CT_WICL_01" class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+				<button class="btn btn-primary" data-ng-disabled="!$ctrl.isEnableLebUPCsAndLEBSizeButton"
+						data-ng-click="$ctrl.showLebUPCsModal()">LEB UPCs
+				</button>
+				<button class="btn btn-primary" data-ng-click="$ctrl.showLebSizesModal()"
+						data-ng-disabled="!$ctrl.isEnableLebUPCsAndLEBSizeButton">LEB Sizes
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="lebUPCsModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					LEB UPCs
+				</h5>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup">
+					{{$ctrl.errorPopup}}
+				</div>
+				<div class="col-md-12" style="margin-bottom: 10px; border: 1px solid black;padding: 8px;">
+					<div class="col-md-5" style="padding-left: 0px;padding-right: 0px;">WIC Category <b>{{$ctrl.selectedWicSubCategory.wicCategory.displayName}}</b>
+					</div>
+					<div class="col-md-7">WIC Sub Category <b>{{$ctrl.selectedWicSubCategory.displayName}}</b>
+					</div>
+				</div>
+				<br>
+				<table ng-table="lebUPCsTableParams"
+					   class="table-heb table-bordered table-striped table-fixed" style="width:100%;">
+					<thead>
+					<tr>
+						<th class="col-md-2" style="vertical-align: middle;">UPC</th>
+						<th class="col-md-5" style="vertical-align: middle;">Description</th>
+						<th class="col-md-1" style="vertical-align: middle;">Size</th>
+						<th class="col-md-1" style="vertical-align: middle;">Quantity</th>
+						<th class="col-md-2" style="vertical-align: middle;">UOM</th>
+						<th class="col-md-1" style="vertical-align: middle;">LEB</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-show="!$ctrl.isWaitingForResponseLebUpcs"
+						class="{{$ctrl.selectedRowIndexOnLebUpcsTable == $index ? 'row-selected white-text':''}}"
+						data-ng-repeat="item in $data track by $index"
+						data-ng-click="$ctrl.selectRowOnLebUpcsTable($index)" style="cursor: pointer" >
+						<td class="col-md-2" style="vertical-align: middle;">{{item.key.upc}}</td>
+						<td class="col-md-5" style="vertical-align: middle;"> {{item.wicDescription}}</td>
+						<td class="col-md-2" style="vertical-align: middle;">
+							{{item.sellingUnit.tagSize}}
+						</td>
+						<td class="col-md-2" style="vertical-align: middle;">
+							{{item.sellingUnit.quantity}}
+						</td>
+						<td class="col-md-2" style="vertical-align: middle;">
+							{{item.sellingUnit.retailUnitOfMeasure.standardUnitOfMeasureCode}}
+						</td>
+						<td class="col-md-1 text-center" style="vertical-align: middle;">
+							<input type="checkbox" data-ng-model="item.lebSwitch" disabled/>
+						</td>
+					</tr>
+					<tr ng-show="$ctrl.isWaitingForResponseLebUpcs">
+						<td colspan="6">
+							<loading-spinner></loading-spinner>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						data-ng-click="$ctrl.hideLebUPCsModal()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="lebSizesModal" class="modal fade" role="dialog" maxlength="300px;">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					LEB Sizes
+				</h5>
+			</div>
+			<div class="modal-body" >
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup">
+					{{$ctrl.errorPopup}}
+				</div>
+				<div class="col-md-12 " style="margin-bottom: 10px; border: 1px solid black; padding: 8px;">
+					<div>WIC Category <b>{{$ctrl.selectedWicSubCategory.wicCategory.displayName}}</b></div>
+					<br/>
+					<div>WIC Sub Category <b>{{$ctrl.selectedWicSubCategory.displayName}}</b>
+					</div>
+				</div>
+				<table class="table table-heb table-bordered table-striped" style="margin-bottom: 0px;">
+					<thead>
+					<tr>
+						<th class="col-md-2 text-center" style="vertical-align: middle;">Allowed LEB Sizes</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-show="!$ctrl.isWaitingForResponseLebSizes" data-ng-repeat="item in $data track by $index | orderBy: item.key.wicCategoryId">
+						<td class="col-md-12" style="vertical-align: middle;">
+							{{item.wicCategory.displayName}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<loading-spinner ng-show="$ctrl.isWaitingForResponseLebSizes"></loading-spinner>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						data-ng-click="$ctrl.hideLebSizesModal()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

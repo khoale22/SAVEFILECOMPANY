@@ -1,0 +1,216 @@
+<!--
+  ~ addNew.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="modal-dialog" style="width:80%;">
+	<div class="modal-content">
+		<div class="modal-header" style="background-color: #337ab7">
+			<h5 class="modal-title inline-block" style="color: #ffffff">Variants</h5>
+		</div>
+		<div class="modal-body"  ng-show="$ctrl.isWaiting" style="    width: 100%; background: white; display: inline-block;">
+			<loading-spinner>
+			</loading-spinner>
+		</div>
+
+		<div class="modal-body"  ng-show="!$ctrl.isWaiting">
+			<div class="row" data-ng-if="$ctrl.error">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+			</div>
+			<div class="row" data-ng-if="$ctrl.success">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+			</div>
+			<ul class="nav nav-tabs nav-pills" ng-if="$ctrl.stepAddNewSelected!=3">
+				<li class="active" >
+					<a id="btnstep1" style="border-radius: 5px;    border: 1px solid #cccccc24;">Step 1</a>
+				</li>
+				<li >
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"
+							  style="vertical-align: middle;line-height: 35px;padding: 0 12px;"></span>
+				</li>
+				<li >
+					<a   id="btnstep2" style="border-radius: 5px;    border: 1px solid #cccccc24;" >Step 2</a>
+				</li>
+				<li  style="display: none;">
+					<a   id="btnstep3" style="border-radius: 5px;    border: 1px solid #cccccc24;"  >Step 3</a>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<div id="step1" class="tab-pane fade" ng-show="$ctrl.stepAddNewSelected==1" ng-class="$ctrl.stepAddNewSelected==1 ? 'active in':''">
+					<ul class="list-group">
+						<li class="list-group-item">
+							<form>
+								<label>Do the variants within the assortment share the same UPC</label>
+								<div class="checkbox">
+									<label>
+										<input type="radio" ng-model="$ctrl.isSameAssortment" value="Y"> Yes
+									</label>
+
+									<label>
+										<input type="radio" ng-model="$ctrl.isSameAssortment" value="N"> No
+									</label>
+								</div>
+							</form>
+						</li>
+
+						<li class="list-group-item">
+							<div class="form-group" style="display: inline-block;">
+								<label for="numVar" class="control-label pull-left" style="    margin-top: 7px;">Enter number of Variants</label>
+								<div class="col-sm-4">
+									<input type="number" class="form-control"
+										   maxlength="3" id="numVar"  min="0" max="999" ng-model="$ctrl.numberVariantsAdd">
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div id="step2" class="tab-pane" ng-class="$ctrl.stepAddNewSelected==2 ? 'active in':''">
+					<ul class="list-group">
+						<li class="list-group-item">
+							<label>Product Description: {{$ctrl.productMaster.description}}</label>
+							<div style="overflow-x: auto;">
+							    <table ng-table="addVariantsTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+								<thead>
+								<tr style="border-bottom: hidden !important;height: 25px;">
+									<th style="width:5%; vertical-align: middle;">
+										<input type="checkbox"  ng-model="$ctrl.checkAllCheckBox">
+									</th>
+									<th style=" vertical-align: middle;">
+										Variant UPC
+									</th>
+									<th style=" vertical-align: middle;">
+										Variant CFD1
+									</th>
+									<th style=" vertical-align: middle;">
+										Variant CFD2
+									</th>
+									<th style=" vertical-align: middle;">
+										Product Description
+									</th>
+									<th style=" vertical-align: middle;">
+										Romance Copy
+									</th>
+									<th style=" vertical-align: middle;">
+										Display Name
+									</th>
+									<th style=" vertical-align: middle;">
+										Brand
+									</th>
+									<th style=" vertical-align: middle;">
+										Size
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="elementUpc in $data">
+									<td style="text-align: center;">
+										<input type="checkbox" ng-checked="$ctrl.checkAllCheckBox" ng-model="elementUpc.selected">
+									</td>
+									<td>
+										<ui-select  ui-select-required
+													theme="bootstrap" ng-model="elementUpc.upc"
+													data-toggle="tooltip">
+											<ui-select-match>
+												{{$select.selected.upc}}
+											</ui-select-match>
+											<ui-select-choices
+												repeat="element in $ctrl.productMaster.sellingUnits">
+												<div ng-bind-html="element.upc | highlight: $select.search"></div>
+											</ui-select-choices>
+										</ui-select>
+									</td>
+									<td>
+										<input ng-model="elementUpc.customerFriendlyDescription1.description"
+											   ng-value="elementUpc.customerFriendlyDescription1.description">
+									</td>
+									<td>
+										<input ng-model="elementUpc.customerFriendlyDescription2.description"
+											   ng-value="elementUpc.customerFriendlyDescription2.description">
+									</td>
+									<td>
+										<input ng-model="elementUpc.productDescription"
+											   ng-value="elementUpc.productDescription">
+									</td>
+									<td>
+										<input ng-model="$ctrl.romanceCopy"
+												title="{{$ctrl.romanceCopy.length > 20? $ctrl.romanceCopy : ''}}"
+											   disabled
+											   ng-value="$ctrl.romanceCopy">
+									</td>
+									<td>
+										<input ng-model="$ctrl.displayName"
+											   title="{{$ctrl.displayName.length > 20? $ctrl.displayName : ''}}"
+											   disabled
+											   ng-value="$ctrl.displayName">
+									</td>
+									<td>
+										<input ng-model="$ctrl.brand"
+											   title="{{$ctrl.brand.length > 20? $ctrl.brand : ''}}"
+											   disabled
+											   ng-value="$ctrl.brand">
+									</td>
+									<td>
+										<input ng-model="$ctrl.size"
+											   title="{{$ctrl.size.length > 20? $ctrl.size : ''}}"
+											   disabled
+											   ng-value="$ctrl.size">
+									</td>
+								</tr>
+								</tbody>
+							</table>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div id="step3" class="tab-pane" ng-class="$ctrl.stepAddNewSelected==3 ? 'active in':''">
+					<ul class="list-group">
+						<li class="list-group-item">
+							<h5>
+								You added a total of {{$ctrl.addVariantsData.length}} variants, unique product will be created for these variants. <br>Are you sure you want to proceed?
+							</h5>
+						</li>
+					</ul>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="modal-footer" style="min-width: 300px" ng-show="!$ctrl.isWaiting">
+			<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.addNewItem()"  ng-if="$ctrl.stepAddNewSelected==2">
+				Add
+			</button>
+			<button type="button" class="inline-block btn btn-danger btn-sm"  ng-if="$ctrl.stepAddNewSelected==2"
+				ng-click="$ctrl.deleteItem()">
+				Delete
+			</button>
+			<button type="button" class="inline-block btn btn-success btn-sm"  ng-if="$ctrl.stepAddNewSelected==2" ng-click="$ctrl.previous()">
+				Previous
+			</button>
+			<button type="button" class="inline-block btn btn-success btn-sm"
+					ng-if="$ctrl.stepAddNewSelected==1 || ($ctrl.stepAddNewSelected==2 && $ctrl.addVariantsData.length>0)"
+					ng-click="$ctrl.addNewVariantStepNext()">
+				Next
+			</button>
+
+			<button type="button" class="inline-block btn btn-success btn-sm" ng-if="$ctrl.stepAddNewSelected==3"
+					ng-click="$ctrl.generateCandidateProductMaster()">
+				Confirm
+			</button>
+			<button type="button" ng-click="$ctrl.closeAddNewForm()"  data-dismiss="modal"  class="inline-block btn btn-danger btn-sm"
+					ng-if="$ctrl.stepAddNewSelected==3">
+				No
+			</button>
+			<button type="button" data-dismiss="modal" ng-click="$ctrl.closeAddNewForm()" class="inline-block btn btn-danger btn-sm"
+					ng-if="$ctrl.stepAddNewSelected!=3">
+				Cancel
+			</button>
+
+		</div>
+
+	</div>
+</div>

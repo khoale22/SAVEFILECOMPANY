@@ -1,0 +1,69 @@
+
+<div class="container-fluid batchUpload"
+	 ng-controller="EarleyUploadController as earleyUploadController">
+	<div class="panel panel-primary">
+		<div class="panel-heading"><h3 class="panel-title">Early Uploads</h3></div>
+
+		<div class="panel-body" can-edit="BU_EARL_01">
+			<!-- Spinner panel for when getting data. -->
+			<loading-spinner ng-show="earleyUploadController.isWaitingForResponse">
+			</loading-spinner>
+			<!--- The header where to show message success or error -->
+			<div class="alert alert-success col-md-12 text-center"
+				 data-ng-if="earleyUploadController.success" role="alert">
+				{{earleyUploadController.success}}
+			</div>
+			<div class="col-md-12 alert alert-danger text-center"
+				 data-ng-if="earleyUploadController.error" role="alert">
+				{{earleyUploadController.error}}
+			</div>
+			<div class="row" data-ng-hide="earleyUploadController.isWaitingForResponse">
+				<div class="col-sm-6">
+					<div style="margin-bottom: 10px">
+						<label for="fearchType">File type</label>
+						<select class="form-control"
+								ng-model="earleyUploadController.fileType"
+								id="fearchType">
+							<option can-edit="BU_EARL_01" value="{{earleyUploadController.HIERARCHY}}">Hierarchy List</option>
+							<option can-edit="BU_EARL_01" value="{{earleyUploadController.PRODUCT}}">Product to Hierarchy Mapping</option>
+							<option can-edit="BU_EARL_02" value="{{earleyUploadController.ATTRIBUTE}}">Attribute List</option>
+							<option can-edit="BU_EARL_03" value="{{earleyUploadController.ATTRIBUTE_VALUE}}">Attribute Value List</option>
+							<option can-edit="BU_EARL_04" value="{{earleyUploadController.PRODUCT_ATTRIBUTE_FILE}}">Product Attribute Values</option>
+						</select>
+					</div>
+
+					<label for="fullGroup">File</label>
+					<div id="fullGroup" class="input-group">
+						<div class="form-group input-group-sm">
+
+							<input type="text" id="excelFileName"
+								   class="form-control image-preview-filename"
+								   disabled="disabled">
+						</div>
+						<div class="input-group-btn input-group-sm">
+							<div class="btn btn-primary image-preview-input btn-browser">
+								<span class="glyphicon glyphicon-folder-open"></span>
+								<span class="image-preview-input-title"> Browse</span>
+								<input type="file" id="fileUpload" title="Browse"
+									   data-upload-file-model="earleyUploadController.fileUpload"
+									   image-preview-filename="image-preview-filename"
+									   accept="{{earleyUploadController.allowedUploadFileTypes}}"/>
+							</div>
+						</div>
+						<div class="input-group-btn  input-group-sm">
+							<button type="button" title="Upload"
+									class="btn btn-primary btn-upload margin-left-10"
+									data-batch-upload-confirmation
+									data-is-empty-upload-file="{{earleyUploadController.fileUpload == null}}"
+									ng-disabled="earleyUploadController.fileUpload == null"><span
+								class="glyphicon glyphicon glyphicon-upload"></span> Upload
+							</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,2535 @@
+<AttributeMappings version="1">
+  <AttributeMapping>
+    <AttributeName>Product ID</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Description</AttributeName>
+    <ExistingApplication>MCFD,CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Size</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Link Code</AttributeName>
+    <ExistingApplication>MD-ITEM</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>BDM</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Commodity</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Sub-Commodity</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Class</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Brand</AttributeName>
+    <ExistingApplication>CPS,DI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Food Stamp</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Tax</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Generic Product</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Quantity Required</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Price Required</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Deposit UPC</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Deposit UPC Description</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Color</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Model</AttributeName>
+    <ExistingApplication>EDI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Style</AttributeName>
+    <ExistingApplication>EDI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Primo Pick Story</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Product-Shelf Attributes</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Primo Pick Shelf Tag</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+    </AttributeMapping>
+
+    <AttributeMapping>
+    <AttributeName>Pharmacy</AttributeName>
+    <ExistingApplication>OMI 02</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Tobacco</AttributeName>
+    <ExistingApplication>OMI 02</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Code Date</AttributeName>
+    <ExistingApplication>OMI 01</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Floral</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Wine</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Drug Fact Panel</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>FSA</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Seasonality Year</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Seasonality</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Critical Product</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+    <AttributeName>Family Code 1</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Family Code 2</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Pre Price $</AttributeName>
+    <ExistingApplication>CPS,OMI,DSDS</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Packaging</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Created  on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Created  by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+     <AttributeMapping>
+    <AttributeName>Last Updated on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Last Updated by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Product Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+   <AttributeName>eBM</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Tax Category</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Qualify Condition</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Distinctive </AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Primo Pick</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Retail</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>For</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>MAP Retail</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>SSA Count</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Product Info</NewScreen>
+</AttributeMapping>
+  
+ <AttributeMapping>
+    <AttributeName>Product ID</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>English Description</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>English Customer Friendly Desc-1</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>English Customer Friendly Desc-2</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Spanish Description</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>COOL</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Spanish Customer Friendly Desc-1</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Spanish Customer Friendly Desc-2</AttributeName>
+    <ExistingApplication>MCFD</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tag Effective Date</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tag Size</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Number of Tags</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tag Item Code</AttributeName>
+    <ExistingApplication>Product Primary control</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tag Item Type </AttributeName>
+    <ExistingApplication>Product Primary control</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Tag Type</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Product-Shelf Attributes</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Created  on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Created  by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Shelf Attributes</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+   <AttributeName>Primo Pick Status</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Shelf Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Distinctive </AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Shelf Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Primo Pick</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Shelf Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Go Local</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Shelf Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Store Segment</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Shelf Attributes</NewScreen>
+</AttributeMapping>
+   
+  <AttributeMapping>
+    <AttributeName>Pharmacy</AttributeName>
+    <ExistingApplication>MD-ITEM</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>   
+  <AttributeMapping>
+    <AttributeName>Medicaid</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>NDC</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Drug Schedule</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+    <AttributeName>PSE</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>PSE Grams</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Created On</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Created On</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+   <AttributeName>UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Size</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Pharmacy</NewScreen>
+</AttributeMapping>
+
+  <AttributeMapping>	
+    <AttributeName>Tobacco</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Tobacco</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tobacco Product Type</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Tobacco</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tobacco Tax</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Tobacco</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Code Date</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Max Shelf Life Days</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Inbound Specification Days</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Warehouse Reaction Days</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Guarantee To Store Days</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Send Code Date Data to EXE</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Created On</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Created By</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Last Updated on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Last Updated by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Product-Special Attributes-Code Date</NewScreen>
+  </AttributeMapping>
+  
+ <AttributeMapping>
+   <AttributeName>Fragile</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Shipping and Handling</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>ORMD</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Shipping and Handling</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Shipping Restrictions</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Shipping and Handling</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Shipping Method Exceptions</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Shipping and Handling</NewScreen>
+</AttributeMapping>
+  
+ <AttributeMapping>
+   <AttributeName>Rating Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Rating/Restrictions</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Rating</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Rating/Restrictions</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Age</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Rating/Restrictions</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Time</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Special Attributes-Rating/Restrictions</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Serving Size</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>In-Store Production</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Product-Online Attributes</NewScreen>
+    </AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Gift Message Required</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Online Only</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Guarantee Image</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>3rd Party Sellable</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+    <AttributeName>Sold By</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Min Customer Order Quantity</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Max Customer Order Quantity</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Choice Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Choice Option</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Picker (Y/N)</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product Group ID</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product Group Name</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product Group Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes</NewScreen>
+</AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Shape</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Bakery</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Filling</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Bakery</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Wine Maker</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Varietal</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Vintage</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Region</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Scored By</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Scored</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Tasting Notes</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Scoring Date</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Product-Online Attributes-Wine</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+   <AttributeName>Min Order Quantity for Discount</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Min Order Quantity</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Min Order Quantity Discount Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Min Order Quantity</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Min Order Quantity Discount Value</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Min Order Quantity</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Effective Date</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Min Order Quantity</NewScreen>
+</AttributeMapping>
+  <AttributeMapping>
+   <AttributeName>Product ID</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Related Product</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Related Product</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product Primary UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Related Product</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Add on Sellable?</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Related Product</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Product relationship Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Online Attributes-Related Product</NewScreen>
+</AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>UPC</AttributeName>
+    <ExistingApplication>SRS</ExistingApplication>
+    <NewScreen>Product-Break Pack</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+    <AttributeName>Product ID</AttributeName>
+    <ExistingApplication>SRS</ExistingApplication>
+    <NewScreen>Product-Break Pack</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+    <AttributeName>Description</AttributeName>
+    <ExistingApplication>SRS</ExistingApplication>
+    <NewScreen>Product-Break Pack</NewScreen>
+  </AttributeMapping> 
+    <AttributeMapping>
+    <AttributeName>Size</AttributeName>
+    <ExistingApplication>SRS</ExistingApplication>
+    <NewScreen>Product-Break Pack</NewScreen>
+  </AttributeMapping> 
+    <AttributeMapping>
+    <AttributeName>Pack Quantity</AttributeName>
+    <ExistingApplication>SRS</ExistingApplication>
+    <NewScreen>Product-Break Pack</NewScreen>
+  </AttributeMapping> 
+  
+  <AttributeMapping>
+   <AttributeName>Customer Hierarchy</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Brand</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Ignore Brand</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Display Nam</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Size</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Snipes</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Romance Copy</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Tags</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Ingredients</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Specifications</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Directions</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Warnings</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Work Status</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>PDP Template Id</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Fulfillment Program</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Subscription Eligible</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Panel Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-eCommerce View</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Assortment Product Id</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Product ID</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Item Code</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variants</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Item Code</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Case Pack Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Pack</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Quantity Unknown</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Product ID</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variant Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Quantity</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Product-Variant - Item</NewScreen>
+</AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item Code</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Casepack Description</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Case UPC </AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item Type</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Maximum Ship Quantity</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>New Item</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping> 
+    <AttributeMapping>
+    <AttributeName>One Touch</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+    <AttributeName>Variable Weight</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Catch Weight</AttributeName>
+    <ExistingApplication>MIDB</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Warehouse</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Purchasing Status</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Changed On</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Changed By</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Warehouse Status</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Changed On(Warehouse Status)</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>First Received</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Discontinue date</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Discontinue Reason</AttributeName>
+    <ExistingApplication>None</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Discontinued By</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case pack-Case pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item Code</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Warehouse</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+    <AttributeName>Order Quantity Type</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Expected Weekly Movement</AttributeName>
+    <ExistingApplication>OMI 01</ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Comments</AttributeName>
+    <ExistingApplication>OMI 13</ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Created On</AttributeName>
+    <ExistingApplication>OMI 01</ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Created By</AttributeName>
+    <ExistingApplication>OMI 01</ExistingApplication>
+    <NewScreen>Case Pack-Warehouse</NewScreen>
+  </AttributeMapping>
+  
+  <AttributeMapping>
+   <AttributeName>Item Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Whse Max Ship Qty#</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Unit Factor 1</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Unit Factor 2</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Variable Weight</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Catch Weight</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Average Weight</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Billing Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Average Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Last Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Prior Last Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Whse Tie</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Whse Tier</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Current Slot #</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Flow Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Last Updated on</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Last Updated By</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-warehouse</NewScreen>
+</AttributeMapping>
+  
+  <AttributeMapping>
+    <AttributeName>Item Code</AttributeName>
+    <ExistingApplication>MD-ITEM</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Bicep Vendor</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>AP Vendor </AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Vendor Product Code</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Vendor Pallet Quantity</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Vendor Pallet Size</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Cost Link Id </AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Cost Owner</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+    <AttributeName>Country of Origin</AttributeName>
+    <ExistingApplication>CPS, DI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Order Quantity Restriction</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>SCA</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Master Pack</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Master Length</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Master Width</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Master Height</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Master Weight</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Master Cube</AttributeName>
+   <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Pack</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Length</AttributeName>
+   <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Width</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Height</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Weight</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Ship Cube</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Net Cube</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Net Max Qty</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Vendor Tie</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Vendor Tier</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Vendor</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+   <AttributeName>Reliable Inventory</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>List Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Unit Cost</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Retail</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>For</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Gross Margin</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case Pack-Vendor</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Item Code</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Item Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Warehouse</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Substitution Item</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Item Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Status</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Pack</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>BOH</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Substitution Type</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Sequence</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Case pack-Item Substitution</NewScreen>
+</AttributeMapping>
+
+
+  <AttributeMapping>
+    <AttributeName>Item Code</AttributeName>
+    <ExistingApplication>MD-ITEM</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Default PSS Dept</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Store Dept</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department 1</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department 2</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department 3</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department 4</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Merchandise Type 1</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Merchandise Type 2</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Merchandise Type 3</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Merchandise Type 4</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>PSS Dept 1</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>PSS Dept 2</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>PSS Dept 3</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>PSS Dept 4</AttributeName>
+    <ExistingApplication>DSDS</ExistingApplication>
+    <NewScreen>Case Pack-Department</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item code</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item Primary UPC</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Associated UPC</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Quantity</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>UOM</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Case pack Primary UPC</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Case Pack Info</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>UPC</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Case Pack-Case Pack Info Associate Selling UPCs</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Size</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Case Pack-Case Pack Info Associate Selling UPCs</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Case Pack Primary</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Case Pack-Case Pack Info Associate Selling UPCs</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Display Ready Unit</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Type of Display Ready Unit</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Rows Facings in Retail Units</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Rows Deep in Retail Units</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Rows High in Retail Units</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Orientation Of DRP</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Always Sub When Out</AttributeName>
+    <ExistingApplication>SUBS</ExistingApplication>
+    <NewScreen>Case Pack-DRU</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item Id</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Bicep Vendor #</AttributeName>
+    <ExistingApplication>OMI</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>HTS1</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>HTS2</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>HTS3</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Min.Order Description</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Min.Order Quantity</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Pickup Point</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Country Of Origin</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Container Size</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Incoming Terminal</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Proration Date</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>In store</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Whse Flush</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Seasonality Text</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Sell By</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Color</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Carton Marking</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Agent %</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Duty %</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Duty Information</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Duty confirmation </AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Freight Confirmed</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Factory Id</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Factory Name</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Country</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>City</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Created On</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Created By</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated on</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Last Updated by</AttributeName>
+    <ExistingApplication>Audit</ExistingApplication>
+    <NewScreen>Case Pack-Import</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>MRT UPC</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Description_MRT</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Element UPC</AttributeName>
+    <ExistingApplication>ALTP,CPS</ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Description_Element UPC</AttributeName>
+    <ExistingApplication>OMI,DSDS</ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Department</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Size</AttributeName>
+    <ExistingApplication> </ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Quantity</AttributeName>
+    <ExistingApplication>ALTP,CPS</ExistingApplication>
+    <NewScreen>Case Pack-MRT</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+    <AttributeName>UPC</AttributeName>
+    <ExistingApplication>CPS,RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Size</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Dimension Source</AttributeName>
+        <ExistingApplication>CPS</ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+    </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Length</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Width</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Height</AttributeName>
+   <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Retail Weight</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Last Updated On</AttributeName>
+        <ExistingApplication>CPS</ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Last Updated By</AttributeName>
+        <ExistingApplication>CPS</ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info Dimensions</NewScreen>
+    </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Quantity (Unit Size in CPS)</AttributeName>
+    <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>UOM</AttributeName>
+    <ExistingApplication>CPS,RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Sub Brand</AttributeName>
+   <ExistingApplication>CPS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>First Scanned on</AttributeName>
+    <ExistingApplication>Not Enabled</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Last Scanned on</AttributeName>
+    <ExistingApplication>Not Enabled</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>WIC (Switch)</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>LEB (Switch)</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Link to WIC UPC</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+    <AttributeName>Description</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>Size</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+      <AttributeMapping>
+    <AttributeName>WIC Category</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+       <AttributeMapping>
+    <AttributeName>WIC Sub-Category</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+    <AttributeName>DSD Delete Switch</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Bonus</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Dept Override</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Scale</AttributeName>
+    <ExistingApplication>RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info</NewScreen>
+  </AttributeMapping>
+  
+  <AttributeMapping>
+   <AttributeName>Discontinue on</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Large</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Nestable</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Test Scanned?</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Wic UPC Description</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Size of WIC UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit-UPC Info</NewScreen>
+</AttributeMapping>
+
+    <AttributeMapping>
+        <AttributeName>Link to WIC APL</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>WIC UPC Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>WIC Category</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>WIC Sub-Category</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Size of WIC LEB</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>LEB check box</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Cross linked UPC's</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>LEB UPC's</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>LEB Sizes</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info WIC</NewScreen>
+    </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Selling Unit UPC</AttributeName>
+    <ExistingApplication>CPS,RTL2</ExistingApplication>
+    <NewScreen>Selling Unit-Selling Unit UPC-Item</NewScreen>
+  </AttributeMapping>
+   <AttributeMapping>
+    <AttributeName>Product Primary UPC</AttributeName>
+    <ExistingApplication>UPC Swap, CPS</ExistingApplication>
+    <NewScreen>Selling Unit-Selling Unit UPC-Item</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Item ID</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Description </AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Pack</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Channel</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+    </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>UPC</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>MRT/Alt Pack?</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Selling Unit-UPC Info UPC-Item</NewScreen>
+  </AttributeMapping>
+<AttributeMapping>
+   <AttributeName>UPC</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Image</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Size</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Alt Tag</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Category</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Primary/ Alternate</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Active Online</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Status</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Created Date</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Application Source</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Image Source </AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>Last Modified</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+<AttributeMapping>
+   <AttributeName>In Hierarchy?</AttributeName>
+   <ExistingApplication></ExistingApplication>
+   <NewScreen>Selling Unit - Image Info</NewScreen>
+</AttributeMapping>
+     
+   <AttributeMapping>
+    <AttributeName>Class Name</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+    <AttributeMapping>
+    <AttributeName>Type Of Merchandise</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping> 
+    <AttributeMapping>
+    <AttributeName>Mix Match Group</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping> 
+    <AttributeMapping>
+	<AttributeName>Begin Ad Lead Time</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>End Ad Lead Time</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Bill at Ad Code</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>
+<AttributeMapping>  
+    <AttributeName>PSS Scan Dept</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>PSS Data checker Dept</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+  <AttributeName>Scan Maint Group</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Price Bulletin</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>
+  <AttributeMapping>
+    <AttributeName>Price Change %</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Ad Change %</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Billing Cost Eligible</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Class Variance</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Director ID</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Low Gross Margin</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>High Gross Margin</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+   <AttributeName>Generic Class Code</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Rating</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class (Default)</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Rating Type</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Class (Default)</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Commodity Name</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+    <AttributeName>HEB Comm code</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+    <AttributeName>PSS Department</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Neils Code</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>OMI Director</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>QA Approved</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>HEB/OMI Id</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>User</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+   <AttributeName>ID - Change to Category Manger (BDM)</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>   
+  <AttributeMapping>
+  <AttributeName>Phone</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity</NewScreen>
+  </AttributeMapping>  
+  
+  <AttributeMapping>
+  <AttributeName>Rating</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Rating Type</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Cake Sizes</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Size</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>UOM</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Flavor</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Frosting</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>Filling</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Commodity (Default)</NewScreen>
+  </AttributeMapping>   
+  <AttributeMapping>
+  <AttributeName>Sub-commodity Name</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Labor Category</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Prod Category Id</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>	
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>IMS Class</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Food Stamp Switch</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>CRG Tax Switch</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Desc</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>   
+   <AttributeMapping>
+  <AttributeName>Dfit UOM</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>   
+   <AttributeMapping>
+  <AttributeName>Low/High Margin Pct</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity</NewScreen>
+  </AttributeMapping>   
+  <AttributeMapping>
+  <AttributeName>Food Stamp</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity (Default)</NewScreen>
+  </AttributeMapping>  
+   <AttributeMapping>
+  <AttributeName>Tax Flag</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Product Hierarchy-Sub Commodity (Default)</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Tobacco Product Type Code</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code</NewScreen>
+  </AttributeMapping>  
+   <AttributeMapping>
+  <AttributeName>Description</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Tax Rate($)</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>Tobacco Product Type Code</AttributeName>
+    <ExistingApplication>OMI-01</ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+   <AttributeMapping>
+  <AttributeName>Item ID</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>Description</AttributeName>
+    <ExistingApplication>OMI-01</ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>Current Tobacco Tax</AttributeName>
+    <ExistingApplication>OMI-04</ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>Current Total Cost</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>New Tobacco Tax</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>    
+  <AttributeMapping>
+  <AttributeName>New Total Cost</AttributeName>
+    <ExistingApplication></ExistingApplication>
+    <NewScreen>Code Table-Tobacco Product Type Code-View Cost Impact</NewScreen>
+  </AttributeMapping>     
+  <AttributeMapping>
+  <AttributeName>WIC Category</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Code Table-WIC/LEB</NewScreen>
+  </AttributeMapping>    
+    <AttributeMapping>
+  <AttributeName>WIC Sub Category</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Code Table-WIC/LEB</NewScreen>
+  </AttributeMapping>  
+    <AttributeMapping>
+  <AttributeName>LEB (switch)</AttributeName>
+    <ExistingApplication>POS</ExistingApplication>
+    <NewScreen>Code Table-WIC/LEB</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+  <AttributeName>Brand</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Brand/Cost Owner/T2T</NewScreen>
+  </AttributeMapping>  
+    <AttributeMapping>
+  <AttributeName>Cost Owner</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Brand/Cost Owner/T2T</NewScreen>
+  </AttributeMapping>  
+    <AttributeMapping>
+  <AttributeName>Top 2 top</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Brand/Cost Owner/T2T</NewScreen>
+  </AttributeMapping>  
+    <AttributeMapping>
+  <AttributeName>Country Abbr</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Country Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Country name</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Country Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Country ID</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Country Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>ISO Alpha (A3) </AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Country Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Numeric (N3)  Code</AttributeName>
+    <ExistingApplication>DI</ExistingApplication>
+    <NewScreen>Code Table-Country Code</NewScreen>
+  </AttributeMapping>  
+  <AttributeMapping>
+  <AttributeName>Product Category</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Category</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Category Abbr.</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Category</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Market Consumer Event Code</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Category</NewScreen>
+  </AttributeMapping> 
+  <AttributeMapping>
+  <AttributeName>Product Category Role</AttributeName>
+    <ExistingApplication>HIER</ExistingApplication>
+    <NewScreen>Code Table-Product Category</NewScreen>
+  </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Option Code</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Image</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Type</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Option Text</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Type Code</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Type Abbreviation</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Choice Type Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Parent Choice Type</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Choice Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Factory</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Factory</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Status</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Factory</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Brand</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Product Brand</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Brand Tier</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Product Brand</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Show on Web</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Product Brand</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Product Group Type</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Product Group Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Warning Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-State Warnings</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>State</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-State Warnings</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Warning Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-State Warnings</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Sub-Brand ID</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Sub-Brand</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Sub-Brand Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Sub-Brand</NewScreen>
+    </AttributeMapping>
+
+    <AttributeMapping>
+        <AttributeName>Scoring Organization ID</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Scoring Organization</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Scoring Organization Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Scoring Organization</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Scoring Organization Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Scoring Organization</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Varietal Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Varietal Type Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Varietal Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal</NewScreen>
+    </AttributeMapping>
+
+    <AttributeMapping>
+        <AttributeName>Varietal Type Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Varietal Type Abbreviation</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Varietal Type Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Varietal Type</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Area Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Area</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Area Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Area</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Area Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Area</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Maker Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Maker</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Maker Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Maker</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Maker Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Maker</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Region Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Region</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Area Id</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Region</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Region Name</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Region</NewScreen>
+    </AttributeMapping>
+    <AttributeMapping>
+        <AttributeName>Wine Region Description</AttributeName>
+        <ExistingApplication></ExistingApplication>
+        <NewScreen>Code Table-Wine-Wine Region</NewScreen>
+    </AttributeMapping>
+ </AttributeMappings>
+

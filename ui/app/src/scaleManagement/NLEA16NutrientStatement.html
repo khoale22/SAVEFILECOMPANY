@@ -1,0 +1,973 @@
+<div class="row container-fluid"
+	 ng-controller="NLEA16NutrientStatementController as nutrientStatementController"
+	 ng-init="nutrientStatementController.init()">
+	<div class="row">
+		<span data-ng-if="nutrientStatementController.success"
+			  class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">
+			{{nutrientStatementController.success}}
+		</span>
+		<span data-ng-if="nutrientStatementController.error"
+			  class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+			{{nutrientStatementController.error}}
+		</span>
+	</div>
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">NLEA 2016 Nutrient Statement Search
+					<i ng-click="nutrientStatementController.searchPanelVisible = !nutrientStatementController.searchPanelVisible"
+					   class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': nutrientStatementController.searchPanelVisible, 'glyphicon glyphicon-plus': !nutrientStatementController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="nutrientStatementController.searchPanelVisible"
+					 class="panel-body black-border">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<!-- The text box for the user input. -->
+								<div class="col-md-6" style="min-width: 349px">
+									<textarea
+										pattern="[0-9\s,]+"
+										rows="8"
+										data-ng-model="nutrientStatementController.searchSelection"
+										style="min-width: 334px"
+										placeholder="Enter NLEA 2016 Nutrient Statement ids to search"
+										class="col-md-12 noresize">
+									</textarea>
+								</div>
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-6">
+											<button class="btn btn-primary btn-block"
+													data-ng-click="nutrientStatementController.newSearch()"
+													data-ng-disabled="!nutrientStatementController.searchSelection">
+												Search
+											</button>
+											<button
+												data-ng-click="nutrientStatementController.searchAll()"
+												class="btn btn-primary btn-block">Search All
+											</button>
+										</div>
+										<div class="col-md-6">
+											<button
+												data-ng-click="nutrientStatementController.clearSearch()"
+												data-ng-disabled="!nutrientStatementController.searchSelection"
+												class="btn btn-primary btn-block">
+												Clear
+											</button>
+											<button title="Add an NLEA 2016 Nutrient Statement"
+													data-toggle="modal"
+													data-target="#addNewPanelModal"
+													class="btn btn-primary btn-block"
+													ng-click="nutrientStatementController.sourceSystemReferenceId = ''; nutrientStatementController.errorSearchPanel = ''"
+													data-ng-disabled="!nutrientStatementController.canEditNutrientStatement()">
+												Add
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<loading-spinner ng-show="nutrientStatementController.isWaiting">
+	</loading-spinner>
+	<div class="col-md-12">
+		<div class="row" data-ng-if="nutrientStatementController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientStatementController.modifyMessage}}</span>
+		</div>
+		<div class="panel-group"
+			 ng-show="!nutrientStatementController.isWaiting && nutrientStatementController.data != null">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div
+						ng-if="!nutrientStatementController.isAddingNutrientStatement && nutrientStatementController.resultMessage != null && !nutrientStatementController.isEditing">
+						<h4 class="panel-title inline-block"><b>Search Results</b></h4>
+						<h5 class="panel-title inline-block">
+							{{nutrientStatementController.resultMessage}}</h5>
+
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+							 ng-click="nutrientStatementController.export()"
+							 style="color: orange; padding-left: 10px; padding-bottom: 5px;  font-size: medium"
+							 data-toggle="tooltip" title="Export to Excel"></div>
+						<div class="inline-block pull-right"
+							 ng-show="nutrientStatementController.downloading" style="color: orange">
+							Downloading...
+						</div>
+					</div>
+				</div>
+				<div class="panel-body"
+					 ng-class="{'ng-table-pager-none' : nutrientStatementController.noPagination}">
+					<table ng-table="nutrientStatementController.tableParams"
+						   class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr style="color: white; background-color: #00476b">
+							<th style="min-width: 100px">Statement ID</th>
+							<th style="min-width: 100px">Measure Quantity</th>
+							<th style="min-width: 100px">Metric Quantity</th>
+							<th style="min-width: 100px">Servings Per Container</th>
+							<th style="min-width: 100px">Effective Date</th>
+							<th style="min-width: 100px"></th>
+						</tr>
+						<tr ng-repeat="nutrientStatement in nutrientStatementController.data track by $index">
+							<td>
+								<div>{{nutrientStatement.sourceSystemReferenceId}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.imperialDisplayName}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.metricDisplayName}}</div>
+							</td>
+							<td>
+								<div  ng-if="nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}} {{nutrientStatementController.VARIES_LABEL}}</div>
+								<div  ng-if="!nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}}</div>
+							</td>
+							<td>
+								<div>{{nutrientStatement.effectiveDate | date: 'MM/dd/yyyy'}}</div>
+							</td>
+
+							<td>
+								<i
+									data-toggle="modal"
+									title = "Edit"
+									ng-click="nutrientStatementController.viewFullPanel(nutrientStatement)"
+									class="glyphicon glyphicon-edit pointer" style="color: orange; font-size: large"></i>
+								<span can-edit="SM_NTRN_02">
+									<a
+										class="glyphicon glyphicon-remove pointer"
+										data-toggle="modal"
+										ng-click="nutrientStatementController.getNutrientStatement(nutrientStatement)"
+										data-target="#deleteNLEA16NutrientStatement"
+										title = "Delete"
+										style="color: red; font-size: large"></a>
+								</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="viewPanelModal" class="modal fade" role="dialog" style="overflow-y: auto" >
+		<loading-spinner data-ng-show="nutrientStatementController.isWaitingForEditingNutrientPanel">
+		</loading-spinner>
+		<div class="modal-dialog" style="width: 90%" data-ng-show="!nutrientStatementController.isWaitingForEditingNutrientPanel">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">
+						{{nutrientStatementController.viewPanelModalTitle}}</h5>
+				</div>
+				<div class="modal-body" data-alias="nutrientStatementController.nutrientStatementDetail as ntrntStmtDtl">
+					<div class="row" data-ng-if="nutrientStatementController.panelModalError">
+						<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+							  ng-bind-html="nutrientStatementController.panelModalError"></span>
+					</div>
+					<div class="row" data-ng-if="nutrientStatementController.panelModalSuccess">
+						<span  class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert"
+							  ng-bind-html="nutrientStatementController.panelModalSuccess"></span>
+					</div>
+					<!--Single Panel-->
+					<div class="well" style="margin-bottom: 0" data-ng-if="!nutrientStatementController.isShowDualColumnPanel">
+						<div class="row">
+							<div class="col-md-5">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Statement ID</label>
+											<strong style="color: red">**</strong>
+											<strong class="inline-block"
+													ng-if="nutrientStatementController.isAddNewNutrientStatement">
+												<strong
+													ng-if="nutrientStatementController.availableOrNotAvailableNutrientStatementMessage == nutrientStatementController.AVAILABLE_MSG"
+													style="color: green">{{nutrientStatementController.availableOrNotAvailableNutrientStatementMessage}}</strong>
+												<strong
+													ng-if="nutrientStatementController.availableOrNotAvailableNutrientStatementMessage != nutrientStatementController.AVAILABLE_MSG"
+													style="color: darkorange">{{nutrientStatementController.availableOrNotAvailableNutrientStatementMessage}}</strong>
+											</strong>
+											<input class="form-control" ng-disabled="!nutrientStatementController.isAddNewNutrientStatement" can-edit="SM_NLEA_01"
+												   	ng-model="ntrntStmtDtl.sourceSystemReferenceId"
+												   	ng-change="nutrientStatementController.checkAvailableNutrientStatement()"
+													maxlength="5"
+													numbers-only
+													type="text"
+												   >
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.sourceSystemReferenceId}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<div class="form-group">
+												<label>Serving Size Label</label>
+												<span ng-style="{'color': nutrientStatementController.servingLabel.length > 22 ? 'red':'green'}">
+													Characters Remaining:  {{nutrientStatementController.servingTextCharacterRemainingCharacterCount}}</span>
+												<br>
+												<div id="scaleManagementNutrientStatementLabel" style="padding-top: 7px">
+													{{nutrientStatementController.servingLabel}}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Dual Column Panel</label>
+											<div can-edit="SM_NLEA_01" class="input-group">
+												<input type="checkbox"
+													   data-ng-model="nutrientStatementController.checkedDualColumnPanel"
+													   style="bottom: 4px"
+													   ng-click="nutrientStatementController.toggleDualColumnPanelChoice();">
+											</div>
+											<div view-only="SM_NLEA_01">
+												<input type="checkbox"
+													   data-ng-model="nutrientStatementController.checkedDualColumnPanel"
+													   style="bottom: 4px" disabled>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="measureQuantity">Measure Quantity</label>
+											<strong style="color: red">**</strong>
+											<input can-edit="SM_NLEA_01"
+												   id="measureQuantity"
+												   class="form-control input-no-spinner"
+												   ng-change="nutrientStatementController.buildServingSizeLabel()"
+												   ng-model="ntrntStmtDtl.measureQuantity"
+												   decimal-only maxlength="22"/>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.measureQuantity}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Measure UOM Code</label>
+											<strong style="color: red">**</strong>
+											<div can-edit="SM_NLEA_01">
+												<ui-select
+													ng-model="ntrntStmtDtl.imperialServingSizeUomId"
+													ng-change="nutrientStatementController.buildServingSizeLabel()"
+													theme="bootstrap"
+													title="Choose a UOM">
+													<ui-select-match allow-clear="true">
+														{{$select.selected.displayUOM}}
+													</ui-select-match>
+													<ui-select-choices refresh-delay="0"
+																	   repeat="element.uomCode as element in nutrientStatementController.measureUOMs | propsFilter: {displayUOM: $select.search} | orderBy:'uomCode'">
+														<div
+															ng-bind-html="element.displayUOM | highlight: $select.search"></div >
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.nutrientImperialUom.displayUOM}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="metricQuantity">Metric Quantity</label>
+											<strong style="color: red">**</strong>
+											<input can-edit="SM_NLEA_01"
+												   id="metricQuantity"
+												   class="form-control input-no-spinner"
+												   ng-change="nutrientStatementController.buildServingSizeLabel()"
+												   ng-model="ntrntStmtDtl.metricQuantity"
+												   decimal-only maxlength="22">
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.metricQuantity}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Metric UOM Code</label>
+											<strong style="color: red">**</strong>
+											<div can-edit="SM_NLEA_01">
+												<ui-select
+													ng-model="ntrntStmtDtl.metricServingSizeUomId"
+													ng-change="nutrientStatementController.buildServingSizeLabel()"
+													theme="bootstrap"
+													title="Choose a UOM">
+													<ui-select-match allow-clear="true">
+														{{$select.selected.displayUOM}}
+													</ui-select-match>
+													<ui-select-choices refresh-delay="0"
+																	   repeat="element.uomCode as element in nutrientStatementController.metricUOMs | propsFilter: {displayUOM: $select.search} | orderBy:'uomCode'">
+														<div
+															ng-bind-html="element.displayUOM | highlight: $select.search"></div >
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.nutrientMetricUom.displayUOM}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="servingsPerContainer">Servings Per Container</label>
+											<strong style="color: red">**</strong>
+											<div id="servingsPerContainerGroup" can-edit="SM_NLEA_01"
+												 class="input-group" style="display: table; width: 100%">
+												<input id="servingsPerContainer" class="form-control" style="width:100%"
+													   data-ng-change="nutrientStatementController.updateShowVariesLabelComponents()"
+													   ng-model="ntrntStmtDtl.servingsPerContainer"
+													   ng-pattern="/^[0-9]*$/"
+													   decimal-only maxlength="3">
+												<span style="display: table-cell; vertical-align: middle; text-align:center">
+													 {{nutrientStatementController.showVariesLabel}}
+												</span>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.servingsPerContainer}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Effective Date</label>
+											<br>
+											<div class="input-group">
+												<p>{{ntrntStmtDtl.effectiveDate | date: 'MM/dd/yyyy'}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<ng-form name="nutrientForm">
+								<div class="col-md-7">
+									<loading-spinner ng-show="nutrientStatementController.isMandatedWaiting">
+									</loading-spinner>
+									<div class="row"
+									 	ng-show="ntrntStmtDtl.nutrientPanelColumnHeaders[0].nutrientPanelDetails.length > 0
+												&& !nutrientStatementController.isMandatedWaiting">
+										<div class="col-md-12">
+											<div class="row">
+												<br>
+												<div class="col-md-12">
+													<div class="row">
+														<strong class="col-md-1"></strong>
+														<strong class="col-md-3">Nutrient</strong>
+														<strong class="col-md-2"></strong>
+														<strong class="col-md-3">Amount</strong>
+														<strong class="col-md-3">%DV</strong>
+													</div>
+												</div>
+												<br>
+
+												<!--Calories-->
+												<div class="col-md-12 ng-scope" style="margin: 6px 0">
+													<div class="row">
+														<div class="col-md-1"></div>
+														<div class="col-md-3">
+															<p>Calories</p>
+														</div>
+														<div class="col-md-2"></div>
+														<!-- Wait/OK/Error messages for rounding. -->
+
+														<!-- If the user can edit, then open up text boxes for them to do so. -->
+														<div class="col-md-3" view-only="SM_NLEA_01">
+															{{ntrntStmtDtl.nutrientPanelColumnHeaders[0].caloriesQuantity}}
+														</div>
+														<div class="col-md-3" can-edit="SM_NLEA_01">
+															<!-- The user can edit the measure. -->
+															<input
+																value="ntrntStmtDtl.nutrientPanelColumnHeaders[0].caloriesQuantity"
+																type="text" class="col-md-8"
+																ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[0].caloriesQuantity"
+																ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,4})?$/"
+																decimal-only maxlength="10"/>
+														</div>
+													</div>
+												</div>
+												<br>
+												<br>
+
+												<div ng-repeat="panelDetail in ntrntStmtDtl.nutrientPanelColumnHeaders[0].nutrientPanelDetails track by $index">
+													<br>
+
+													<div class="col-md-12">
+														<div class="row">
+															<div class="col-md-1"></div>
+															<div class="col-md-3">
+																<p>{{panelDetail.nutrient.nutrientDescription}}</p>
+															</div>
+															<div class="col-md-2">
+																<div ng-if="panelDetail.nutrient.recommendedDailyAmount != null&&panelDetail.nutrient.pdvOrWhole != 'P' && nutrientStatementController.canEditNutrientStatement()"
+																	 class="glyphicon glyphicon-random inline-block pull-right pointer"
+																	 ng-click="nutrientStatementController.toggleEditMode(panelDetail)"
+																	 data-toggle="tooltip" title="Manual Override"></div>
+															</div>
+															<!-- Wait/OK/Error messages for rounding. -->
+
+															<!--nutrientQuantity-->
+															<div class="col-md-3" view-only="SM_NLEA_01">
+																{{panelDetail.nutrientQuantity}}
+															</div>
+															<div class="col-md-3" can-edit="SM_NLEA_01">
+																<!-- The user can edit the measure. -->
+																<input
+																	ng-if="panelDetail.nutrient.pdvOrWhole != 'P' && !panelDetail.inAlternateEditMode"
+																	value="panelDetail.nutrientQuantity"
+																	type="text"
+																	ng-model="panelDetail.nutrientQuantity"
+																	class="col-md-8"
+																	ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																	decimal-only maxlength="8"
+																	name="measure-{{$index}}"
+																	ng-blur="nutrientStatementController.calculateDailyValue(this, 'measure-'+$index, panelDetail)"/>
+																<div class="col-md-2">
+																	<span ng-if="panelDetail.nutrient.pdvOrWhole == 'P' || panelDetail.inAlternateEditMode">
+																		<p style="text-align: center">{{panelDetail.nutrientQuantity}}</p>
+																	</span>
+																</div>
+
+															</div>
+
+															<!--nutrientDailyValue-->
+															<div class="col-md-3" view-only="SM_NLEA_01">
+																{{panelDetail.nutrientDailyValue}}<span ng-if="panelDetail.nutrientDailyValue != null">%</span>
+															</div>
+															<div class="col-md-3" can-edit="SM_NLEA_01">
+																<!-- The user can edit the measure. -->
+																<input
+																	ng-if="(panelDetail.nutrient.recommendedDailyAmount != null&&panelDetail.inAlternateEditMode)
+																	||(panelDetail.nutrient.pdvOrWhole == 'P'&&panelDetail.nutrient.recommendedDailyAmount != null)"
+																	value="panelDetail.nutrientDailyValue" type="text"
+																	ng-model="panelDetail.nutrientDailyValue" class="col-md-8"
+																	ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																	decimal-only maxlength="8"/>
+																<div class="col-md-2">
+																	<span ng-if="(panelDetail.nutrient.recommendedDailyAmount == null&&panelDetail.nutrientDailyValue != null || !panelDetail.inAlternateEditMode)
+																				&& !(panelDetail.nutrient.pdvOrWhole == 'P' && panelDetail.nutrient.recommendedDailyAmount != null)">
+																		<span>{{panelDetail.nutrientDailyValue}}<span ng-if="panelDetail.nutrientDailyValue != null">%</span></span>
+																	</span>
+																</div>
+															</div>
+														</div>
+													</div>
+													<br>
+													<br>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ng-form>
+						</div>
+					</div>
+					<!--Dual Panel-->
+					<div class="well" style="margin-bottom: 0" data-ng-show="nutrientStatementController.isShowDualColumnPanel"
+						 data-alias="nutrientStatementController.nutritionFactsLabelColumn1Index as PANEL_COL1_INDEX">
+						<div class="row" data-alias="nutrientStatementController.nutritionFactsLabelColumn2Index as PANEL_COL2_INDEX">
+							<div class="col-md-5">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Statement ID</label>
+											<strong style="color: red">**</strong>
+											<strong class="inline-block"
+													ng-if="nutrientStatementController.isAddNewNutrientStatement">
+												<strong
+													ng-if="nutrientStatementController.availableOrNotAvailableNutrientStatementMessage == nutrientStatementController.AVAILABLE_MSG"
+													style="color: green">{{nutrientStatementController.availableOrNotAvailableNutrientStatementMessage}}</strong>
+												<strong
+													ng-if="nutrientStatementController.availableOrNotAvailableNutrientStatementMessage != nutrientStatementController.AVAILABLE_MSG"
+													style="color: darkorange">{{nutrientStatementController.availableOrNotAvailableNutrientStatementMessage}}</strong>
+											</strong>
+											<input class="form-control" ng-disabled="!nutrientStatementController.isAddNewNutrientStatement" can-edit="SM_NLEA_01"
+												   	ng-model="ntrntStmtDtl.sourceSystemReferenceId"
+												   	ng-change="nutrientStatementController.checkAvailableNutrientStatement()"
+													maxlength="5"
+													numbers-only
+													type="text"
+												   >
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.sourceSystemReferenceId}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Serving Size Label</label>
+											<span ng-style="{'color': nutrientStatementController.servingLabel.length>22 ? 'red':'green'}">
+													Characters Remaining:  {{nutrientStatementController.servingTextCharacterRemainingCharacterCount}}</span>
+											<br>
+											<div id="scaleManagementNutrientStatementLabelDualColumnPanel" style="padding-top: 7px">
+												{{nutrientStatementController.servingLabel}}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Dual Column Panel</label>
+											<div can-edit="SM_NLEA_01" class="input-group" >
+												<input type="checkbox"
+													   data-ng-model="nutrientStatementController.checkedDualColumnPanel"
+													   style="bottom: 4px"
+													   ng-click="nutrientStatementController.toggleDualColumnPanelChoice()">
+											</div>
+											<div view-only="SM_NLEA_01">
+												<input type="checkbox"
+													   data-ng-model="nutrientStatementController.checkedDualColumnPanel"
+													   style="bottom: 4px" disabled>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Serving Size Panel 2</label>
+											<div  can-edit="SM_NLEA_01"
+												  class="input-group" style="display: table; width: 100%">
+												<input  class="form-control" style="width:100%"
+														value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].servingSizeLabel"
+														data-ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].servingSizeLabel">
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].servingSizeLabel}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="measureQuantity">Measure Quantity</label>
+											<strong style="color: red">**</strong>
+											<input can-edit="SM_NLEA_01"
+												   id="measureQuantityDualPanel"
+												   class="form-control input-no-spinner"
+												   ng-change="nutrientStatementController.buildServingSizeLabel()"
+												   ng-model="ntrntStmtDtl.measureQuantity"
+												   decimal-only maxlength="22"/>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.measureQuantity}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Measure UOM Code</label>
+											<strong style="color: red">**</strong>
+											<div can-edit="SM_NLEA_01">
+												<ui-select
+													ng-model="ntrntStmtDtl.imperialServingSizeUomId"
+													ng-change="nutrientStatementController.buildServingSizeLabel()"
+													theme="bootstrap"
+													title="Choose a UOM">
+													<ui-select-match allow-clear="true">
+														{{$select.selected.displayUOM}}
+													</ui-select-match>
+													<ui-select-choices refresh-delay="0"
+																	   repeat="element.uomCode as element in nutrientStatementController.measureUOMs | propsFilter: {displayUOM: $select.search} | orderBy:'uomCode'">
+														<div
+															ng-bind-html="element.displayUOM | highlight: $select.search"></div >
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.nutrientImperialUom.displayUOM}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="metricQuantity">Metric Quantity</label>
+											<strong style="color: red">**</strong>
+											<input can-edit="SM_NLEA_01"
+												   id="metricQuantityDualPanel"
+												   class="form-control input-no-spinner"
+												   ng-change="nutrientStatementController.buildServingSizeLabel()"
+												   ng-model="ntrntStmtDtl.metricQuantity"
+												   decimal-only maxlength="22">
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.metricQuantity}}</p>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Metric UOM Code</label>
+											<strong style="color: red">**</strong>
+											<div can-edit="SM_NLEA_01">
+												<ui-select
+													ng-model="ntrntStmtDtl.metricServingSizeUomId"
+													ng-change="nutrientStatementController.buildServingSizeLabel()"
+													theme="bootstrap"
+													title="Choose a UOM">
+													<ui-select-match allow-clear="true">
+														{{$select.selected.displayUOM}}
+													</ui-select-match>
+													<ui-select-choices refresh-delay="0"
+																	   repeat="element.uomCode as element in nutrientStatementController.metricUOMs | propsFilter: {displayUOM: $select.search} | orderBy:'uomCode'">
+														<div
+															ng-bind-html="element.displayUOM | highlight: $select.search"></div >
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.nutrientMetricUom.displayUOM}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="servingsPerContainer">Servings Per Container</label>
+											<strong style="color: red">**</strong>
+											<div id="servingsPerContainerGroupDualPanel" can-edit="SM_NLEA_01"
+												 class="input-group" style="display: table; width: 100%">
+												<input id="servingsPerContainerDualPanel" class="form-control" style="width:100%"
+													   ng-model="ntrntStmtDtl.servingsPerContainer"
+													   ng-pattern="/^[0-9]*$/"
+													   decimal-only maxlength="3">
+												<span data-ng-show="ntrntStmtDtl.servingsPerContainer == nutrientStatementController.servingPerContainerVaries" style="display: table-cell; vertical-align: middle; text-align:center">
+													 {{nutrientStatementController.VARIES_LABEL}}
+												</span>
+											</div>
+											<div view-only="SM_NLEA_01">
+												<p>{{ntrntStmtDtl.servingsPerContainer}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Effective Date</label>
+											<br>
+											<div class="input-group">
+												<p>{{ntrntStmtDtl.effectiveDate | date: 'MM/dd/yyyy'}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<ng-form name="nutrientForm">
+								<div class="col-md-7">
+									<loading-spinner ng-show="nutrientStatementController.isMandatedWaiting">
+									</loading-spinner>
+									<div class="row"
+									 	ng-show="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails.length > 0 
+												&& !nutrientStatementController.isMandatedWaiting">
+										<div class="col-md-12">
+											<div class="row">
+												<br>
+												<div class="col-md-12" >
+													<div class="row">
+														<strong class="col-md-1"></strong>
+														<strong class="col-md-3">Nutrient</strong>
+														<strong class="col-md-1"></strong>
+														<strong class="col-md-1" style="padding: 0px; white-space: nowrap;" >Amount Panel 1</strong>
+														<strong class="col-md-1" style="white-space: nowrap; margin-left:35px; padding: 0px">%DV Panel 1</strong>
+														<strong class="col-md-1"></strong>
+														<strong class="col-md-1" style="white-space: nowrap; padding: 0px;">Amount Panel 2</strong>
+														<strong class="col-md-1" style="white-space: nowrap; margin-left:35px; padding: 0px">%DV Panel 2</strong>
+													</div>
+												</div>
+												<br>
+												<br>
+												<div class="col-md-12">
+													<div class="row">
+														<div class="col-md-1">
+															<p></p>
+														</div>
+														<div class="col-md-3">
+															<p>Calories</p>
+														</div>
+														<div class="col-md-1"></div>
+														<div class="col-md-1" style="padding-left: 10px; white-space: nowrap;" view-only="SM_NLEA_01">
+															{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].caloriesQuantity}}</div>
+														<!-- If the user can edit, then open up text boxes for them to do so. -->
+														<div class="col-md-1" style="padding-left: 0px; padding-right: 0px" can-edit="SM_NLEA_01">
+															<!-- The user can edit the calories for the column 1. -->
+															<input
+																style="width: 100%; padding-left: 10px"
+																value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].caloriesQuantity"
+																type="text"
+																ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].caloriesQuantity"
+																ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,4})?$/"
+																decimal-only maxlength="10"/>
+														</div>
+														<div class="col-md-1" style="padding-left: 0px; padding-right: 0px; margin-left: 35px"></div>
+														<div class="col-md-1"></div>
+														<div class="col-md-1" style="padding-left: 10px;white-space: nowrap;" view-only="SM_NLEA_01">
+															{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].caloriesQuantity}}</div>
+														<!-- If the user can edit, then open up text boxes for them to do so. -->
+														<div class="col-md-1" style="padding-left: 0px; padding-right: 0px" can-edit="SM_NLEA_01">
+															<!-- The user can edit the calories for the column 2. -->
+															<input style="width: 100%; padding-left: 10px"
+																   value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].caloriesQuantity"
+																   type="text"
+																   ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].caloriesQuantity"
+																   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,4})?$/"
+																   decimal-only maxlength="10"/>
+														</div>
+													</div>
+												</div>
+												<br>
+												<br>
+												<div ng-repeat="panelDetail in ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails track by $index">
+													<br>
+													<div class="col-md-12">
+														<div class="row">
+															<div class="col-md-1">
+																<p></p>
+															</div>
+															<div class="col-md-3" >
+																<p>{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.nutrientDescription}}</p>
+															</div>
+															<div class="col-md-1">
+																<div ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole != 'P'
+																			&& nutrientStatementController.canEditNutrientStatement()"
+																	 class="glyphicon glyphicon-random inline-block pull-right pointer"
+																	 ng-click="nutrientStatementController.toggleEditMode(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index])"
+																	 data-toggle="tooltip" title="Manual Override"></div>
+															</div>
+
+															<!--nutrientQuantity for the column1-->
+															<div class="col-md-1" style="padding-left: 10px;white-space: nowrap;" view-only="SM_NLEA_01">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientQuantity}}</div>
+															<div class="col-md-1" style="padding-left: 0px; padding-right: 0px" can-edit="SM_NLEA_01">
+																<!-- The user can edit the nutrientQuantity for the column 1. -->
+																<input style="width: 100%; padding-left: 10px"
+																	   ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole != 'P'
+																			 && !ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].inAlternateEditMode"
+																	   value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientQuantity"
+																	   type="text"
+																	   ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientQuantity"
+																	   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																	   decimal-only maxlength="8"
+																	   name="measure-col-1-{{$index}}"
+																	   ng-blur="nutrientStatementController.calculateDailyValue(this, 'measure-col-1-'+$index, ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index])"/>
+																<div style="padding-left: 10px"
+																	 ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																			|| ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].inAlternateEditMode">
+																		<span style="white-space: nowrap;">
+																			<p>{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientQuantity}}</p>
+																		</span>
+																</div>
+															</div>
+
+															<!--nutrientDailyValue for the column1-->
+															<div class="col-md-1" style="padding-left: 10px; margin-left: 35px; white-space: nowrap;" view-only="SM_NLEA_01">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue}}%</div>
+															<div class="col-md-1" style="padding-left: 0px; padding-right: 0px; margin-left: 35px" can-edit="SM_NLEA_01">
+																<!-- The user can edit the nutrientDailyValue for the column 1. -->
+																<input style="width: 100%; padding-left: 10px"
+																	   ng-if="(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null
+																		   && ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].inAlternateEditMode)
+																		   ||(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																		   && ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null)"
+																	   value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue"
+																	   type="text"
+																	   ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue"
+																	   ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																	   decimal-only maxlength="8"/>
+																<div style="padding-left: 10px"
+																	 ng-if="(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount == null
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue != null
+																			|| !ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].inAlternateEditMode)
+																			&& !(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null)">
+																		<span>
+																			<span style="white-space: nowrap;">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue}}
+																				<span ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL1_INDEX].nutrientPanelDetails[$index].nutrientDailyValue != null">%
+																				</span>
+																			</span>
+																		</span>
+																</div>
+															</div>
+															<div class="col-md-1">
+																<div ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole != 'P'
+																			&& nutrientStatementController.canEditNutrientStatement()"
+																		class="glyphicon glyphicon-random inline-block pull-right pointer"
+																		ng-click="nutrientStatementController.toggleEditMode(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index])"
+																		data-toggle="tooltip" title="Manual Override"></div>
+															</div>
+
+															<!--nutrientQuantity for the column2-->
+															<div class="col-md-1" style="padding-left: 10px;white-space: nowrap; " view-only="SM_NLEA_01">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientQuantity}}</div>
+															<div class="col-md-1" style="padding-left: 0px; padding-right: 0px" can-edit="SM_NLEA_01">
+																<!-- The user can edit the nutrientQuantity for the column 2. -->
+																<input style="width: 100%; padding-left: 10px"
+																		ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole != 'P'
+																				&& !ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].inAlternateEditMode"
+																		value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientQuantity"
+																		type="text"
+																		ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientQuantity"
+																		ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																		decimal-only maxlength="8"
+																		name="measure-col-2-{{$index}}"
+																		ng-blur="nutrientStatementController.calculateDailyValue(this, 'measure-col-2-'+$index, ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index])"
+																	/>
+																<div style="padding-left: 10px"
+																		ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																			|| ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].inAlternateEditMode">
+																	<span style="white-space: nowrap;">
+																		<p>{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientQuantity}}</p>
+																	</span>
+																</div>
+															</div>
+
+															<!--nutrientDailyValue for the column2-->
+															<div class="col-md-1" style="padding-left: 10px; margin-left: 35px;white-space: nowrap;" view-only="SM_NLEA_01">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue}}%</div>
+															<div class="col-md-1" style="padding-left: 0px; padding-right: 0px; margin-left: 35px" style="padding-left: 0px; padding-right: 7px" can-edit="SM_NLEA_01">
+																<!-- The user can edit the nutrientDailyValue for the column 2. -->
+																<input
+																	style="width: 100%; padding-left: 10px; "
+																	ng-if="(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].inAlternateEditMode)
+																			|| (ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null)"
+																	value="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue"
+																	type="text"
+																	ng-model="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue"
+																	ng-pattern="/^[0-9]{1,5}(\.[0-9]{0,2})?$/"
+																	decimal-only maxlength="8"/>
+																<div  style="padding-left: 10px"
+																		ng-if="(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount == null
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue != null
+																			|| !ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].inAlternateEditMode)
+																			&& !(ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.pdvOrWhole == 'P'
+																			&& ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrient.recommendedDailyAmount != null)">
+																	<span>
+																		<span style="white-space: nowrap;">{{ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue}}
+																			<span ng-if="ntrntStmtDtl.nutrientPanelColumnHeaders[PANEL_COL2_INDEX].nutrientPanelDetails[$index].nutrientDailyValue != null">%
+																			</span>
+																		</span>
+																	</span>
+																</div>
+															</div>
+														</div>
+													</div>
+													<br>
+													<br>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ng-form>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<strong class="inline-block pull-left" style="color: red">** Required</strong>
+					<button type="button"
+							class="inline-block btn btn-success btn-sm"
+							data-dismiss="modal"
+							view-only="SM_NLEA_01">Close
+					</button>
+					<button type="button"
+							class="inline-block btn btn-danger btn-sm"
+							data-dismiss="modal"
+							can-edit="SM_NLEA_01">Cancel
+					</button>
+					<button type="button"
+							class="inline-block btn btn-success btn-sm"
+							ng-click="nutrientStatementController.updateStatement()"
+							can-edit="SM_NLEA_01">Submit
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="addNewPanelModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Add NLEA 2016 Nutrient Statements</h5>
+				</div>
+				<div class="modal-body">
+					<loading-spinner ng-show="nutrientStatementController.isWaitingSearchPanel">
+					</loading-spinner>
+					<div ng-show="!nutrientStatementController.isWaitingSearchPanel">
+						<div class="row" data-ng-if="nutrientStatementController.errorSearchPanel">
+							<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientStatementController.errorSearchPanel}}</span>
+						</div>
+						<div class="row">
+							<div class="col-md-8 col-md-push-2">
+								<input name="sourceSystemReferenceId"
+									   class="form-control"
+									   type="text"
+									   numbers-only
+									   maxlength="5"
+									   id="sourceSystemReferenceId"
+									   ng-model="nutrientStatementController.sourceSystemReferenceId">
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+							data-ng-disabled="nutrientStatementController.sourceSystemReferenceId == null || nutrientStatementController.sourceSystemReferenceId == ''"
+							ng-click="nutrientStatementController.getNutrientStatementPanelHeaderBySourceSystemReferenceId()">Submit</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal" ng-click="nutrientStatementController.sourceSystemReferenceId = ''">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="deleteDualColumnPanelConfirm" class="modal fade" role="dialog" style="margin-top: 70px;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Remove Column</h5>
+				</div>
+				<div class="modal-body">
+					<h5>
+						You have selected to remove one of these two columns. Would you like to remove the left column or the right column?
+					</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-primary btn-sm" data-dismiss="modal"
+							ng-click="nutrientStatementController.deleteDualColumnPanel(0)">Left</button>
+					<button type="button" class="inline-block btn btn-primary btn-sm" data-dismiss="modal"
+							ng-click="nutrientStatementController.deleteDualColumnPanel(1)">Right</button>
+					<button type="button" class="inline-block btn btn-primary btn-sm" data-dismiss="modal"
+							ng-click="nutrientStatementController.checkedDualColumnPanel = true;">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="deleteNLEA16NutrientStatement" class="modal fade" role="dialog" style="margin-top: 70px;">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Delete NLEA 2016 Nutrient Statement</h5>
+				</div>
+				<div class="modal-body">
+					<h5 class="roomNumber">
+						Are you sure you want to delete the selected Statement ID?
+					</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+							ng-click="nutrientStatementController.deleteNLEA16NutrientStatement()">OK</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

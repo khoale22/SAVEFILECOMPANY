@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ batch-config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:batch="http://www.springframework.org/schema/batch"
+
+	   xsi:schemaLocation="http://www.springframework.org/schema/batch
+        http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        ">
+
+	<!-- Just keep job run information in memory. -->
+	<beans profile="local,functional-test">
+
+		<bean id="jobTransactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+
+		<bean id="jobRepository"
+			  class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+			<property name="transactionManager" ref="jobTransactionManager"/>
+		</bean>
+	</beans>
+
+	<!-- Stores data about the job executions in a DB. -->
+	<beans profile="dev,cert,prod">
+
+		<bean id="jobDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" >
+			<property name="driverClassName" value="${jobDataSource.driver-class-name}" />
+			<property name="url" value="${jobDataSource.url}" />
+			<property name="username" value="${jobDataSource.username}" />
+			<property name="password" value="${jobDataSource.password}" />
+			<property name="testOnBorrow" value="true" />
+			<property name="validationQuery" value="select 1 from dual" />
+		</bean>
+
+		<bean id="jobTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="jobDataSource" />
+		</bean>
+
+		<batch:job-repository id="jobRepository"
+							  data-source="jobDataSource"
+							  transaction-manager="jobTransactionManager"
+							  table-prefix="${jobDataSource.schema}"
+							  isolation-level-for-create="READ_COMMITTED"
+		/>
+	</beans>
+
+	<beans>
+		<!-- Holds the list of available jobs. -->
+		<bean id="mapJobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+		<!-- Scans for beans that are batch jobs and loads them into mapJobRegistry. -->
+		<bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+			<property name="jobRegistry" ref="mapJobRegistry" />
+		</bean>
+
+
+		<!-- Runs jobs. -->
+		<bean id="jobLauncher"
+			  class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+			<property name="jobRepository" ref="jobRepository"/>
+		</bean>
+
+		<!-- Runs jobs asyncronously. -->
+		<bean id="asyncJobLauncher"
+			  class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+			<property name="jobRepository" ref="jobRepository"/>
+			<property name="taskExecutor">
+				<bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+			</property>
+		</bean>
+
+		<!-- The job setup to initialize the vendor index. -->
+		<batch:job id="I18X901">
+			<batch:step id="I18X901_STEP-1" next="I18X901-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="vendorEmptier" />
+			</batch:step>
+			<batch:step id="I18X901-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="vendorReader"  writer="vendorWriter"
+								 commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the vendor index setup job. -->
+		<bean id="vendorEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="vendorIndexRepository" />
+		</bean>
+		<bean id="vendorReader" class="com.heb.pm.index.VendorReader" scope="step"/>
+		<bean id="vendorWriter" class="com.heb.pm.index.VendorWriter" scope="step"/>
+
+		<!-- The job setup for the departmentCode index. -->
+		<batch:job id="I18X902">
+			<batch:step id="I18X902-STEP-1" next="I18X902-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="subDepartmentEmptier" />
+			</batch:step>
+			<batch:step id="I18X902-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="subDepartmentReader"  writer="subDepartmentWriter"
+								 processor="subDepartmentProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the sub-departmentCode index setup job. -->
+		<bean id="subDepartmentEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="subDepartmentIndexRepository" />
+		</bean>
+		<bean id="subDepartmentReader" class="com.heb.pm.index.SubDepartmentReader" scope="step" />
+		<bean id="subDepartmentProcessor" class="com.heb.pm.index.SubDepartmentProcessor" scope="step" />
+		<bean id="subDepartmentWriter" class="com.heb.pm.index.SubDepartmentWriter" scope="step"/>
+
+		<!-- The job setup for the class/commodity index setup job. -->
+		<batch:job id="I18X903">
+			<batch:step id="I18X903-STEP-1" next="I18X903-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="commodityEmptier" />
+			</batch:step>
+			<batch:step id="I18X903-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="commodityReader" writer="commodityWriter"
+								 processor="commodityProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the commodity index setup job. -->
+		<bean id="commodityEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="commodityIndexRepository" />
+		</bean>
+		<bean id="commodityReader" class="com.heb.pm.index.CommodityReader" />
+		<bean id="commodityProcessor" class="com.heb.pm.index.CommodityProcessor" />
+		<bean id="commodityWriter" class="com.heb.pm.index.CommodityWriter" />
+
+		<!-- The job setup for the sub-commodity index job. -->
+		<batch:job id="I18X904">
+			<batch:step id="I18X904-STEP-1" next="I18X904-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="subCommodityEmptier" />
+			</batch:step>
+			<batch:step id="I18X904-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="subCommodityReader"  writer="subCommodityWriter"
+								 processor="subCommodityProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the sub-departmentCode index setup job. -->
+		<bean id="subCommodityEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="subCommodityIndexRepository" />
+		</bean>
+		<bean id="subCommodityReader" class="com.heb.pm.index.SubCommodityReader" />
+		<bean id="subCommodityProcessor" class="com.heb.pm.index.SubCommodityProcessor" scope="step" />
+		<bean id="subCommodityWriter" class="com.heb.pm.index.SubCommodityWriter" scope="step"/>
+
+		<!-- The job setup for the sub-commodity index job. -->
+		<batch:job id="I18X906">
+			<batch:step id="I18X906-STEP-1" next="I18X906-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="bdmEmptier" />
+			</batch:step>
+			<batch:step id="I18X906-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="bdmReader"  writer="bdmWriter"
+								 processor="bdmProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the sub-departmentCode index setup job. -->
+		<bean id="bdmReader" class="org.springframework.batch.item.database.JpaPagingItemReader" scope="step">
+			<property name="entityManagerFactory" ref="emfOracle" />
+			<property name="queryString" value = "select b from Bdm b" />
+			<property name="pageSize" value="100" />
+		</bean>
+
+		<bean id="bdmEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="bdmIndexRepository" />
+		</bean>
+		<bean id="bdmProcessor" class="com.heb.pm.index.BdmProcessor" scope="step" />
+		<bean id="bdmWriter" class="com.heb.pm.index.BdmWriter" scope="step"/>
+
+		<!-- Scheduling -->
+
+		<!-- This bean can be used by other classes to manually kick off jobs. -->
+		<bean id="indexJobLauncher" class="com.heb.pm.index.IndexJobLauncher">
+			<property name="jobLauncher" ref="jobLauncher" />
+			<property name="jobLocator" ref="mapJobRegistry" />
+		</bean>
+
+
+		<!-- The job setup to initialize the nutrition uom index. -->
+		<batch:job id="I18X907">
+			<batch:step id="I18X907_STEP-1" next="I18X907-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="nutrientUomEmptier" />
+			</batch:step>
+			<batch:step id="I18X907-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="nutritionReader"  writer="nutritionWriter" processor="nutritionProcessor"
+								 commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to the nutrition uom setup job. -->
+
+		<bean id="nutritionProcessor" class="com.heb.pm.index.NutrientUomProcessor" scope="step" />
+		<bean id="nutritionWriter" class="com.heb.pm.index.NutritionWriter" scope="step"/>
+		<bean id="nutrientUomEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="nutritionUomIndexRepository" />
+		</bean>
+		<bean id="nutritionReader" class="org.springframework.batch.item.database.JpaPagingItemReader" scope="step">
+			<property name="entityManagerFactory" ref="emfOracle" />
+			<property name="queryString" value = "select n from NutrientUom n" />
+			<property name="pageSize" value="100" />
+		</bean>
+
+		<!-- The job setup to initialize the product hierarchy cache. -->
+		<batch:job id="I18X908">
+			<batch:step id="I18X908-STEP-1" >
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="productHierarchyCacheRefreshTasklet">
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!--The beans related product hierarchy cache setup-->
+		<bean id="productHierarchyCacheRefreshTasklet" class="com.heb.pm.cache.ProductHierarchyCacheRefreshTasklet"/>
+
+		<!-- The job setup for the item-class index. -->
+		<batch:job id="I18X909">
+			<batch:step id="I18X909-STEP-1" next="I18X909-STEP-2">
+				<batch:tasklet transaction-manager="jobTransactionManager" ref="itemClassEmptier" />
+			</batch:step>
+			<batch:step id="I18X909-STEP-2" >
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="itemClassReader"  writer="itemClassWriter"
+								 processor="itemClassProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- The job to do mass updates. -->
+		<batch:job id="I18X910">
+			<batch:step id="I18X910-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="massUpdateReader" processor="massUpdateProcessor" writer="massUpdateWriter" commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+			<batch:listeners>
+				<batch:listener ref="massUpdateJobListener" />
+			</batch:listeners>
+		</batch:job>
+		<!-- Beans related to mass updates. -->
+		<bean id="massUpdateReader" class="com.heb.pm.massUpdate.job.ProductReader" scope="step" />
+		<bean id="massUpdateProcessor" class="com.heb.pm.massUpdate.job.ProductToCandidateWorkRequest" scope="step" />
+		<bean id="massUpdateWriter" class="com.heb.pm.massUpdate.job.CandidateWorkRequestWriter" scope="step" />
+		<bean id="massUpdateJobListener" class="com.heb.pm.massUpdate.job.MassUpdateJobListener" scope="job" />
+
+		<batch:job id="I18X911">
+			<batch:step id="I18X911-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="excelReader" processor="batchUploadProcessor" writer="batchUploadWriter" commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<!-- Beans related to Batch Upload. -->
+		<bean id="excelReader" class="com.heb.pm.batchUpload.ExcelReader" scope="step" />
+		<bean id="batchUploadProcessor" class="com.heb.pm.batchUpload.ExcelFileToCandidateWorkRequest" scope="step" />
+		<bean id="batchUploadWriter" class="com.heb.pm.batchUpload.CandidateWorkRequestWriter" scope="step" />
+		<!-- Beans related to the item-class index setup job. -->
+		<bean id="itemClassEmptier" class="com.heb.pm.index.IndexEmptyTasklet" scope="step" >
+			<property name="indexRepository" ref="itemClassIndexRepository" />
+		</bean>
+		<bean id="itemClassReader" class="com.heb.pm.index.ItemClassReader" />
+		<bean id="itemClassProcessor" class="com.heb.pm.index.ItemClassProcessor" scope="step" />
+		<bean id="itemClassWriter" class="com.heb.pm.index.ItemClassWriter" scope="step"/>
+
+		<!-- Nutrition Updates Task- Mass Update - starts-->
+		<batch:job id="I18X912">
+			<batch:step id="I18X912-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="nutritonUpdateMassUpdateReader"
+								 processor="nutritonUpdatesMassUpdateProcessor"
+								 writer="nutritonUpdateMassUpdateWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+
+		<!-- Beans related to mass updates. -->
+		<bean id="nutritonUpdateMassUpdateReader" class="com.heb.pm.task.NutritionUpdatesMassUpdateReader" scope="step" />
+		<bean id="nutritonUpdatesMassUpdateProcessor" class="com.heb.pm.task.NutritonUpdatesMassUpdateProcessor" scope="step" />
+		<bean id="nutritonUpdateMassUpdateWriter" class="com.heb.pm.task.NutritonUpdatesMassUpdateWriter" scope="step" />
+
+		<!-- Mat Attribute Values batch upload -->
+		<batch:job id="I18X924">
+			<batch:step id="I18X924-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="matAttributeValuesExcelReader" processor="matAttributeValuesProcessor" writer="matAttributeValuesCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+			<batch:listeners>
+				<batch:listener ref="earleyJobUpdateTransaction" />
+			</batch:listeners>
+		</batch:job>
+		<bean id="matAttributeValuesExcelReader" class="com.heb.pm.batchUpload.matAttributeValues.MatAttributeValuesExcelReader" scope="step" />
+		<bean id="matAttributeValuesProcessor" class="com.heb.pm.batchUpload.matAttributeValues.MatAttributeValuesProcessor" scope="step" />
+		<bean id="matAttributeValuesToMasterDataExtendedAttributesWriter" class="com.heb.pm.batchUpload.matAttributeValues.MatAttributeValuesToMasterDataExtendedAttributesWriter" scope="step" />
+		<bean id="matAttributeValuesCandidateWriter" class="com.heb.pm.batchUpload.matAttributeValues.MatAttributeValuesCandidateWriter" scope="step" />
+		<bean id="matAttributeValuesCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="matAttributeValuesToMasterDataExtendedAttributesWriter" />
+					<ref bean="matAttributeValuesCandidateWriter" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- Common Earley beans -->
+		<bean id="earleyCsvReader" class="com.heb.pm.batchUpload.earley.CsvReader" scope="step" />
+		<bean id="earleyJobUpdateTransaction" class="com.heb.pm.batchUpload.earley.JobUpdaterTransactionTable" scope="job" />
+
+		<!-- Job to load the Earley Hierarchy-->
+		<batch:job id="I18X920">
+			<batch:step id="I18X920-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="earleyCsvReader" processor="earleyHierarchyProcessor" writer="earleyHierarchyCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="earleyHierarchyProcessor" class="com.heb.pm.batchUpload.earley.hierarchy.EarleyHierarchyToGenericEntityRelationship" scope="step"/>
+		<bean id="earleyRelationshipWriter" class="com.heb.pm.batchUpload.earley.hierarchy.GenericEntityRelationshipWriter" scope="step"/>
+		<bean id="earleyHierarchyCandidateWriter" class="com.heb.pm.batchUpload.earley.hierarchy.CandidateWriter" scope="step" />
+		<bean id="earleyHierarchyCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="earleyRelationshipWriter" />
+					<ref bean="earleyHierarchyCandidateWriter" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- Earley Product to Hiererchy Tie. -->
+		<batch:job id="I18X919">
+			<batch:step id="I18X919-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="earleyCsvReader" processor="earleyProductProcessor" writer="earleyHierarchyCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="earleyProductProcessor" class="com.heb.pm.batchUpload.earley.hierarchy.EarleyProductToGenericEntityRelationship" scope="step"/>
+
+		<!-- Earley Attribtue Load. -->
+		<batch:job id="I18X921">
+			<batch:step id="I18X921-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="earleyCsvReader" processor="earleyAttributeProcessor" writer="earlyAttributeCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+			<batch:listeners>
+				<batch:listener ref="earleyJobUpdateTransaction" />
+			</batch:listeners>
+		</batch:job>
+		<bean id="earleyAttributeProcessor" class="com.heb.pm.batchUpload.earley.attribute.EarlyAttributeToEntityAttribute" scope="step"/>
+		<bean id="earleyAttributeWriter" class="com.heb.pm.batchUpload.earley.attribute.EntityAttributeWriter" scope="step"/>
+		<bean id="earlyAttribtueCandidateWriter" class="com.heb.pm.batchUpload.earley.attribute.CandidateWriter" scope="step" />
+		<bean id="earlyAttributeCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter" scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="earleyAttributeWriter" />
+					<ref bean="earlyAttribtueCandidateWriter" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- Earley Attribute Values Load. -->
+		<batch:job id="I18X922">
+			<batch:step id="I18X922-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="earleyCsvReader" processor="earleyAttribtueValueProcessor" writer="earlyAttributeValueCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+			<batch:listeners>
+				<batch:listener ref="earleyJobUpdateTransaction" />
+			</batch:listeners>
+		</batch:job>
+
+		<bean id="earleyAttribtueValueProcessor" class="com.heb.pm.batchUpload.earley.attributeValues.EarleyAttributeValuetoEntityAttribtueCode"  scope="step"/>
+		<bean id="earleyAttributeValueWriter" class="com.heb.pm.batchUpload.earley.attributeValues.EntityAttributeCodeWriter"  scope="step"/>
+		<bean id="earlyAttribtueValueCandidateWriter" class="com.heb.pm.batchUpload.earley.attributeValues.CandidateWriter" scope="step"/>
+		<bean id="earlyAttributeValueCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter"  scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="earleyAttributeValueWriter" />
+					<ref bean="earlyAttribtueValueCandidateWriter" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- Earley attribute to product tie job -->
+		<batch:job id="I18X923">
+			<batch:step id="I18X923-1">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="earleyCsvReader" processor="earleyProductAttributeProcessor" writer="earlyProductAttributeCompositeWriter" commit-interval="1" />
+				</batch:tasklet>
+			</batch:step>
+			<batch:listeners>
+				<batch:listener ref="earleyJobUpdateTransaction" />
+			</batch:listeners>
+		</batch:job>
+
+		<bean id="earleyProductAttributeProcessor" class="com.heb.pm.batchUpload.earley.productAttributeValues.EarleyProductAttributeToMasterDataExtendedAttributes" scope="step" />
+		<bean id="earleyProductAttributeWriter" class="com.heb.pm.batchUpload.earley.productAttributeValues.MasterDataExtendedAttributesWriter" scope="step" />
+		<bean id="earleyProductAttributeCandidateWriter" class="com.heb.pm.batchUpload.earley.productAttributeValues.CandidateWriter" scope="step" />
+		<bean id="earlyProductAttributeCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter"  scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="earleyProductAttributeWriter" />
+					<ref bean="earleyProductAttributeCandidateWriter" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- Nutrition Updates Task- Mass Update - ends-->
+		<!-- Ecommerce Task - Add Products Batch - starts-->
+		<batch:job id="I18X913">
+			<batch:step id="I18X913-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="massUpdateReader"
+								 processor="ecommerceTaskAddProductsProcessor"
+								 writer="massUpdateWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="ecommerceTaskAddProductsProcessor" class="com.heb.pm.task.EcommerceTaskAddProductsProcessor" scope="step" />
+		<!-- Ecommerce Task - Add Products Batch - ends-->
+		<!-- Ecommerce Task - Remove Products Batch - starts-->
+		<batch:job id="I18X914">
+			<batch:step id="I18X914-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="ecommerceTaskRemoveProductsReader"
+								 writer="ecommerceTaskRemoveProductsWriter"
+								 commit-interval="${app.commitInterval100}" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="ecommerceTaskRemoveProductsReader" class="com.heb.pm.task.EcommerceTaskRemoveProductsReader" scope="step" />
+		<bean id="ecommerceTaskRemoveProductsWriter" class="com.heb.pm.task.EcommerceTaskRemoveProductsWriter" scope="step" />
+		<!-- Ecommerce Task - Remove Products Batch - ends-->
+		<!-- Ecommerce Task - Mass update - starts-->
+		<batch:job id="I18X915">
+			<batch:step id="I18X915-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="ecommerceTaskMassUpdateReader"
+								 processor="eCommerceTaskMassUpdateProcessor"
+								 writer="ecommerceTaskMassUpdateWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="ecommerceTaskMassUpdateReader" class="com.heb.pm.task.EcommerceTaskMassUpdateReader" scope="step" />
+		<bean id="eCommerceTaskMassUpdateProcessor" class="com.heb.pm.task.ECommerceTaskMassUpdateProcessor" scope="step" />
+		<bean id="ecommerceTaskMassUpdateWriter" class="com.heb.pm.task.EcommerceTaskMassUpdateWriter" scope="step" />
+		<!-- Ecommerce Task - Mass update  - ends-->
+
+		<!-- Product Updates Task- Mass Update - starts-->
+		<batch:job id="I18X916">
+			<batch:step id="I18X916-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="productUpdateTaskMassUpdateReader"
+								 processor="productUpdateTaskMassUpdateProcessor"
+								 writer="productUpdateTaskMassUpdateWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="productUpdateTaskMassUpdateReader" class="com.heb.pm.task.ProductUpdateTaskReader" scope="step" />
+		<bean id="productUpdateTaskMassUpdateProcessor" class="com.heb.pm.task.ProductUpdateTaskProcessor" scope="step" />
+		<bean id="productUpdateTaskMassUpdateWriter" class="com.heb.pm.task.ProductUpdateTaskWriter" scope="step" />
+		<!-- Product update  Task - Mass update  - ends-->
+		<!-- Ecommerce Task- Assign to bdm - starts-->
+		<batch:job id="I18X917">
+			<batch:step id="I18X917-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="ecommerceTaskAssignToBdmReader"
+								 processor="ecommerceTaskAssignToBdmProcessor"
+								 writer="ecommerceTaskAssignToBdmWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="ecommerceTaskAssignToBdmReader" class="com.heb.pm.task.EcommerceTaskAssignToBdmReader" scope="step" />
+		<bean id="ecommerceTaskAssignToBdmProcessor" class="com.heb.pm.task.EcommerceTaskAssignToBdmProcessor" scope="step" />
+		<bean id="ecommerceTaskAssignToBdmWriter" class="com.heb.pm.task.EcommerceTaskAssignToBdmWriter" scope="step" />
+		<!-- Ecommerce  Task - Assign to bdm  - ends-->
+		<!-- Ecommerce Task- Assign to edm - starts-->
+		<batch:job id="I18X918">
+			<batch:step id="I18X918-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="ecommerceTaskAssignToBdmReader"
+								 processor="ecommerceTaskAssignToEbmProcessor"
+								 writer="ecommerceTaskAssignToEbmWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="ecommerceTaskAssignToEbmProcessor" class="com.heb.pm.task.EcommerceTaskAssignToEbmProcessor" scope="step" />
+		<bean id="ecommerceTaskAssignToEbmWriter" class="com.heb.pm.task.EcommerceTaskAssignToEbmWriter" scope="step" />
+		<!-- Ecommerce  Task - Assign to edm  - ends-->
+
+		<!-- Scale maintenance load job - starts-->
+		<batch:job id="I18X005">
+
+			<!-- Step 1 updates tracking and transmits status to in progress. -->
+			<batch:step id="I18X005-STEP-1" next="I18X005-STEP-2">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceInProgressProcessor"
+								 writer="transmitAndTrackingCompositeWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 2 collects authorize/retail data for a load. -->
+			<batch:step id="I18X005-STEP-2" next="I18X005-STEP-3">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="storesReader" processor="scaleMaintenanceAuthorizeRetailProcessor"
+								 writer="scaleMaintenanceAuthorizeRetailWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 3 collects product data for a load. -->
+			<batch:step id="I18X005-STEP-3" next="I18X005-STEP-4">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="upcsReader" processor="scaleMaintenanceUpcProcessor"
+								 writer="scaleMaintenanceUpcWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 4 converts product data to ePlum data and saves. -->
+			<batch:step id="I18X005-STEP-4" next="I18X005-STEP-5">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTransmitReader" processor="ePlumMessageProcessor"
+								 writer="scaleMaintenanceTransmitWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 5 updates tracking and transmits status to transmitting. -->
+			<batch:step id="I18X005-STEP-5" next="I18X005-STEP-6">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceTransmittingProcessor"
+								 writer="transmitAndTrackingCompositeWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 6 sends data to ePlum and updates tracking and transmits status to transmitted. -->
+			<batch:step id="I18X005-STEP-6">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceTransmitProcessor"
+								 writer="transmitAndTrackingAndMessageCompositeWriter" commit-interval="10"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<batch:listeners>
+				<batch:listener ref="ePlumLoadBatchFailureListener" />
+			</batch:listeners>
+
+		</batch:job>
+
+		<!-- Steps related to sending message to ePlum. -->
+		<bean id="scaleMaintenanceTransmitProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceTransmitProcessor" scope="step"/>
+		<bean id="transmitAndTrackingCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter"  scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="wrappedTrackingWriter" />
+					<ref bean="wrappedTrackingTransmitsWriter" />
+				</list>
+			</property>
+		</bean>
+		<bean id="transmitAndTrackingAndMessageCompositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter"  scope="step">
+			<property name="delegates">
+				<list>
+					<ref bean="ePlumTransmitWriter" />
+					<ref bean="wrappedTrackingWriter" />
+					<ref bean="wrappedTrackingTransmitsWriter" />
+				</list>
+			</property>
+		</bean>
+		<bean id="wrappedTrackingWriter" class="com.heb.scaleMaintenance.job.writer.WrappedTrackingWriter" scope="step"/>
+		<bean id="wrappedTrackingTransmitsWriter" class="com.heb.scaleMaintenance.job.writer.WrappedTrackingTransmitsWriter" scope="step"/>
+		<bean id="ePlumTransmitWriter" class="com.heb.scaleMaintenance.job.writer.EPlumTransmitWriter" scope="step"/>
+
+		<!-- Steps related to scale maintenance transactions. -->
+
+		<bean id="scaleMaintenanceTrackingReader" class="com.heb.scaleMaintenance.job.reader.ScaleMaintenanceTrackingReader" scope="step"/>
+		<bean id="scaleMaintenanceInProgressProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceStatusProcessor" scope="step">
+			<property name="statusCode" value="IN_PROGRESS"/>
+		</bean>
+		<bean id="scaleMaintenanceTransmittingProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceStatusProcessor" scope="step">
+			<property name="statusCode" value="TRANSMITTING"/>
+		</bean>
+		<bean id="scaleMaintenanceTransmittedProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceStatusProcessor" scope="step">
+			<property name="statusCode" value="TRANSMITTED"/>
+		</bean>
+
+		<!-- Steps related to Authorization Retail. -->
+
+		<bean id="scaleMaintenanceAuthorizeRetailWriter" class="com.heb.scaleMaintenance.job.writer.ScaleMaintenanceAuthorizeRetailWriter" scope="step"/>
+		<bean id="storesReader" class="com.heb.scaleMaintenance.job.reader.StoresReader" scope="step"/>
+		<bean id="scaleMaintenanceAuthorizeRetailProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceAuthorizeRetailProcessor" scope="step"/>
+
+		<!-- Steps related to product data. -->
+		<bean id="upcsReader" class="com.heb.scaleMaintenance.job.reader.ScaleMaintenanceUpcsReader" scope="step"/>
+		<bean id="scaleMaintenanceUpcProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleMaintenanceUpcProcessor" scope="step"/>
+		<bean id="scaleMaintenanceUpcWriter" class="com.heb.scaleMaintenance.job.writer.ScaleMaintenanceUpcWriter" scope="step"/>
+		
+		<!-- Scale maintenance load by department job  starts-->
+		<batch:job id="J89WSLD">
+
+			<!-- Step 1 updates load job to in progress. -->
+			<batch:step id="J89WSLD-STEP-1" next="J89WSLD-STEP-2">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceInProgressProcessor"
+								 writer="transmitAndTrackingCompositeWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 2 collects authorize/retail data for a load. -->
+			<batch:step id="J89WSLD-STEP-2" next="J89WSLD-STEP-3">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleScanUpcReader" processor="scaleScanUpcProcessor"
+								 writer="scaleMaintenanceByDeptAuthorizeRetailWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 3 collects product data for a load. -->
+			<batch:step id="J89WSLD-STEP-3" next="J89WSLD-STEP-4">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleScanUpcByDeptReader" processor="scaleMaintenanceUpcProcessor"
+								 writer="scaleMaintenanceUpcWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+			
+			<!-- Step 4 converts product data to ePlum data and saves. -->
+			<batch:step id="J89WSLD-STEP-4" next="J89WSLD-STEP-5">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTransmitReader" processor="ePlumMessageProcessor"
+								 writer="scaleMaintenanceTransmitWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 5 updates tracking and transmits status to transmitting. -->
+			<batch:step id="J89WSLD-STEP-5" next="J89WSLD-STEP-6">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceTransmittingProcessor"
+								 writer="transmitAndTrackingCompositeWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- Step 6 sends data to ePlum and updates tracking and transmits status to transmitted. -->
+			<batch:step id="J89WSLD-STEP-6">
+				<batch:tasklet transaction-manager="ePlumTransactionManager">
+					<batch:chunk reader="scaleMaintenanceTrackingReader" processor="scaleMaintenanceTransmitProcessor"
+								 writer="transmitAndTrackingAndMessageCompositeWriter" commit-interval="500"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<batch:listeners>
+				<batch:listener ref="ePlumLoadBatchFailureListener" />
+			</batch:listeners>
+		</batch:job>
+		
+		<bean id="scaleScanUpcReader" class="com.heb.scaleMaintenance.job.reader.ScaleScanUpcReader" scope="step"/>
+		<bean id="scaleScanUpcProcessor" class="com.heb.scaleMaintenance.job.processor.ScaleScanUpcProcessor" scope="step"/>
+		<bean id="scaleScanUpcByDeptReader" class="com.heb.scaleMaintenance.job.reader.ScaleScanUpcByDeptReader" scope="step"/>
+		<bean id="scaleMaintenanceByDeptAuthorizeRetailWriter" class="com.heb.scaleMaintenance.job.writer.ScaleMaintenanceByDeptAuthorizeRetailWriter" scope="step"/>
+				
+		<!-- Scale maintenance load by department job  ends-->
+		
+		<bean id="scaleMaintenanceTransmitReader" class="com.heb.scaleMaintenance.job.reader.ScaleMaintenanceTransmitReader" scope="step"/>
+		<bean id="ePlumMessageProcessor" class="com.heb.scaleMaintenance.job.processor.EPlumMessageProcessor" scope="step"/>
+		<bean id="scaleMaintenanceTransmitWriter" class="com.heb.scaleMaintenance.job.writer.ScaleMaintenanceTransmitWriter" scope="step"/>
+		
+		<!-- Listeners for ePlum Load. -->
+		<bean id="ePlumLoadBatchFailureListener" class="com.heb.scaleMaintenance.job.listener.EPlumLoadBatchFailureListener" scope="job"/>
+
+		<!-- The job setup to change status of the images have been approved but not show on site for 10 months to rejected -->
+		<batch:job id="I18X925">
+			<batch:step id="I18X925-STEP-1">
+				<batch:tasklet transaction-manager="jpaTransactionManager">
+					<batch:chunk reader="imageInfoReader"
+								 processor="imageInProcessor"
+								 writer="imageInfoWriter"
+								 commit-interval="100" />
+				</batch:tasklet>
+			</batch:step>
+		</batch:job>
+		<bean id="imageInfoReader" class="com.heb.pm.index.ImageInfoReader" scope="step" />
+		<bean id="imageInProcessor" class="com.heb.pm.index.ImageInfoProcessor" scope="step" />
+		<bean id="imageInfoWriter" class="com.heb.pm.index.ImageInfoWriter" scope="step" />
+
+		<!-- Schedule jobs here. -->
+		<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+			<property name="autoStartup" value="${index.refresh.jobs.enabled}"/>
+			<property name="triggers">
+				<list>
+					<!-- Run I18X901 every day at 7:00 AM -->
+					<bean id="I18X901D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X901-scheduleDetail" />
+						<property name="cronExpression" value="0 0 7 * * ?" />
+					</bean>
+					<!-- Run I18X902 every day at 7:10 AM -->
+					<bean id="I18X902D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X902-scheduleDetail" />
+						<property name="cronExpression" value="0 10 7 * * ?" />
+					</bean>
+					<!-- Run I18X903 every day at 7:20 AM -->
+					<bean id="I18X903D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X903-scheduleDetail" />
+						<property name="cronExpression" value="0 20 7 * * ?" />
+					</bean>
+					<!-- Run I18X904 every day at 7:30 AM -->
+					<bean id="I18X904D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X904-scheduleDetail" />
+						<property name="cronExpression" value="0 30 7 * * ?" />
+					</bean>
+					<!-- Run I18X906 every day at 7:50 AM -->
+					<bean id="I18X906D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X906-scheduleDetail" />
+						<property name="cronExpression" value="0 50 7 * * ?" />
+					</bean>
+					<!-- Run I18X907 every day at 6:40 AM. -->
+					<bean id="I18X907N-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X907-scheduleDetail" />
+						<property name="cronExpression" value="0 40 6 * * ?" />
+					</bean>
+					<!-- Run I18X908 every day at 4:30 AM -->
+					<bean id="I18X908D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X908-scheduleDetail" />
+						<property name="cronExpression" value="0 30 4 * * ?" />
+					</bean>
+					<!-- Run I18X908 five minutes after application startup, repeated 0 times, so product
+					 hierarchy eh cache is available immediately afterwards instead of having to manually refresh-->
+					<bean id="I18X908N-trigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X908-scheduleDetail" />
+						<property name="startDelay" value="300000" />
+						<property name="repeatCount" value="0" />
+					</bean>
+					<!-- Run I18X909 every day at 6:50 AM -->
+					<bean id="I18X909D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X909-scheduleDetail" />
+						<property name="cronExpression" value="0 50 6 * * ?" />
+					</bean>
+					<!-- Run I18X925 every day at 4:00 AM -->
+					<bean id="I18X925D-trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+						<property name="jobDetail" ref="I18X925-scheduleDetail" />
+						<property name="cronExpression" value="0 0 4 * * ?" />
+					</bean>
+				</list>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X901. -->
+		<bean id = "I18X901-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X901" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X902. -->
+		<bean id = "I18X902-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X902" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X903. -->
+		<bean id = "I18X903-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X903" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X904. -->
+		<bean id = "I18X904-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X904" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X906. -->
+		<bean id = "I18X906-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X906" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X907. -->
+		<bean id = "I18X907-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X907" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X908. -->
+		<bean id = "I18X908-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X908" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+
+		<!-- Bean to kick off I18X909. -->
+		<bean id = "I18X909-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X909" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+		<!-- Bean to kick off I18X925. -->
+		<bean id = "I18X925-scheduleDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+			<property name="jobClass" value="com.heb.pm.index.IndexJobLauncher" />
+			<property name="group" value="pm" />
+			<property name="jobDataAsMap">
+				<map>
+					<entry key="jobName" value="I18X925" />
+					<entry key="jobLocator" value-ref="mapJobRegistry" />
+					<entry key="jobLauncher" value-ref="jobLauncher" />
+				</map>
+			</property>
+		</bean>
+	</beans>
+</beans>

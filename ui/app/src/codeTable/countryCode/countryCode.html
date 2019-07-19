@@ -1,0 +1,264 @@
+<!--
+  ~ countryCode.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.12
+  -->
+<div can-view="CT_CNTR_01" id="countryCode" ng-init="$ctrl.init()" style="margin-top: 10px;">
+	<div class="row">
+		<div class="col-md-12">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+			<!--Error span-->
+			<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-danger col-md-4 col-md-push-4 myfade text-center" role="alert"
+					  ng-bind-html="$ctrl.error"></span>
+			</div>
+			<!--Success span-->
+			<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+					  role="alert">{{$ctrl.success}}</span>
+			</div>
+			<div ng-show="!$ctrl.isWaitingForResponse">
+				<button type="button" class="inline-block btn btn-primary btn-sm pull-right"
+						style="margin-bottom: 10px;" data-ng-click="$ctrl.clearFilter()">
+					Clear Filter
+				</button>
+				<form name="addEditForm" id="addEditForm" novalidate>
+				<table ng-table="tableParams" show-filter="true"
+					   class="table-heb table-bordered table-striped" style="width: 100%" current-page="currentPage">
+					<thead>
+					<tr>
+						<!--<th style="width:5%;"><input type="checkbox" ng-change="$ctrl.checkAllCountryCodesHandle()"-->
+						<!--ng-model="$ctrl.checkAllFlag"/></th>-->
+						<th style="width:10%;">Country Abbr.<input ng-model="filter.countryAbbreviation"
+																   data-ng-change="$ctrl.onFilterChange()"
+																   class="form-control"/></th>
+						<th style="width:30%;">Country<input ng-model="filter.displayNameOnGrid" class="form-control"
+															 data-ng-change="$ctrl.onFilterChange()"/></th>
+						<th style="width:53%;">IOS Alpha (A3) - Numeric (N3) Code<input
+							ng-model="filter.displayCountIsoOnGrid"
+							class="form-control"
+							data-ng-change="$ctrl.onFilterChange()"/>
+						</th>
+						<th style="width:7%;text-align: center" >Action<div style="height: 30px;"></div></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="item in $data | filter : filtetext  | orderBy:'countryId' track by $index ">
+						<td data-title="'Country Abbr.'" style="vertical-align: middle">
+							<!--Viewing mode-->
+							<span data-ng-if="!item.isEditing">{{item.countryAbbreviation}}</span>
+							<!--Editing mode-->
+							<input data-ng-if="item.isEditing"
+								   id="countryAbbreviation" type="text"
+								   style="width: 100%;height: 26px;" maxlength="2"
+								   ng-model="item.countryAbbreviation" minlength="2"
+								   required disable-enter-begin-with-space-char
+								   title="{{$ctrl.validationModel.countryAbbreviation.length == 0?$ctrl.COUNTRY_ABBR_MANDATORY_FIELD_ERROR : ''}}"
+								   empty-valid="{{$ctrl.COUNTRY_ABBR_MANDATORY_FIELD_ERROR}}" data-ng-change="$ctrl.onChanged('countryAbbreviation')"
+								   min-length-valid="{{$ctrl.COUNTRY_ABBR_MUST_BE_2_CHARS_ERROR}}" validation-model="$ctrl.validationModel.countryAbbreviation">
+						</td>
+						<td>
+							<div data-ng-if="item.isEditing">
+								<!--Editing mode-->
+								<div data-ng-if="item.countryId > 0">
+									<div class="col-md-9" style="padding: 0px;">
+										<input id="countryName" type="text"
+											   style="width: 100%;height: 26px;" maxlength="30"
+											   ng-model="item.countryName" disable-enter-begin-with-space-char
+											   required
+											   title="{{$ctrl.validationModel.countryName.length == 0?$ctrl.COUNTRY_MANDATORY_FIELD_ERROR:''}}"
+											   empty-valid="{{$ctrl.COUNTRY_MANDATORY_FIELD_ERROR}}"  validation-model="$ctrl.validationModel.countryName"
+											   data-ng-change="$ctrl.onChanged('countryName')">
+									</div>
+									<div class="col-md-3 text-center"
+										 style="padding: 0px;vertical-align: middle;line-height: 26px;">
+										- {{item.countryId }}
+									</div>
+								</div>
+								<div data-ng-if="item.countryId == 0">
+									<input id="countryName" type="text"
+										   style="width: 100%;height: 26px;"
+										   maxlength="30"
+										   ng-model="item.countryName"
+										   required disable-enter-begin-with-space-char
+										   title="{{$ctrl.validationModel.countryName.length == 0?$ctrl.COUNTRY_MANDATORY_FIELD_ERROR:''}}"
+										   empty-valid="{{$ctrl.COUNTRY_MANDATORY_FIELD_ERROR}}"  validation-model="$ctrl.validationModel.countryName" data-ng-change="$ctrl.onChanged('countryName')">
+								</div>
+							</div>
+							<!--Viewing mode-->
+							<span data-ng-if="!item.isEditing">{{item.displayNameOnGrid}}</span>
+						</td>
+						<td data-title="'IOS Alpha (A3) - Numeric (N3) Code'" style="vertical-align: middle;">
+							<span  data-ng-if="!item.isEditing">{{item.displayCountIsoOnGrid}}</span>
+							<div data-ng-if="item.isEditing" >
+								<input id="countIsoA3Cod" type="text"
+									   style="width: 48%;height: 26px;"
+									   required ng-model="item.countIsoA3Cod" maxlength="3" minlength="3"
+									   disable-enter-begin-with-space-char
+									   title="{{$ctrl.validationModel.countIsoA3Cod.length == 0?$ctrl.ISO_ALPHA_MANDATORY_FIELD_ERROR:''}}"
+									   empty-valid="{{$ctrl.ISO_ALPHA_MANDATORY_FIELD_ERROR}}"
+									   min-length-valid="{{$ctrl.ISO_ALPHA_MUST_BE_3_CHARS_ERROR}}" validation-model="$ctrl.validationModel.countIsoA3Cod"  data-ng-change="$ctrl.onChanged('countIsoA3Cod')">
+								<div style="width: 2%; display: inline-block;" class="text-center">-</div>
+								<input id="countIsoN3Cd" type="text"
+									   style="width: 48%;height: 26px;"
+									   required ng-model="item.countIsoN3Cd" maxlength="3" min="1" max="999"
+									   numeric-only
+									   title="{{$ctrl.validationModel.countIsoN3Cd.length == 0?$ctrl.NUMBERIC_N3_MANDATORY_FIELD_ERROR:''}}"
+									   empty-valid="{{$ctrl.NUMBERIC_N3_MANDATORY_FIELD_ERROR}}"
+									   min-value-valid="{{$ctrl.NUMBERIC_N3_MUST_BE_GREATER_THAN_0_AND_LESS_THAN_100_ERROR}}" validation-model="$ctrl.validationModel.countIsoN3Cd"
+									   data-ng-change="$ctrl.onChanged('countIsoN3Cd')">
+							</div>
+						</td>
+						<td style="width:7%;text-align: center" can-edit="CT_CNTR_01">
+							<button data-ng-click="$ctrl.editCountryCode(item)" class="glyphicon glyphicon-edit pointer"  ng-if="!item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.countryId)}}color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Edit" data-ng-disabled="$ctrl.isDisabledButton(item.countryId)"></button>
+							<button data-ng-click="$ctrl.deleteCountryCode(item)" class="glyphicon glyphicon-remove pointer"  ng-if="!item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.countryId)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Delete"  data-ng-disabled="$ctrl.isDisabledButton(item.countryId)"></button>
+							<button data-ng-click="$ctrl.updateCountryCode()" class="glyphicon glyphicon-floppy-disk pointer"  ng-if="item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.countryId)}}color: green; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Save"  data-ng-disabled="$ctrl.isDisabledButton(item.countryId)"></button>
+							<button data-ng-click="$ctrl.resetDataOrig()" class="glyphicon glyphicon-ban-circle pointer" ng-if="item.isEditing" style="{{$ctrl.getDisabledButtonStyle(item.countryId)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;" title="Reset"  data-ng-disabled="$ctrl.isDisabledButton(item.countryId)"></button>
+						</td>
+						<td style="width:7%;text-align: center" view-only="CT_CNTR_01">
+							<button class="glyphicon glyphicon-edit pointer"  data-ng-disabled="true" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+							<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="true" style="opacity: 0.5;color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				</form>
+				<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+					<!-- View Mode-->
+					<button view-only="CT_CNTR_01" class="btn btn-primary" disabled="true">Add</button>
+					<!--Edit mode-->
+					<button can-edit="CT_CNTR_01" class="btn btn-primary" ng-click="$ctrl.addNewCountryCode()">Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Add new/Edit popup-->
+<!--Modal Add New/Edit Country codes-->
+<div id="countryCodeModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					Add New Country Code
+				</h5>
+			</div>
+			<div id="addEditContainer" class="modal-body"  >
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addEditForm" id="addEditForm" novalidate>
+					<table ng-table="tableParamsForAddEditMode" class="table-heb table-bordered table-striped" style="width: 100%;">
+						<thead>
+						<tr style="border-bottom: hidden !important;height: 25px;">
+							<th class="col-md-2" style="vertical-align: middle;">Country Abbr.</th>
+							<th class="col-md-3" style="vertical-align: middle;">Country</th>
+							<th class="col-md-7" colspan="2" style="vertical-align: middle;">IOS Alpha (A3) - Numeric
+								(N3) Code
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr  ng-repeat="item in $data track by $index">
+							<td class="col-md-4"><input id="countryAbbreviation{{$index}}" type="text"
+														style="width: 100%;height: 26px;" maxlength="2"
+														ng-model="item.countryAbbreviation" minlength="2"
+														required disable-enter-begin-with-space-char title="{{item.countryAbbreviation.length == 0?$ctrl.COUNTRY_ABBR_MANDATORY_FIELD_ERROR : ''}}"
+														empty-valid="{{$ctrl.COUNTRY_ABBR_MANDATORY_FIELD_ERROR}}"
+														min-length-valid="{{$ctrl.COUNTRY_ABBR_MUST_BE_2_CHARS_ERROR}}" >
+							</td>
+							<td class="col-md-4" data-ng-if="item.countryId > 0">
+								<div class="col-md-9" style="padding: 0px;">
+									<input id="countryName{{$index}}" type="text"
+										   style="width: 100%;height: 26px;" maxlength="30"
+										   ng-model="item.countryName" disable-enter-begin-with-space-char
+										   required title="{{item.countryName.length == 0?$ctrl.COUNTRY_MANDATORY_FIELD_ERROR:''}}"   empty-valid="{{$ctrl.COUNTRY_MANDATORY_FIELD_ERROR}}">
+								</div>
+								<div class="col-md-3 text-center"
+									 style="padding: 0px;vertical-align: middle;line-height: 26px;">
+									- {{item.countryId }}
+								</div>
+							</td>
+							<td class="col-md-4" data-ng-if="item.countryId == 0">
+								<input id="countryName{{$index}}" type="text"
+									   style="width: 100%;height: 26px;"
+									   maxlength="30"
+									   ng-model="item.countryName"
+									   required disable-enter-begin-with-space-char
+									   title="{{item.countryName.length == 0?$ctrl.COUNTRY_MANDATORY_FIELD_ERROR:''}}"  empty-valid="{{$ctrl.COUNTRY_MANDATORY_FIELD_ERROR}}"></td>
+
+							<td class="col-md-2">
+								<input id="countIsoA3Cod{{$index}}" type="text" style="width: 100%;height: 26px;"
+									   required ng-model="item.countIsoA3Cod" maxlength="3" minlength="3"
+									   disable-enter-begin-with-space-char title="{{item.countIsoA3Cod.length == 0?$ctrl.ISO_ALPHA_MANDATORY_FIELD_ERROR:''}}"
+									   empty-valid="{{$ctrl.ISO_ALPHA_MANDATORY_FIELD_ERROR}}"
+									   min-length-valid="{{$ctrl.ISO_ALPHA_MUST_BE_3_CHARS_ERROR}}">
+							</td>
+							<td class="col-md-2">
+								<input id="countIsoN3Cd{{$index}}" type="text" style="width: 100%;height: 26px;"
+									   required ng-model="item.countIsoN3Cd" maxlength="3" min="1" max="999"
+									   numeric-only title="{{item.countIsoN3Cd.length == 0?$ctrl.NUMBERIC_N3_MANDATORY_FIELD_ERROR:''}}"
+									   empty-valid="{{$ctrl.NUMBERIC_N3_MANDATORY_FIELD_ERROR}}"
+									   min-value-valid="{{$ctrl.NUMBERIC_N3_MUST_BE_GREATER_THAN_0_AND_LESS_THAN_100_ERROR}}" >
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRowCountryCode()" ng-show="$ctrl.action == 'ADD'">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.saveNewData()" >Save
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-ng-click="$ctrl.closeAddNewPopup();">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog  ">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmHeaderTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5 ng-bind-html="$ctrl.messageConfirm" class="text-center"></h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.doDeleteCountryCode()"
+						ng-show="$ctrl.allowDeleteCountryCode">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-show="$ctrl.allowDeleteCountryCode  || $ctrl.allowCloseButton">
+					{{$ctrl.labelClose}}
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.saveDataChanged()"
+						ng-show="$ctrl.isConfirmSaveCountryCode">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" ng-click="$ctrl.noSaveDataChanged()"
+						ng-show="$ctrl.isConfirmSaveCountryCode">
+					{{$ctrl.labelClose}}
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-show="$ctrl.isConfirmSaveCountryCode" data-ng-click="$ctrl.cancelConfirmDialog()">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

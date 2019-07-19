@@ -1,0 +1,104 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div class="container-fluid" ng-show="!$ctrl.isWaitingForResponse && !$ctrl.details.isShowing">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row" style="width: 100%;">
+		<div class="inline-block pull-right" style="margin-bottom: 10px;">
+			<button class="btn btn-primary" ng-click="$ctrl.clearFilter()">Clear Filter</button>
+		</div>
+		<table ng-table="$ctrl.factoryTableParams" class="table-heb table-bordered table-striped table-hover"
+			   style="width: 100%;" show-filter="true">
+			<thead>
+			<tr style="border-bottom: hidden; height: 25px;">
+				<th style="text-align: center;">Factory</th>
+				<th style="width: 15%;text-align: center;">Status</th>
+				<th style="width:5%;">Action</th>
+			</tr>
+			<tr style="border-bottom: hidden; height: 25px;">
+				<th style="text-align: center;"><input ng-model="filter.displayName" class="form-control" /></th>
+				<th style="text-align: center;">
+					<ui-select id="statusInput" ng-model="filter.status"
+							   theme="bootstrap"
+							   title="Choose a Status">
+						<ui-select-match allow-clear="true">
+							{{$select.selected.name}}
+						</ui-select-match>
+						<ui-select-choices
+							repeat="status.id as status in $ctrl.statusList"
+							refresh-delay="0">{{status.name}}
+						</ui-select-choices>
+					</ui-select>
+				</th>
+				<th style="width:5%;"></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="factory in $data">
+				<td>
+					<a class="pointer" ng-click="$ctrl.gotoFactoryDetails('factory-details',factory)">
+						{{factory.displayName}}
+					</a>
+				</td>
+				<td>{{factory.status=='A'?'ACTIVE':(factory.status=='I'?'INACTIVE':'')}}</td>
+				<td style="text-align: center" can-edit="CT_FCTR_01">
+					<button data-ng-click="$ctrl.deleteFactory(factory)" class="glyphicon glyphicon-remove pointer" title="Delete"
+							style="color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;">
+					</button>
+				</td>
+				<td style="text-align: center" view-only="CT_FCTR_01">
+					<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="true" style="opacity: 0.5;color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!--Footer -- Contain Save, Reset button-->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="inline-block pull-right">
+				<!--View Mode-->
+				<button view-only="CT_FCTR_01" class="btn btn-primary" disabled="true"> Add </button>
+				<!--Edit Mode-->
+				<button can-edit="CT_FCTR_01" class="btn btn-primary"
+						ng-click="$ctrl.gotoFactoryDetails('factory-details',null)">
+					Add
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message -->
+<div id="confirmModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Delete Factory</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>Are you sure you want to delete the selected Factory? </h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.doDeleteFactory($ctrl.factoryToDelete)">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<factory-details ng-if="$ctrl.details.isShowing" item-sending="$ctrl.details"
+									 array-sending="$ctrl.factoryList"  on-handle-tab-change ="$ctrl.handleTabChange(tab)">

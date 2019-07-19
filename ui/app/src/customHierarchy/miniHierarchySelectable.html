@@ -1,0 +1,16 @@
+<div class="add-hover-background pointer"
+	 ng-click="$ctrl.selectCustomHierarchyLevel(path)"
+	 ng-class="{'add-click-background' : childRelationship.isSelected, 'green-background-white-text' : childRelationship.isMoveSelected}"
+	 ng-init="path = $ctrl.getPathToCurrentLevel(path, childRelationship)">
+	<strong ng-if="$ctrl.hasChildren(childRelationship) && !childRelationship.isCollapsed">[-]</strong>
+	<strong ng-if="$ctrl.hasChildren(childRelationship) && childRelationship.isCollapsed">[+]</strong>
+	<strong ng-if="!$ctrl.hasChildren(childRelationship)">&emsp;&nbsp;</strong>
+	<strong>{{childRelationship.childDescription.shortDescription}}</strong>
+</div>
+<div ng-if="$ctrl.hasChildren(childRelationship)">
+	<div ng-if="!childRelationship.isCollapsed" style="padding-left: 15px" >
+		<div ng-repeat="childRelationship in childRelationship.childRelationships"
+			 ng-include="'src/customHierarchy/miniHierarchySelectable.html'">
+		</div>
+	</div>
+</div>

@@ -1,0 +1,669 @@
+<!--
+  ~ productSearchCriteria.html
+  ~
+  ~  Copyright (c) 016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="panel panel-primary">
+	<div class="panel-heading text-left">Product Search
+		<i id="productSearchVisibility" ng-click="$ctrl.toggleSearchPanelVisibility()"
+		   class="pull-right pointer"
+		   ng-class="{'glyphicon glyphicon-minus': $ctrl.isSearchPanelVisible(), 'glyphicon glyphicon-plus': !$ctrl.isSearchPanelVisible()}">
+		</i>
+	</div>
+	<div ng-show="$ctrl.isSearchPanelVisible()" class="panel-body black-border panel-collapse">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel-heading">
+					<ul class="nav nav-pills">
+						<li class="active">
+							<a id="{{$ctrl.getHtmlId('productSearchBasicTab')}}" data-target="#{{$ctrl.getHtmlId('basicSearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initBasicSearch()">Basic
+							</a>
+						</li>
+						<li>
+							<a id="{{$ctrl.getHtmlId('productSearchHierarchyTab')}}" data-target="#{{$ctrl.getHtmlId('hierarchySearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initProductHierarchySearch()">Product Hierarchy
+							</a>
+						</li>
+						<li>
+							<a id="{{$ctrl.getHtmlId('productSearchBDMTab')}}" data-target="#{{$ctrl.getHtmlId('bdmSearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initBDMSearch()">BDM
+							</a>
+						</li>
+						<li>
+							<a id="{{$ctrl.getHtmlId('productSearchVendorTab')}}" data-target="#{{$ctrl.getHtmlId('vendorSearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initVendorSearch()">Vendor
+							</a>
+						</li>
+						<li>
+							<a id="{{$ctrl.getHtmlId('byosSearchTab')}}" data-target="#{{$ctrl.getHtmlId('byosSearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initByosSearch()">BYOS
+							</a>
+						</li>
+						<li id="{{$ctrl.getHtmlId('descriptionSearchTab')}}" ng-if="$ctrl.showFullPanel()">
+							<a data-target="#{{$ctrl.getHtmlId('descriptionSearch')}}" data-toggle="tab"
+							   ng-click="$ctrl.initDescriptionSearch()">Description
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="panel-body">
+					<div class="tab-content">
+
+						<!-- The panel for basic search.  -->
+						<div class="tab-pane active" id="{{$ctrl.getHtmlId('basicSearch')}}">
+							<div class="row">
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+									<!-- List for the different types the user is allowed to search by a list of. -->
+									<div class="row" style="margin-bottom: 10px">
+										<label style="float: left" for="multiValueSearchType">Criteria type</label>
+										<select class="form-control"
+												ng-model="$ctrl.selectionType"
+												id="multiValueSearchType">
+											<option value="{{$ctrl.UPC}}">UPC</option>
+											<option value="{{$ctrl.ITEM_CODE}}">Item Code</option>
+											<option value="{{$ctrl.PRODUCT_ID}}">Product ID
+											</option>
+											<option ng-if="$ctrl.showFullPanel()"
+													value="{{$ctrl.CASE_UPC}}">Case UPC</option>
+											<option ng-if="$ctrl.showFullPanel()"
+													value="{{$ctrl.CLASS}}">Class</option>
+											<option ng-if="$ctrl.showFullPanel()"
+													value="{{$ctrl.COMMODITY}}">Commodity</option>
+											<option ng-if="$ctrl.showFullPanel()"
+													value="{{$ctrl.SUB_COMMODITY}}">Sub Commodity</option>
+										</select>
+									</div>
+									<div class="row">
+
+											<textarea id="productSearchTextArea"
+													  data-ng-model="$ctrl.searchSelection" rows="8"
+													  placeholder="{{$ctrl.getBasicSearchTextPlaceHolder()}}"
+													  style="width: 100%; resize: vertical" class="form-control">
+											</textarea>
+									</div>
+
+								</div>
+								<!-- Status filter -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+
+									<Label for="itemStatuBlockBasic">Item Status</Label>
+
+									<div id="itemStatuBlockBasic">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!--Search -->
+									<button id="productSearchBasicSearch"
+											data-ng-click="$ctrl.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+									<!-- Clear -->
+									<button id="productSearchBasicClear"
+											data-ng-click="$ctrl.clearBasicSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Clear
+									</button>
+									<!-- Add to complex search -->
+									<button ng-if="$ctrl.showFullPanel()"
+											id="productSearchBasicAdd"
+											data-ng-click="$ctrl.addBasicSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End basic search pane -->
+
+						<!-- Panel for hierarchy search. -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('hierarchySearch')}}">
+							<div class="row">
+								<!-- Level selection drop-down and search box. -->
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+									<div class="row" style="margin-bottom: 5px">
+
+										<label>
+											<input id="productSearchHierarchySubDepartmentRadio" type="radio" ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.SUB_DEPARTMENT}}"/>Sub Department
+										</label>
+										<label>
+											<input id="productSearchHierarchyClassRadio" type="radio" ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.CLASS}}"/>Class
+										</label>
+										<label>
+											<input id="productSearchHierarchyCommodityRadio" type="radio" ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.COMMODITY}}"/>Commodity
+										</label>
+										<label>
+											<input id="productSearchHierarchySubCommodityRadio" type="radio" ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.SUB_COMMODITY}}"/>Sub Commodity
+										</label>
+
+									</div>
+									<div class="row">
+										<ui-select ng-model="$ctrl.searchSelection"
+												   theme="bootstrap"
+												   id="productSearchSelection"
+												   title="Choose a {{$ctrl.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in $ctrl.valueList"
+												refresh="$ctrl.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<!-- Item Status Filter -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+									<Label for="statusBlockHierarchy">Item Status</Label>
+
+									<div id="statusBlockHierarchy">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Search -->
+									<button id="productSearchHierarchySearch"
+											data-ng-click="$ctrl.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="$ctrl.showFullPanel()"
+											id="productSearchHierarchyAdd"
+											data-ng-click="$ctrl.addHierarchySearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End panel for hierarchy search. -->
+
+						<!-- Panel for BDM search. -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('bdmSearch')}}">
+							<div class="row">
+								<!-- BDM drop-down -->
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+									<div class="row">
+										<label for="bdmSearchSelection">Select a BDM</label>
+										<ui-select ng-model="$ctrl.searchSelection"
+												   theme="bootstrap"
+												   id="bdmSearchSelection"
+												   title="Choose a {{$ctrl.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in $ctrl.valueList"
+												refresh="$ctrl.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<!-- Item Status -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+									<Label for="statusBlockBdm">Item Status</Label>
+
+									<div id="statusBlockBdm">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<button id="productSearchBDMSearch"
+											data-ng-click="$ctrl.search()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+									<button ng-if="$ctrl.showFullPanel()"
+											id="productSearchBDMAdd"
+											data-ng-click="$ctrl.addBdmSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Add
+									</button>
+								</div>
+							</div>
+						</div>
+						<!-- End BDM panel -->
+
+						<!-- MRT panel -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('mrtSearch')}}">
+							<div class="row">
+								<!-- The box to enter item code or case UPC -->
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+									<div class="row" style="margin-bottom: 5px">
+										<label>
+											<input id="productSearchMRTItemCodeRadio" type="radio"
+												   ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.ITEM_CODE}}"/>Item Code
+										</label>
+										<label>
+											<input id="productSearchMRTCaseUPCRadio" type="radio"
+												   ng-model="$ctrl.selectionType"
+												   value="{{$ctrl.CASE_UPC}}"/>Case UPC
+										</label>
+									</div>
+									<div class="row">
+										<input id="productSearchMRTTextArea" type="text" pattern="[0-9]{1,19}"
+											   title="Please enter one valid {{$ctrl.selectionType}}"
+											   ng-model="$ctrl.searchSelection"
+											   placeholder="{{$ctrl.getMrtSearchTextPlaceHolder()}}"
+											   style="width: 100%"
+											   class="form-control">
+									</div>
+								</div>
+
+								<!-- status filter -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+									<label for="statusBlockVendor">Item Status</label>
+
+									<div id="statusBlockMrt">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- buttons -->
+								<div class="col-md-4">
+									<button id="productSearchMRTSearch"
+											data-ng-click="$ctrl.search()"
+											title="Please enter one valid {{$ctrl.selectionType}}"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+								</div>
+
+							</div>
+
+						</div>
+						<!-- End MRT panel -->
+
+						<!-- Vendor panel -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('vendorSearch')}}">
+							<div class="row">
+								<!-- Vendor list -->
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+									<div class="row">
+										<label for="vendorSearchSelection">Select a Vendor</label>
+										<ui-select ng-model="$ctrl.searchSelection"
+												   theme="bootstrap"
+												   id="vendorSearchSelection"
+												   title="Choose a {{$ctrl.selectionType}}">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices
+												repeat="element in $ctrl.valueList"
+												refresh="$ctrl.getCurrentDropDownResults($select.search)"
+												refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+
+								<!-- Item status -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+									<label for="statusBlockVendor">Item Status</label>
+
+									<div id="statusBlockVendor">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio" id="vendorStatusDiscontinued"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Search -->
+									<button id="productSearchVendorSearch"
+											data-ng-click="$ctrl.search()"
+											title="Please enter one valid {{$ctrl.selectionType}}"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="$ctrl.showFullPanel()"
+											id="productSearchVendorAdd"
+											data-ng-click="$ctrl.addVendorSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Add
+									</button>
+								</div>
+
+
+							</div>
+						</div>
+						<!-- End vendor panel -->
+
+						<!-- BYOS -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('byosSearch')}}">
+							<byos-search init="$ctrl.init" on-update="$ctrl.updateByosSearch(searchCriteria)"></byos-search>
+						</div>
+						<!-- End BYOS -->
+
+						<!-- Description panel -->
+						<div class="tab-pane" id="{{$ctrl.getHtmlId('descriptionSearch')}}">
+							<div class="row">
+								<div
+									ng-class="{'col-md-5' : $ctrl.showItemStatusFilter(), 'col-md-8' : !$ctrl.showItemStatusFilter()}">
+
+									<div class="row"  style="margin-bottom: 5px">
+										<div class="col-md-5">
+
+											<input type="checkbox" id="searchByProductDescription"
+												   ng-model="$ctrl.searchByProductDescription">
+											<label for="searchByProductDescription">Product Description</label>
+
+										</div>
+										<div class="col-md-7">
+
+											<input type="checkbox" id="searchByCustomerFriendlyDescription"
+												   ng-model="$ctrl.searchByCustomerFriendlyDescription">
+											<label for="searchByCustomerFriendlyDescription">Customer Friendly Description</label>
+										</div>
+
+										<div class="col-md-5">
+											<input type="checkbox" id="searchByDisplayName"
+												   ng-model="$ctrl.searchByDisplayName">
+											<label for="searchByDisplayName">Display Name</label>
+										</div>
+
+										<div class="col-md-7">
+											<input type="checkbox" id="searchByAllExtended"
+												   ng-model="$ctrl.searchAllExtendedAttributes">
+											<label for="searchByAllExtended">All Extended Attributes</label>
+										</div>
+
+									</div>
+									<div class="row">
+										<!--<label for="productSearchDescriptionText">Description</label>-->
+										<input id="productSearchDescriptionText" type="text"
+											   title="Please enter a description to search for."
+											   ng-model="$ctrl.searchSelection"
+											   placeholder="Description"
+											   class="form-control">
+									</div>
+								</div>
+
+								<!-- Item status -->
+								<div class="col-md-3" ng-if="$ctrl.showItemStatusFilter()">
+									<label for="statusBlockVendor">Item Status</label>
+
+									<div id="statusBlockDescription">
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DEFAULT_ITEM_STATUS}}">All</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.ACTIVE_ITEM_STATUS}}">Active</label>
+										<label style="width: 100%"><input type="radio"
+																		  ng-model="$ctrl.itemStatus"
+																		  value="{{$ctrl.DISCONTINUED_ITEM_STATUS}}">Discontinued</label>
+									</div>
+								</div>
+
+								<!-- Buttons -->
+								<div class="col-md-4">
+									<!-- Search -->
+									<button id="productSearchDescriptionSearch"
+											data-ng-click="$ctrl.search()"
+											title="Please enter a product description"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Search
+									</button>
+									<!-- Add -->
+									<button ng-if="$ctrl.showFullPanel()"
+											id="productSearchDescriptionAdd"
+											data-ng-click="$ctrl.addDescriptionSearch()"
+											class="btn btn-primary btn-block"
+											data-ng-disabled="$ctrl.searchSelection == null">
+										Add
+									</button>
+								</div>
+
+							</div>
+						</div>
+						<!-- End description panel -->
+
+					</div>
+					<!-- Show the user's selected search criteria. -->
+				</div>
+				<div class="row" ng-show="$ctrl.hasComplexSearch()">
+					<hr style="border-color: black">
+					<div class="col-md-9">
+						<div ng-show="$ctrl.hasProductIdSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeProductIdSearch()"></i>
+							</div>
+							<div class="inline-block">{{$ctrl.getProductIdSearchText()}}</div>
+
+						</div>
+						<div ng-show="$ctrl.hasUpcSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeUpcSearch()"></i>
+							</div>
+							<div class="inline-block">{{$ctrl.getUpcSearchText()}}</div>
+						</div>
+						<div ng-show="$ctrl.hasItemCodeSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeItemCodeSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getItemCodeSearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasCaseUpcSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeCaseUpcSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getCaseUpcSearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasClassSearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeClassSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getClassSearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasCommoditySearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeCommoditySearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getCommoditySearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasSubCommoditySearch()" style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeSubCommoditySearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getSubCommoditySearchText()}}
+							</div>
+						</div>
+						<div
+							ng-show="$ctrl.hasHierarchySearch($ctrl.SUB_DEPARTMENT)"
+							style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeHierarchySearch($ctrl.SUB_DEPARTMENT)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getHierarchySearchText($ctrl.SUB_DEPARTMENT)}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasHierarchySearch($ctrl.CLASS)"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeHierarchySearch($ctrl.CLASS)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getHierarchySearchText($ctrl.CLASS)}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasHierarchySearch($ctrl.COMMODITY)"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeHierarchySearch($ctrl.COMMODITY)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getHierarchySearchText($ctrl.COMMODITY)}}
+							</div>
+						</div>
+						<div
+							ng-show="$ctrl.hasHierarchySearch($ctrl.SUB_COMMODITY)"
+							style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeHierarchySearch($ctrl.SUB_COMMODITY)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getHierarchySearchText($ctrl.SUB_COMMODITY)}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasBdmSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeBdmSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getBdmSearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasVendorSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeVendorSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getVendorSearchText()}}
+							</div>
+						</div>
+						<div ng-show="$ctrl.hasDescriptionSearch()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeDescriptionSearch()"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{$ctrl.getDescriptionSearchText()}}
+							</div>
+						</div>
+
+						<div ng-repeat="byosObject in $ctrl.getByosObjects()"
+							 style="margin-bottom: 10px;">
+							<div class="inline-block pull-left"
+								 style="color: red; font-size: medium; padding-right: 5px">
+								<i class="glyphicon glyphicon-remove"
+								   ng-click="$ctrl.removeByos(byosObject)"></i>
+							</div>
+							<div style="text-align: left; width: 80%" class="inline-block">
+								{{byosObject.description}}
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<button data-ng-click="$ctrl.clearComplexSearch()"
+								class="btn btn-primary btn-block">Clear
+						</button>
+						<button data-ng-click="$ctrl.doComplexSearch()"
+								class="btn btn-primary btn-block">Search
+						</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

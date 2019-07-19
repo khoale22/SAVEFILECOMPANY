@@ -1,0 +1,143 @@
+<div can-view="CP_MRT_01">
+	<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+	</loading-spinner>
+	<div ng-if="$ctrl.itemMasterCurrent.mrt" ng-show="!$ctrl.isWaitingForResponse">
+		<div class="row col-md-offset-11 col-md-1 pull-right" >
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showMrtAuditInfo()"></div>
+		</div>
+		<div class="row" data-ng-if="$ctrl.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+		</div>
+		<div class="row" data-ng-show="$ctrl.errorValidate">
+			<span class="alert alert-danger col-md-5 col-md-push-4 myfade" role="alert">
+				Case Pack - MRT
+				<li ng-repeat="errorValidate in $ctrl.errorValidate">{{errorValidate}}</li>
+			</span>
+		</div>
+		<div class="row" data-ng-if="$ctrl.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table ng-table="defaultConfigTableParams"
+					   class="table-heb table-bordered table-striped"
+					   width="100%">
+					<div>
+						<div style="line-height: 25px;">
+							<div style="float: left"><strong>MRT UPC </strong> {{$ctrl.itemMasterCurrent.orderingUpc}}
+								<div style="float: right;">
+									<label class="col-md-6 narrow-left-column" for="itemSize">Size</label>
+									<div class="col-md-6 narrow-right-column narrow-middle-column">
+										<div view-only="CP_MRT_01">{{$ctrl.itemMasterCurrent.itemSize | uppercase}}</div>
+										<input type="text"
+											   class="form-control"
+											   can-edit="CP_MRT_01"
+											   maxlength="12"
+											   id="itemSize"
+											   ng-change="$ctrl.itemMasterCurrent.itemSize = ($ctrl.itemMasterCurrent.itemSize | uppercase)"
+											   ng-model="$ctrl.itemMasterCurrent.itemSize">
+									</div>
+								</div>
+							</div>
+							<div style="float: right"><strong>{{$ctrl.itemMasterCurrent.description}}</strong></div>
+						</div>
+					</div>
+					<thead>
+					<tr>
+						<th can-edit="CP_MRT_01">
+							<input type="checkbox" ng-model="$ctrl.checkAllMRT" ng-click="$ctrl.selectedAllMRT()">
+						</th>
+						<th>Element UPC</th>
+						<th>Description</th>
+						<th>Department</th>
+						<th>Size</th>
+						<th>Quantity</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="shipper in $ctrl.itemMasterCurrent.primaryUpc.shipper">
+						<td align="center" can-edit="CP_MRT_01">
+							<input type="checkbox" ng-model="shipper.isChecked" ng-change="$ctrl.rowChecked()">
+						</td>
+						<td>
+							<input type="text" ng-model="shipper.key.shipperUpc" style="width: 100%" can-edit="CP_MRT_01"
+								   ng-blur="$ctrl.loadSellingUnit(shipper)" number-validator="^\d+$"
+								   maxlength="13">
+							<label style="font-weight: normal; width: 100%" view-only="CP_MRT_01">{{shipper.key.shipperUpc}}</label>
+						</td>
+						<td>{{shipper.sellingUnit.displayName}}</td>
+						<td>{{shipper.sellingUnit.productMaster.departmentString}}</td>
+						<td>{{shipper.sellingUnit.tagSize}}</td>
+						<td>
+							<input type="number"
+								   class="form-control input-no-spinner"
+								   ng-model="shipper.shipperQuantity"
+								   style="width: 100%;"
+								   ng-change="$ctrl.calculateQuantityTotal($ctrl.itemMasterCurrent.primaryUpc.shipper)"
+								   ng-pattern="/^[0-9]*$/"
+								   min="0"
+								   can-edit="CP_MRT_01">
+							<label style="width: 100%;font-weight:normal" view-only="CP_MRT_01">{{shipper.shipperQuantity}}</label>
+
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<strong class="pull-right" style="padding-top: 10px">Total Quantity: {{$ctrl.totalQuantity}}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="pull-right clearfix" >
+					<button type="button" class="btn  btn-primary btn-default btn-sm" can-edit="CP_MRT_01"
+							ng-click="$ctrl.reset()">Reset</button>
+					<button type="button" class="btn  btn-primary btn-default btn-sm" can-edit="CP_MRT_01"
+							style="padding-right: 10px" ng-click="$ctrl.saveMrtInfo()"
+							ng-disabled="$ctrl.disableSave()">Save</button>
+					<button type="button" class="btn  btn-primary btn-default btn-sm" can-edit="CP_MRT_01"
+							style="padding-right: 10px" ng-click="$ctrl.addRow()">Add</button>
+					<button type="button" class="btn  btn-primary btn-default btn-sm" can-edit="CP_MRT_01"
+							style="padding-right: 10px" ng-click="$ctrl.deleteMrt()">Delete</button>
+					<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+							data-ng-click="$ctrl.returnToList()">Return To List</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-if="!$ctrl.itemMasterCurrent.mrt">
+		Item {{$ctrl.itemMasterCurrent.key.itemCode}} is not an MRT.
+		<div class="row">
+			<div class="col-md-12">
+				<div class="inline-block pull-right">
+					<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+							data-ng-click="$ctrl.returnToList()">Return To List</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="deleteConfirmModal" class="modal fade" role="dialog" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7; height: 70%">
+				<div class="modal-title inline-block" style="color: #ffffff">
+					<h5>Confirmation</h5>
+				</div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">Do you really want to delete the selected Element UPC?</div>
+			<div class="modal-footer">
+				<!--Buttons for the edit-->
+				<button can-edit="CP_WHSE_01" class="btn btn-primary" data-ng-click="$ctrl.doDeleteMRT()">
+					Yes
+				</button>
+				<button class="btn btn-primary" data-dismiss="modal">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

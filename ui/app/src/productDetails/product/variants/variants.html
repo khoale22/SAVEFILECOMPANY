@@ -1,0 +1,406 @@
+<!--
+  ~ variants.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div ng-init="$ctrl.init()" can-edit="PD_VRNT_01">
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<loading-spinner ng-show="$ctrl.isWaiting">
+	</loading-spinner>
+	<div class="panel-group" ng-show="!$ctrl.isWaiting">
+		<div class="panel panel-primary">
+			<div class="panel-body panel-collapse">
+				<ul class="nav nav-tabs nav-pills">
+					<li  ng-class="$ctrl.activeVariantsTabClass">
+						<a data-toggle="tab"
+						   ng-click="$ctrl.chooseTab('variants')"
+						    style="border-radius: 5px;    border: 1px solid #cccccc24;">Variants</a>
+					</li>
+					<li  ng-class="$ctrl.activeVariantsItemTabClass">
+						<a data-toggle="tab"   style="border-radius: 5px;    border: 1px solid #cccccc24;"
+						   ng-click="$ctrl.chooseTab('variantsItem')">Variant - Item</a>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<div id="tab1" ng-class="$ctrl.variantsTabPaneClass">
+						<div class="header-variants">
+							<div class="form-group" >
+								<span>Assortment Product Id  <a style="padding:0 10px;" ng-click="$ctrl.goToSearchProduct($ctrl.parentProductId)">{{$ctrl.parentProductId}}</a></span>
+							</div>
+							<div class="form-group" style="padding-left: 30px;">
+								<span for="casepack">Description   <strong style="padding:0 10px;">{{$ctrl.parentProductDecription}}</strong></span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<table ng-table="variantsTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+									<thead>
+										<tr style="border-bottom: hidden !important;height: 25px;">
+											<th style="width:5%; vertical-align: middle;">
+												<input type="checkbox"  ng-model="$ctrl.checkAllVariant" ng-click="$ctrl.checkAllVariantAction()">
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant Product Id
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant UPC
+											</th>
+											<th style=" vertical-align: middle;">
+												Parent UPC
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant Item Code
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant CFD1
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant CFD2
+											</th>
+											<th style=" vertical-align: middle;">
+												Image
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="variants in $data">
+											<td style=" padding:5px;text-align: center;">
+												<input type="checkbox"  ng-model="variants.selectedItem" ng-change="$ctrl.checkAllVariantValidation()"></td>
+											<td style="padding:5px">
+												<a ng-click="$ctrl.goToSearchProduct(variants.key.relatedProductId)">{{variants.key.relatedProductId}}</a>
+											</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.productPrimaryScanCodeId}}
+											</td>
+
+											<td style="padding:5px">
+												{{variants.elementUpc}}
+											</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.prodItems[0].key.itemCode}}
+											</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.customerFriendlyDescription1}}</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.customerFriendlyDescription2}}</td>
+											<td style="padding:5px">
+												<div>
+													<div style="display: inline-block;">
+														<img data-ng-show="variants.relatedProduct.image"
+															 data-ng-src="{{variants.relatedProduct.image}}"
+															 ng-click="$ctrl.showFullImage(variants.relatedProduct.image)"
+															 style="max-width:100%; max-height: 90%;width: 40px; height: 40px;}">
+														<img data-ng-show="variants.relatedProduct==null || !variants.relatedProduct.image"
+															 data-ng-src="images/no_image.png"
+															 style="max-width:100%; max-height: 90%;width: 40px; height: 40px;">
+													</div>
+													<a class="pointer" ng-click="$ctrl.showPopupAssignImage(variants.key.relatedProductId, variants.relatedProduct.productPrimaryScanCodeId)">Assign Images</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<br>
+							</div>
+						</div>
+						<div class="pull-right" style="    padding: 20px 0;">
+							<button class="btn btn-primary" ng-click="$ctrl.addVariants()">Add</button>
+							<button class="btn btn-danger" ng-click="$ctrl.deleteVariantProduct()">
+								Delete
+							</button>
+						</div>
+					</div>
+					<div id="tab2" ng-class="$ctrl.variantsItemTabPaneClass">
+						<div class="header-variants">
+							<div class="form-group" >
+								<span>Item Code  <strong style="padding:0 10px;">{{$ctrl.productMaster.prodItems[0].key.itemCode}}</strong></span>
+							</div>
+							<div class="form-group" style="padding-left: 30px;">
+								<span for="casepack">Case Pack Description   <strong style="padding:0 10px;">{{$ctrl.productMaster.prodItems[0].itemMaster.description}}</strong></span>
+							</div>
+							<div class="form-group" style="padding-left: 30px;">
+								<span for="pack-label">Pack   <strong style="padding:0 10px;">{{$ctrl.productMaster.prodItems[0].itemMaster.pack}}</strong></span>
+							</div>
+							<div class="form-group" style="padding-left: 30px;">
+								<span for="variant-quantity-unknown">Variant Quantity Unknown  </span>
+								<input type="checkbox"  id="variant-quantity-unknown" data-ng-disabled="$ctrl.disabledVariantQuantityUnknown" style="padding:0 10px;" ng-model="$ctrl.variantQuantityUnknown" >
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<table ng-table="variantsTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+									<thead>
+										<tr style="border-bottom: hidden !important;height: 25px;">
+											<th style="width:5%; vertical-align: middle;">
+												<input type="checkbox" ng-checked="$ctrl.checkAllValue" ng-click="$ctrl.checkAll()">
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant Product Id
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant UPC
+											</th>
+											<th style=" vertical-align: middle;">
+												Parent UPC
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant CFD1
+											</th>
+											<th style=" vertical-align: middle;">
+												Variant CFD2
+											</th>
+											<th style=" vertical-align: middle;">
+												Quantity
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="variants in $data">
+											<td style=" padding:5px;text-align: center;">
+												<input type="checkbox" ng-model="variants.relatedProduct.checked" ng-click="$ctrl.checkVariantItem(variants)">
+											</td>
+											<td style="padding:5px">
+												<a ng-click="$ctrl.goToSearchProduct(variants.key.relatedProductId)">{{variants.key.relatedProductId}}</a>
+											</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.productPrimaryScanCodeId}}
+											</td>
+
+											<td style="padding:5px">
+												{{variants.elementUpc}}
+											</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.customerFriendlyDescription1}}</td>
+											<td style="padding:5px">
+												{{variants.relatedProduct.customerFriendlyDescription2}}</td>
+											<td style="padding:5px">
+												<div>
+													<input type="text" ng-model="variants.relatedProduct.productItemVariant.retailPackQuantity"
+														   class="form-control"
+														   ng-disabled="$ctrl.variantQuantityUnknown || !variants.relatedProduct.checked"
+														   ng-change="$ctrl.reCalculateQuantity(variants)"
+														   maxlength="3" min="1" max="999"
+														   numeric-only class="input-sm form-control"
+														   min-value-valid="{{$ctrl.NUMBERIC_MUST_BE_GREATER_THAN_0_ERROR}}"
+													>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<br>
+							</div>
+						</div>
+						<div class="pull-right">
+							<strong>Total quantity <span>{{$ctrl.sumQuantity}}</span></strong>
+						</div>
+					</div>
+
+
+				</div>
+
+
+			</div>
+		</div>
+		<div class="pull-right" style="    padding: 20px 0;">
+			<button class="btn btn-primary" ng-click="$ctrl.saveData()">Save</button>
+			<button class="btn btn-primary" ng-click="$ctrl.resetData()" >Reset</button>
+			<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+		</div>
+	</div>
+</div>
+
+<!-- Popup show and download image-->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td >
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" title="Delete"
+								data-dismiss="modal" aria-label="Close" >
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px" title="Download"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td >
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- Add variants step-->
+<div id="addVariants" class="modal fade" role="dialog">
+	<add-new-variants ng-if="$ctrl.isShowAddForm"
+					  product-master="$ctrl.productMaster" item-master="$ctrl.itemMaster"
+					  romance-copy = "$ctrl.romanceCopy"
+					  display-name = "$ctrl.displayName"
+					  size = "$ctrl.size"
+					  brand = "$ctrl.brand"
+					  variant-data="$ctrl.variantData"
+	></add-new-variants>
+</div>
+
+<!-- Assign Image popup-->
+<div id="assign-image">
+	<div can-edit="PD_VRNT_01" id="assignImageModal" class="modal fade" role="dialog" maxlength="500px;" ng-style="$ctrl.styleDisplay2Modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h6 class="modal-title inline-block" style="color: #ffffff">Assign Image to Variant</h6>
+					<button type="button" class="close" data-dismiss="modal"
+							title="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" style="overflow-y:auto">
+					<div class="alert alert-danger" style="overflow-x: hidden;overflow-y: auto; max-height: 100px"
+						 data-ng-if="$ctrl.errorAssignImage" ng-bind-html="$ctrl.errorAssignImage"></div>
+					<div style="margin-bottom: 5px">
+						<strong>Variant Product ID</strong>
+						<span style="margin-left: 2px">
+							<input class="form-control" type="text" ng-model="$ctrl.selectedVariantProductId"
+								   style="height:24px;" readonly>
+						</span>
+					</div>
+					<table ng-table="$ctrl.assignImageTable" class="table-heb table-bordered table-striped" style="width: 100%;">
+						<thead style="font-size: 12px !important;">
+						<tr>
+							<th style="width:4%; vertical-align: middle;">
+								<input style="margin: 0px" type="checkbox" data-ng-click="$ctrl.handleCheckAllImage()"
+									   ng-checked="$ctrl.isCheckAllImage"/>
+							</th>
+							<th style="width: 10%;text-align: center;">Image</th>
+							<th style="width: 6%;text-align: center;">Size</th>
+							<th style="width: 14%;text-align: center;">Alt Tag</th>
+							<th style="width: 13%;text-align: center;">Category</th>
+							<th style="width: 9%;text-align: center;">Primary/ Alternate</th>
+							<th style="width: 6%;text-align: center;">Active Online</th>
+							<th style="width: 12%;text-align: center;">Status</th>
+							<th style="width: 5%;text-align: center;">Created Date</th>
+							<th style="width: 8%;text-align: center;">Application Source</th>
+							<th style="width: 8%;text-align: center;">Image Source</th>
+							<th style="width: 5%;text-align: center;">Last Modified</th>
+						</tr>
+						</thead>
+						</tbody>
+						<tbody>
+						<tr ng-repeat="image in $data"
+							style="height: 55px;">
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow" style="text-align: center;">
+								<input type="checkbox" data-ng-click="$ctrl.handleCheckImage(image)"
+									   style="margin: 0px" ng-checked="image.isChecked"/>
+							</td>
+							<td style="text-align: center;">
+								<div data-ng-if="!image.isEmptyRow && $ctrl.getImageByImageURI(image.imageURI) !== $ctrl.IMAGE_NOT_FOUND
+								&& $ctrl.getImageByImageURI(image.imageURI) !== ''">
+									<img class="image-thumbnail" ng-src="{{$ctrl.getImageByImageURI(image.imageURI)}}"/>
+								</div>
+								<div data-ng-show="!image.isEmptyRow && $ctrl.getImageByImageURI(image.imageURI) === $ctrl.IMAGE_NOT_FOUND">
+									<img class="image-thumbnail" src='images/no_image.png' />
+								</div>
+								<div data-ng-show="!image.isEmptyRow && $ctrl.getImageByImageURI(image.imageURI) === ''">
+									<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+								</div>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">{{image.xAxisResolution}} x {{image.yAxisResolution}} </td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">
+								<input class="form-control" type="text" ng-model="image.altTag"
+									   style="width: 100%;height:24px;margin-bottom:1px;margin-top:1px;" readonly>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">
+								<select class="form-control" name="imageCategory" style="width: 100%;height:24px;opacity: 0.5;margin-bottom:1px;margin-top:1px;" disabled="true">
+									<option value="imageCategory">{{image.imageCategory.description}}</option>
+								</select>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">
+								<select class="form-control" name="imagePriority" style="width: 100%;height:24px;opacity: 0.5;margin-bottom:1px;margin-top:1px;" disabled="true">
+									<option value="imagePriority">{{image.imagePriority.description}}</option>
+								</select>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td style="padding:5px;text-align: center;" data-ng-show="!image.isEmptyRow">
+								<input class="form-control" type="checkbox" style="opacity: 0.5;margin: 0px" disabled="true" ng-model="image.activeOnline"/>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">
+								<select class="form-control" name="imageStatus" style="width: 100%;height:24px;opacity: 0.5;margin-bottom:1px;margin-top:1px;" disabled="true">
+									<option value="imageCategory">{{image.imageStatus.description}}</option>
+								</select>
+							</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">{{image.createdDate | date:'MM/dd/yyyy'}}</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">{{image.sourceSystem.description}}</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">{{image.applicationSource}}</td>
+							<td data-ng-show="image.isEmptyRow"></td>
+							<td data-ng-show="!image.isEmptyRow">{{image.lastModifiedOn | date:'MM/dd/yyyy'}} {{image.lastModifiedBy}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer" style="min-width: 300px">
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-disabled="!$ctrl.hasSelectedAssignImage()"
+							ng-click="$ctrl.saveAssignImage()">Save
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-disabled="!$ctrl.hasSelectedAssignImage()"
+							ng-click="$ctrl.handleAssignAll()">Save for all Variants
+					</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Confirm modal assign all image-->
+	<div id="confirm-assign-all" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+					<button type="button" class="close" data-dismiss="modal"
+							ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}" title="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" style="font-size:14px;">
+					<p>Do you want to save the selected Image(s) for all Variant?</p>
+				</div>
+				<div class="modal-footer">
+					<div>
+						<button type="button" class="btn btn-primary" ng-click="$ctrl.assignAllImage()">Confirm</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal"
+								ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

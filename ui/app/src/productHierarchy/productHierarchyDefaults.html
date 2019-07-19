@@ -1,0 +1,1774 @@
+<div class="col-md-12 container-fluid"
+	 can-view="PH_VIEW_00"
+	 ng-cloak="true"
+	 ng-controller="ProductHierarchyDefaultsController as productHierarchyDefaultsController"
+	 ng-init="productHierarchyDefaultsController.init()">
+	<div class="row">
+		<loading-spinner ng-if="productHierarchyDefaultsController.isWaitingForResponse"></loading-spinner>
+		<div class="col-md-4"
+			 ng-if="!productHierarchyDefaultsController.isWaitingForResponse && productHierarchyDefaultsController.data != null">
+			<div class="row" style="padding-bottom: 5px;">
+                <select class="col-md-3 form-control" ng-model="productHierarchyDefaultsController.searchOption" style="padding: 6px; margin-left: 15px;  width: 120px;">
+                    <option value="Product Hierarchy" selected="selected">Product Hierarchy</option>
+                    <option value="BDM">BDM</option>
+                </select>
+				<div class="col-md-5 inline-block">
+					<input type="text"
+						   class="form-control"
+						   style="width: 100%; padding: 6px 12px 6px 12px"
+						   id="productHierarchySearchText"
+						   title="{{productHierarchyDefaultsController.productHierarchySearchTitle}}"
+						   ng-model="productHierarchyDefaultsController.productHierarchySearchText">
+				</div>
+				<div class="pull-right btn-group" style="padding-right: 15px">
+					<button class="btn btn-primary"
+							ng-disabled="isEmptyString(productHierarchyDefaultsController.productHierarchySearchText)"
+							title="{{isEmptyString(productHierarchyDefaultsController.productHierarchySearchText) ? productHierarchyDefaultsController.productHierarchySearchTitle : productHierarchyDefaultsController.productHierarchySearchButtonTitle}}"
+							ng-click="productHierarchyDefaultsController.updateProductHierarchyViewOnSearch()">Search</button>
+					<button class="btn btn-default"
+							ng-disabled="isEmptyString(productHierarchyDefaultsController.productHierarchySearchText)"
+							title="{{!isEmptyString(productHierarchyDefaultsController.productHierarchySearchText) ? productHierarchyDefaultsController.productHierarchySearchClearButtonTitle : null}}"
+							ng-click="productHierarchyDefaultsController.clearProductHierarchySearch()">Clear</button>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 20px">
+				<div class="col-md-12">
+					<div class="well"
+						 style="overflow-y: auto"
+						 ng-style="{'max-height': getHeight(100, 0)}">
+						<div class="panel-group">
+							<strong ng-show="productHierarchyDefaultsController.searchingForProductHierarchy">{{productHierarchyDefaultsController.searchingForProductHierarchyText}}</strong>
+							<strong ng-show="productHierarchyDefaultsController.resetFullHierarchy">{{productHierarchyDefaultsController.waittingForResetFullHierarchy}}</strong>
+							<div ng-if="!productHierarchyDefaultsController.searchingForProductHierarchy && productHierarchyDefaultsController.data.length === 0">No results found</div>
+							<div class="nav nav-list" ng-repeat="department in productHierarchyDefaultsController.data"
+								 ng-if="!productHierarchyDefaultsController.searchingForProductHierarchy && productHierarchyDefaultsController.data.length > 0 && !productHierarchyDefaultsController.resetFullHierarchy">
+								<div class="panel panel-primary">
+									<div class="panel-heading" ng-click="productHierarchyDefaultsController.selectDepartment(department)">
+										<h4 class="panel-title">
+											<a><strong>{{department.displayName}}</strong></a>
+											<strong class="pull-right"
+													ng-class="{'fa fa-minus' : !productHierarchyDefaultsController.isHierarchyLevelCollapsed(department), 'fa fa-plus' : productHierarchyDefaultsController.isHierarchyLevelCollapsed(department)}">
+											</strong>
+										</h4>
+									</div>
+									<div ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(department)">
+										<div ng-repeat="subDepartment in department.subDepartmentList">
+											<div ng-click="productHierarchyDefaultsController.selectSubDepartment(department, subDepartment)"
+												 style="padding-left: 15px" class="add-hover-background"
+												 ng-class="{'add-click-background' : subDepartment.isSelected}">
+												<strong ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(subDepartment)">[-]</strong>
+												<strong ng-if="productHierarchyDefaultsController.isHierarchyLevelCollapsed(subDepartment)">[+]</strong>
+												<strong>{{subDepartment.displayName}}</strong>
+											</div>
+											<div ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(subDepartment)">
+												<div ng-repeat="itemClass in subDepartment.itemClasses">
+													<div ng-click="productHierarchyDefaultsController.selectItemClass(department, subDepartment, itemClass)"
+														 style="padding-left: 30px" class="add-hover-background"
+														 ng-class="{'add-click-background' : itemClass.isSelected}">
+														<strong ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(itemClass)">[-]</strong>
+														<strong ng-if="productHierarchyDefaultsController.isHierarchyLevelCollapsed(itemClass)">[+]</strong>
+														<strong>{{itemClass.displayName}}</strong></div>
+													<div ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(itemClass)">
+														<div ng-repeat="commodity in itemClass.commodityList">
+															<div ng-click="productHierarchyDefaultsController.selectCommodity(department, subDepartment, itemClass, commodity)"
+																 style="padding-left: 45px" class="add-hover-background"
+																 ng-class="{'add-click-background' : commodity.isSelected}">
+																<strong ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(commodity)">[-]</strong>
+																<strong ng-if="productHierarchyDefaultsController.isHierarchyLevelCollapsed(commodity)">[+]</strong>
+																<strong>{{commodity.displayName}}</strong></div>
+															<div ng-if="!productHierarchyDefaultsController.isHierarchyLevelCollapsed(commodity)">
+																<div ng-repeat="subCommodity in commodity.subCommodityList">
+																	<div ng-click="productHierarchyDefaultsController.selectSubCommodity(department, subDepartment, itemClass, commodity, subCommodity)"
+																		 style="padding-left: 60px" class="add-hover-background"
+																		 ng-class="{'add-click-background' : subCommodity.isSelected}">
+																		<strong>{{subCommodity.displayName}}</strong>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-8"
+			 ng-if="!productHierarchyDefaultsController.isWaitingForResponse && productHierarchyDefaultsController.data != null && productHierarchyDefaultsController.departmentSelected != null">
+			<div class="row" data-ng-if="productHierarchyDefaultsController.success">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" style="padding: .5%" role="alert">{{productHierarchyDefaultsController.success}}</span>
+			</div>
+			<div class="row" data-ng-if="productHierarchyDefaultsController.error">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" style="padding: .5%" role="alert">{{productHierarchyDefaultsController.error}}</span>
+			</div>
+			<div class="row" data-ng-if="productHierarchyDefaultsController.waitingForUpdate">
+				<span class="alert alert-info col-md-4 col-md-push-4 text-center myfade" style="padding: .5%" role="alert">{{productHierarchyDefaultsController.updateMessage}}</span>
+			</div>
+
+			<div class="row"
+				 style="overflow-y: auto; padding-left: 0"
+				 ng-style="{'max-height': getHeight(100, 0)}">
+				<div class="col-md-12">
+					<!--department panel-->
+					<div class="panel-group"
+						 ng-show="productHierarchyDefaultsController.isSelectedHierarchyAtLeastAtLevel(productHierarchyDefaultsController.DEPARTMENT)">
+						<div class="panel panel-primary">
+							<div class="panel-heading pointer"
+								 ng-click="productHierarchyDefaultsController.departmentIsCollapsed = !productHierarchyDefaultsController.departmentIsCollapsed">
+								<strong ng-if="productHierarchyDefaultsController.departmentSelected.displayName!==undefined">
+									{{productHierarchyDefaultsController.departmentSelected.displayName+ ' - DEPT'}}</strong>
+								<strong class="pull-right fa fa-plus"
+										ng-if="productHierarchyDefaultsController.departmentIsCollapsed">
+								</strong>
+								<strong class="pull-right fa fa-minus"
+										ng-if="!productHierarchyDefaultsController.departmentIsCollapsed">
+								</strong>
+							</div>
+							<div class="panel-body panel-collapse" ng-show="!productHierarchyDefaultsController.departmentIsCollapsed">
+								<ul class="nav nav-tabs" id="departmentNavTabs">
+									<li class="active"><a data-toggle="tab" data-target="#departmentGeneral">General</a></li>
+									<li><a data-toggle="tab" data-target="#departmentDefaults"
+										   ng-click="productHierarchyDefaultsController.resizeDepartmentDefaultTab()">Defaults</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="departmentGeneral" class="tab-pane active">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="departmentGeneralTabWell">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<label class="col-md-4 text-right" for="departmentName">Dept Name</label>
+														<div class="col-md-8" id="departmentName">{{productHierarchyDefaultsController.departmentSelected.name}}</div>
+													</div>
+													<div class="row">
+														<label class="col-md-4 text-right" for="departmentReportGroupCode">Report Group Code</label>
+														<div id="departmentReportGroupCode"
+															 class="col-md-8">{{productHierarchyDefaultsController.departmentSelected.reportGroupCode}}
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="row">
+														<label class="col-md-6 text-right" for="departmentGrossProfitLow">Gross Profit % Low</label>
+														<div id="departmentGrossProfitLow"
+															 class="col-md-6">{{productHierarchyDefaultsController.departmentSelected.grossProfitLow}}
+														</div>
+													</div>
+													<div class="row">
+														<label class="col-md-6 text-right" for="departmentShrinkLow">Shrink % Low</label>
+														<div id="departmentShrinkLow"
+															 class="col-md-6">{{productHierarchyDefaultsController.departmentSelected.shrinkLow}}
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="row">
+														<label class="col-md-6 text-right" for="departmentGrossProfitHigh">Gross Profit % High</label>
+														<div id="departmentGrossProfitHigh"
+															 class="col-md-6">{{productHierarchyDefaultsController.departmentSelected.grossProfitHigh}}
+														</div>
+													</div>
+													<div class="row">
+														<label class="col-md-6 text-right" for="departmentShrinkHigh">Shrink % High</label>
+														<div id="departmentShrinkHigh"
+															 class="col-md-6">{{productHierarchyDefaultsController.departmentSelected.shrinkHigh}}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="departmentDefaults" class="tab-pane">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="departmentDefaultsTabWell">
+											<div class="row">
+												<div class="col-md-8 col-md-offset-4">
+													<div class="row">
+														<div class="col-md-6">
+
+															<!--department selling restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_02">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Selling Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.departmentSelected.viewableSellingRestrictions">
+																			<td style="display: block">{{restriction.sellingRestriction.restrictionDescription}}</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_02">
+																	<i data-ng-click="productHierarchyDefaultsController.getSellingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.DEPARTMENT)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#sellingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--department selling restrictions end-->
+
+														</div>
+														<div class="col-md-6">
+
+															<!--department shipping restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_01">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Shipping Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.departmentSelected.viewableShippingRestrictions | filter: {applicableAtThisLevel: true}">
+																			<td style="display: block" ng-if="restriction.applicableAtThisLevel">{{restriction.sellingRestrictionCode.restrictionDescription}}</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_01">
+																	<i data-ng-click="productHierarchyDefaultsController.getShippingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.DEPARTMENT)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#shippingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--department shipping restrictions end-->
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!--sub-department panel-->
+					<div class="panel-group"
+						 ng-show="productHierarchyDefaultsController.isSelectedHierarchyAtLeastAtLevel(productHierarchyDefaultsController.SUB_DEPARTMENT)">
+						<div class="panel panel-primary">
+							<div class="panel-heading pointer"
+								 ng-click="productHierarchyDefaultsController.subDepartmentIsCollapsed = !productHierarchyDefaultsController.subDepartmentIsCollapsed">
+								<strong ng-if="productHierarchyDefaultsController.subDepartmentSelected.displayName!==undefined">
+									{{productHierarchyDefaultsController.subDepartmentSelected.displayName+ ' - SUB-DEPT'}}</strong>
+								<strong class="pull-right fa fa-plus"
+										ng-if="productHierarchyDefaultsController.subDepartmentIsCollapsed">
+								</strong>
+								<strong class="pull-right fa fa-minus"
+										ng-if="!productHierarchyDefaultsController.subDepartmentIsCollapsed">
+								</strong>
+							</div>
+							<div class="panel-body panel-collapse" ng-show="!productHierarchyDefaultsController.subDepartmentIsCollapsed">
+								<ul class="nav nav-tabs">
+									<li class="active"><a data-toggle="tab" data-target="#subDepartmentGeneral">General</a></li>
+									<li><a data-toggle="tab" data-target="#subDepartmentDefaults"
+										   ng-click="productHierarchyDefaultsController.resizeSubDepartmentDefaultTab()">Defaults</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="subDepartmentGeneral" class="tab-pane active">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="subDepartmentGeneralTabWell">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="row">
+														<label for="subDepartmentName" class="col-md-4 text-right">Sub Dept Name</label>
+														<div id="subDepartmentName"
+															 class="col-md-8">{{productHierarchyDefaultsController.subDepartmentSelected.name}}
+														</div>
+													</div>
+													<div class="row">
+														<label for="subDepartmentReportGroupCode" class="col-md-4 text-right">Report Group Code</label>
+														<div id="subDepartmentReportGroupCode"
+															 class="col-md-8">{{productHierarchyDefaultsController.subDepartmentSelected.reportGroupCode}}
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="row">
+														<label for="subDepartmentGrossProfitLow" class="col-md-6 text-right">Gross Profit % Low</label>
+														<div id="subDepartmentGrossProfitLow"
+															 class="col-md-6">{{productHierarchyDefaultsController.subDepartmentSelected.grossProfitLow}}
+														</div>
+													</div>
+													<div class="row">
+														<label for="subDepartmentShrinkLow" class="col-md-6 text-right">Shrink % Low</label>
+														<div id="subDepartmentShrinkLow"
+															 class="col-md-6">{{productHierarchyDefaultsController.subDepartmentSelected.shrinkLow}}
+														</div>
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="row">
+														<label for="subDepartmentGrossProfitHigh" class="col-md-6 text-right">Gross Profit % High</label>
+														<div id="subDepartmentGrossProfitHigh"
+															 class="col-md-6">{{productHierarchyDefaultsController.subDepartmentSelected.grossProfitHigh}}
+														</div>
+													</div>
+													<div class="row">
+														<label for="subDepartmentShrinkHigh" class="col-md-6 text-right">Shrink % High</label>
+														<div id="subDepartmentShrinkHigh"
+															 class="col-md-6">{{productHierarchyDefaultsController.subDepartmentSelected.shrinkHigh}}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="subDepartmentDefaults" class="tab-pane">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="subDepartmentDefaultsTabWell">
+											<div class="row">
+												<div class="col-md-8 col-md-offset-4">
+													<div class="row">
+														<div class="col-md-6">
+
+															<!--sub-department selling restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_02">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Selling Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.subDepartmentSelected.viewableSellingRestrictions">
+																			<td style="display: block">{{restriction.sellingRestriction.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_02">
+																	<i data-ng-click="productHierarchyDefaultsController.getSellingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.SUB_DEPARTMENT)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#sellingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--sub-department selling restrictions end-->
+
+														</div>
+														<div class="col-md-6">
+
+															<!--sub-department shipping restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_01">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Shipping Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.subDepartmentSelected.viewableShippingRestrictions | filter: {applicableAtThisLevel: true}">
+																			<td style="display: block" ng-if="restriction.applicableAtThisLevel">{{restriction.sellingRestrictionCode.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_01">
+																	<i data-ng-click="productHierarchyDefaultsController.getShippingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.SUB_DEPARTMENT)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#shippingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--sub-department shipping restrictions begin-->
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!--class panel-->
+					<div class="panel-group"
+						 ng-show="productHierarchyDefaultsController.isSelectedHierarchyAtLeastAtLevel(productHierarchyDefaultsController.ITEM_CLASS)">
+						<div class="panel panel-primary">
+							<div class="panel-heading pointer"
+								 ng-click="productHierarchyDefaultsController.itemClassIsCollapsed = !productHierarchyDefaultsController.itemClassIsCollapsed">
+								<strong ng-if="productHierarchyDefaultsController.itemClassSelected.displayName!==undefined">
+									{{productHierarchyDefaultsController.itemClassSelected.displayName+ ' - CLASS'}}</strong>
+								<strong class="pull-right fa fa-plus"
+										ng-if="productHierarchyDefaultsController.itemClassIsCollapsed">
+								</strong>
+								<strong class="pull-right fa fa-minus"
+										ng-if="!productHierarchyDefaultsController.itemClassIsCollapsed">
+								</strong>
+							</div>
+							<div class="panel-body panel-collapse" ng-show="!productHierarchyDefaultsController.itemClassIsCollapsed">
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a data-toggle="tab" data-target="#itemClassGeneral"
+										   ng-click="productHierarchyDefaultsController.setTabSelectedForSelectedHierarchyLevel(productHierarchyDefaultsController.itemClassSelected, productHierarchyDefaultsController.GENERAL_TAB_NAME)">General
+										</a>
+									</li>
+									<li><a data-toggle="tab" data-target="#itemClassDefaults"
+										   ng-click="productHierarchyDefaultsController.resizeItemClassDefaultTab()">Defaults</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="itemClassGeneral" class="tab-pane active">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="itemClassGeneralTabWell">
+											<div class="row">
+												<form novalidate name="productHierarchyDefaultsController.itemClassGeneralForm" id="itemClassGeneralForm">
+													<div class="col-md-6">
+														<div class="row" can-view="PH_CLSS_01">
+															<label for="itemClassDescription" class="col-md-4 text-right">Class Name</label>
+															<div view-only="PH_CLSS_01"
+																 class="col-md-8">{{productHierarchyDefaultsController.itemClassSelected.itemClassDescription}}</div>
+															<div class="col-md-8" can-edit="PH_CLSS_01">
+																<input type="text"
+																	   class="form-control"
+																	   name="description"
+																	   maxlength="30"
+																	   required
+																	   id="itemClassDescription"
+																	   style="width: 100%"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																	   ng-model="productHierarchyDefaultsController.itemClassSelected.itemClassDescription">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.itemClassGeneralForm.description.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="itemClassBeginAdLeadTime" class="col-md-4 text-right">Begin Ad Lead Time</label>
+															<div id="itemClassBeginAdLeadTime"
+																 class="col-md-8">{{productHierarchyDefaultsController.itemClassSelected.beginAdLeadTime}}</div>
+														</div>
+														<div class="row" can-view="PH_CLSS_04">
+															<label for="itemClassScanDepartment" class="col-md-4 text-right">PSS Scan Dept</label>
+															<div view-only="PH_CLSS_04"
+																 class="col-md-8">{{productHierarchyDefaultsController.itemClassSelected.scanDepartment}}</div>
+															<div class="col-md-8" can-edit="PH_CLSS_04">
+																<input name="scanDepartment"
+																	   class="form-control"
+																	   type="text"
+																	   ng-pattern="/^(?!0)[0-9]{1,5}$/"
+																	   maxlength="5"
+																	   required
+																	   style="width: 50px"
+																	   id="itemClassScanDepartment"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																	   ng-model="productHierarchyDefaultsController.itemClassSelected.scanDepartment">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.itemClassGeneralForm.scanDepartment.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.itemClassGeneralForm.scanDepartment.$error.pattern">{{productHierarchyDefaultsController.FIVE_NUMBER_NON_ZERO_REGEX_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="itemClassPriceBulletin" class="col-md-4 text-right">Price Bulletin</label>
+															<div id="itemClassPriceBulletin"
+																 class="col-md-8">{{productHierarchyDefaultsController.itemClassSelected.priceBulletin}}</div>
+														</div>
+														<div class="row" can-view="PH_CLSS_02">
+															<label for="itemClassBillCostEligible" class="col-md-4 text-right">Billing cost eligible</label>
+															<div class="col-md-8">
+																<input type="checkbox"
+																	   ng-class="{'pointer': !productHierarchyDefaultsController.isBillCostEligibleDisabled()}"
+																	   name="billCostEligible"
+																	   id="itemClassBillCostEligible"
+																	   style="width: auto; float: left"
+																	   ng-model="productHierarchyDefaultsController.itemClassSelected.billCostEligible"
+																	   ng-checked="productHierarchyDefaultsController.itemClassSelected.billCostEligible"
+																	   ng-disabled="productHierarchyDefaultsController.isBillCostEligibleDisabled()">
+															</div>
+														</div>
+														<div class="row">
+															<label for="itemClassLowGrossMargin" class="col-md-4 text-right">Low Gross Margin</label>
+															<div id="itemClassLowGrossMargin"
+																 class="col-md-8">{{productHierarchyDefaultsController.itemClassSelected.lowGrossMargin}}</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="row" can-view="PH_CLSS_03">
+															<label for="itemClassMerchantType" class="col-md-6 text-right">Type of Merchandise</label>
+															<div view-only="PH_CLSS_03"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.merchantTypeCode}}</div>
+															<div can-edit="PH_DFLT_03"
+																 class="col-md-6">
+																<select id="itemClassMerchantType"
+																		name="merchantTypeCode"
+																		class="form-control"
+																		ng-class="{disabled : productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)}"
+																		ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																		ng-model="productHierarchyDefaultsController.itemClassSelected.merchantTypeCode">
+																	<option
+																		ng-repeat="merchantType in productHierarchyDefaultsController.itemClassMerchantTypeList"
+																		title="{{merchantType.description}}"
+																		value="{{merchantType.id}}">{{merchantType.id}}
+																	</option>
+																</select>
+															</div>
+														</div>
+														<div class="row">
+															<label for="itemClassEndAdLeadTime" class="col-md-6 text-right">End Ad Lead Time</label>
+															<div id="itemClassEndAdLeadTime"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.endAdLeadTime}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassDataCheckerDepartment" class="col-md-6 text-right">PSS Data checker Dept.</label>
+															<div id="itemClassDataCheckerDepartment"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.dataCheckerDepartment}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassPriceChangePct" class="col-md-6 text-right">Price change %</label>
+															<div id="itemClassPriceChangePct"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.priceChangePercent}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassVariance" class="col-md-6 text-right">Class Variance</label>
+															<div id="itemClassVariance"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.classVariance}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassHighGrossMargin" class="col-md-6 text-right">High Gross Margin</label>
+															<div id="itemClassHighGrossMargin"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.hiGrossMargin}}</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="row">
+															<label for="itemClassMixMatchGroup" class="col-md-6 text-right">Mix Match Group</label>
+															<div id="itemClassMixMatchGroup"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.mixMatchGroup}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassBillAtAdCode" class="col-md-6 text-right">Bill at Ad code</label>
+															<div id="itemClassBillAtAdCode"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.billAtAd}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassScanMaintenanceGroup" class="col-md-6 text-right">Scan Maint Group</label>
+															<div id="itemClassScanMaintenanceGroup"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.scanMaintenanceGroup}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassAdChangePct" class="col-md-6 text-right">Ad Change %</label>
+															<div id="itemClassAdChangePct"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.adPriceChangePercent}}</div>
+														</div>
+														<div class="row">
+															<label for="itemClassDirectorId" class="col-md-6 text-right">Director ID</label>
+															<div id="itemClassDirectorId"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.classDirectorId}}</div>
+														</div>
+														<div class="row" can-view="PH_CLSS_05">
+															<label for="itemClassGenericClassCode" class="col-md-6 text-right">Generic Class Code</label>
+															<div view-only="PH_CLSS_05"
+																 class="col-md-6">{{productHierarchyDefaultsController.itemClassSelected.genericClass}}</div>
+															<div class="col-md-6" can-edit="PH_CLSS_05">
+																<input name="genericClass"
+																	   class="form-control"
+																	   type="text"
+																	   ng-pattern="/^(?!0)[0-9]{1,3}$/"
+																	   maxlength="3"
+																	   required
+																	   style="width: 50px"
+																	   id="itemClassGenericClassCode"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																	   ng-model="productHierarchyDefaultsController.itemClassSelected.genericClass">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.itemClassGeneralForm.genericClass.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.itemClassGeneralForm.genericClass.$error.pattern">{{productHierarchyDefaultsController.THREE_NUMBER_NON_ZERO_REGEX_ERROR_TEXT}}</span>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+									<div id="itemClassDefaults" class="tab-pane">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="itemClassDefaultsTabWell">
+											<div class="row">
+												<div class="col-md-8 col-md-offset-4">
+													<div class="row">
+														<div class="col-md-6">
+
+															<!--item-class selling restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_02">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Selling Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.itemClassSelected.viewableSellingRestrictions">
+																			<td style="display: block">{{restriction.sellingRestriction.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_02">
+																	<i data-ng-click="productHierarchyDefaultsController.getSellingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#sellingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--item-class selling restrictions end-->
+
+														</div>
+														<div class="col-md-6">
+
+															<!--item-class shipping restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_01">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Shipping Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.itemClassSelected.viewableShippingRestrictions | filter: {applicableAtThisLevel: true}">
+																			<td style="display: block" ng-if="restriction.applicableAtThisLevel">{{restriction.sellingRestrictionCode.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_01">
+																	<i data-ng-click="productHierarchyDefaultsController.getShippingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.ITEM_CLASS)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#shippingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--item-class shipping restrictions end-->
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!--commodity panel-->
+					<div class="panel-group"
+						 ng-show="productHierarchyDefaultsController.isSelectedHierarchyAtLeastAtLevel(productHierarchyDefaultsController.COMMODITY)">
+						<div class="panel panel-primary">
+							<div class="panel-heading pointer"
+								 ng-click="productHierarchyDefaultsController.commodityIsCollapsed = !productHierarchyDefaultsController.commodityIsCollapsed">
+								<strong ng-if="productHierarchyDefaultsController.commoditySelected.displayName!==undefined">
+									{{productHierarchyDefaultsController.commoditySelected.displayName + ' - COMMODITY'}}</strong>
+								<strong class="pull-right fa fa-plus"
+										ng-if="productHierarchyDefaultsController.commodityIsCollapsed">
+								</strong>
+								<strong class="pull-right fa fa-minus"
+										ng-if="!productHierarchyDefaultsController.commodityIsCollapsed">
+								</strong>
+							</div>
+							<div class="panel-body panel-collapse" ng-show="!productHierarchyDefaultsController.commodityIsCollapsed">
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a data-toggle="tab" data-target="#commodityGeneral"
+										   ng-click="productHierarchyDefaultsController.setTabSelectedForSelectedHierarchyLevel(productHierarchyDefaultsController.commoditySelected, productHierarchyDefaultsController.GENERAL_TAB_NAME)">General</a>
+									</li>
+									<li><a data-toggle="tab" data-target="#commodityDefaults"
+										   ng-click="productHierarchyDefaultsController.resizeCommodityDefaultTab()">Defaults</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="commodityGeneral" class="tab-pane active">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="commodityGeneralTabWell">
+											<div class="row">
+												<form novalidate name="productHierarchyDefaultsController.commodityGeneralForm" id="commodityGeneralForm">
+													<div class="col-md-4">
+														<div class="row" can-view="PH_COMM_01">
+															<label for="commodityName" class="col-md-4 text-right">Commodity Name</label>
+															<div view-only="PH_COMM_01"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.name}}</div>
+															<div class="col-md-8" can-edit="PH_COMM_01">
+																<input type="text"
+																	   class="form-control"
+																	   name="description"
+																	   maxlength="30"
+																	   required
+																	   id="commodityName"
+																	   style="width: 100%"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   ng-model="productHierarchyDefaultsController.commoditySelected.name">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commoditySelected.active && productHierarchyDefaultsController.commodityGeneralForm.description.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="commodityOmiDirector" class="col-md-4 text-right">OMI Director</label>
+															<div id="commodityOmiDirector"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.omiDirector}}</div>
+														</div>
+														<div class="row" can-view="PH_COMM_03">
+															<label class="col-md-4 text-right">BDM ID</label>
+															<div view-only="PH_COMM_03"
+																 class="col-md-8">{{productHierarchyDefaultsController.bdmUserDisplayValue}}</div>
+															<div class="col-md-8" can-edit="PH_COMM_03">
+																<input type="text"
+																	   class="form-control"
+																	   name="bdmDisplayName"
+																	   required
+																	   id="bdmDisplayName"
+																	   style="width: 100%"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   ng-model="productHierarchyDefaultsController.bdmUserDisplayValue"
+																>
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commoditySelected.active && productHierarchyDefaultsController.commodityGeneralForm.bdmCode.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row" can-view="PH_COMM_05">
+															<label for="commodityEbmOnePass" class="col-md-4 text-right">eBM[OnePass ID]</label>
+															<div view-only="PH_COMM_04"
+																 class="col-md-8">{{productHierarchyDefaultsController.ebmUserDisplayValue}}</div>
+															<div class="col-md-8" can-edit="PH_COMM_04">
+																<input type="text"
+																	   class="form-control"
+																	   name="eBMid"
+																	   id="commodityEbmOnePass"
+																	   style="width: 100%"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   ng-model="productHierarchyDefaultsController.ebmUserDisplayValue"
+																>
+
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commoditySelected.active && productHierarchyDefaultsController.commodityGeneralForm.eBMid.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="row">
+															<label for="commodityHebCommCode" class="col-md-4 text-right">IMS Comm Code</label>
+															<div id="commodityHebCommCode"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.imsCommunicationCode}}</div>
+														</div>
+														<div class="row">
+															<label for="commodityHEBOmiId" class="col-md-4 text-right">IMS/OMI ID</label>
+															<div id="commodityHEBOmiId"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.bdm.bdmImsCode + ' / ' + productHierarchyDefaultsController.commoditySelected.bdm.bdmOmiNumberDisplayText}}</div>
+														</div>
+														<div class="row">
+															<label for="commodityPhone" class="col-md-4 text-right">Phone</label>
+															<div id="commodityPhone"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.bdm.primeGroupNumberOne}}</div>
+														</div>
+														<div class="row" can-view="PH_COMM_04">
+															<label for="commodityBdaId" class="col-md-4 text-right">BDA[OnePass ID]</label>
+															<div view-only="PH_COMM_04"
+																 class="col-md-8">{{productHierarchyDefaultsController.bdaUserDisplayValue}}</div>
+															<div class="col-md-8" can-edit="PH_COMM_04">
+																<input type="text"
+																	   class="form-control"
+																	   name="bDAid"
+																	   id="commodityBdaId"
+																	   style="width: 100%"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   ng-model="productHierarchyDefaultsController.bdaUserDisplayValue"
+																>
+
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commoditySelected.active && productHierarchyDefaultsController.commodityGeneralForm.bDAid.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="row" can-view="PH_COMM_02">
+															<label for="commodityPssDepartment" class="col-md-4 text-right">PSS Department</label>
+															<div view-only="PH_COMM_02"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.pssDepartment}}</div>
+															<div class="col-md-8" can-edit="PH_COMM_02">
+																<input name="pssDepartment"
+																	   class="form-control"
+																	   type="text"
+																	   ng-pattern="/^(?!0)[0-9]{1,3}$/"
+																	   maxlength="3"
+																	   required
+																	   style="width: 50px"
+																	   id="commodityPssDepartment"
+																	   ng-disabled="productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   ng-model="productHierarchyDefaultsController.commoditySelected.pssDepartment">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commoditySelected.active && productHierarchyDefaultsController.commodityGeneralForm.pssDepartment.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.commodityGeneralForm.pssDepartment.$error.pattern">{{productHierarchyDefaultsController.THREE_NUMBER_NON_ZERO_REGEX_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="commodityUser" class="col-md-4 text-right">User</label>
+															<div id="commodityUser"
+																 class="col-md-8">{{productHierarchyDefaultsController.commoditySelected.bdm.primeFunctionCodeOne}}</div>
+														</div>
+														<div class="row" can-view="PH_COMM_06">
+															<label for="commodityActiveSwitch" class="col-md-4 text-right">Active Switch</label>
+															<div class="col-md-8">
+																<input type="checkbox"
+																	   ng-class="{'pointer': !productHierarchyDefaultsController.isCommodityActiveDisabled()}"
+																	   name="commodityActiveSwitch"
+																	   id="commodityActiveSwitch"
+																	   style="width: auto; float: left"
+																	   ng-model="productHierarchyDefaultsController.commoditySelected.active"
+																	   ng-checked="productHierarchyDefaultsController.commoditySelected.active"
+																	   ng-disabled="productHierarchyDefaultsController.isCommodityActiveDisabled()">
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+									<div id="commodityDefaults" class="tab-pane">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="commodityDefaultsTabWell">
+											<div class="row">
+												<div class="col-md-8 col-md-offset-4">
+													<div class="row">
+														<div class="col-md-6">
+
+															<!--commodity selling restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_02">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Selling Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.commoditySelected.viewableSellingRestrictions">
+																			<td style="display: block">{{restriction.sellingRestriction.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_02">
+																	<i data-ng-click="productHierarchyDefaultsController.getSellingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#sellingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--commodity selling restrictions end-->
+
+														</div>
+														<div class="col-md-6">
+
+															<!--commodity shipping restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_01">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Shipping Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.subDepartmentSelected.viewableShippingRestrictions | filter: {applicableAtThisLevel: true}">
+																			<td style="display: block" ng-if="restriction.applicableAtThisLevel">{{restriction.sellingRestrictionCode.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_01">
+																	<i data-ng-click="productHierarchyDefaultsController.getShippingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.COMMODITY)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#shippingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--commodity shipping restrictions end-->
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!--sub commodity panel-->
+					<div class="panel-group"
+						 ng-show="productHierarchyDefaultsController.isSelectedHierarchyAtLeastAtLevel(productHierarchyDefaultsController.SUB_COMMODITY)">
+						<div class="panel panel-primary">
+							<div class="panel-heading pointer"
+								 ng-click="productHierarchyDefaultsController.subCommodityIsCollapsed = !productHierarchyDefaultsController.subCommodityIsCollapsed">
+								<strong ng-if="productHierarchyDefaultsController.subCommoditySelected.displayName!==undefined">
+									{{productHierarchyDefaultsController.subCommoditySelected.displayName+ ' - SUB-COMMODITY'}}</strong>
+								<strong class="pull-right fa fa-plus"
+										ng-if="productHierarchyDefaultsController.subCommodityIsCollapsed">
+								</strong>
+								<strong class="pull-right glyphicon glyphicon-minus"
+										ng-if="!productHierarchyDefaultsController.subCommodityIsCollapsed">
+								</strong>
+							</div>
+							<div class="panel-body panel-collapse" ng-show="!productHierarchyDefaultsController.subCommodityIsCollapsed">
+								<div class="glyphicon glyphicon-folder-open pointer" ng-show="productHierarchyDefaultsController.isShowSubCommodityDefaults" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="productHierarchyDefaultsController.showSubCommodityDefaultsAuditInfo()"></div>
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a data-toggle="tab" data-target="#subCommodityGeneral"
+										   ng-click="productHierarchyDefaultsController.resizeSubCommodityGeneralTab(); productHierarchyDefaultsController.isShowSubCommodityDefaults = false">General</a></li>
+									<li><a data-toggle="tab" data-target="#subCommodityDefaults" ng-click="productHierarchyDefaultsController.isShowSubCommodityDefaults = true">Defaults</a></li>
+								</ul>
+								<div class="tab-content">
+									<div id="subCommodityGeneral" class="tab-pane active">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="subCommodityGeneralTabWell">
+											<div class="row">
+												<form novalidate name="productHierarchyDefaultsController.subCommodityGeneralForm" id="subCommodityGeneralForm">
+													<div class="col-md-5">
+														<div class="row">
+															<label for="subCommodityName" class="col-md-4 text-right">Sub-commodity Name</label>
+															<div view-only="PH_SUBC_02"
+																 class="col-md-8">{{productHierarchyDefaultsController.subCommoditySelected.name}}</div>
+															<div class="col-md-8" can-edit="PH_SUBC_02">
+																<input type="text"
+																	   class="form-control"
+																	   name="description"
+																	   maxlength="30"
+																	   required
+																	   id="subCommodityName"
+																	   style="width: 100%"
+																	   ng-model="productHierarchyDefaultsController.subCommoditySelected.name">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommoditySelected.active && productHierarchyDefaultsController.subCommodityGeneralForm.description.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="subCommodityImsClass" class="col-md-4 text-right">IMS Class</label>
+															<div id="subCommodityImsClass"
+																 class="col-md-8">{{productHierarchyDefaultsController.subCommoditySelected.imsClassCode}}</div>
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="row">
+															<label for="subCommodityProductCategoryId" class="col-md-4 text-right" style="padding: 0px">Prod Category Id</label>
+															<div view-only="PH_SUBC_03"
+																 class="col-md-8">{{productHierarchyDefaultsController.productCategoryDisplayValue}}</div>
+															<div class="col-md-8" can-edit="PH_SUBC_03">
+																<input name="productCategoryId"
+																	   class="form-control"
+																	   type="text"
+																	   ng-trim="false"
+																	   required
+																	   id="subCommodityProductCategoryId"
+																	   ng-change="productHierarchyDefaultsController.validateForProdCategoryId()"
+																	   ng-model="productHierarchyDefaultsController.productCategoryDisplayValue">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommoditySelected.active && productHierarchyDefaultsController.subCommodityGeneralForm.productCategoryId.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																 <span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommodityGeneralForm.productCategoryId.$error.pattern ||
+																 productHierarchyDefaultsController.productCategoryDisplayValue == 0 || productHierarchyDefaultsController.prodCategoryIdInvalid">
+																 {{productHierarchyDefaultsController.NINE_NUMBER_REGEX_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="subCommodityImsCode" class="col-md-4 text-right" style="padding: 0px">IMS Comm Code</label>
+															<div view-only="PH_SUBC_05"
+																 class="col-md-8" >{{productHierarchyDefaultsController.subCommoditySelected.imsCommodityCode}}</div>
+															<div class="col-md-8" can-edit="PH_SUBC_05">
+																<input name="imsCommodityCode"
+																	   class="form-control"
+																	   type="text"
+																	   maxlength="3"
+																	   numbers-only="numbers-only"
+																	   required
+																	   style="width: 50px"
+																	   id="subCommodityImsCode"
+																	   ng-model="productHierarchyDefaultsController.subCommoditySelected.imsCommodityCode">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommoditySelected.active && productHierarchyDefaultsController.subCommodityGeneralForm.imsCommodityCode.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommodityGeneralForm.imsCommodityCode.$error.pattern || productHierarchyDefaultsController.subCommoditySelected.imsCommodityCode == 0">{{productHierarchyDefaultsController.THREE_NUMBER_NON_ZERO_REGEX_ERROR_TEXT}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<label for="imsSubCommodityCodeId" class="col-md-4 text-right" style="padding: 0px">IMS Sub-comm Code</label>
+															<div view-only="PH_SUBC_05"
+																 class="col-md-8" >{{productHierarchyDefaultsController.subCommoditySelected.imsSubCommodityCode}}</div>
+															<div can-edit="PH_SUBC_05"
+																 class="col-md-8">
+																<input name="imsSubCommodityCodeName"
+																	   class="form-control text-uppercase"
+																	   type="text"
+																	   maxlength="1"
+																	   required
+																	   style="width: 50px"
+																	   id="imsSubCommodityCodeId"
+																	   ng-trim="false"
+																	   ng-change="productHierarchyDefaultsController.validateForSubCommCode()"
+																	   ng-model="productHierarchyDefaultsController.subCommoditySelected.imsSubCommodityCode">
+															</div>
+															<div class="col-md-12">
+																<span class="red-text col-md-12 text-center"
+																	  ng-show="productHierarchyDefaultsController.subCommoditySelected.active && productHierarchyDefaultsController.subCommodityGeneralForm.imsSubCommodityCodeName.$error.required">{{productHierarchyDefaultsController.REQUIRED_FIELD_ERROR_TEXT}}</span>
+																<span class="red-text col-md-12 text-center" ng-show="productHierarchyDefaultsController.subCommodityGeneralForm.imsSubCommodityCodeName.$error.pattern
+																													  || productHierarchyDefaultsController.iMSSubCommCodeInvalid">{{productHierarchyDefaultsController.ALPHABET_AND_NUMBER_REGEX_ERROR_TEXT}}</span>
+
+															</div>
+														</div>
+													</div>
+													<div class="col-md-2">
+														<div class="row">
+															<label for="subCommodityLowHighMargin" class="col-md-9 text-right" style="padding: 0px">Low/High Margin Pct</label>
+															<div id="subCommodityLowHighMargin"
+																 class="col-md-3">{{productHierarchyDefaultsController.subCommoditySelected.lowMarginPercent}}/{{productHierarchyDefaultsController.subCommoditySelected.highMarginPercent}}</div>
+														</div>
+														<div class="row" can-view="PH_SUBC_04">
+															<label for="subCommodityActiveSwitch" class="col-md-9 text-right" style="padding: 0px">Active Switch</label>
+															<div class="col-md-3">
+																<input type="checkbox"
+																	   ng-class="{'pointer': !productHierarchyDefaultsController.isSubCommodityActiveDisabled()}"
+																	   name="subCommodityActiveSwitch"
+																	   id="subCommodityActiveSwitch"
+																	   style="width: auto; float: left"
+																	   ng-model="productHierarchyDefaultsController.subCommoditySelected.active"
+																	   ng-checked="productHierarchyDefaultsController.subCommoditySelected.active"
+																	   ng-disabled="productHierarchyDefaultsController.isSubCommodityActiveDisabled()">
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+									<div id="subCommodityDefaults" class="tab-pane">
+										<div class="well" style="margin-bottom: 0; min-height: 100px" id="subCommodityDefaultsTabWell">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="row">
+														<div class="col-md-4">
+															<div class="row">
+																<div class="col-md-12" style="padding-bottom: 10px">
+																	<div class="row" can-view="PH_SUBC_10">
+																		<div class="col-md-10">
+																			<table class="table-heb table-bordered table-striped table-hover"
+																				   style="width: 100%">
+																				<thead>
+																				<tr>
+																					<th>Default UOM</th>
+																				</tr>
+																				</thead>
+																				<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																				<tr style="display: block"
+																					ng-repeat="preferredUnitOfMeasure in productHierarchyDefaultsController.subCommoditySelected.productPreferredUnitOfMeasureList">
+																					<td style="display: block">{{preferredUnitOfMeasure.retailUnitOfMeasure.description}}
+																					</td>
+																				</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																		<div can-edit="PH_SUBC_10">
+																			<i data-ng-click="productHierarchyDefaultsController.getProductPreferredUnitsOfMeasureForUpdate()"
+																			   class="glyphicon glyphicon-edit pointer"
+																			   style="color: orange; font-size: large"
+																			   data-target="#productPreferredUnitOfMeasureModal" data-toggle="modal">
+																			</i>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-md-12">
+																	<div class="row" can-view="PH_SUBC_11">
+																		<div class="col-md-10">
+																			<table class="table-heb table-bordered table-striped table-hover"
+																				   style="width: 100%">
+																				<thead>
+																				<tr>
+																					<th>State Warnings</th>
+																				</tr>
+																				</thead>
+																				<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																				<tr style="display: block"
+																					ng-repeat="stateWarning in productHierarchyDefaultsController.subCommoditySelected.stateWarningList">
+																					<td style="display: block">{{stateWarning.productStateWarning.abbreviation}}
+																					</td>
+																				</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																		<div can-edit="PH_SUBC_11">
+																			<i data-ng-click="productHierarchyDefaultsController.getProductStateWarningsForUpdate()"
+																			   class="glyphicon glyphicon-edit pointer"
+																			   style="color: orange; font-size: large"
+																			   data-target="#productStateWarningModal" data-toggle="modal">
+																			</i>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-md-4">
+
+															<!--sub-commodity selling restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_02">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Selling Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.subCommoditySelected.viewableSellingRestrictions">
+																			<td style="display: block">{{restriction.sellingRestriction.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_02">
+																	<i data-ng-click="productHierarchyDefaultsController.getSellingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.SUB_COMMODITY)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#sellingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--sub-commodity selling restrictions end-->
+
+														</div>
+														<div class="col-md-4">
+
+															<!--sub-commodity shipping restrictions begin-->
+
+															<div class="row" can-view="PH_DFLT_01">
+																<div class="col-md-10">
+																	<table class="table-heb table-bordered table-striped table-hover"
+																		   style="width: 100%">
+																		<thead>
+																		<tr>
+																			<th>Shipping Restrictions</th>
+																		</tr>
+																		</thead>
+																		<tbody style="display: block; overflow-y:auto; max-height: 50px">
+																		<tr style="display: block"
+																			ng-repeat="restriction in productHierarchyDefaultsController.subCommoditySelected.viewableShippingRestrictions | filter: {applicableAtThisLevel: true}">
+																			<td style="display: block" ng-if="restriction.applicableAtThisLevel">{{restriction.sellingRestrictionCode.restrictionDescription}}
+																				<strong ng-if="restriction.inherited"
+																						title="** - Indicates restriction inherited from higher level.">**</strong>
+																			</td>
+																		</tr>
+																		</tbody>
+																	</table>
+																</div>
+																<div can-edit="PH_DFLT_01">
+																	<i data-ng-click="productHierarchyDefaultsController.getShippingRestrictionsForUpdate()"
+																	   ng-if="!productHierarchyDefaultsController.isSelectedHierarchyAtLevelDisabled(productHierarchyDefaultsController.SUB_COMMODITY)"
+																	   class="glyphicon glyphicon-edit pointer"
+																	   style="color: orange; font-size: large"
+																	   data-target="#shippingRestrictionModal" data-toggle="modal">
+																	</i>
+																</div>
+															</div>
+
+															<!--sub-commodity shipping restrictions end-->
+
+														</div>
+													</div>
+												</div>
+											</div>
+											<hr>
+											<div class="row">
+												<form novalidate name="productHierarchyDefaultsController.subCommodityDefaultForm" id="subCommodityDefaultForm">
+													<div class="col-md-12">
+														<div class="row">
+															<div class="col-md-7" >
+																<div class="row" can-view="PH_SUBC_08" data-ng-disabled="true">
+																	<label class="col-md-4 text-right" for="subCommodityTaxableTaxCategory">Taxable Tax Category</label>
+																	<!--<div class="col-md-8" view-only="PH_SUBC_08">{{productHierarchyDefaultsController.subCommoditySelected.taxCategoryCode}}</div>-->
+																	<div class="col-md-7" view-only="PH_SUBC_08" >
+																		<ui-select ng-model="productHierarchyDefaultsController.selectedVertexTaxCategory"
+																				   theme="bootstrap"
+																				   append-to-body="true"
+																				   search-enabled="true">
+																			<ui-select-match>{{$select.selected.categoryName}}</ui-select-match>
+																			<ui-select-choices   repeat="element in productHierarchyDefaultsController.allTaxCategories"
+																								 refresh="productHierarchyDefaultsController.autoFilterForTaxCategories($select.search)"
+																								 refresh-delay="500">{{element.categoryName}}
+																			</ui-select-choices>
+																		</ui-select>
+																	</div>
+																	<div class="col-md-7" can-edit="PH_SUBC_08">
+																		<ui-select ng-model="productHierarchyDefaultsController.selectedVertexTaxCategory"
+																				   theme="bootstrap"
+																				   search-enabled="true"
+																				   append-to-body="true">
+																			<ui-select-match>{{$select.selected.categoryName}}</ui-select-match>
+																			<ui-select-choices repeat="element in productHierarchyDefaultsController.allTaxCategories"
+																							   refresh="productHierarchyDefaultsController.autoFilterForTaxCategories($select.search)"
+																							   refresh-delay="500">{{element.categoryName}}
+																			</ui-select-choices>
+																		</ui-select>
+																	</div>
+																</div>
+
+																<div class="row" can-view="PH_SUBC_09" style="margin-top: 15px">
+																	<label class="col-md-4 text-right" for="subCommodityNonTaxableTaxCategory">Non-Taxable Tax Category</label>
+																	<!--<div class="col-md-8" view-only="PH_SUBC_08">{{productHierarchyDefaultsController.subCommoditySelected.taxCategoryCode}}</div>-->
+																	<div class="col-md-7" view-only="PH_SUBC_09">
+																		<ui-select ng-model="productHierarchyDefaultsController.selectedVertexNonTaxCategory"
+																				   theme="bootstrap"
+																				   search-enabled="true"
+																				   append-to-body="true">
+																			<ui-select-match>{{$select.selected.categoryName}}</ui-select-match>
+																			<ui-select-choices repeat="element in productHierarchyDefaultsController.allNonTaxCategories"
+																							   refresh="productHierarchyDefaultsController.autoFilterForNonTaxCategories($select.search)"
+																							   refresh-delay="500">{{element.categoryName}}
+																			</ui-select-choices>
+																		</ui-select>
+																	</div>
+																	<div class="col-md-7" can-edit="PH_SUBC_09">
+																		<ui-select ng-model="productHierarchyDefaultsController.selectedVertexNonTaxCategory"
+																				   theme="bootstrap"
+																				   search-enabled="true"
+																				   append-to-body="true">
+																			<ui-select-match>{{$select.selected.categoryName}}</ui-select-match>
+																			<ui-select-choices repeat="element in productHierarchyDefaultsController.allNonTaxCategories"
+																							   refresh="productHierarchyDefaultsController.autoFilterForNonTaxCategories($select.search)"
+																							   refresh-delay="500">{{element.categoryName}}
+																			</ui-select-choices>
+																		</ui-select>
+																	</div>
+																</div>
+
+															</div>
+															<div class="col-md-2" can-view="PH_SUBC_06">
+																<div class="row">
+																	<label class="col-md-6 text-right" for="subCommodityFoodStampEligible">Food Stamp</label>
+																	<div class="col-md-6">
+																		<input type="checkbox"
+																			   ng-class="{'pointer': !productHierarchyDefaultsController.isSubCommodityFoodStampDisabled()}"
+																			   name="subCommodityFoodStampEligible"
+																			   id="subCommodityFoodStampEligible"
+																			   style="width: auto; float: left"
+																			   ng-model="productHierarchyDefaultsController.subCommoditySelected.foodStampEligible"
+																			   ng-disabled="productHierarchyDefaultsController.isSubCommodityFoodStampDisabled()">
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-2" can-view="PH_SUBC_07">
+																<div class="row">
+																	<label class="col-md-6 text-right" for="subCommodityTaxEligible">Taxable</label>
+																	<div class="col-md-6">
+																		<input type="checkbox"
+																			   ng-class="{'pointer': !productHierarchyDefaultsController.isSubCommodityTaxEligibleDisabled()}"
+																			   style="width: auto; float: left"
+																			   name="subCommodityTaxEligible"
+																			   id="subCommodityTaxEligible"
+																			   ng-model="productHierarchyDefaultsController.subCommoditySelected.taxEligible"
+																			   ng-disabled="productHierarchyDefaultsController.isSubCommodityTaxEligibleDisabled()">
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="pull-right btn-group" ng-if="productHierarchyDefaultsController.areSaveAndResetButtonsVisible()">
+						<button class="btn btn-primary"
+								ng-disabled="productHierarchyDefaultsController.isSaveOrResetDisabled(true)"
+								ng-click="productHierarchyDefaultsController.updateSelectedHierarchy()">Save</button>
+						<button class="btn btn-default"
+								ng-click="productHierarchyDefaultsController.resetSelectedHierarchy()">Reset</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--selling restriction modal start-->
+
+	<div id="sellingRestrictionModal" class="modal fade" role="dialog" can-edit="PH_DFLT_02">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Selling Restrictions for: {{productHierarchyDefaultsController.getCurrentSelectedHierarchy().displayName}}
+					</div>
+				</div>
+				<div class="modal-body">
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+						<thead>
+						<tr>
+							<th>
+								<input
+									id="sellingRestrictionsCheckAll"
+									type="checkbox"
+									style="width: auto; float: left"
+									ng-model="productHierarchyDefaultsController.allSellingRestrictionsChecked"
+									ng-click="productHierarchyDefaultsController.setAllSellingRestrictions()">
+							</th>
+							<th>
+								<label for="sellingRestrictionsCheckAll">(Check/ un-check all)</label>
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="sellingRestriction in productHierarchyDefaultsController.sellingRestrictionsCopy">
+							<td>
+								<input
+									id="sellingRestrictionCheckbox"
+									type="checkbox"
+									style="width: auto; float: left"
+									ng-disabled="sellingRestriction.inherited"
+									ng-model="sellingRestriction.checked" ng-click="productHierarchyDefaultsController.onSellingRestrictionCheck()">
+							</td>
+							<td>
+								<label for="sellingRestrictionCheckbox">{{sellingRestriction.restrictionDescription}}</label>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<strong style="color: red" ng-if="productHierarchyDefaultsController.selectedHierarchyLevel !== productHierarchyDefaultsController.DEPARTMENT">{{productHierarchyDefaultsController.GUI_INHERITED_SELLING_RESTRICTIONS_NOTE}}</strong>
+				</div>
+				<div class="modal-footer">
+					<!--at commodity level or above-->
+					<button type="button" data-dismiss="modal"
+							ng-if="productHierarchyDefaultsController.selectedHierarchyLevel !== productHierarchyDefaultsController.SUB_COMMODITY"
+							ng-click="productHierarchyDefaultsController.setLowerLevelRestrictionsOverrideModalCallback(productHierarchyDefaultsController.updateSellingRestrictions)"
+							data-target="#lowerLevelRestrictionOverrideModal" data-toggle="modal"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<!--at sub-commodity level-->
+					<button type="button" data-dismiss="modal"
+							ng-if="productHierarchyDefaultsController.selectedHierarchyLevel === productHierarchyDefaultsController.SUB_COMMODITY"
+							ng-click="productHierarchyDefaultsController.updateSellingRestrictions(false)"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--selling restriction modal end-->
+
+	<!--shipping restriction modal start-->
+
+	<div id="shippingRestrictionModal" class="modal fade" role="dialog" can-edit="PH_DFLT_01">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Shipping Restrictions for: {{productHierarchyDefaultsController.getCurrentSelectedHierarchy().displayName}}</div>
+				</div>
+				<div class="modal-body">
+					<div style="text-align: center">
+						<label for="shippingRestrictionModalSearch">Search</label>
+						<input class="form-control" type="text" id="shippingRestrictionModalSearch" ng-model="productHierarchyDefaultsController.shippingRestrictionModalSearch" style="margin-bottom: 5px"
+							   ng-change="productHierarchyDefaultsController.onShippingRestrictionCheck()">
+					</div>
+					<div style="overflow-y: auto; max-height: 300px">
+						<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+							<thead>
+							<tr>
+								<th>
+									<input
+										id="shippingRestrictionsCheckAll"
+										type="checkbox"
+										style="width: auto; float: left"
+										ng-model="productHierarchyDefaultsController.allShippingRestrictionsChecked"
+										ng-click="productHierarchyDefaultsController.setAllShippingRestrictions()">
+								</th>
+								<th>
+									<label for="shippingRestrictionsCheckAll">(Check/ un-check all)</label>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="shippingRestriction in productHierarchyDefaultsController.shippingRestrictionsCopy | filter : {restrictionDescription: productHierarchyDefaultsController.shippingRestrictionModalSearch}">
+								<td>
+									<input
+										id="shippingRestrictionCheckbox"
+										type="checkbox"
+										style="width: auto; float: left"
+										ng-model="shippingRestriction.applicableAtThisLevel" ng-click="productHierarchyDefaultsController.onShippingRestrictionCheck()">
+								</td>
+								<td>
+									<label for="shippingRestrictionCheckbox">{{shippingRestriction.restrictionDescription}}</label>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<!--at commodity level or above-->
+					<button type="button" data-dismiss="modal"
+							ng-if="productHierarchyDefaultsController.selectedHierarchyLevel !== productHierarchyDefaultsController.SUB_COMMODITY"
+							ng-click="productHierarchyDefaultsController.setLowerLevelRestrictionsOverrideModalCallback(productHierarchyDefaultsController.updateShippingRestrictions)"
+							data-target="#lowerLevelRestrictionOverrideModal" data-toggle="modal"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<!--at sub-commodity level-->
+					<button type="button" data-dismiss="modal"
+							ng-if="productHierarchyDefaultsController.selectedHierarchyLevel === productHierarchyDefaultsController.SUB_COMMODITY"
+							ng-click="productHierarchyDefaultsController.updateShippingRestrictions(false)"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							ng-click="productHierarchyDefaultsController.cancelShippingRestrictions()"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--shipping restriction modal end-->
+
+	<!--lower level restriction modal start-->
+
+	<div id="lowerLevelRestrictionOverrideModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-body">Do you want to remove any lower level restrictions for any changes you have made?
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="productHierarchyDefaultsController.lowerLevelRestricionsOverrideCallback(true)"
+							class="inline-block btn btn-success btn-sm">Yes</button>
+					<button type="button" data-dismiss="modal"
+							ng-click="productHierarchyDefaultsController.lowerLevelRestricionsOverrideCallback(false)"
+							class="inline-block btn btn-default btn-sm">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--lower level restriction modal end-->
+
+	<!--product state warnings modal start-->
+	<div id="productStateWarningModal" class="modal fade" role="dialog" can-edit="PH_SUBC_11">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">State Warnings for: {{productHierarchyDefaultsController.getCurrentSelectedHierarchy().displayName}}</div>
+				</div>
+				<div class="modal-body">
+					<div class="row" style="padding-bottom: 10px">
+						<div class="col-md-12">Filters:</div>
+						<div class="col-md-6">
+							<label for="stateWarningSearch">State Warning</label>
+							<input class="form-control" type="text" id="stateWarningSearch" ng-model="productHierarchyDefaultsController.stateWarningsAbbreviationFilter"
+								   data-ng-change="productHierarchyDefaultsController.onStateWarningFilterChange()">
+						</div>
+						<div class="col-md-6">
+							<label for="stateSearch">State</label>
+							<input class="form-control" type="text" id="stateSearch" ng-model="productHierarchyDefaultsController.stateFilter" data-ng-change="productHierarchyDefaultsController.onStateWarningCheck()">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">*Select one or more values from below</div>
+					</div>
+					<div style="overflow-y: auto; max-height: 300px">
+						<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+							<thead>
+							<tr>
+								<th>
+									<input
+										id="productStateWarningsCheckAll"
+										type="checkbox"
+										style="width: auto; float: left"
+										ng-model="productHierarchyDefaultsController.allProductStateWarningsChecked"
+										ng-click="productHierarchyDefaultsController.setAllProductStateWarnings()">
+								</th>
+								<th>
+									<div>State Warning</div>
+								</th>
+								<th>
+									<div>State</div>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="stateWarning in productHierarchyDefaultsController.productStateWarningsForEdit | filter : {abbreviation: productHierarchyDefaultsController.stateWarningsAbbreviationFilter, key: {stateCode: productHierarchyDefaultsController.stateFilter}}">
+								<td>
+									<input
+										id="productStateWarningCheckbox"
+										type="checkbox"
+										style="width: auto; float: left"
+										ng-model="stateWarning.checked" ng-click="productHierarchyDefaultsController.onStateWarningCheck()">
+								</td>
+								<td>
+									<div>{{stateWarning.abbreviation}}
+										<i class="glyphicon glyphicon-question-sign" style="color: blue; font-size: small; margin-right: 5px"
+										   data-toggle="tooltip" title="{{stateWarning.description}}">
+										</i>
+									</div>
+								</td>
+								<td>
+									<div>{{stateWarning.key.stateCode}}</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="productHierarchyDefaultsController.saveProductStateWarnings()"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							ng-click="productHierarchyDefaultsController.cancelProductStateWarnings()"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--product state warnings modal end-->
+
+	<!--preferred units of measure modal start-->
+	<div id="productPreferredUnitOfMeasureModal" class="modal fade" role="dialog" can-edit="PH_SUBC_10">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Default UOM for: {{productHierarchyDefaultsController.getCurrentSelectedHierarchy().displayName}}</div>
+				</div>
+				<div class="modal-body">
+					<form novalidate name="productHierarchyDefaultsController.productPreferredUnitOfMeasureForm" id="productPreferredUnitOfMeasureForm">
+						<div class="row" style="padding-bottom: 10px">
+							<div class="col-md-12">Filter:</div>
+							<div class="col-md-6">
+								<label for="defaultUnitOfMeasureSearch">Default UOM</label>
+								<input class="form-control" type="text" id="defaultUnitOfMeasureSearch" ng-model="productHierarchyDefaultsController.defaultUnitOfMeasureFilter">
+							</div>
+						</div>
+						<div class="row">
+							<strong class="col-md-12">**Select one or more values from below (maximum of 2).</strong>
+						</div>
+						<div style="overflow-y: auto; max-height: 300px">
+							<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+								<thead>
+								<tr>
+									<th>
+									</th>
+									<th>
+										<div>Default UOM</div>
+									</th>
+									<th>
+										<div>Sequence No</div>
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="preferredUnitOfMeasure in productHierarchyDefaultsController.preferredUnitsOfMeasureForEdit | filter : {abbreviation: productHierarchyDefaultsController.defaultUnitOfMeasureFilter}">
+									<td>
+										<input
+											id="preferredUnitOfMeasureCheckbox"
+											type="checkbox"
+											style="width: auto; float: left"
+											title="{{productHierarchyDefaultsController.isPreferredUnitOfMeasureCheckBoxDisabled(preferredUnitOfMeasure) ? 'First deselect a unit of measure.' : ''}}"
+											ng-class="{'pointer': !productHierarchyDefaultsController.isPreferredUnitOfMeasureCheckBoxDisabled(preferredUnitOfMeasure)}"
+											ng-disabled="productHierarchyDefaultsController.isPreferredUnitOfMeasureCheckBoxDisabled(preferredUnitOfMeasure)"
+											ng-change="productHierarchyDefaultsController.removeSequenceNumberOnPreferredUnitOfMeasureChangeIfNotChecked(preferredUnitOfMeasure)"
+											ng-model="preferredUnitOfMeasure.checked">
+									</td>
+									<td>
+										<div>{{preferredUnitOfMeasure.description}}
+										</div>
+									</td>
+									<td style="width: 100px">
+										<ui-select
+											theme="bootstrap"
+											name="sequenceNumber"
+											ng-disabled="!productHierarchyDefaultsController.isPreferredUnitOfMeasureChecked(preferredUnitOfMeasure)"
+											ng-required="productHierarchyDefaultsController.isPreferredUnitOfMeasureChecked(preferredUnitOfMeasure)"
+											title="{{productHierarchyDefaultsController.isPreferredUnitOfMeasureChecked(preferredUnitOfMeasure) ? '' : productHierarchyDefaultsController.isPreferredUnitOfMeasureCheckBoxDisabled(preferredUnitOfMeasure) ? 'First deselect a unit of measure.' : 'First select a unit of measure check box.'}}"
+											ng-model="preferredUnitOfMeasure.sequenceNumber">
+											<ui-select-match allow-clear="true">{{$select.selected}}</ui-select-match>
+											<ui-select-choices repeat="sequence as sequence in productHierarchyDefaultsController.preferredUnitOfMeasureSequences"
+															   ui-disable-choice="productHierarchyDefaultsController.isPreferredUnitOfMeasureSequenceDisabled(sequence)">{{sequence}}
+											</ui-select-choices>
+										</ui-select>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-disabled="!productHierarchyDefaultsController.productPreferredUnitOfMeasureForm.$valid"
+							title="{{productHierarchyDefaultsController.productPreferredUnitOfMeasureForm.$valid ? '' : 'Choose sequence numbers for each selected unit of measure.'}}"
+							ng-click="productHierarchyDefaultsController.savePreferredUnitsOfMeasure()"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm" ng-click="productHierarchyDefaultsController.canceldefaultUOMModal()">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--preferred units of measure modal end-->
+
+	<!--Sub-Commodity modal start-->
+	<div id="sub-commodity-defaults-log">
+		<div id="sub-commodity-defaults-log-modal" class="modal fade">
+			<div class="modal-dialog" style="min-width: 1000px;">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<h5 class="modal-title" style="color: #ffffff">Sub-Commodity Defaults: Change log</h5>
+					</div>
+					<div class="modal-body">
+						<div class="row" ng-show="productHierarchyDefaultsController.isWaitingGetSubCommodityDefaultsAudit">
+							<loading-spinner></loading-spinner>
+						</div>
+						<div class="sub-commodity-defaults-log-table" ng-show="!productHierarchyDefaultsController.isWaitingGetSubCommodityDefaultsAudit">
+							<table ng-table="subCommodityDefaultsAuditTableParams" show-filter="true" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+								<thead>
+								<tr style="min-height:25px">
+									<th style="width:13%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+										Attribute Name
+										<input type="text" ng-model="filter.attributeName"
+											   class="form-control" style="height:20px;" ng-change="filter.attributeValue=''; filter.extendableAttValue=''">
+									</th>
+									<th style="width:13%; vertical-align: middle;">Attribute Value
+										<input type="text" ng-model="filter.attributeValue"
+											   class="form-control" style="height:20px;"ng-change="filter.extendableAttValue=''" ng-disabled="filter.attributeName==''">
+									</th>
+									<th style="width:13%; vertical-align: middle;">Extendable Attribute Value
+										<input type="text" ng-model="filter.extendableAttValue"
+											   class="form-control" style="height:20px;" ng-disabled="filter.attributeValue==''">
+									</th>
+									<th style="width:13%; vertical-align: middle;">Changed From</th>
+									<th style="width:13%; vertical-align: middle;">Changed To</th>
+									<th style="width:10%; vertical-align: middle;">Action Code</th>
+									<th style="width:13%; vertical-align: middle;" ng-click="productHierarchyDefaultsController.changeSort()">
+										Changed On
+										<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+										<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+									</th>
+									<th style="width:12%; vertical-align: middle;">Changed By</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr data-ng-repeat="audit in $data track by $index">
+									<td style="width:13%; padding: 5px;">{{audit.attributeName}}</td>
+									<td style="width:13%">
+										{{audit.attributeValue}}
+									</td>
+									<td style="width:13%">
+										{{audit.extendableAttValue}}
+									</td>
+									<td style="width:13%">
+										<div ng-if="audit.changedFrom !== 'N/A' && audit.changedFrom !== 'null'" title="{{audit.changedFrom}}">{{audit.changedFrom}}</div>
+									</td>
+									<td style="width:13%">
+										<div ng-if="audit.changedTo !== 'N/A' && audit.changedTo !== 'null'" title="{{audit.changedTo}}">{{audit.changedTo}}</div>
+									</td>
+									<td style="width:10%">{{audit.action}}</td>
+									<td style="width:13%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:ss"}}</td>
+									<td style="width:12%">{{audit.changedBy}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<button type="button" class="btn btn-primary" ng-show="!productHierarchyDefaultsController.isWaitingGetSubCommodityDefaultsAudit && (filter.attributeName !=='' || filter.attributeValue !=='' || filter.extendableAttValue !=='')" ng-click="filter.attributeName=''; filter.attributeValue=''; filter.extendableAttValue=''">Clear Filter</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--Sub-Commodity modal end-->
+</div>

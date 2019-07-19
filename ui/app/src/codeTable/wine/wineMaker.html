@@ -1,0 +1,247 @@
+<!--
+  ~ wineMaker.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn87351
+  @since 2.12.0
+  -->
+<div can-view="CT_WINE_04"
+	 ng-init="$ctrl.init()">
+	<div class="row">
+		<div class="col-md-12" style="margin-top: 5px">
+			<loading-spinner ng-show="$ctrl.isWaiting">
+			</loading-spinner>
+			<div data-ng-hide="$ctrl.isWaiting">
+				<!--Error span-->
+				<div class="row" data-ng-if="$ctrl.success" style="text-align: center;display: block;">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+					  role="alert">{{$ctrl.success}}
+				</span>
+				</div>
+				<!--Success span-->
+				<div class="row" data-ng-if="$ctrl.error">
+				<span ng-bind-html="$ctrl.error" style="text-align: left"
+					  class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+					{{$ctrl.error}}
+				</span>
+				</div>
+				<div class="pull-right" ng-show="!$ctrl.isWaiting" style=" padding-bottom: 5px;">
+					<button type="button" class="btn btn-primary btn-sm"
+							ng-click="
+						filter.wineMakerId=undefined;
+						filter.wineMakerName=undefined;
+						filter.wineMakerDescription=undefined;">Clear Filter
+					</button>
+				</div>
+				<div class="" ng-show="!$ctrl.isWaiting"
+					 style="  min-height:400px;  position: relative;float: left;width: 100%;padding: 0;">
+					<table show-filter="true" ng-table="tableParams" show-filter="true"
+						   class="table-heb table-bordered table-striped" style="width: 100%">
+						<thead>
+						<tr>
+							<th style="width:10%;">Wine Maker Id</th>
+							<th style="width:30%;">Wine Maker Name</th>
+							<th style="width:49%;">Wine Maker Description</th>
+							<th style="width:11%;">Action</th>
+						</tr>
+						<tr>
+							<th><input ng-model="filter.wineMakerId" class="form-control"
+									   title="Input a State Warning Name to filter"/></th>
+							<th><input ng-model="filter.wineMakerName" class="form-control"
+									   title="Input a State Warning Code to filter"/></th>
+							<th><input ng-model="filter.wineMakerDescription" class="form-control"
+									   title="Input a State Warning Description to filter"/></th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="attribute in $data | orderBy:sorterFunc">
+							<td data-title="'Wine Maker Id'">
+								<label>{{attribute.wineMakerId}}</label>
+							</td>
+							<td data-title="'Wine Maker Name'">
+								<p ng-if="!attribute.isEditing">{{attribute.wineMakerName}}</p>
+								<input ng-if="attribute.isEditing" type="text" value={{attribute.wineMakerName}}
+									   style="width: 100%;height: 26px"
+									   title="{{attribute.wineMakerName.length==0?'Wine Maker Name is a mandatory field.':''}}"
+									   ng-model="attribute.wineMakerName"
+									   empty-valid="State Warning Name is a mandatory field."
+									   class="{{attribute.wineMakerName.length==0?attribute.addClass:'ng-valid'}}">
+							</td>
+							<td data-title="'Wine Maker Description'">
+								<p ng-if="!attribute.isEditing">{{attribute.wineMakerDescription}}</p>
+								<textarea ng-if="attribute.isEditing" type="text"
+										  style="width: 100%;height: 100px;resize: none;"
+										  title="{{attribute.wineMakerDescription.length==0?'Wine Maker Description is a mandatory field.':''}}"
+										  ng-model="attribute.wineMakerDescription"
+										  empty-valid="State Warning Name is a mandatory field."
+										  class="{{attribute.wineMakerDescription.length==0?attribute.addClass:'ng-valid'}}">
+							</textarea>
+							</td>
+							<td data-title="'Action'" style="text-align: center" can-edit="CT_WINE_04">
+								<button class="glyphicon glyphicon-edit pointer" title="{{$ctrl.isEditing?'':'Edit'}}"
+										data-ng-disabled="$ctrl.isEditing"
+										style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+										data-ng-click="$ctrl.editWineMaker(attribute)" ng-if="!attribute.isEditing">
+								</button>
+								<button class="glyphicon glyphicon-remove pointer"
+										title="{{$ctrl.isEditing?'':'Delete'}}" data-ng-disabled="$ctrl.isEditing"
+										style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};border-width:0px;padding: 1px;color: red;background: transparent; font-size: large"
+										data-ng-click="$ctrl.deleteHandle(attribute)" ng-if="!attribute.isEditing">
+								</button>
+								<button class="glyphicon glyphicon-floppy-disk pointer" title="Save"
+										style="background: transparent;border-width:0px;padding: 0px;color: green; font-size: large"
+										data-ng-click="$ctrl.saveData(attribute)" ng-if="attribute.isEditing">
+								</button>
+								<button class="glyphicon glyphicon-ban-circle pointer" title="Reset"
+										style="background: transparent;border-width:0px;padding: 0px;color: red; font-size: large"
+										data-ng-click="$ctrl.cancel(attribute)" ng-if="attribute.isEditing">
+								</button>
+							</td>
+							<td style="text-align: center" view-only="CT_WINE_04">
+								<button class="glyphicon glyphicon-edit pointer" disabled="disabled"
+										style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;">
+								</button>
+								<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="disabled"
+										style="opacity: 0.5;border-width:0px;padding: 1px;color: red;background: transparent; font-size: large">
+								</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div ng-show="!$ctrl.isWaiting" class="inline-block pull-right" style="padding-top: 10px;">
+					<!-- View Mode-->
+					<button view-only="CT_WINE_04" class="btn btn-primary" disabled="true"> Add</button>
+					<!--Edit mode-->
+					<button can-edit="CT_WINE_04" data-ng-disabled="$ctrl.isEditing" class="btn btn-primary"
+							ng-click="$ctrl.addNew()"> Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add new/Edit popup-->
+<!--Modal Add New/Edit-->
+<div id="wineMakerModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.dataPopupTitle}}
+				</h5>
+			</div>
+			<div class="modal-body" style="min-height:400px;">
+
+				<div class="alert alert-danger" data-ng-if="$ctrl.dataPopupError"
+					 ng-bind-html="$ctrl.dataPopupError"></div>
+				<table ng-table="tableParamsPopup" class="table-heb table-bordered table-striped" style="width: 100%;">
+					<!--<tr style="color: white; background-color: #00476b; height: 25px;text-align: center">-->
+					<thead>
+					<tr style="border-bottom: hidden !important;height: 25px;">
+						<th style="width:20%;">Wine Maker Id</th>
+						<th style="width:30%;">Wine Maker Name</th>
+						<th style="max-width:35%;">Wine Maker Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="obj in $data">
+						<td>{{obj.wineMakerId | number}}</td>
+						<td class="has-error-popup"><input type="text" style="width: 100%;height: 26px;"
+														   ng-model="obj.wineMakerName "
+														   title="{{obj.wineMakerName.length==0?'Wine Maker Name is mandatory field.':''}}"
+														   empty-valid="Wine Maker Name is mandatory field."
+														   maxlength="100" trim-space
+														   class="{{obj.wineMakerName.length==0?obj.addClass:'ng-valid'}}">
+						</td>
+						<td class="has-error-popup"><textarea type="text"
+															  style="width: 100%;min-height: 70px;resize: none;"
+															  ng-model="obj.wineMakerDescription "
+															  class="{{obj.wineMakerDescription.length==0?obj.addClass:'ng-valid'}}"
+															  title="{{obj.wineMakerDescription.length==0?'Wine Maker Description is mandatory field.':''}}"
+															  empty-valid="Wine Maker Description is mandatory field."></textarea>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRowWineMaker()">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAddWineMaker()">Save
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.closeModalUnsavedData()">Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.titleConfirm}}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.doDeleteItem()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					{{$ctrl.labelClose}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm message--->
+<div id="confirmModalSave" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>Unsaved data will be lost. Do you want to save the changes before continuing?</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.wineMakerTabchange()">
+					Yes
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm"
+						data-dismiss="modal" ng-click="$ctrl.doAddWineMaker()">
+					Yes
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm"
+						data-dismiss="modal" ng-click="$ctrl.doClosePopup()">
+					No
+				</button>
+				<button type="button" ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm"
+						data-dismiss="modal"
+						ng-click="$ctrl.returnToTab (false)">
+					No
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.closeConfirmPopup()">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,299 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div class="container-fluid" ng-show="!$ctrl.isWaitingForResponse">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<!--This Row holds the item master information like Item code and its description span-->
+	<div class="row" style="width: 100%;">
+		<div class="inline-block pull-right" style="margin-bottom: 10px;">
+			<button class="btn btn-primary" ng-click="$ctrl.clearFilter()">Clear Filter</button>
+		</div>
+		<table ng-table="$ctrl.choiceTypeTableParams" class="table-heb table-bordered table-striped"
+			   style="width: 100%;" show-filter="true">
+			<!--<tr style="color: white; background-color: #00476b; height: 25px;text-align: center">-->
+			<thead>
+			<tr style="border-bottom: hidden !important;">
+				<th style="width: 10%;text-align: center;">Choice Type Code</th>
+				<th style="min-width: 100px;text-align: center;">Choice Type Abbreviation</th>
+				<th style="min-width: 100px;text-align: center;">Choice Type Description</th>
+				<th style="min-width: 100px;text-align: center;">Parent Choice Type</th>
+				<th style="width:11%;">Action</th>
+			</tr>
+			<tr style="border-bottom: hidden !important;">
+				<th style="width: 10%;text-align: center;"><input ng-model="filter.choiceTypeCode" class="form-control" /></th>
+				<th style="min-width: 100px;text-align: center;"><input ng-model="filter.abbreviation" class="form-control" /></th>
+				<th style="min-width: 100px;text-align: center;"><input ng-model="filter.displayName" class="form-control" /></th>
+				<th style="min-width: 100px;text-align: center;"><input ng-model="filter.parentDisplayName" class="form-control" /></th>
+				<th style="width:11%;"></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="choiceType in $data">
+				<td style="width: 10%;">{{choiceType.choiceTypeCode}}</td>
+
+				<td data-ng-show="!choiceType.isEditing">{{choiceType.abbreviation}}</td>
+				<td data-ng-show="choiceType.isEditing">
+					<input type="text" style="width: 100%;height: 26px;" maxlength="6"
+						   empty-valid="Choice Type Abbreviation is mandatory field."
+						   ng-model="choiceType.abbreviation">
+				</td>
+
+				<td data-ng-show="!choiceType.isEditing">{{choiceType.description}}</td>
+				<td data-ng-show="choiceType.isEditing">
+					<input type="text" style="width: 100%;height: 26px;" maxlength="50"
+						   empty-valid="Choice Type Description is mandatory field."
+						   ng-model="choiceType.description">
+				</td>
+
+				<td data-ng-show="!choiceType.isEditing">{{choiceType.parentChoiceType.displayName}}</td>
+				<td data-ng-show="choiceType.isEditing">
+					<ui-select ng-model="choiceType.parentChoiceType.choiceTypeCode"
+							   theme="bootstrap" title="Choose a Parent Choice Type">
+						<ui-select-match ng-required="true">
+							{{$select.selected.displayName}}
+						</ui-select-match>
+						<ui-select-choices
+							repeat="element.choiceTypeCode as element in $ctrl.choiceTypes">
+							<div
+								ng-bind-html="element.displayName | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</td>
+				<td style="text-align: center" can-edit="CT_CHOI_02">
+					<button data-ng-click="$ctrl.enableRow(choiceType)" class="glyphicon glyphicon-edit pointer"
+							ng-if="!choiceType.isEditing" title="Edit"
+							style="{{$ctrl.getButtonStyle(choiceType.choiceTypeCode)}}color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+							data-ng-disabled="$ctrl.hasOtherRowEditing"></button>
+					<button data-ng-click="$ctrl.showPopupConfirmDelete(choiceType)" class="glyphicon glyphicon-remove pointer"
+							ng-if="!choiceType.isEditing" title="Delete"
+							style="{{$ctrl.getButtonStyle(choiceType.choiceTypeCode)}}color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"
+							data-ng-disabled="$ctrl.hasOtherRowEditing"></button>
+					<i title="Save" data-ng-click="$ctrl.saveData(choiceType)" class="glyphicon glyphicon-floppy-disk pointer" ng-if="choiceType.isEditing" style="color: green; font-size: large"></i>
+					<i title="Reset" data-ng-click="$ctrl.resetCurrentRow()" class="glyphicon glyphicon-ban-circle pointer" ng-if="choiceType.isEditing" style="color: red; font-size: large"></i>
+				</td>
+				<td style="text-align: center" view-only="CT_CHOI_02">
+					<button class="glyphicon glyphicon-edit pointer"  data-ng-disabled="true" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+					<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="true" style="opacity: 0.5;color: red; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<!--Footer -- Contain Save, Reset button-->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="inline-block pull-right">
+				<!-- View Mode-->
+				<button view-only="CT_CHOI_02" class="btn btn-primary" disabled="true"> Add</button>
+				<!--Edit mode-->
+				<button can-edit="CT_CHOI_02" data-ng-disabled="$ctrl.hasOtherRowEditing"
+						class="btn btn-primary" ng-click="$ctrl.addNewChoiceType()"> Add</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add new/Edit popup-->
+<!--Modal Add New/Edit Vocabulary-->
+<div id="choiceTypeModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.titleModel}}
+				</h5>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addEditForm" id="addEditForm" novalidate>
+					<div ng-if="$ctrl.action == 'EDIT'">
+						<table ng-table="$ctrl.choiceTypeTableParamsSelected" class="table-heb table-bordered table-striped"
+							   style="width: 100%;" >
+							<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="min-width: 100px;text-align: center;">Choice Type Code</th>
+								<th style="min-width: 100px;text-align: center;">Choice Type Abbreviation</th>
+								<th style="min-width: 100px;text-align: center;">Choice Type Description</th>
+								<th style="min-width: 100px;text-align: center;">Parent Choice Type</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="choiceType in $data">
+								<td>{{choiceType.choiceTypeCode}}</td>
+								<td><input type="text" style="width: 100%;height: 26px;"
+										   ng-model="choiceType.abbreviation"
+										   empty-valid="Choice Type Abbreviation is mandatory field."
+										   class="{{choiceType.abbreviation.length==0?choiceType.addClass:''}}"
+										   title="{{choiceType.abbreviation.length==0?'Choice Type Abbreviation is mandatory field.':''}}">
+								</td>
+								<td><input type="text" style="width: 100%;height: 26px;"
+										   ng-model="choiceType.description"
+										   empty-valid="Choice Type Description is mandatory field."
+										   title="{{choiceType.description.length==0?'Choice Type Description is mandatory field.':''}}"
+										   class="{{choiceType.description.length==0?choiceType.addClass:''}}"></td>
+								<td>
+									<ui-select ng-model="choiceType.parentChoiceType"
+											   theme="bootstrap"
+											   title="Choose a Parent Choice Type">
+										<ui-select-match allow-clear="true">
+											{{$select.selected.displayName}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="choiceType in $ctrl.choiceTypes"
+											refresh-delay="0">{{choiceType.displayName}}
+										</ui-select-choices>
+									</ui-select>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div ng-if="$ctrl.action == 'ADD'">
+						<table class="table-heb table-bordered table-striped" style="width: 100%;">
+							<thead>
+							<tr style="border-bottom: hidden !important;height: 25px;">
+								<th style="min-width: 100px;text-align: center;">Choice Type Code</th>
+								<th style="min-width: 100px;text-align: center;">Choice Type Abbreviation</th>
+								<th style="min-width: 100px;text-align: center;">Choice Type Description</th>
+								<th style="min-width: 100px;text-align: center;">Parent Choice Type</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="choiceType in $ctrl.choiceTypesHandle track by $index">
+								<td>{{choiceType.choiceTypeCode}}</td>
+								<td class="has-error-popup"><input type="text" style="width: 100%;height: 26px;"
+																   ng-model="choiceType.abbreviation"
+																   empty-valid="Choice Type Abbreviation is mandatory field."
+																   class="{{choiceType.abbreviation.length==0?choiceType.addClass:'ng-valid'}}"
+																   title="{{choiceType.abbreviation.length==0?'Choice Type Abbreviation is mandatory field.':''}}">
+								</td>
+								<td class="has-error-popup"><input type="text" style="width: 100%;height: 26px;"
+																   ng-model="choiceType.description"
+																   empty-valid="Choice Type Description is mandatory field."
+																   class="{{choiceType.description.length==0?choiceType.addClass:'ng-valid'}}"
+																   title="{{choiceType.description.length==0?'Choice Type Description is mandatory field.':''}}">
+								</td>
+								<td>
+									<ui-select ng-model="choiceType.parentChoiceType"
+											   theme="bootstrap"
+											   title="Choose a Parent Choice Type">
+										<ui-select-match allow-clear="true">
+											{{$select.selected.displayName}}
+										</ui-select-match>
+										<ui-select-choices
+											repeat="choiceType in $ctrl.choiceTypes"
+											refresh-delay="0">{{choiceType.displayName}}
+										</ui-select-choices>
+									</ui-select>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRowChoiceType()" ng-show="$ctrl.action == 'ADD'">
+					Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.updateChoiceType()">
+					Save
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-show="$ctrl.action == 'EDIT'" ng-click="$ctrl.resetDataOrigForPopUp()">
+					Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" ng-click="$ctrl.closePopupHandle()">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5 ng-bind-html="$ctrl.confirmMessage"></h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.confirmActionHandle()" data-ng-show="$ctrl.allowYesButton">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.noConfirmActionHandle()">
+					{{$ctrl.labelClose}}
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-show="$ctrl.confirmAction == 'SAVE'">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="confirmationDelete" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body">
+				<h5 ng-bind-html="$ctrl.confirmMessage"></h5>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div ng-show="!$ctrl.cannotDeleteChoiceType">
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.doDeleteData($ctrl.choiceTypeToDelete)">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+				</div>
+				<div ng-show="$ctrl.cannotDeleteChoiceType">
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">Close
+					</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div id="changeTabConfirmation" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body"><h5>{{$ctrl.MESSAGE_CONFIRM_CLOSE}}</h5></div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveData($ctrl.findChoiceTypeById($ctrl.selectedRowId))">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

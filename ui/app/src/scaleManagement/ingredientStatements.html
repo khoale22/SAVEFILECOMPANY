@@ -1,0 +1,355 @@
+<!--
+  ~  ingredientStatements.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div class="row container-fluid" ng-cloak="true" ng-controller="IngredientStatementsController as ingredientStatementsController"
+	 ng-init="ingredientStatementsController.init()" can-view="SM_INGR_02">
+	<div class="row" data-ng-if="ingredientStatementsController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientStatementsController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="ingredientStatementsController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientStatementsController.error}}</span>
+	</div>
+
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Ingredient Statement Search
+					<i ng-click="ingredientStatementsController.searchPanelVisible = !ingredientStatementsController.searchPanelVisible" class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': ingredientStatementsController.searchPanelVisible, 'glyphicon glyphicon-plus': !ingredientStatementsController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="ingredientStatementsController.searchPanelVisible">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<label>
+									<input type="radio" ng-model="ingredientStatementsController.selectionType" value="{{ingredientStatementsController.INGREDIENT_STATEMENT}}" />Ingredient Statement Code
+								</label>
+								<label>
+									<input type="radio" ng-model="ingredientStatementsController.selectionType" value="{{ingredientStatementsController.INGREDIENT_CODE}}" />Ingredient Code
+								</label>
+								<label>
+									<input type="radio" ng-model="ingredientStatementsController.selectionType" value="{{ingredientStatementsController.DESCRIPTION}}" />Description
+								</label>
+								<label>
+									<input type="radio" ng-model="ingredientStatementsController.selectionType" value="{{ingredientStatementsController.ORDERED_CODE_LIST}}" />Ordered Codes
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-6">
+										<textarea data-ng-model="ingredientStatementsController.searchSelection" rows="8"
+												  placeholder="{{ingredientStatementsController.getTextPlaceHolder()}}" class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<!--Buttons to do the search or clear the user input. -->
+											<div class="col-md-6">
+												<button data-ng-click="ingredientStatementsController.newSearch()" class="btn btn-primary btn-block" data-ng-disabled="ingredientStatementsController.searchSelection == null">Search</button>
+												<button data-ng-click="ingredientStatementsController.searchAll()" class="btn btn-primary btn-block">Search All</button>
+											</div>
+											<div class="col-md-6">
+												<button data-ng-click="ingredientStatementsController.clearSearch()" class="btn btn-primary btn-block" data-ng-disabled="ingredientStatementsController.searchSelection == null">Clear</button>
+												<button data-ng-click="ingredientStatementsController.addIngredientStatement()"
+														data-toggle="modal"
+														data-target="#ingredientStatementModal"
+														class="btn btn-primary btn-block"
+														data-ng-disabled="!ingredientStatementsController.canEditIngredientStatements()">Add</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="ingredientStatementsController.isWaiting">
+	</loading-spinner>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						These are the {{ingredientStatementsController.selectedType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="ingredientStatements in ingredientStatementsController.missingValues.noMatchList">{{ingredientStatements}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="!ingredientStatementsController.isWaiting && ingredientStatementsController.deleteMessage != null">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientStatementsController.deleteMessage}}</span>
+	</div>
+
+	<div class="col-md-12" ng-show="!ingredientStatementsController.isWaiting && ingredientStatementsController.data != null">
+		<div class="panel-group">
+			<div class="panel panel-primary" ng-show="ingredientStatementsController.isNotViewingSinglePlu()">
+				<div class="panel-heading">
+					<div ng-if="!ingredientStatementsController.isAddingIngredientStatement && ingredientStatementsController.resultMessage != null && !ingredientStatementsController.isEditingIngredientStatement">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{ingredientStatementsController.resultMessage}}</h5>
+						<div class="inline-block pull-right" ng-if="ingredientStatementsController.showMatchCount()">
+							<h5 ng-if="ingredientStatementsController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{ingredientStatementsController.missingValues.matchCount}}
+								<span ng-if="ingredientStatementsController.missingValues.matchCount ==  1">{{ingredientStatementsController.selectedType}}</span>
+								<span ng-if="ingredientStatementsController.missingValues.matchCount >  1">{{ingredientStatementsController.selectedType}}s</span>
+								found</h5>
+							<h5 ng-if="ingredientStatementsController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{ingredientStatementsController.missingValues.noMatchCount}}
+								<span ng-if="ingredientStatementsController.missingValues.noMatchCount ==  1">{{ingredientStatementsController.selectedType}}</span>
+								<span ng-if="ingredientStatementsController.missingValues.noMatchCount >  1">{{ingredientStatementsController.selectedType}}s</span>
+								not	found</h5>
+
+
+						</div>
+
+						<!-- New additions to create download button -->
+						<div class="inline-block pull-right" ng-if="ingredientStatementsController.downloadingIngredientStatementList" style="color: orange">Downloading...</div>
+
+
+						<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+							 ng-click="ingredientStatementsController.exportIngredientStatementList()"
+							 style="color: orange; padding-left: 10px; padding-bottom: 5px;
+								 font-size: medium" data-toggle="tooltip" title="Export Ingredient Statements. to Excel (includes all SOIs, IS#s, and PLUs)">
+						</div>
+					</div>
+					<div ng-if="ingredientStatementsController.isAddingIngredientStatement || ingredientStatementsController.resultMessage == null">New Ingredient Code</div>
+				</div>
+				<div class="panel-body">
+					<table ng-table="ingredientStatementsController.tableParams"
+						   class="table-heb table-bordered table-striped"
+						   style="width: 100%">
+
+						<tr ng-repeat="ingredientStatement in ingredientStatementsController.data track by $index">
+							<td data-title="'Statement Number'"><a class="pointer" ng-click="ingredientStatementsController.showPlus(ingredientStatement)">{{ingredientStatement.statementNumber}}</a></td>
+							<td data-title="'Ingredient Codes'" style="width:20%">
+								<div ng-repeat="detail in ingredientStatement.ingredientStatementDetails">
+									<div ng-if="ingredientStatementsController.isSearchedIngredientCode(detail.ingredient.ingredientCode)"><strong>{{detail.ingredient.displayName}}</strong></div>
+									<div ng-if="!ingredientStatementsController.isSearchedIngredientCode(detail.ingredient.ingredientCode)">{{detail.ingredient.displayName}}</div>
+								</div>
+							</td>
+							<td data-title="'Ingredients'">{{ingredientStatement.ingredientsText}}
+							</td>
+							<!-- I don't know why the can-edit in this td doesn't work, but, if you use that rather than -->
+							<!-- the ng-if, this doesn't work. -->
+							<td ng-if="ingredientStatementsController.canEditIngredientStatements()">
+								<i can-edit="SM_INGR_02" data-ng-click="ingredientStatementsController.editIngredientStatement(ingredientStatement, $index)" data-toggle="modal" data-target="#ingredientStatementModal" class="glyphicon glyphicon-edit pointer" style="color: orange; font-size: large"></i>
+								<i can-edit="SM_INGR_02" data-ng-click="ingredientStatementsController.setEditingIndex($index)" data-toggle="modal" data-target="#removeIngredientStatementModal" class="glyphicon glyphicon-remove pointer" style="color: red; font-size: large"></i>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<plu-panel current-code="ingredientStatementsController.ingredientStatement"
+			   code-type="ingredientStatementsController.INGREDIENT_STATEMENT"
+			   ng-show="ingredientStatementsController.ingredientStatement != null">
+	</plu-panel>
+
+	<!-- The popup to edit an ingredient statement. -->
+	<div id="ingredientStatementModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff" ng-show="ingredientStatementsController.isAddingIngredientStatement">New Ingredient Statement Information</h5>
+					<h5 class="modal-title inline-block" style="color: #ffffff" ng-show="ingredientStatementsController.isEditingIngredientStatement">Modify Ingredient Statement Information</h5>
+				</div>
+				<div class="modal-body">
+					<div class="well" style="margin-bottom: 0">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="ingredientStatement">Ingredient Statement<strong class="inline-block pull-right" style="color: red">**</strong></label>
+									<div ng-if="!ingredientStatementsController.isAddingIngredientStatement">
+										<input id="ingredientStatement" class="form-control" type="text" ng-model="ingredientStatementsController.selectedIngredientStatement.statementNumber" disabled>
+									</div>
+									<div ng-if="ingredientStatementsController.isAddingIngredientStatement">
+										<ui-select ng-model="ingredientStatementsController.selectedIngredientStatement.statementNumber"
+												   theme="bootstrap"
+												   id="statementNumber"
+												   title="Choose an statement">
+											<ui-select-match>{{$select.selected}}</ui-select-match>
+											<ui-select-choices repeat="statement in ingredientStatementsController.currentStatementNumberList"
+															   refresh="ingredientStatementsController.getNextAvailableIngredientStatementNumber($select.search)"
+															   refresh-delay="0">{{statement}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+
+										<label for="maintenanceDate">Maintenance Date<strong class="inline-block pull-right" style="color: red">**</strong></label>
+										<div class="input-group pull-right">
+
+											<input id="maintenanceDate" class="form-control date-picker" type="text" readonly="true"
+												   uib-datepicker-popup="MM/dd/yyyy"
+												   datepicker-options="ingredientStatementsController.options"
+												   is-open="ingredientStatementsController.maintenanceDatePickerOpened"
+												   ng-model="ingredientStatementsController.selectedIngredientStatement.maintenanceDate"
+												   ng-required="true" close-text="Close"/>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+														ng-click="ingredientStatementsController.openMaintenanceDatePicker()">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<div class="row">
+									<div class="col-md-12">
+										<button type="button" class="btn btn-primary btn-sm"
+												ng-click="ingredientStatementsController.addIngredient(0)"
+												title="{{ingredientStatementsController.isAnyIngredientsNull() ? 'Please select the empty ingredient before adding another.' : null}}"
+												data-ng-disabled="ingredientStatementsController.isAnyIngredientsNull()">Add First Ingredient</button>
+										<i class="glyphicon glyphicon-info-sign"
+										   style="color: blue"
+										   title="{{ingredientStatementsController.SUB_INGREDIENT_TEXT}}"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div ng-repeat="detail in ingredientStatementsController.selectedIngredientStatement.ingredientStatementDetails track by $index">
+									<label for="{{'detail' + $index}}"
+										   ng-style="{'padding-top': $index != 0 ?  '5px': ''}">Ingredient Code {{$index + 1}}</label>
+									<div class="row">
+										<div class="col-md-8">
+											<ui-select ng-model="detail.ingredient"
+													   theme="bootstrap"
+													   id="{{'detail' + $index}}"
+													   autofocus>
+												<ui-select-match  title="{{$select.selected.displayText}}">{{$select.selected.displayName}}</ui-select-match>
+												<ui-select-choices repeat="ingredient in ingredientStatementsController.currentIngredientList"
+																   refresh="ingredientStatementsController.getCurrentIngredientList($select.search)"
+																   refresh-delay="0">
+													<div uib-tooltip="{{ingredient.displayText}}" tooltip-placement="bottom" tooltip-append-to-body="true">{{ingredient.displayName}}</div>
+												</ui-select-choices>
+											</ui-select>
+										</div>
+										<div class="col-md-2">
+											<div class="row">
+												<div class="col-md-6">
+													<button class="glyphicon glyphicon-plus" style="color: green; padding-top: 5px; padding-bottom: 5px; background: none; border: none; font-size: large;"
+															title="{{ingredientStatementsController.isAnyIngredientsNull() ? 'Please select the empty ingredient before adding another.' : null}}"
+															ng-click="ingredientStatementsController.addIngredient($index + 1)" data-ng-disabled="ingredientStatementsController.isAnyIngredientsNull()"
+															ng-style="{'cursor': ingredientStatementsController.isAnyIngredientsNull()?  'not-allowed': 'pointer'}">
+													</button>
+												</div>
+
+												<div class="col-md-6">
+													<button ng-click="ingredientStatementsController.moveIngredient($index, $index - 1)"
+															ng-show="!($index == 0)"
+															class="glyphicon glyphicon-triangle-top pointer">
+													</button>
+													<button ng-click="ingredientStatementsController.moveIngredient($index, $index + 1)"
+															ng-show="!($index == ingredientStatementsController.selectedIngredientStatement.ingredientStatementDetails.length - 1)"
+															class="glyphicon glyphicon-triangle-bottom pointer">
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<button ng-click="ingredientStatementsController.removeIngredient($index)"
+													class="btn btn-danger btn-sm">Remove</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<strong class="inline-block pull-left" style="color: red">** Required</strong>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal" ng-click="ingredientStatementsController.resetModal()">Cancel</button>
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal" ng-click="ingredientStatementsController.ingredientStatementChanges()"
+							data-ng-disabled="ingredientStatementsController.isRequiredIngredientInfoNotFilled()"
+							title="{{ingredientStatementsController.isRequiredIngredientInfoNotFilled() ? 'Please enter all required information, and select any added ingredients.' : null}}">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="removeIngredientStatementModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">Please Confirm</h5>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to remove ingredient statement: {{ingredientStatementsController.selectedIngredientStatement.statementNumber}}?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" ng-click="ingredientStatementsController.cancelRemove()" class="btn btn-danger" data-dismiss="modal">No</button>
+					<button type="button" ng-click="ingredientStatementsController.chooseIngredientStatementDepartments()" class="btn btn-success" data-dismiss="modal">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="ingredientStatementChooseDepartmentModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff" ng-show="ingredientStatementsController.isRemovingNutrientStatement">Please specify the department(s) for the delete.</h5>
+				</div>
+				<div class="modal-body">
+					<table class="table-heb table-bordered table-striped" style="width: 100%">
+						<thead>
+						<tr>
+							<th style="text-align: left !important;">
+								<input  type="checkbox" ng-model="ingredientStatementsController.selectAll"
+										ng-change="ingredientStatementsController.addAllDepartments(ingredientStatementsController.selectAll)">
+							</th>
+							<th>Department</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="dept in ingredientStatementsController.departmentArray track by $index">
+							<td>
+								<input type="checkbox" ng-model="dept.isSelected" ng-change="ingredientStatementsController.updateSelectAllSwitch(dept.isSelected)">
+							</td>
+							<td>{{dept.id}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal" ng-click="ingredientStatementsController.removeIngredientStatement()"
+							data-ng-disabled="!ingredientStatementsController.isDepartmentChosen()">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

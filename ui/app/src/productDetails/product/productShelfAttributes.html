@@ -1,0 +1,660 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.success">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<div ng-show="!$ctrl.isLoading" style="height: 250px">
+	<div can-view="PD_SHLF_01">
+		<div class="row col-md-offset-10 col-md-2 pull-right" >
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showShelfAttributesAuditInfo()"></div>
+		</div>
+		<!--Shelf Attributes Description block starts-->
+		<div class="row" can-view="PD_SHLF_01" style="padding-top: 5px">
+			<div class="col-md-5">
+				<label>Product ID: </label><span>{{$ctrl.productMaster.prodId}}</span>
+			</div>
+			<div class="col-md-7">
+				<div class="row">
+					<div class="col-md-4" style="padding-right: 0">
+						<label>English Customer Friendly Desc-1</label>
+					</div>
+					<div class="col-md-8" style="padding-left: 0">
+						<div class="row">
+							<div class="col-md-8">
+								<div can-edit="PD_SHLF_01">
+									<input type="text" ng-model="$ctrl.englishCustomerFriendlyDescription1.description" style="width: 100%"
+										   id="{{$ctrl.ENGLISH_CFD1_INPUT_ID}}"
+										   ng-change="$ctrl.customerFriendlyDescriptionChanged($ctrl.ENGLISH_CFD1_INPUT_ID)"
+										   class="form-control"
+										   ng-blur="$ctrl.validateCustomerFriendlyDescription($event, $ctrl.englishCustomerFriendlyDescription1)">
+								</div>
+								<div view-only="PD_SHLF_01">{{$ctrl.englishCustomerFriendlyDescription1.description}}</div>
+							</div>
+							<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.ENGLISH_CFD1_INFO}}">
+							</i>
+							<i class="glyphicon glyphicon-info-sign pull-left" style="color: orange; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.HELP_TEXT}}">
+							</i>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.hasCustomerFriendlyDescriptionChanged($ctrl.ENGLISH_CFD1_INPUT_ID)"
+								 title="English Customer Friendly Desc-1 needs validation. Please click out of input to validate.">Needs validation</div>
+							<div class="text-left" style="color: orange"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionWaitingForValidation($ctrl.ENGLISH_CFD1_INPUT_ID)"
+								 title="Validating text.">Validating text</div>
+							<div class="text-left" style="color: green"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionValid($ctrl.ENGLISH_CFD1_INPUT_ID)"
+								 title="Text is valid.">Text is valid</div>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.doesCustomerFriendlyDescriptionHaveError($ctrl.ENGLISH_CFD1_INPUT_ID)"
+								 title="Validation error... please try again.">Error</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top: 5px">
+			<div class="col-md-5">
+				<div class="row">
+					<div class="col-md-3">
+						<label>English Description</label>
+					</div>
+					<div class="col-md-8">
+						<div can-edit="PD_SHLF_01">
+							<input type="text"
+								   maxlength="30"
+								   ng-model="$ctrl.productMaster.description"
+								   ng-change="$ctrl.valueChanged()"
+								   class="form-control text-uppercase"
+								   style="width: 100%">
+						</div>
+						<div view-only="PD_SHLF_01">{{$ctrl.productMaster.description}}</div>
+					</div>
+					<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small"
+					   data-toggle="tooltip" title="{{$ctrl.ENGLISH_DESCRIPTION_TEXT}}">
+					</i>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="row">
+					<div class="col-md-4" style="padding-right: 0">
+						<label>English Customer Friendly Desc-2</label>
+					</div>
+					<div class="col-md-8" style="padding-left: 0">
+						<div class="row">
+							<div class="col-md-8" >
+								<div can-edit="PD_SHLF_01">
+									<input type="text" ng-model="$ctrl.englishCustomerFriendlyDescription2.description" style="width: 100%"
+										   id="{{$ctrl.ENGLISH_CFD2_INPUT_ID}}"
+										   ng-change="$ctrl.customerFriendlyDescriptionChanged($ctrl.ENGLISH_CFD2_INPUT_ID)"
+										   class="form-control"
+										   ng-blur="$ctrl.validateCustomerFriendlyDescription($event, $ctrl.englishCustomerFriendlyDescription2)">
+								</div>
+								<div view-only="PD_SHLF_01">{{$ctrl.englishCustomerFriendlyDescription2.description}}</div>
+							</div>
+							<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.ENGLISH_CFD2_INFO}}">
+							</i>
+							<i class="glyphicon glyphicon-info-sign pull-left" style="color: orange; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.HELP_TEXT}}">
+							</i>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.hasCustomerFriendlyDescriptionChanged($ctrl.ENGLISH_CFD2_INPUT_ID)"
+								 title="English Customer Friendly Desc-1 needs validation. Please click out of input to validate.">Needs validation</div>
+							<div class="text-left" style="color: orange"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionWaitingForValidation($ctrl.ENGLISH_CFD2_INPUT_ID)"
+								 title="Validating text.">Validating text</div>
+							<div class="text-left" style="color: green"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionValid($ctrl.ENGLISH_CFD2_INPUT_ID)"
+								 title="Text is valid.">Text is valid</div>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.doesCustomerFriendlyDescriptionHaveError($ctrl.ENGLISH_CFD2_INPUT_ID)"
+								 title="Validation error... please try again.">Error</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top: 5px">
+			<div class="col-md-5">
+				<div class="row">
+					<div class="col-md-3">
+						<label>Spanish Description</label>
+					</div>
+					<div class="col-md-8">
+						<div can-edit="PD_SHLF_01">
+							<input type="text"
+								   maxlength="30"
+								   ng-model="$ctrl.productMaster.spanishDescription"
+								   ng-change="$ctrl.valueChanged()"
+								   class="form-control text-uppercase"
+								   style="width: 100%">
+						</div>
+						<div view-only="PD_SHLF_01">{{$ctrl.productMaster.spanishDescription}}</div>
+					</div>
+					<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small"
+					   data-toggle="tooltip" title="{{$ctrl.SPANISH_DESCRIPTION_TEXT}}">
+					</i>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="row">
+					<div class="col-md-4" style="padding-right: 0">
+						<label>Spanish Customer Friendly Desc-1</label>
+					</div>
+					<div class="col-md-8" style="padding-left: 0">
+						<div class="row">
+							<div class="col-md-8">
+								<div can-edit="PD_SHLF_01">
+									<input type="text" ng-model="$ctrl.spanishCustomerFriendlyDescription1.description" style="width: 100%"
+										   id="{{$ctrl.SPANISH_CFD1_INPUT_ID}}"
+										   ng-change="$ctrl.customerFriendlyDescriptionChanged($ctrl.SPANISH_CFD1_INPUT_ID)"
+										   class="form-control"
+										   ng-blur="$ctrl.validateCustomerFriendlyDescription($event, $ctrl.spanishCustomerFriendlyDescription1)">
+								</div>
+								<div view-only="PD_SHLF_01">{{$ctrl.spanishCustomerFriendlyDescription1.description}}</div>
+							</div>
+							<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.SPANISH_CFD1_INFO}}">
+							</i>
+							<i class="glyphicon glyphicon-info-sign pull-left" style="color: orange; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.HELP_TEXT}}">
+							</i>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.hasCustomerFriendlyDescriptionChanged($ctrl.SPANISH_CFD1_INPUT_ID)"
+								 title="English Customer Friendly Desc-1 needs validation. Please click out of input to validate.">Needs validation</div>
+							<div class="text-left" style="color: orange"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionWaitingForValidation($ctrl.SPANISH_CFD1_INPUT_ID)"
+								 title="Validating text.">Validating text</div>
+							<div class="text-left" style="color: green"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionValid($ctrl.SPANISH_CFD1_INPUT_ID)"
+								 title="Text is valid.">Text is valid</div>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.doesCustomerFriendlyDescriptionHaveError($ctrl.SPANISH_CFD1_INPUT_ID)"
+								 title="Validation error... please try again.">Error</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top: 5px">
+			<div class="col-md-5">
+				<div class="row">
+					<div class="col-md-3">
+						<label>COOL</label>
+					</div>
+					<div class="col-md-8">
+						<div can-edit="PD_SHLF_09">
+							<input type="text" ng-model="$ctrl.coolDescription.description" style="width: 100%" maxlength="30"
+								   id="{{$ctrl.COOL_INPUT_ID}}" class="form-control" ng-change="$ctrl.valueChanged()">
+						</div>
+						<div view-only="PD_SHLF_09">{{$ctrl.coolDescription.description}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="row">
+					<div class="col-md-4" style="padding-right: 0">
+						<label>Spanish Customer Friendly Desc-2</label>
+					</div>
+					<div class="col-md-8" style="padding-left: 0">
+						<div class="row">
+							<div class="col-md-8">
+								<div can-edit="PD_SHLF_01">
+									<input type="text" ng-model="$ctrl.spanishCustomerFriendlyDescription2.description" style="width: 100%"
+										   id="{{$ctrl.SPANISH_CFD2_INPUT_ID}}"
+										   ng-change="$ctrl.customerFriendlyDescriptionChanged($ctrl.SPANISH_CFD2_INPUT_ID)"
+										   class="form-control"
+										   ng-blur="$ctrl.validateCustomerFriendlyDescription($event, $ctrl.spanishCustomerFriendlyDescription2)">
+								</div>
+								<div view-only="PD_SHLF_01">{{$ctrl.spanishCustomerFriendlyDescription2.description}}</div>
+							</div>
+							<i class="glyphicon glyphicon-question-sign pull-left" style="color: blue; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.SPANISH_CFD2_INFO}}">
+							</i>
+							<i class="glyphicon glyphicon-info-sign pull-left" style="color: orange; font-size: small; margin-right: 5px"
+							   data-toggle="tooltip" title="{{$ctrl.HELP_TEXT}}">
+							</i>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.hasCustomerFriendlyDescriptionChanged($ctrl.SPANISH_CFD2_INPUT_ID)"
+								 title="English Customer Friendly Desc-1 needs validation. Please click out of input to validate.">Needs validation</div>
+							<div class="text-left" style="color: orange"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionWaitingForValidation($ctrl.SPANISH_CFD2_INPUT_ID)"
+								 title="Validating text.">Validating text</div>
+							<div class="text-left" style="color: green"
+								 ng-if="$ctrl.isCustomerFriendlyDescriptionValid($ctrl.SPANISH_CFD2_INPUT_ID)"
+								 title="Text is valid.">Text is valid</div>
+							<div class="text-left" style="color: red"
+								 ng-if="$ctrl.doesCustomerFriendlyDescriptionHaveError($ctrl.SPANISH_CFD2_INPUT_ID)"
+								 title="Validation error... please try again.">Error</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--Shelf Attributes Description block ends-->
+
+		<div class="divider-horizontal"></div>
+
+		<!--Shelf Attributes Tag block starts-->
+
+		<div class="row" style="padding-top: 5px" can-view="PD_SHLF_01">
+			<div class="col-md-3">
+				<label for="tagEffectiveDate">Tag Effective Date</label>
+				<span id="tagEffectiveDate">{{$ctrl.productMaster.goodsProduct.tagEffectiveDate | date}}</span>
+
+			</div>
+			<div class="col-md-2">
+				<label for="tagSize">Tag Size</label>
+				<span id="tagSize">{{$ctrl.productMaster.goodsProduct.shelfTagSizeCode}}</span>
+			</div>
+			<div class="col-md-2">
+				<label for="numberOfTags">Number of Tags</label>
+				<span id="numberOfTags">{{$ctrl.productMaster.goodsProduct.numberOfTags}}</span>
+			</div>
+			<div class="col-md-3">
+				<label for="tagItemCode">Tag Item Code</label>
+				<span id="tagItemCode">{{$ctrl.productMaster.tagItemCode}}</span>
+			</div>
+			<div class="col-md-2">
+				<label for="tagItemType">Tag Item Type</label>
+				<span id="tagItemType">{{$ctrl.tagItemType}}</span>
+			</div>
+		</div>
+
+		<!--Shelf Attributes Tag block ends-->
+
+		<div class="divider-horizontal"></div>
+
+		<!--Shelf Attributes Primo Pick block starts-->
+
+		<div class="row">
+
+			<!-- Begin left and middle of primo pick -->
+			<div class="col-md-6">
+				<div class="row" style="padding-top: 5px">
+					<div class="col-md-3">
+						<label class="pull-left">Primo Pick Status</label>
+					</div>
+					<div class="col-md-3 pull-left"
+						 style="padding-left: 0">
+						<div can-edit="PD_SHLF_03">
+							<div class="dropdown">
+								<select class="form-control" ng-model="$ctrl.primoPickStatusId" ng-change="$ctrl.valueChanged()">
+									<option ng-repeat="status in $ctrl.primoPickStatusList" value="{{status.id}}">{{status.description}}</option>
+								</select>
+							</div>
+						</div>
+						<div view-only="PD_SHLF_03" >{{$ctrl.primoPickStatus.description}}</div>
+					</div>
+					<div data-ng-if="$ctrl.primoPickStatusId == $ctrl.REJECT_STATUS">
+						<div class="col-md-2">
+							<label class="pull-left">Reason</label>
+						</div>
+						<div class="col-md-4 pull-left"
+							 style="padding-left: 0">
+							<div can-edit="PD_SHLF_03">
+								<div class="dropdown">
+									<select class="form-control" ng-model="$ctrl.reasonCode" ng-change="$ctrl.valueChanged()"
+											id="changeReason">
+										<option selected value=" ">--Select--</option>
+										<option  value="{{$ctrl.NEED_MORE_INFO}}">Need more info</option>
+										<option value="{{$ctrl.DOES_NOT_MEET_PRIMO_PICK}}">Does not meet Primo Pick criteria</option>
+									</select>
+								</div>
+							</div>
+							<div view-only="PD_SHLF_03" >{{$ctrl.reasonCode}}</div>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="row" style="padding-top: 5px">
+							<div class="col-md-3">
+								<label>Distinctive</label>
+							</div>
+							<div class="col-md-1" style="padding-left: 0">
+								<div can-edit="PD_SHLF_04">
+									<input type="checkbox" ng-model="$ctrl.isDistinctive"
+										   data-ng-disabled="$ctrl.primoPickStatusId == $ctrl.APPROVED_STATUS || $ctrl.primoPickStatusId == $ctrl.SUBMITTED_STATUS"
+										   ng-change="$ctrl.valueChanged()">
+								</div>
+								<div view-only="PD_SHLF_04">
+									<input type="checkbox" ng-model="$ctrl.isDistinctive" disabled>
+								</div>
+					</div>
+				</div>
+
+
+				<!-- Begin Primo Pick checkbox and dates -->
+				<div class="row"
+					 style="padding-top: 5px">
+							<div class="col-md-3">
+									<label class="pull-left" style="padding-top: 6px">Primo Pick</label>
+								</div>
+							<div class="col-md-1" style="padding-left: 0">
+									<input type="checkbox" ng-model="$ctrl.isPrimoPick" disabled>
+								</div>
+					<div class="col-md-8" ng-show="$ctrl.isPrimoPick || $ctrl.primoPickStatusId==='A'" >
+						<div class="row">
+							<div class="col-md-6 ">
+							<!--<div class="row form-group">-->
+									<label for="primoPickStartDate">Start Date</label>
+									<span id="primoPickStartDate" >
+										<div can-edit="PD_SHLF_03" >
+											<div class="input-group">
+												<input class="form-control date-picker" type="text" readonly="true"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   datepicker-options="$ctrl.options"
+													   is-open="$ctrl.startDatePickerOpened"
+													   ng-model="$ctrl.currentStartDate"
+													   ng-required="false" close-text="Close"
+													   ng-change="$ctrl.valueChanged()"
+												>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="$ctrl.openStartDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+										<div view-only="PD_SHLF_03">
+											<span>{{$ctrl.currentStartDate | date}}</span>
+										</div>
+									</span>
+								<!--</div>-->
+						</div>
+							<div class="col-md-6 ">
+								<!--<div class="row form-group">-->
+									<label for="primoPickEndDate">End Date</label>
+									<span id="primoPickEndDate">
+										<!--<div class="col-md-9 col-sm-9">-->
+										<div can-edit="PD_SHLF_03">
+											<div class="input-group">
+												<input class="form-control date-picker" type="text" readonly="true"
+													   uib-datepicker-popup="MM/dd/yyyy"
+													   datepicker-options="$ctrl.options"
+													   is-open="$ctrl.endDatePickerOpened"
+													   ng-model="$ctrl.currentEndDate"
+													   ng-required="false" close-text="Close"
+													   ng-change="$ctrl.valueChanged()"/>
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="$ctrl.openEndDatePicker()">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+										<div view-only="PD_SHLF_03">
+											<span>{{$ctrl.currentEndDate | date}}</span>
+										</div>
+									<!--</div>-->
+									</span>
+								<!--</div>-->
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- End Primo Pick checkbox and dates -->
+
+
+				<div class="row">
+							<div class="col-md-3">
+								<label>Go Local</label>
+							</div>
+							<div class="col-md-1" style="padding-left: 0">
+								<div can-edit="PD_SHLF_08">
+									<input type="checkbox" ng-model="$ctrl.isGoLocal" ng-change="$ctrl.valueChanged()">
+								</div>
+								<div view-only="PD_SHLF_08">
+									<input type="checkbox" ng-model="$ctrl.isGoLocal" disabled>
+								</div>
+							</div>
+				</div>
+			</div>
+			<!-- End left and middle of primo pick -->
+
+			<div class="clearfix visible-md"></div>
+			<div class="col-md-6 ">
+				<div class="row" style="padding-top: 5px">
+					<div class="col-md-2 text-right">
+						<label>Primo Pick Story</label>
+					</div>
+					<div class="col-md-10" style="padding-left: 0">
+						<div view-only="PD_SHLF_02">
+							{{$ctrl.primoPickLongDescription}}
+						</div>
+						<div can-edit="PD_SHLF_02">
+							<textarea class="form-control" type="text" ng-model="$ctrl.primoPickLongDescription"
+									  ng-disable="!$ctrl.userCanEditResource('PD_SHLF_03')"
+									  ng-change="$ctrl.valueChanged()" style="width: 100%" rows="4"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 5px">
+					<div class="col-md-2 text-right">
+						<label>Primo Pick Shelf Tag</label>
+					</div>
+					<div class="col-md-10" style="padding-left: 0">
+						<div view-only="PD_SHLF_03">
+							{{$ctrl.primoPickShortDescription}}
+
+						</div>
+						<div can-edit="PD_SHLF_03">
+							<textarea type="text" class="form-control" ng-change="$ctrl.valueChanged()"
+									  ng-model="$ctrl.primoPickShortDescription" style="width: 100%" rows="4"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Shelf Attributes Primo Pick block ends-->
+
+		<div data-ng-show="$ctrl.nutritionalClaimsValueList">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="divider-horizontal"></div>
+					<label>Healthy Aisle</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div view-only="PD_SHLF_01">
+						<ul ng-repeat="nutritionalClaimsValues in $ctrl.nutritionalClaimsValueList" class="inline-block" style="list-style-type: none;">
+							<li class="inline-block" ng-show="$ctrl.organicVisible(nutritionalClaimsValues)">
+								{{nutritionalClaimsValues.nutritionalClaimsAttribute.description}}
+							</li>
+							<input class="inline-block" type="checkbox" ng-show="$ctrl.organicVisible(nutritionalClaimsValues)"
+								   ng-model="nutritionalClaimsValues.selected"
+								   ng-disabled="true">
+						</ul>
+					</div>
+					<div can-edit="PD_SHLF_01">
+						<ul ng-repeat="nutritionalClaimsValues in $ctrl.nutritionalClaimsValueList" class="inline-block" style="list-style-type: none;">
+							<li class="inline-block" ng-show="$ctrl.organicVisible(nutritionalClaimsValues)">
+								{{nutritionalClaimsValues.nutritionalClaimsAttribute.description}}
+							</li>
+							<input class="inline-block" type="checkbox" ng-show="$ctrl.organicVisible(nutritionalClaimsValues)"
+								   ng-model="nutritionalClaimsValues.selected" ng-change="$ctrl.valueChanged()"
+								   ng-disabled="!$ctrl.organicEditable(nutritionalClaimsValues)">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Shelf Attributes Service Case Sign-->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="divider-horizontal"></div>
+				<label>Service Case Tag</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row" style="padding-top: 5px;">
+					<div class="col-md-4 text-right">
+						<label class="">Service Case Status</label>
+					</div>
+					<div class="col-md-8">
+						<div can-edit="PD_SHLF_07">
+							<select class="form-control" ng-model="$ctrl.serviceCaseTagDataModified.status" ng-change="$ctrl.valueChanged()">
+								<option ng-repeat="status in $ctrl.serviceCaseSignStatusList" value="{{status.id}}">{{status.description}}</option>
+							</select>
+
+						</div>
+						<div view-only="PD_SHLF_07">{{$ctrl.serviceCaseSignDescription}}</div>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 5px;">
+					<div class="col-md-4 text-right">
+						<label>Proposed Servicecase Sign Description (110 chars)</label>
+					</div>
+					<div class="col-md-8">
+						<div view-only="PD_SHLF_06">
+							<span>{{$ctrl.serviceCaseTagDataModified.proposedDescription}}</span>
+						</div>
+						<div can-edit="PD_SHLF_06">
+							<textarea type="text"
+									  style="width: 100%;"
+									  rows="4"
+									  class="form-control"
+									  ascii-only
+									  ng-model="$ctrl.serviceCaseTagDataModified.proposedDescription"
+									  ng-change="$ctrl.valueChanged()"
+									  ></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 5px;">
+					<div class="col-md-4 text-right">
+						<label class="">Approved Servicecase Sign Description (110 chars)</label>
+					</div>
+					<div class="col-md-8">
+						<div view-only="PD_SHLF_07">
+							<span>{{$ctrl.serviceCaseTagDataModified.approvedDescription}}</span>
+						</div>
+						<div can-edit="PD_SHLF_07">
+						<textarea type="text"
+								  style="width: 100%;"
+								  rows="4"
+								  class="form-control"
+								  ascii-only
+								  ng-model="$ctrl.serviceCaseTagDataModified.approvedDescription"
+								  ng-change="$ctrl.valueChanged()"
+								  ></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div view-only="PD_SHLF_05">
+					<div class="col-md-4 text-right">
+						<label for="tagType">Tag Type</label>
+					</div>
+					<div class="col-md-8">
+						<span id="tagType">{{$ctrl.tagTypeDescription}}</span>
+					</div>
+
+				</div>
+				<div can-edit="PD_SHLF_05">
+					<div class="col-md-4 text-right">
+						<label for="tagTypeSelect">Tag Type</label>
+					</div>
+					<div class="col-md-8">
+						<select id="tagTypeSelect" 
+								ng-disabled="$ctrl.productMaster.goodsProduct === null"  
+								class="form-control" 
+								ng-change="$ctrl.valueChanged()" 
+								ng-model="$ctrl.productMaster.goodsProduct.tagType">
+							<option ng-repeat="tagType in $ctrl.tagTypes" value="{{tagType.tagTypeCode}}">{{tagType.tagTypeDescription}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6" style="padding-top: 7px">
+				<div view-only="PD_SHLF_10">
+					<div class="col-md-4 text-right">
+						<label class="">Service Case Callout</label>
+					</div>
+					<div class="col-md-8">
+						<span>{{$ctrl.serviceCaseCalloutDescription.description}}</span>
+					</div>
+				</div>
+				<div can-edit="PD_SHLF_10">
+					<div class="col-md-4 text-right" style="padding-top: 7px;">
+						<label class="">Service Case Callout</label>
+					</div>
+					<div class="col-md-8">
+						<input type="text"
+							   ng-model="$ctrl.serviceCaseCalloutDescription.description"
+							   id="{{$ctrl.SERVICE_CASE_CALLOUT_ID}}"
+							   ng-change="$ctrl.valueChanged()"
+							   class="form-control"
+							   style="width: 100%"
+							   maxlength="30">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End-->
+		<div class="row" >
+			<div class="col-md-12">
+
+				<div class="divider-horizontal"></div>
+
+				<div class="inline-block pull-right" >
+					<button ng-if="$ctrl.userCanSave()"
+						class="btn btn-primary"
+						ng-click="$ctrl.checkWarningShelfAttribute()"
+						ng-disabled="$ctrl.isSaveDisabled()">
+						Save
+					</button>
+					<button class="btn btn-primary" ng-if="$ctrl.userCanSave()"
+							ng-click="$ctrl.resetShelfAttribute()">
+						Reset
+					</button>
+					<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+				</div>
+
+			</div>
+		</div>
+		<div class="inline-block pull-left">
+			Created On <b>{{$ctrl.getAddedDate()}}</b>
+			Created By <b>{{$ctrl.getCreateUser()}}</b>
+		</div>
+	</div>
+</div>
+<!-- Confirm modal Primo Picks distinctive-->
+<div id="confirm-uncheck-distinctive" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+				<button type="button" class="close" data-dismiss="modal"
+						ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}" title="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="font-size:14px;">
+				<p>Email the Primo Picks team to ensure the distinctive product that is being removed, also has it’s Primo Picks shelf tag and website icon removed.</p>
+			</div>
+			<div class="modal-footer">
+				<div>
+					<button type="button" class="btn btn-primary" ng-click="$ctrl.updateShelfAttribute()">Yes</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal"
+							ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

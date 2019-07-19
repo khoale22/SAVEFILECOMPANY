@@ -1,0 +1,108 @@
+<!--
+  ~ productHierarchySearchSelection.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<br>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+		</loading-spinner>
+
+		<div ng-show="!$ctrl.isWaitingForResponse">
+			<div class="row" data-ng-if="$ctrl.error">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+			</div>
+
+			<div class="row" data-ng-if="!$ctrl.error">
+				<p style="text-indent:20px" class="panel-title inline-block">{{$ctrl.resultMessage}}</p>
+			</div>
+
+			<div class="row" style="padding-bottom: 5px">
+				<div class="col-md-7 inline-block">
+					<input type="text"
+						   class="form-control"
+						   style="width: 100%; padding: 6px 12px 6px 12px"
+						   id="productHierarchySearchText"
+						   title="{{$ctrl.productHierarchySearchTitle}}"
+						   ng-model="$ctrl.productHierarchySearchText">
+				</div>
+				<div class="pull-right btn-group" style="padding-right: 15px">
+					<button class="btn btn-primary"
+							data-ng-disabled="!$ctrl.productHierarchySearchText"
+							title="{{isEmptyString($ctrl.productHierarchySearchText) ? $ctrl.productHierarchySearchTitle : $ctrl.productHierarchySearchButtonTitle}}"
+							ng-click="$ctrl.updateProductHierarchyViewOnSearch()">Search</button>
+					<button class="btn btn-default"
+							data-ng-disabled="!$ctrl.productHierarchySearchText"
+							title="{{!isEmptyString($ctrl.productHierarchySearchText) ? $ctrl.productHierarchySearchClearButtonTitle : null}}"
+							ng-click="$ctrl.clearProductHierarchySearch()">Clear</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="well"
+						 style="overflow-y: auto"
+						 ng-style="{'max-height': getHeight(100, 0)}">
+						<div class="panel-group">
+							<strong ng-show="$ctrl.searchingForProductHierarchy">{{$ctrl.searchingForProductHierarchyText}}</strong>
+							<div ng-if="!$ctrl.searchingForProductHierarchy && $ctrl.data.length === 0">No results found</div>
+							<div class="nav nav-list" ng-repeat="(departmentIndex, department) in $ctrl.data"
+								 ng-if="!$ctrl.searchingForProductHierarchy && $ctrl.data.length > 0">
+								<div class="panel panel-primary">
+									<div class="panel-heading" ng-click="$ctrl.selectDepartment(department)">
+										<h4 class="panel-title">
+											<a><strong>{{department.displayName}}</strong></a>
+											<strong class="pull-right"
+													ng-class="{'fa fa-minus' : !$ctrl.isHierarchyLevelCollapsed(department), 'fa fa-plus' : $ctrl.isHierarchyLevelCollapsed(department)}">
+											</strong>
+										</h4>
+									</div>
+									<div ng-if="!$ctrl.isHierarchyLevelCollapsed(department)">
+										<div ng-repeat="(subDepartmentIndex, subDepartment) in department.subDepartmentList">
+											<div ng-click="$ctrl.selectSubDepartment(department, subDepartment, departmentIndex, subDepartmentIndex)" ng-dblclick="$ctrl.addSelectedItemToSearch()"
+												 style="padding-left: 15px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(departmentIndex, subDepartmentIndex, null, null, null)}}">
+												<strong ng-if="!$ctrl.isHierarchyLevelCollapsed(subDepartment)">[-]</strong>
+												<strong ng-if="$ctrl.isHierarchyLevelCollapsed(subDepartment)">[+]</strong>
+												<strong>{{subDepartment.displayName}}</strong>
+											</div>
+											<div ng-if="!$ctrl.isHierarchyLevelCollapsed(subDepartment)">
+												<div ng-repeat="(itemClassIndex, itemClass) in subDepartment.itemClasses">
+													<div ng-click="$ctrl.selectItemClass(department, subDepartment, itemClass, departmentIndex, subDepartmentIndex, itemClassIndex)" ng-dblclick="$ctrl.addSelectedItemToSearch()"
+														 style="padding-left: 30px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(departmentIndex, subDepartmentIndex, itemClassIndex, null, null)}}">
+														<strong ng-if="!$ctrl.isHierarchyLevelCollapsed(itemClass)">[-]</strong>
+														<strong ng-if="$ctrl.isHierarchyLevelCollapsed(itemClass)">[+]</strong>
+														<strong>{{itemClass.displayName}}</strong></div>
+													<div ng-if="!$ctrl.isHierarchyLevelCollapsed(itemClass)">
+														<div ng-repeat="(commodityIndex, commodity) in itemClass.commodityList">
+															<div ng-click="$ctrl.selectCommodity(department, subDepartment, itemClass, commodity, departmentIndex, subDepartmentIndex, itemClassIndex, commodityIndex)" ng-dblclick="$ctrl.addSelectedItemToSearch()"
+																 style="padding-left: 45px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(departmentIndex, subDepartmentIndex, itemClassIndex, commodityIndex, null)}}">
+																<strong ng-if="!$ctrl.isHierarchyLevelCollapsed(commodity)">[-]</strong>
+																<strong ng-if="$ctrl.isHierarchyLevelCollapsed(commodity)">[+]</strong>
+																<strong>{{commodity.displayName}}</strong></div>
+															<div ng-if="!$ctrl.isHierarchyLevelCollapsed(commodity)">
+																<div ng-repeat="(subCommodityIndex, subCommodity) in commodity.subCommodityList">
+																	<div ng-click="$ctrl.selectSubCommodity(department, subDepartment, itemClass, commodity, subCommodity, departmentIndex, subDepartmentIndex, itemClassIndex, commodityIndex, subCommodityIndex)" ng-dblclick="$ctrl.addSelectedItemToSearch()"
+																		 style="padding-left: 60px" class="add-hover-background" id="{{$ctrl.getUniqueElementIdFromIndices(departmentIndex, subDepartmentIndex, itemClassIndex, commodityIndex, subCommodityIndex)}}">
+																		<strong>{{subCommodity.displayName}}</strong>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

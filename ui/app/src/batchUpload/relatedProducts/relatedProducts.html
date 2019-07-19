@@ -1,0 +1,72 @@
+<form id="form-upload">
+	<div can-edit="BU_RELP_01" class="col-md-12 container-fluid" ng-cloak="true"
+		 ng-controller="RelatedProductsController as relatedProductsController"
+		 ng-init="relatedProductsController.init()">
+		<div class="row" data-ng-if="relatedProductsController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{relatedProductsController.success}}</span>
+		</div>
+		<div class="row" data-ng-if="relatedProductsController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{relatedProductsController.error}}</span>
+		</div>
+		<div class="col-md-12" >
+			<div class="panel-group" >
+				<div class="panel panel-primary" >
+					<div class="panel-heading" >
+						<h4 class="panel-title inline-block"><b>Excel Upload - Related Products</b></h4>
+					</div>
+					<div class="panel-body" >
+						<loading-spinner ng-show="relatedProductsController.isWaiting">
+						</loading-spinner>
+						<div class="row form-inline" style="padding: 25px" ng-show="!relatedProductsController.isWaiting">
+							<div class="col-md-7 inline-block" style="float: none; margin: 0 auto;display: block;">
+								<div class="" style="">
+									<div file-browser ng-mouseleave="relatedProductsController.checkShowModal()">
+										<input type="file" name="upload-file" id="ecommerce-attr">
+									</div>
+									<button title="Upload" type="button" class="btn btn-primary"
+											data-ng-disabled="relatedProductsController.disableUpload"
+											data-toggle="modal" data-target="#confirmSubmitModal">
+											<span class="glyphicon glyphicon glyphicon-upload"></span> Upload</button>
+								</div>
+								<div class="col-md-12" style="padding: 14px;">
+									<a title="Download template" type="button" href="{{actionUrl}}" class="btn btn-primary"> Download excel template </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="confirmSubmitModal" class="modal fade batchUploadConfirmation" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Upload</h5>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-sm-12">
+								<h5><b>Would you like to continue with the upload?</b></h5>
+								<div class="col-md-3">
+									<span class="control-label" for="batchUploadDescription">Excel Upload Description:</span>
+								</div>
+								<div class="col-md-9">
+									<div class="input-group-sm">
+										<input type="text" class="form-control" id="nameRequest"
+											   placeholder="Type a name to Indentify this Update request" maxlength="150">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button title="Ok" type="submit" class=" btn btn-primary"
+								data-dismiss="modal" ng-click="relatedProductsController.uploadRelatedProductsCall()">Ok</button>
+						<button title="Cancel" type="submit" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

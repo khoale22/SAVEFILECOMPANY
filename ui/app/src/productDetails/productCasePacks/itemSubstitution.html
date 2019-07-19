@@ -1,0 +1,72 @@
+<div>
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+			<table ng-table="defaultConfigTableParams"
+				   class="table-heb table-bordered table-striped"
+				   width="100%"
+			       style="margin-top: 5px">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-4" style="float: left">
+							Item Code <strong>{{$ctrl.itemMaster.key.itemCode}}</strong>
+						</div>
+						<div class="col-md-4">
+							Item Description <strong>{{$ctrl.itemMaster.description}}</strong>
+						</div>
+						<div class="col-md-4" style="float: right">
+							Warehouse
+							<select class="form-control" ng-model="whsFilter">
+								<option ng-repeat="value in $ctrl.itemMaster.warehouseLocationItems track by $index"
+										value="{{value.location.key.locationNumber}}"  >
+									{{value.location.displayName}}
+								</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<thead>
+				<tr>
+					<th>Warehouse</th>
+					<th>Substitution Item</th>
+					<th>Item Description</th>
+					<th>Status</th>
+					<th>Pack</th>
+					<th>BOH</th>
+					<th>Substitution Type</th>
+					<th>Sequence</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="itemSub in $ctrl.itemSubInfo | filter : $ctrl.filterTable">
+					<td>{{itemSub.key.locationNumber}}</td>
+					<td>{{itemSub.subToItemId}}</td>
+					<td>{{itemSub.supItemsWarehouseLocationItem.itemMaster.description}}</td>
+					<td>{{itemSub.supItemsWarehouseLocationItem.supplierStatusCode}}</td>
+					<td>{{itemSub.supItemsWarehouseLocationItem.itemMaster.pack}}</td>
+					<td>{{itemSub.supItemsWarehouseLocationItem.totalOnHandInventory}}</td>
+					<td>{{itemSub.supplierSubTypeCode.subTypeDescription}} [{{itemSub.supplierSubTypeCode.subTypeCode}}]</td>
+					<td>{{itemSub.subRuleSequenceNumber}}</td>
+				</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+			<div class="inline-block pull-right">
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+						data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+</div>

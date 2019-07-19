@@ -1,0 +1,89 @@
+<!--
+  ~  productSubBrand.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn00602
+  ~  @since 2.12.0
+  -->
+<div class="container-fluid" can-view="CT_BRND_03">
+	<!-- Error span -->
+	<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!-- Success span -->
+	<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<!-- This area displays the table of Product Brands -->
+	<div class="row" style="height: 660px; width: 100%; /*overflow-y: scroll;*/">
+		<div class="col-md-12 margin-top-10">
+			<div class="margin-top-10">
+				<div class="glyphicon glyphicon-download-alt inline-block pull-right pointer"
+					 ng-click="$ctrl.exportProductSubBrand()"
+					 style="color: orange; padding: 5px 0 5px 10px;  font-size: medium; margin-bottom: 20px;"
+					 data-toggle="tooltip" title="Export to CSV"></div>
+				<div class="inline-block pull-right" ng-if="$ctrl.isDownloading"
+					 style="color: orange; font-size: 12px;">
+					Downloading...
+				</div>
+				<div class="inline-block pull-right margin-right-10">
+					<button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.doClearFilter()">
+						Clear Filter
+					</button>
+				</div>
+			</div>
+			<table data-ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped margin-top-20"
+				   show-filter="true" style="width: 100%;">
+				<thead>
+					<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+						<th style="width: 50%; border-bottom-color: transparent;">Sub-Brand ID
+						</th>
+						<th style="width: 50%; border-bottom-color: transparent;">Sub-Brand
+						</th>
+					</tr>
+					<tr style="background-color: #00476b; height: 25px; text-align: center;">
+						<th>
+							<input type="text" class="form-control input-group-sm"
+								   data-ng-model="$ctrl.prodSubBrandId"
+								   title="Input a Product Sub Brand Id to filter"
+								   ng-change="$ctrl.refreshProductSubBrandTable()">
+						</th>
+						<th>
+							<input type="text" class="form-control input-group-sm"
+								   data-ng-model="$ctrl.prodSubBrandName"
+								   title="Input a Product Sub Brand Name to filter"
+								   ng-change="$ctrl.refreshProductSubBrandTable()">
+						</th>
+					</tr>
+				</thead>
+				<tbody ng-show="!$ctrl.isWaitingForResponse">
+					<tr ng-repeat="productSubBrand in $ctrl.productSubBrands track by $index">
+						<td>
+							{{productSubBrand.prodSubBrandId}}
+						</td>
+						<td>
+							{{productSubBrand.prodSubBrandName}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="row margin-top-20">
+				<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+				</loading-spinner>
+			</div>
+		</div>
+		<!-- Footer -- Contain buttons -->
+		<div class="col-md-12">
+			<div class="col-md-12">
+				<div class="inline-block pull-right">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

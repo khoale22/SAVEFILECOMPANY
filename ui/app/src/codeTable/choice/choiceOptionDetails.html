@@ -1,0 +1,401 @@
+<loading-spinner ng-show="$ctrl.isWaiting">
+</loading-spinner>
+<div can-view="CT_CHOI_01" class="" ng-show="!$ctrl.isWaiting" style="margin-top: 10px;margin-bottom: 10px;">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error" style="display: inline;">
+		<div class="col-md-12" style="text-align: center;margin-bottom: 8px;">
+			<span class="alert alert-danger text-center myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+		</div>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success" style="display: inline;">
+		<div class="col-md-12" style="text-align: center;margin-bottom: 8px;">
+			<span class="alert alert-success text-center myfade" role="alert">{{$ctrl.success}}</span>
+		</div>
+	</div>
+	<div style="margin-bottom: 10px;margin-top: 10px;">
+		<div class="row">
+			<div class="col-md-4">
+				<label>Choice Option Code</label> &nbsp;{{$ctrl.choiceOption.key.choiceOptionCode}}
+			</div>
+			<div class="col-md-4">
+				<label>Choice Type</label> &nbsp;{{$ctrl.choiceOption.choiceType.displayName}}
+			</div>
+			<div class="col-md-4">
+				<label>Choice Option Text</label> &nbsp;{{$ctrl.choiceOption.productChoiceText}}
+			</div>
+		</div>
+	</div>
+	<div class="data-table" style="min-height: 305px;">
+		<!--Active Online-->
+		<table ng-table="$ctrl.tableActive" class="table-heb table-bordered table-striped" style="width: 100%;">
+			<thead style="font-size: 10px !important;">
+			<tr>
+				<th style="width: 10%;text-align: center;">Image</th>
+				<th style="width: 5%;text-align: center;">Size</th>
+				<th style="width: 12%;text-align: center;">Alt Tag</th>
+				<th style="width: 12%;text-align: center;">Category</th>
+				<th style="width: 12%;text-align: center;">Primary/ Alternate</th>
+				<th style="width: 6%;text-align: center;">Active Online</th>
+				<th style="width: 12%;text-align: center;">Status</th>
+				<th style="width: 7%;text-align: center;">Created Date</th>
+				<th style="width: 9%;text-align: center;">Application Source</th>
+				<th style="width: 8%;text-align: center;">Image Source</th>
+				<th style="width: 7%;text-align: center;">Last Modified</th>
+			</tr>
+			</thead>
+			<tbody ng-if="$ctrl.choiceImageActiveOnline.length==0" ng-init="lstTd=['1','2','3','4','5','6','7','8','9','10','11']">
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd"></td>
+			</tr>
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd"></td>
+			</tr>
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd"></td>
+			</tr>
+			</tbody>
+			<tbody ng-if="$ctrl.choiceImageActiveOnline.length!=0">
+			<tr class="ng-table-group">
+				<td ng-show="$ctrl.choiceImageActiveOnline.length!=0" colspan="11" style="font-size: 11px; padding:5px"><strong>Active Online</strong></td>
+			</tr>
+			<tr ng-repeat="choiceImage in $data">
+				<!--Show Image: Start-->
+				<td style="text-align: center;">
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) !== $ctrl.IMAGE_NOT_FOUND
+							&& $ctrl.getImageByUriText(choiceImage.uriText) !== ''">
+						<img class="img-choice-detail" data-ng-src="{{$ctrl.getImageByUriText(choiceImage.uriText)}}" ng-click="$ctrl.showFullImage(choiceImage)"
+						/>
+					</div>
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) === $ctrl.IMAGE_NOT_FOUND">
+						<img class="img-choice-detail" src='images/no_image.png' />
+					</div>
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) === ''">
+						<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+					</div>
+				</td>
+				<!--Show Image: Start-->
+				<td>{{choiceImage.imageSizeX}} x {{choiceImage.imageSizeY}} </td>
+				<td>
+					<div class="form-group" style="margin-bottom:1px;margin-top:1px;">
+						<input class="form-control" style="width: 100%;" type="text" ng-model="choiceImage.imageAltText">
+					</div>
+				</td>
+				<td>
+					<ui-select ng-model="choiceImage.imageCategoryCode" ng-change="$ctrl.imageCategoryCodeChange(choiceImage)">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imageCategories">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</td>
+				<td>
+					<ui-select ng-model="choiceImage.imagePriorityCode" ng-if="choiceImage.imageCategoryCode != 'SWAT'">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imagePrimaries">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+					<div ng-if="choiceImage.imageCategoryCode == 'SWAT'">{{choiceImage.imagePriority.description}}</div>
+				</td>
+				<td style="text-align: center;"><input type="checkbox" data-ng-click="$ctrl.changeActiveOnline(choiceImage)" checked/></td>
+				<td>
+					<ui-select ng-model="choiceImage.imageStatusCode" ng-style="choiceImage.imageStatusCode == 'R' ? { 'float':'left'} : { 'float': 'none' }">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imageStatus">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+					<div ng-if="choiceImage.imageStatusCode == 'R'">
+						<span class="glyphicon glyphicon-warning-sign icon-warning" aria-hidden="true"></span>
+					</div>
+				</td>
+				<td>{{choiceImage.createDate | date:'MM/dd/yyyy'}}</td>
+				<td>{{choiceImage.sourceSystem.description}}</td>
+				<td>{{choiceImage.imageSourceName}}</td>
+				<td>{{choiceImage.lastUpdateDate | date:'MM/dd/yyyy'}} {{choiceImage.lastUpdateUserId}}</td>
+			</tr>
+			</tbody>
+		</table>
+
+		<div class="row" style="margin-bottom: 10px; margin-top: 10px" ng-show="($ctrl.choiceImageNotActiveOnline.length != 0 && !$ctrl.hasAllImageAreRejected($ctrl.choiceImageNotActiveOnline)
+		 || ($ctrl.choiceImageNotActiveOnline.length != 0 && $ctrl.hasAllImageAreRejected($ctrl.choiceImageNotActiveOnline) && $ctrl.isShowReject))">
+			<div class="col-md-12">
+				<div class="divider-horizontal"></div>
+			</div>
+		</div>
+
+		<!--Not Active Online-->
+		<table ng-table="$ctrl.tableNotActive" class="table-heb table-bordered table-striped" style="width: 100%;">
+			<thead style="font-size: 10px;display: none !important;">
+			<tr>
+				<th style="width: 10%;text-align: center;">Image</th>
+				<th style="width: 5%;text-align: center;">Size</th>
+				<th style="width: 12%;text-align: center;">Alt Tag</th>
+				<th style="width: 12%;text-align: center;">Category</th>
+				<th style="width: 12%;text-align: center;">Primary/ Alternate</th>
+				<th style="width: 6%;text-align: center;">Active Online</th>
+				<th style="width: 12%;text-align: center;">Status</th>
+				<th style="width: 7%;text-align: center;">Created Date</th>
+				<th style="width: 9%;text-align: center;">Application Source</th>
+				<th style="width: 8%;text-align: center;">Image Source</th>
+				<th style="width: 7%;text-align: center;">Last Modified</th>
+			</tr>
+			</thead>
+			<tbody ng-if="$ctrl.choiceImageNotActiveOnline.length==0 && !$ctrl.notExistRejectedRecord()" ng-init="lstTd1=['1','2','3','4','5','6','7','8','9','10','11']">
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd1"></td>
+			</tr>
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd1"></td>
+			</tr>
+			<tr style="height: 49px;">
+				<td ng-repeat="x in lstTd1"></td>
+			</tr>
+			</tbody>
+			<tbody ng-if="$ctrl.choiceImageNotActiveOnline.length!=0">
+			<tr class="ng-table-group" ng-repeat-start="group in $groups">
+				<td data-ng-hide="!$ctrl.isShowReject && $ctrl.hasAllImageAreRejected(group.data)" colspan="11" style="font-size: 11px; padding:5px"><strong>{{group.value}}</strong></td>
+			</tr>
+			<tr ng-repeat="choiceImage in group.data" data-ng-hide="$ctrl.hasRejected(choiceImage)">
+				<!--Show Image: Start-->
+				<td style="width: 10%;text-align: center;">
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) !== $ctrl.IMAGE_NOT_FOUND
+							&& $ctrl.getImageByUriText(choiceImage.uriText) !== ''">
+						<img class="img-choice-detail" data-ng-src="{{$ctrl.getImageByUriText(choiceImage.uriText)}}" ng-click="$ctrl.showFullImage(choiceImage)"
+						/>
+					</div>
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) === $ctrl.IMAGE_NOT_FOUND">
+						<img class="img-choice-detail" src='images/no_image.png' />
+					</div>
+					<div data-ng-show="$ctrl.getImageByUriText(choiceImage.uriText) === ''">
+						<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+					</div>
+				</td>
+				<!--Show Image: Start-->
+				<td style="width: 5%;">{{choiceImage.imageSizeX}} x {{choiceImage.imageSizeY}} </td>
+				<td style="width: 12%;">
+					<div class="form-group" style="margin-bottom:1px;margin-top:1px;">
+						<input class="form-control" style="width: 100%;" type="text" ng-model="choiceImage.imageAltText">
+					</div>
+				</td>
+				<td style="width: 12%;">
+					<ui-select ng-model="choiceImage.imageCategoryCode" ng-change="$ctrl.onChangeCategory(choiceImage)">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imageCategories">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</td>
+				<td style="width: 12%;">
+					<ui-select ng-model="choiceImage.imagePriorityCode" ng-if="choiceImage.imageCategoryCode != 'SWAT'">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imagePrimaries">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+					<div ng-if="choiceImage.imageCategoryCode == 'SWAT'">{{choiceImage.imagePriority.description}}</div>
+				</td>
+				<td style="width: 6%;text-align: center;">
+					<input type="checkbox" data-ng-click="$ctrl.changeActiveOnline(choiceImage)" /></td>
+				<td style="width: 12%;">
+					<ui-select ng-model="choiceImage.imageStatusCode" ng-style="choiceImage.imageStatusCode == 'R' ? { 'float':'left'} : { 'float': 'none' }">
+						<ui-select-match class="image-metadata-ui-select">
+							{{$select.selected.description}}
+						</ui-select-match>
+						<ui-select-choices repeat="element.id as element in $ctrl.imageStatus">
+							<div ng-bind-html="element.description | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+					<div ng-if="choiceImage.imageStatusCode == 'R'">
+						<span class="glyphicon glyphicon-warning-sign icon-warning" aria-hidden="true"></span>
+					</div>
+				</td>
+				<td style="width: 7%;">{{choiceImage.createDate | date:'MM/dd/yyyy'}}</td>
+				<td style="width: 9%;">{{choiceImage.sourceSystem.description}}</td>
+				<td style="width: 8%;">{{choiceImage.imageSourceName}}</td>
+				<td style="width: 7%;">{{choiceImage.lastUpdateDate | date:'MM/dd/yyyy'}} {{choiceImage.lastUpdateUserId}}</td>
+			</tr>
+			<tr ng-repeat-end></tr>
+			</tbody>
+		</table>
+
+		<div class="row">
+			<div class="col-md-12 inline-block pull-right" style="margin-top: 5px;margin-bottom: 10px;">
+				<button class="btn btn-primary" ng-click="$ctrl.showHideReject()" style="float: right;" ng-hide="$ctrl.choiceImageNotActiveOnline.length==0"
+						data-ng-disabled="$ctrl.choiceImageNotActiveOnline.length>0 && !$ctrl.hasRejectedOnList()">
+					{{$ctrl.isShowReject?'Hide Reject':'Show Reject'}}
+				</button>
+			</div>
+		</div>
+	</div>
+	<!--Footer -- Contain Save, Reset button-->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="inline-block pull-right">
+				<!--View Mode-->
+				<button view-only="CT_CHOI_01" class="btn btn-primary" disabled="true">Upload Image</button>
+				<button view-only="CT_CHOI_01" class="btn btn-primary" disabled="true">Save</button>
+				<!--Edit Mode-->
+				<button can-edit="CT_CHOI_01" class="btn btn-primary" ng-click="$ctrl.showUploadImageModal()">Upload Image
+				</button>
+				<button can-edit="CT_CHOI_01" class="btn btn-primary" ng-click="$ctrl.saveChoiceImages(false)">Save
+				</button>
+				<button class="btn btn-primary" ng-click="$ctrl.reset()">Reset
+				</button>
+				<button class="btn btn-primary" ng-click="$ctrl.returnToList()">Return to List
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="choiceDetailImageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr>
+					<td>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0" data-dismiss="modal"
+								aria-label="Close">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div id="upload-choice-image">
+	<!-- Upload File Modal-->
+	<div id="upload-file-modal" class="modal fade" ng-style="$ctrl.styleDisplay2Modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Choice Image Upload</h5>
+				</div>
+				<div class="modal-body">
+					<div class="form-upload-image">
+						<div class="form-group row margin-bottom-5">
+							<label class="col-sm-12 form-lable">Step 1: Select the Image Category</label>
+						</div>
+						<div class="form-group row">
+							<div class="col-sm-offset-2 col-sm-9">
+								<ui-select ng-model="$ctrl.imageCategorySelected" ng-disabled="ctrl.disabled" ng-class="{'has-error': $ctrl.imageCategorySelected.error }">
+									<ui-select-match class="image-metadata-ui-select" placeholder="Select Image Category">{{$select.selected.description}}</ui-select-match>
+									<ui-select-choices repeat="imageCategory in $ctrl.imageCategories | filter: $select.search">
+										<span ng-bind-html="imageCategory.description"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+						<div class="form-group row margin-bottom-5">
+							<label class="col-sm-12 form-lable">Step 2: Select Image Source</label>
+						</div>
+						<div class="form-group row">
+							<div class="col-sm-offset-2 col-sm-9">
+								<ui-select ng-model="$ctrl.imageSourceSelected" ng-disabled="ctrl.disabled" ng-class="{'has-error': $ctrl.imageSourceSelected.error }">
+									<ui-select-match class="image-metadata-ui-select" placeholder="Select Image Source">{{$select.selected.description}}</ui-select-match>
+									<ui-select-choices repeat="imageSource in $ctrl.lstImageSource | filter: $select.search">
+										<span ng-bind-html="imageSource.description"></span>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+						<div class="form-group row margin-bottom-5">
+							<label class="col-sm-12 form-lable">Step 3: Upload Image</label>
+							<p class="col-sm-12">(*JPG, JPEG, TIF, PNG, TIFF formats only)</p>
+						</div>
+						<div class="form-group row">
+							<div class="col-sm-offset-2 col-sm-9">
+								<input type="file" class="upload-choice-image" data-upload-file-model="$ctrl.fileUpload" id="upload-choice-image-input" accept="image/jpg, image/tif, image/jpeg, image/tiff, image/png">
+								<div class="input-group col-xs-12" ng-class="{'has-error': $ctrl.fileUpload.error || $ctrl.validateFileUpload()}">
+									<span class="input-group-addon icon-image"><i class="glyphicon glyphicon-picture"></i></span>
+									<input type="text" class="form-control input-lg" disabled placeholder="Select image files for upload" value="{{$ctrl.fileUpload.name}}">
+									<span class="input-group-btn">
+										<button class="browse-btn btn btn-primary" type="button" ng-click="$ctrl.browseClick()"><i class="glyphicon glyphicon-search"></i> Browse</button>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button " class="btn btn-primary" ng-click="$ctrl.uploadChoiceImage()">Upload</button>
+					<button type="button " class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Confirm modal upload image-->
+	<div id="confirm-upload-image-modal" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h5 class="modal-title">{{$ctrl.confirmModalUploadTitle}}</h5>
+				</div>
+				<div class="modal-body" style="font-size:14px;">
+					<p>{{$ctrl.confirmModalUploadContent}}</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" ng-show="$ctrl.typeModal == 'continueUpload'" ng-click="$ctrl.uploadImage()"
+							ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}">Yes</button>
+					<button type="button" class="btn btn-danger" ng-show="$ctrl.typeModal == 'continueUpload'" data-dismiss="modal" ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}">Cancel</button>
+
+					<button type="button" class="btn btn-danger" ng-show="$ctrl.typeModal == 'confirmModal'" data-dismiss="modal" ng-click="$ctrl.styleDisplay2Modal = {'z-index': 1050}">Close</button>
+
+					<button type="button" class="btn btn-primary" ng-show="$ctrl.typeModal == 'returnToList'" data-dismiss="modal" ng-click="$ctrl.saveDataAndReturnToList()">Yes</button>
+					<button type="button" class="btn btn-success" ng-show="$ctrl.typeModal == 'returnToList'" data-dismiss="modal" ng-click="$ctrl.noSaveDataAndReturnToList()">No</button>
+					<button type="button" class="btn btn-danger" ng-show="$ctrl.typeModal == 'returnToList'" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="changeTabConfirmation" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7"><h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5></div>
+			<div class="modal-body"><h5>{{$ctrl.MESSAGE_CONFIRM_CLOSE}}</h5></div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveChoiceImages(false)">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

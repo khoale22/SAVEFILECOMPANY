@@ -1,0 +1,134 @@
+<!--Search result Ribbon - starts -->
+<div id="pdRibbon" style="padding-left: 1%; padding-top: 0.2%; padding-right: 2%; margin-bottom: 0;padding-bottom: 0.2%;">
+	<div class="row">
+		<div class="col-md-2">
+			<div class="row">
+				<div class="col-md-4" style="text-align: right">
+					Product Id:
+				</div>
+				<div class="col-md-8" style="padding: 0;">
+					<!--Go To Product:  List of searched products drop down and navigation goes here-->
+					<button class="btn btn-default btn-sm glyphicon glyphicon-step-backward"
+							title="First page"
+							data-ng-disabled="$ctrl.disableFirstPage() || $ctrl.isDelayNextBackButton"
+							ng-click="$ctrl.confirmProductChangeByFirstOrLastPage(false)"
+							style="background-color: #005A86; border: none; padding: 0; color: white;">
+					</button>
+					<button class="btn btn-default btn-sm glyphicon glyphicon-triangle-left"
+							title="Previous Product in List"
+							data-ng-disabled="$ctrl.disableLeftArrow() || $ctrl.isDelayNextBackButton"
+							ng-click="$ctrl.confirmProductChange(false)"
+							style="background-color: #005A86; border: none; padding: 0; color: white;">
+					</button>
+					<button class="btn btn-primary dropdown-toggle"
+							style="font-size: 10px; padding: 0; width: 60%;line-height: unset;"
+							type="button"
+							data-toggle="dropdown">
+						{{$ctrl.selectedProduct.prodId}}
+						<span class="caret"></span></button>
+					<ul class="dropdown-menu scrollable-menu" data-ng-disabled="$ctrl.isPrevNextPageWaiting">
+						<li style="font-size: 10px" ng-repeat="product in $ctrl.listOfProducts track by $index"
+							data-ng-disabled="$ctrl.isPrevNextPageWaiting || $ctrl.isDelayNextBackButton"
+							ng-click="$ctrl.handleProductDropdownMenuChange(product)"
+							class="pointer{{$ctrl.selectedProduct.prodId == product.prodId? ' active': ''}}"><a>{{product.prodId}}</a>
+						</li>
+					</ul>
+					<i class="fa fa-refresh fa-spin refresh-xs text-primary hidden"
+					   ng-class="{hidden : !$ctrl.isPrevNextPageWaiting && !$ctrl.isDelayNextBackButton}"
+					   style="color: white; position: absolute; margin-left: -24px;"></i>
+					<button class="btn btn-default btn-sm glyphicon glyphicon-triangle-right"
+							title="Next Product in List"
+							data-ng-disabled="$ctrl.disableRightArrow()|| $ctrl.isDelayNextBackButton"
+							ng-click="$ctrl.confirmProductChange(true)"
+							style="background-color: #005A86; border: none; padding: 0; color: white;">
+					</button>
+					<button class="btn btn-default btn-sm glyphicon glyphicon-step-forward"
+							title="Last page"
+							data-ng-disabled="$ctrl.disableLastPage()|| $ctrl.isDelayNextBackButton"
+							ng-click="$ctrl.confirmProductChangeByFirstOrLastPage(true)"
+							style="background-color: #005A86; border: none; padding: 0; color: white;">
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6" style="padding-left: 1%; padding-right: 1%">
+			<span style="padding-right: 5%">{{$ctrl.pageMessage}}</span> Description: <label> {{$ctrl.selectedProduct.description}}</label>
+		</div>
+		<div class="col-md-2" style="padding-left: 1%; padding-right: 1%">
+			Selling Unit Size: <label> {{$ctrl.selectedProduct.productPrimarySellingUnit.tagSize}}</label>
+		</div>
+		<div class="col-md-1" style="padding-left: 1%; padding-right: 1%">
+			DSV: <label> {{$ctrl.selectedProduct.dsv | boolean_yn}}</label>
+		</div>
+		<div style="padding-left: 1%"
+			 ng-click="$ctrl.setViewingProductDetails(false)"
+			 class="glyphicon glyphicon-remove pointer pull-right"></div>
+		<div ng-show="$ctrl.isRecalled" class="flash pull-right" data-toggle="modal" data-target="#recalledProductModal">
+			On Recall
+		</div>
+	</div>
+</div>
+<!--Search result Ribbon - ends -->
+<!--  Recalled Product Popup    -->
+<div id="recalledProductModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					Product Recall Information
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<loading-spinner ng-show="$ctrl.isPopupLoading"></loading-spinner>
+			<div class="modal-body" ng-show="!$ctrl.isPopupLoading">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup">{{$ctrl.errorPopup}}</div>
+				<table class="table-heb table-bordered table-striped" style="width: 100%;">
+					<tr>
+						<td>QA Number</td>
+						<td>{{$ctrl.productRecall.qaNumber}}</td>
+					</tr>
+					<tr>
+						<td>Issue Date</td>
+						<td>{{$ctrl.productRecall.issueDate | date : "shortDate"}}</td>
+					</tr>
+					<tr>
+						<td>Cut-Off Date</td>
+						<td>{{$ctrl.productRecall.cutOffDate | date : "shortDate"}}</td>
+					</tr>
+					<tr>
+						<td>Classification</td>
+						<td>{{$ctrl.productRecall.classification}}</td>
+					</tr>
+					<tr>
+						<td>POS Lock</td>
+						<td>{{$ctrl.productRecall.posLock}}</td>
+					</tr>
+					<tr>
+						<td>Details</td>
+						<td>{{$ctrl.productRecall.details}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="confirmationNextProduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+			</div>
+			<div class="modal-body">
+				There are unsaved changes on this page. Are you sure you want to continue?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='$ctrl.nextProduct($ctrl.transverseDownList)'>Continue</button>
+			</div>
+		</div>
+	</div>
+</div>

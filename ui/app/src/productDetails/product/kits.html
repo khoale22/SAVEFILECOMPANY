@@ -1,0 +1,50 @@
+<div>
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+	</loading-spinner>
+	<div class="row">
+		<div class="col-md-12" ng-repeat="kit in $ctrl.listOfKits">
+			<table ng-table="defaultConfigTableParams"
+				   class="table-heb table-bordered table-striped"
+				   width="100%">
+				<div>
+					<div>
+						<div style="float: left"><strong>KIT UPC </strong>{{kit.productMaster.sellingUnits[0].upc}}</div>
+						<div style="float: right"><strong>Kit Description </strong>{{kit.productMaster.description}}</div>
+					</div>
+				</div>
+				<thead>
+				<tr>
+					<th>Element UPC</th>
+					<th>Description</th>
+					<th>Department</th>
+					<th>Size</th>
+					<th>Quantity</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="kitComponent in kit">
+					<td><a style="cursor: pointer" ng-click="$ctrl.changeTab(kitComponent)">{{kitComponent.elementUpc}}</a></td>
+					<td>{{kitComponent.relatedProduct.description}}</td>
+					<td>{{kitComponent.relatedProduct.departmentString}}</td>
+					<td>{{kitComponent.relatedProduct.productPrimarySellingUnit.tagSize}}</td>
+					<td>{{kitComponent.productQuantity}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<br>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pull-right" style="padding-top: 10px">
+				<div col-md-10></div>
+			</div>
+		</div>
+	</div>
+</div>

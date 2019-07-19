@@ -1,0 +1,322 @@
+<!--
+  ~ dictionary.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-controller="DictionaryController as dictionaryController"
+	 ng-init="dictionaryController.init()" style="min-width: 700px">
+	<div class="row">
+		<!--- The header where to show message success or error -->
+		<div class="row" data-ng-if="dictionaryController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">
+				{{dictionaryController.success}}
+			</span>
+		</div>
+		<div class="row" data-ng-if="dictionaryController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+				{{dictionaryController.error}}
+			</span>
+		</div>
+
+		<!--- The main part where to show main information for screen -->
+		<div class="col-md-12">
+			<div class="panel-group" can-view="UT_DICT_01">
+				<div class="panel panel-primary">
+					<div class="panel-heading"><h3 class="panel-title">Dictionary</h3></div>
+					<div class="panel-body" ng-class="{'ng-table-pager-none' : dictionaryController.noPagination}">
+						<!-- The top panel where the user enters the information to search dictionary. -->
+						<div class="row" style="padding-top: 10px; padding-left: 30px;">
+							<div class="form-group col-lg-3">
+								<label for="wordTextInput" style="text-align: center;font-weight: bold; width: 100%">Word</label>
+								<div class="input-group input-group-sm">
+									<input id = "wordTextInput" class="form-control"
+										   aria-label="Text input with multiple buttons"
+										   data-ng-model="dictionaryController.wordTextSearch"
+										   ng-keypress="$event.keyCode == 13 ? dictionaryController.searchByParameter() : null">
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default" aria-label="Search"
+												ng-click="dictionaryController.searchByParameter()">
+											<span class="glyphicon glyphicon-search"></span>
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-lg-4">
+								<label for="wordCaseInput" style="text-align: center;font-weight: bold; width: 100%">Word Case</label>
+								<ui-select id="wordCaseInput" class="input-group-sm"
+										   ng-model="dictionaryController.caseCodeSelected"
+										   theme="bootstrap"
+										   title="Choose a Word Case"
+										   ng-change="dictionaryController.caseCodeChanged($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.caseCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+							<div class="form-group col-lg-3">
+								<label for="classificationInput" style="text-align: center;font-weight: bold; width: 100%">Classification</label>
+								<ui-select id="classificationInput" class="input-group-sm"
+										   ng-model="dictionaryController.wordCodeSelected"
+										   theme="bootstrap"
+										   title="Choose a Classification"
+										   ng-change="dictionaryController.wordCodeChanged($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.wordCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+							<div class="col-lg-2" style="vertical-align: bottom;">
+								<label style="text-align: center;font-weight: bold; width: 100%;"></label>
+								<div class="inline-block" style="vertical-align: bottom">
+									<button type="button" class="btn btn-link" ng-click="dictionaryController.searchAll()">
+										Browse All
+									</button>
+									<button type="button" class="btn btn-link" ng-click="dictionaryController.clearAllResult()">
+										Clear Result
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<!-- The table where the dictionary information returned. -->
+						<table ng-table="dictionaryController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr style="color: white; background-color: #00476b; height: 25px; border: solid 1px black">
+								<th style="width: 30px">
+									<input view-only="UT_DICT_01" type="checkbox" disabled="disabled">
+									<input can-edit="UT_DICT_01" type="checkbox"
+										   ng-checked="dictionaryController.checkAllFlag"
+										   ng-model="dictionaryController.checkAllFlag"
+										   data-ng-change="dictionaryController.checkAllHandle()">
+								</th>
+								<th style="min-width: 100px">Word</th>
+								<th style="min-width: 100px">Word Case</th>
+								<th style="min-width: 100px">Classification</th>
+								<th style="min-width: 100px">Display</th>
+							</tr>
+							<tr ng-repeat="vocabulary in dictionaryController.data track by $index">
+								<td style="text-align: center; width: 30px">
+									<input view-only="UT_DICT_01" type="checkbox" disabled="disabled">
+									<input can-edit="UT_DICT_01" type="checkbox"
+										   ng-checked="vocabulary.selected"
+										   ng-model="vocabulary.selected"
+										   data-ng-change="dictionaryController.changeSelected(vocabulary)">
+								</td>
+								<td>{{vocabulary.key.wordText}}</td>
+								<td>{{vocabulary.caseCode.description}}</td>
+								<td>{{vocabulary.wordCode.description}}</td>
+								<td>{{dictionaryController.returnDisplayField(vocabulary)}}</td>
+							</tr>
+							<tr ng-show="dictionaryController.isWaiting">
+								<td colspan="5">
+									<loading-spinner ng-show="dictionaryController.isWaiting"></loading-spinner>
+								</td>
+							</tr>
+						</table>
+
+						<!-- The buttons at the bottom of the table. -->
+						<div class="inline-block pull-right" style="padding-top: 10px">
+							<button view-only="UT_DICT_01" class="btn btn-primary" disabled="true"> Add
+							</button>
+							<button view-only="UT_DICT_01" class="btn btn-primary" disabled="true"> Delete
+							</button>
+							<button view-only="UT_DICT_01" class="btn btn-primary" disabled="true"> Edit
+							</button>
+							<button can-edit="UT_DICT_01" class="btn btn-primary"
+									ng-click="dictionaryController.addNewVocabulary()"> Add
+							</button>
+							<button can-edit="UT_DICT_01" class="btn btn-primary"
+									ng-click="dictionaryController.deleteVocabulary()"
+									data-ng-disabled="dictionaryController.vocabularyListSelected.length <= 0"> Delete
+							</button>
+							<button can-edit="UT_DICT_01" class="btn btn-primary"
+									ng-click="dictionaryController.editVocabulary()"
+									data-ng-disabled="dictionaryController.vocabularyListSelected.length <= 0"> Edit
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End main part -->
+	</div>
+	<!--Modal Add New/Edit Vocabulary-->
+	<div id="vocabularyModal" class="modal fade" role="dialog" maxlength="500px;">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff"
+						ng-show="dictionaryController.addVocabularyEnable">
+						{{dictionaryController.titlePopup.add}}
+					</h5>
+					<h5 class="modal-title inline-block" style="color: #ffffff"
+						ng-show="dictionaryController.editVocabularyEnable">
+						{{dictionaryController.titlePopup.edit}}
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger" data-ng-if="dictionaryController.errorPopup">
+						{{dictionaryController.errorPopup}}
+					</div>
+					<table class="table-heb table-bordered table-striped table-fixed" style="width:100%;">
+						<thead>
+						<tr>
+							<th class="col-xs-3">Word</th>
+							<th class="col-xs-4">Word Case</th>
+							<th class="col-xs-2">Classification</th>
+							<th class="col-xs-3">Display</th>
+						</tr>
+						</thead>
+						<tbody>
+						<!--Add New Vocabulary Container-->
+						<tr ng-show="dictionaryController.addVocabularyEnable">
+							<td class="col-xs-3">
+								<input data-ng-model="dictionaryController.wordTextAdd"
+									   style="width: 99%;padding-top: 6px;padding-bottom: 6px;"
+									   data-ng-change="dictionaryController.validationDisplayField()">
+							</td>
+							<td class="col-xs-4">
+								<ui-select class="input-group-sm" style="min-width: 170px;"
+										   ng-model="dictionaryController.caseCodeAdd"
+										   theme="bootstrap"
+										   title="Choose a Word Case"
+										   ng-change="dictionaryController.addCaseCodeToNewVocabulary($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.caseCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td class="col-xs-2">
+								<ui-select class="input-group-sm" style="min-width: 140px;"
+										   ng-model="dictionaryController.wordCodeAdd"
+										   theme="bootstrap"
+										   title="Choose a Classification"
+										   ng-change="dictionaryController.addWordCodeToNewVocabulary($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.wordCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td class="col-xs-3" style="min-width: 100px;">
+								<input data-ng-model="dictionaryController.suggestionAdd"
+									   style="width: 99%;padding-top: 6px;padding-bottom: 6px;"
+									   ng-show="dictionaryController.displayInput">
+								<span
+									ng-show="dictionaryController.displayInput == false">
+									{{dictionaryController.suggestionAdd}}
+								</span>
+							</td>
+						</tr>
+						<!--Edit Vocabulary Container-->
+						<tr ng-show="dictionaryController.editVocabularyEnable"
+							ng-repeat="vocabulary in dictionaryController.vocabularyListSelectedEdit track by $index">
+							<td class="col-xs-3">{{vocabulary.key.wordText}}</td>
+							<td class="col-xs-4">
+								<ui-select class="input-group-sm" style="min-width: 170px;"
+										   ng-model="vocabulary.caseCode"
+										   theme="bootstrap"
+										   title="Choose a Word Case"
+										   ng-change="dictionaryController.addCaseCodeToNewVocabulary($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.caseCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td class="col-xs-2">
+								<ui-select class="input-group-sm" style="min-width: 140px;"
+										   ng-model="vocabulary.wordCode"
+										   theme="bootstrap"
+										   title="Choose a Classification"
+										   ng-change="dictionaryController.addWordCodeToNewVocabulary($select.selected)">
+									<ui-select-match allow-clear="true" class="input-group-sm">
+										{{$select.selected.description}}
+									</ui-select-match>
+									<ui-select-choices
+										repeat="option in dictionaryController.wordCodeOptions"
+										refresh-delay="0">{{option.description}}
+									</ui-select-choices>
+								</ui-select>
+							</td>
+							<td class="col-xs-3">
+								<input data-ng-model="vocabulary.suggestion.key.correctedText"
+									   style="width: 99%;padding-top: 6px;padding-bottom: 6px;" required
+									   ng-show="dictionaryController.hasSuggestionValue(vocabulary.caseCode.id, vocabulary.wordCode.id)">
+								<span
+									ng-show="dictionaryController.hasSuggestionValue(vocabulary.caseCode.id, vocabulary.wordCode.id) == false">
+									{{dictionaryController.returnDisplayField(vocabulary)}}
+								</span>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button view-only="UT_DICT_01" type="button" class="inline-block btn btn-success btn-sm">
+							Save
+					</button>
+					<button can-edit="UT_DICT_01" type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="dictionaryController.saveVocabulary()">
+							Save
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--End Model Add New Vocabulary-->
+	<!-- Confirm message--->
+	<div id="confirmModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">{{dictionaryController
+						.headerTitleConfirm}}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h5>{{dictionaryController.messageConfirm}}</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="dictionaryController.yesConfirmAction()"
+							ng-show="dictionaryController.yesBtnEnable">
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+						{{dictionaryController.closeBtnLabel}}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

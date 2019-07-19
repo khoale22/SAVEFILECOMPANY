@@ -1,0 +1,43 @@
+<?mxl version="1.0" encoding="UTF-8"?>
+<!--
+  ~ security-config.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+
+	   xmlns:security="http://www.springframework.org/schema/security"
+
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-4.1.xsd"
+
+		>
+
+	<!-- Scan the JAF package to load the security configuration. -->
+	<context:component-scan base-package="com.heb.jaf.security" />
+
+	<!-- Load the beans that evaluate user's security access. -->
+	<bean id="permissionEvaluator" class="com.heb.jaf.security.ResourcePermissionEvaluator" />
+	<bean id="expressionHandler" class=
+		"org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator"/>
+	</bean>
+
+	<!-- Add support for hasPermission annotation. This is key for
+		ARBAF resource base authorization. -->
+	<security:global-method-security pre-post-annotations="enabled">
+		<security:expression-handler ref="expressionHandler"/>
+	</security:global-method-security>
+
+</beans>

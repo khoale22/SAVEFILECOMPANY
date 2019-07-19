@@ -1,0 +1,84 @@
+<!--
+  ~  fullDetailPanel.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+
+<!-- If the item is DSD, we just want to show the UPC and description. -->
+<div class="panel-heading" data-ng-if="item.itemMaster.key.dsd">
+	<table width="50%">
+		<td>
+			<strong class="panel-title inline-block">[{{item.itemMaster.key.itemCode}}]
+				{{item.itemMaster.description}}</strong>
+
+			<div>
+				<div class="inline-block">DSD</div>
+			</div>
+		</td>
+	</table>
+
+</div>
+
+<!-- If the item is warehouse, show whether ot not it's an alt-pack and inventory. -->
+<div class="panel-heading" data-ng-if="item.itemMaster.key.warehouse">
+	<table>
+		<tr>
+			<td>
+				<strong class="panel-title inline-block">[{{item.itemMaster.key.itemCode}}]
+					{{item.itemMaster.description}}</strong>
+
+				<div>
+					<div class="inline-block">Warehouse</div>
+					<div class="inline-block" ng-if="item.itemMaster.shipper.length > 0">Alt Pack
+					</div>
+				</div>
+			</td>
+			<td style="text-align: right; vertical-align: top; padding-right: 25px;">
+				<div><strong>On-Hand:</strong> {{ item.itemMaster.totalOnHandInventory | number }}
+				</div>
+				<div><strong>Billable:</strong> {{ item.itemMaster.billableInventory | number }}
+				</div>
+				<div><strong>Distribution Reserve:</strong> {{
+					item.itemMaster.distributionReserveInventory | number }}
+				</div>
+			</td>
+			<td style="text-align: right; vertical-align: top">
+				<div><strong>Off-Site:</strong> {{ item.itemMaster.offsiteInventory | number }}
+				</div>
+				<div><strong>On-Hold:</strong> {{ item.itemMaster.onHoldInventory | number }}</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<!-- If the item is warehouse, show UPC level details. -->
+<div class="panel-body" data-ng-if="item.itemMaster.key.warehouse">
+	<div class="col-md-6">
+		<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+			<tr ng-repeat="upc in item.itemMaster.primaryUpc.associateUpcs" style="width: 100%">
+				<td class="inline-block" style="width: 100%">{{upc.upc}}
+					<div class="inline-block" ng-if="upc.sellingUnit.primaryUpc"><i
+						class="inline-block fa fa-key" aria-hidden="true"></i></div>
+					<div class="inline-block" ng-if="upc.sellingUnit.bonusSwitch === 'Y'"><span
+						class="inline-block glyphicon glyphicon-gift"></span></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-md-6">
+		<div ng-repeat="shipper in item.itemMaster.primaryUpc.shipper">
+			<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+
+				<tr ng-repeat="upc in shipper.realUpc.associateUpcs">
+					<td class="inline-block" style="width: 100%">{{upc.upc}}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

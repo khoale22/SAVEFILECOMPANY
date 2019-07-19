@@ -1,0 +1,106 @@
+<div can-edit="CH_HIER_02" class="inline-block">
+	<button class="btn btn-primary btn-sm"
+			data-toggle="modal" data-target="#addProductsModal"
+			ng-click="$ctrl.clearProductList(); $ctrl.setOnAdding(true)">Add Products
+	</button>
+	<button class="btn btn-primary btn-sm"
+			data-toggle="modal" data-target="#moveProductsModal"
+			ng-click="$ctrl.clearProductList(); $ctrl.setOnMoving(true)">Move Products
+	</button>
+</div>
+<div ng-if="$ctrl.onAdding" id="addProductsModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 75%">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title text-left" style="color: #ffffff">Add product(s).
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="panel-group">
+							<product-search-criteria
+								on-update="$ctrl.updateSearchCriteria(searchCriteria)">
+							</product-search-criteria>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="row" ng-if="$ctrl.searchCriteria" style="padding-right: 10px">
+							<product-search-selection-multi-page search-criteria="$ctrl.searchCriteria"
+																 on-update="$ctrl.updateSelectedCriteria(selectedCriteria)">
+							</product-search-selection-multi-page>
+							<div ng-if="$ctrl.hasRecordsToUpdate()" class="text-left">
+								<strong>You have selected {{$ctrl.selectedCriteria.totalRecordCount}} product(s) to add.</strong>
+								<strong class="text-left" ng-if="$ctrl.isSubmitMassUpdateDisabled()">Please set a description.</strong>
+							</div>
+							<div ng-if="!$ctrl.hasRecordsToUpdate()" class="text-left">
+								<strong class="text-left">Please select product(s) to add.</strong>
+							</div>
+							<button type="button" class="btn btn-sm pull-left"
+									ng-click="$ctrl.resetSearchCriteriaAndSelectedProducts()">Clear Results</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<strong>Set the Mass Update Description:</strong>
+				<input type="text" ng-model="$ctrl.description"
+					   ng-disabled="!$ctrl.hasRecordsToUpdate()">
+				<button type="button" ng-click="$ctrl.alterProducts()"
+						data-dismiss="modal"
+						class="inline-block btn btn-success btn-sm"
+						data-ng-disabled="$ctrl.isSubmitMassUpdateDisabled()">Add Product/s</button>
+				<button type="button" data-dismiss="modal"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div ng-if="$ctrl.onMoving" id="moveProductsModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 75%">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title text-left" style="color: #ffffff">Move product(s).
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="panel-group">
+							<product-search-criteria
+								on-update="$ctrl.updateSearchCriteria(searchCriteria)">
+							</product-search-criteria>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="row" ng-if="$ctrl.searchCriteria" style="padding-right: 10px">
+							<product-search-selection-multi-page search-criteria="$ctrl.searchCriteria"
+																 on-update="$ctrl.updateSelectedCriteria(selectedCriteria)">
+							</product-search-selection-multi-page>
+							<div ng-if="$ctrl.hasRecordsToUpdate()" class="text-left">
+								<strong>You have selected {{$ctrl.selectedCriteria.totalRecordCount}} product(s) to move.</strong>
+								<strong class="text-left" ng-if="$ctrl.isSubmitMassUpdateDisabled()">Please set a description.</strong>
+							</div>
+							<div ng-if="!$ctrl.hasRecordsToUpdate()" class="text-left">
+								<strong class="text-left">Please select product(s) to move.</strong>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<strong>Set the Mass Update Description:</strong>
+				<input type="text" ng-model="$ctrl.description"
+					   ng-disabled="!$ctrl.hasRecordsToUpdate()">
+				<button type="button" ng-click="$ctrl.alterProducts()"
+						data-dismiss="modal"
+						class="inline-block btn btn-success btn-sm"
+						data-ng-disabled="$ctrl.isSubmitMassUpdateDisabled()">Move Product</button>
+				<button type="button" data-dismiss="modal"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+

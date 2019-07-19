@@ -1,0 +1,93 @@
+<div class="panel panel-primary">
+	<div class="panel-heading" style="padding:5px;">
+		<div data-ng-bind-html="productGroupSearchController.searchDescription"></div>
+		<button view-only="PG_MENU_00" disabled="disabled" type="button" class="btn btn-xs pull-right"
+				style="color: #005A86; position: absolute; top: 4px; right: 20px;">
+			Create New
+		</button>
+		<button can-edit="PG_MENU_00" type="button" class="btn btn-xs pull-right"
+				style="color: #005A86; position: absolute; top: 4px; right: 20px;" ng-click="
+				productGroupSearchController.goToCreateProductGroupPage()">
+			Create New
+		</button>
+	</div>
+	<div class="panel-body" style="min-height: 500px; padding:5px;">
+		<div class="row" ng-if="!productGroupSearchController.isWaiting && productGroupSearchController.success">
+					<span ng-bind-html="productGroupSearchController.success"
+						  class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">
+					</span>
+		</div>
+		<div class="row" ng-if="!productGroupSearchController.isWaiting && productGroupSearchController.error">
+					<span ng-bind-html="productGroupSearchController.error" style="text-align: left"
+						  class="{{productGroupSearchController.getClassOfMessage(productGroupSearchController.error)}}" role="alert">
+					</span>
+		</div>
+
+		<loading-spinner ng-if="productGroupSearchController.isWaiting"></loading-spinner>
+		<div class="col-md-12" ng-show="productGroupSearchController.isExistProduct && !productGroupSearchController.isWaiting">
+			<!-- Show List of Brand cost owner t2ts-->
+			<table class="table table-heb table-condensed table-striped"
+				   data-ng-table="productGroupSearchController.resultTable">
+				<thead style="font-size: 12px !important;">
+				<tr style="border-bottom:hidden; height: 25px;">
+					<th style="width: 10%;text-align: center;">ID</th>
+					<th style="width: 18%;text-align: center;">Thumbnail Image</th>
+					<th style="width: 24% ;text-align: center;">Product Group Name</th>
+					<th style="width: 24%;text-align: center;">Product Group Type</th>
+					<th style="width: 24%;">Customer Facing Hierarchy</th>
+				</tr>
+				</thead>
+				<tr data-ng-show="!productGroupSearchController.isWaiting" data-ng-repeat="productGroup in $data track by $index"
+					style="height:40px;{{productGroupSearchController.selectedRowIndex == $index ?'background-color: #337ab7;color: white ;':''}}"
+					data-ng-click="productGroupSearchController.setSelectedRowIndexAction($index)">
+					<td
+						style="vertical-align: middle; text-align: center;">
+						<a class="pointer"
+						   style="{{productGroupSearchController.selectedRowIndex == $index ?'color: white ;':''}}"
+						   ng-click="productGroupSearchController.goToProductGroupDetail(productGroup)">
+							{{productGroup.custProductGroupId}}
+						</a>
+					</td>
+					<td style="text-align: center">
+						<div data-ng-if="productGroupSearchController.findImageByUri(productGroup.primaryImage.uriText) !== productGroupSearchController.IMAGE_NOT_FOUND
+									&& productGroupSearchController.findImageByUri(productGroup.primaryImage.uriText) !== ''">
+							<img ng-click="productGroupSearchController.showFullImage(productGroup)" style="width: 40px;height: 40px"
+								 data-ng-src="{{productGroupSearchController.findImageByUri(productGroup.primaryImage.uriText)}}"/>
+						</div>
+						<div
+							data-ng-show="productGroupSearchController.findImageByUri(productGroup.primaryImage.uriText) === productGroupSearchController.IMAGE_NOT_FOUND">
+							<img src='images/no_image.png' style="width: 40px;height: 40px"/>
+						</div>
+						<div data-ng-show="productGroup.primaryImage === null">
+							<img src='images/no_image.png' style="width: 40px;height: 40px"/>
+						</div>
+						<div
+							data-ng-show="productGroup.primaryImage !== null&&productGroupSearchController.findImageByUri(productGroup.primaryImage.uriText) === ''">
+							<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+						</div>
+					</td>
+					<td style="vertical-align: middle">
+						{{productGroup.custProductGroupName}}
+					</td>
+					<td style="vertical-align: middle">
+						{{productGroup.productGroupType.productGroupType}}
+					</td>
+					<td style="vertical-align: middle">
+
+						<a class="pointer" ng-if="productGroup.lowestEntity"
+						   style="{{productGroupSearchController.selectedRowIndex == $index ?'color: white ;':''}}"
+						   ng-click="productGroupSearchController.clickOnFacingCustomerHierarchy(productGroup.lowestEntity.id)">
+							<span class="glyphicon glyphicon-arrow-right"></span>
+							{{productGroup.lowestEntity.hierarchyPathDisplay}}
+						</a>
+					</td>
+				</tr>
+			</table>
+			<div class="inline-block pull-right" style="{{productGroupSearchController.getStyleOfClearBtn()}}">
+				<button class="btn btn-primary"
+						ng-click="productGroupSearchController.clearResults()">Clear Results
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,163 @@
+<!--
+  ~  bothToDsd.html
+  ~
+  ~   Copyright (c) 2016 HEB
+  ~   All rights reserved.
+  ~
+  ~   This software is the confidential and proprietary information
+  ~    of HEB.
+  -->
+
+<div class="col-md-12" ng-controller="BothToDsdController as bothToDsdController" ng-init="bothToDsdController.init()">
+
+	<div class="row" data-ng-if="bothToDsdController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{bothToDsdController.error}}</span>
+	</div>
+
+	<div class="panel-group" style="min-width: 1195px" can-edit="PD_SWAP_03" ng-show="!bothToDsdController.isWaitingForResponse">
+		<div class="panel panel-primary" ng-if="bothToDsdController.showSwapPanel()">
+			<div class="panel-heading">
+				<h4 class="panel-title">Both to DSD</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+					<colgroup style="border: solid">
+						<col span="{{bothToDsdController.hasRecord ? bothToDsdController.hasSourceError ? 14 : 13 : 12}}">
+					</colgroup>
+					<thead>
+					<tr>
+						<th colspan="{{bothToDsdController.hasRecord ? bothToDsdController.hasSourceError ? 14 : 13 : 12}}" style="background: #f1f1f1; color: black">Source</th>
+					</tr>
+					<tr>
+						<th>Product ID</th>
+						<th>UPC</th>
+						<th>Is Primary</th>
+						<th>Future Primary</th>
+						<th>Item Code</th>
+						<th>Description</th>
+						<th>Size</th>
+						<th>BOH Inventory</th>
+						<th>BOO Inventory</th>
+						<th>POG</th>
+						<th>Retail Link</th>
+						<th>Purchase Order</th>
+						<th ng-show="bothToDsdController.hasSourceError">Message</th>
+						<th ng-show="bothToDsdController.hasRecord">Remove</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="upcSwap in bothToDsdController.bothToDsdList track by $index" style="width: 100%">
+						<td><a class="pointer" ng-click="bothToDsdController.showProductInfo(upcSwap.source.productId)">{{upcSwap.source.productId}}</a></td>
+						<td><input type="text" ng-change="bothToDsdController.setUpcDataRows($index)"
+								   class="form-control"
+								   ng-paste="bothToDsdController.setUpcDataRowsPaste($index)"
+								   ng-model="upcSwap.sourceUpc" id="{{'upc' + $index}}" style="width: 100%"></td>
+						<td>{{upcSwap.sourcePrimaryUpc | boolean_yn}}</td>
+						<td>
+							<select style="width: 100%" ng-model="upcSwap.selectSourcePrimaryUpc"
+									class="form-control"
+									ng-if="upcSwap.sourcePrimaryUpc && bothToDsdController.alreadyFetchedDetails(upcSwap) &&
+									bothToDsdController.hasSelectPrimaryList(upcSwap)">
+								<option ng-repeat="associatedUpc in upcSwap.source.associatedUpcList">{{associatedUpc}}</option>
+							</select>
+							<div ng-if="upcSwap.sourcePrimaryUpc && bothToDsdController.alreadyFetchedDetails(upcSwap) &&
+								!bothToDsdController.hasSelectPrimaryList(upcSwap)">Pre-digit 4</div>
+							<div ng-if="!upcSwap.sourcePrimaryUpc">{{upcSwap.selectSourcePrimaryUpc}}</div>
+						</td>
+						<td>{{upcSwap.source.itemCode}}</td>
+						<td>{{upcSwap.source.itemDescription}}</td>
+						<td>{{upcSwap.source.itemSize}}</td>
+						<td>{{upcSwap.source.balanceOnHand | number}}</td>
+						<td>{{upcSwap.source.balanceOnOrder | number}}</td>
+						<!--<td>{{bothToDsdController.alreadyFetchedDetails(upcSwap)? upcSwap.source.onLiveOrPendingPog? 'YES' : 'NO' : null}}</td>-->
+						<td>{{upcSwap.source.onLiveOrPendingPog | boolean_yn}}</td>
+						<td>{{upcSwap.source.productRetailLink}}</td>
+						<td>
+							<div ng-if="upcSwap.source.lastPurchaseOrderInWeek != null  && bothToDsdController.alreadyFetchedDetails(upcSwap)" class="inline-block">
+								{{upcSwap.source.purchaseOrderDisplayText | date: 'MM/dd/yyyy'}}
+							</div>
+							<div ng-if="upcSwap.source.lastPurchaseOrderInWeek == null  && bothToDsdController.alreadyFetchedDetails(upcSwap)" class="inline-block">
+								<a class="pointer underline-text-with-padding"
+								   uib-popover="No PO in next 7 days."
+								   popover-trigger="'outsideClick'">{{upcSwap.source.purchaseOrderDisplayText}}</a>
+							</div>
+						</td>
+						<td  style="color: red" ng-show="bothToDsdController.hasSourceError"> {{upcSwap.source.errorMessage}}</td>
+						<td ng-show="bothToDsdController.hasRecord">
+							<div class="glyphicon glyphicon-remove pointer" style="color: red; padding-left: 15px"
+								 ng-click="bothToDsdController.removeDataRow($index)">
+
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="inline-block pull-right" style="padding-top: 10px">
+					<button class="btn btn-info"
+							ng-click="bothToDsdController.clearData()"
+							ng-disabled="bothToDsdController.isEmptyData()">Clear
+					</button>
+					<button class="btn btn-info" ng-click="bothToDsdController.addEmptyDataRow()">Add Row</button>
+					<button class="btn btn-info" ng-click="bothToDsdController.getBothToDsdDetails()">Fetch Details</button>
+					<button class="btn btn-primary" ng-click="bothToDsdController.submitBothToDsd()">Submit</button>
+				</div>
+			</div>
+		</div>
+		<div ng-if="bothToDsdController.isViewingProductInfo()">
+			<div ng-include src="'src/productInfo/productInfo.html'"></div>
+		</div>
+		<div class="panel panel-primary" ng-if="bothToDsdController.showAfterUpdate">
+
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block">Details after swap</h4>
+				<div class="inline-block pull-right">
+					<span ng-if="bothToDsdController.errorResultList.length > 0" class="inline-block"
+						  style="color: orange; padding-right: 10px">{{bothToDsdController.errorResultList.length}} errors (close to redo)</span>
+					<div ng-click="bothToDsdController.closePage()" class="glyphicon glyphicon-remove pointer inline-block pull-right"></div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="panel panel-default">
+					<table class="table-heb table-bordered table-striped table-hover" style="width: 100%; border-collapse: collapse">
+						<colgroup style="border: solid">
+							<col span="7">
+						</colgroup>
+						<thead>
+						<tr>
+							<th colspan="7" style="background: #f1f1f1; color: black">Source</th>
+						</tr>
+						<tr>
+							<th>Product ID</th>
+							<th>UPC</th>
+							<th>Item Code</th>
+							<th>Description</th>
+							<th>Size</th>
+							<th>UPCs</th>
+							<th>Messages</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="upcSwapAfterUpdate in bothToDsdController.afterUpdateList" style="width: 100%">
+							<td>{{upcSwapAfterUpdate.source.productId}}</td>
+							<td>{{upcSwapAfterUpdate.sourceUpc}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemCode}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemDescription}}</td>
+							<td>{{upcSwapAfterUpdate.source.itemSize}}</td>
+							<td>
+								<div ng-repeat="associate in upcSwapAfterUpdate.source.associatedUpcList track by $index">
+									<strong ng-if="$index === 0">{{associate}}</strong>
+									<div ng-if="$index != 0">{{associate}}</div>
+								</div>
+							</td>
+							<td ng-style="{'color': upcSwapAfterUpdate.statusMessage != 'Success' ? 'red' : 'green'}">{{upcSwapAfterUpdate.statusMessage}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<loading-spinner ng-show="bothToDsdController.isWaitingForResponse">
+	</loading-spinner>
+</div>
+

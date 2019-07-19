@@ -1,0 +1,15 @@
+<div ng-click="$ctrl.selectCustomHierarchyLevel(path)"
+	 class="add-hover-background"
+	 ng-class="{'add-click-background' : level.isSelected}"
+	 ng-init="path = $ctrl.getPathToCurrentLevel(path, level)">
+	<strong>{{level.childDescription.shortDescription}}</strong>
+	<strong ng-if="$ctrl.hasChildren(level)"
+			ng-style="{'color': level.isSelected ? '#a8d6ed' : '#337ab7'}"
+			ng-class="{'fa fa-plus': level.isCollapsed, 'fa fa-minus': !level.isCollapsed}"></strong>
+</div>
+<div ng-if="$ctrl.hasChildren(level) && !level.isCollapsed">
+	<div ng-repeat="level in level.childRelationships">
+		<div ng-include="'src/customHierarchy/miniCustomHierarchy.html'"
+			 style="padding-left: 15px"></div>
+	</div>
+</div>

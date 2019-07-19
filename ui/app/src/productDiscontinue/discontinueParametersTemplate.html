@@ -1,0 +1,106 @@
+<div ng-controller="DiscontinueParametersTemplateController as parametersTemplateController" ng-init="parametersTemplateController.init()">
+	<div class="panel panel-default" style="padding-bottom: 10px">
+		<div class="row">
+			<div class="col-md-12">
+
+				<div class="col-md-12">
+					<input class="inline-block" type="checkbox" value="" ng-model="parametersTemplateController.data.salesSwitch" id="salesSwitch" disabled>
+					<strong class="inline-block">Sales</strong>
+                    <div class="inline-block glyphicon glyphicon-question-sign pull-right" style="color: blue"
+                         data-toggle="tooltip" title="{{parametersTemplateController.discontinueDefinition.sales}}">
+                    </div>
+				</div>
+				<div class="col-md-12">
+					<div class="inline-block col-md-4">No Scan in Stores in Last</div>
+					<div class="inline-block col-md-3"><input type="text" class="form-control" ng-model="parametersTemplateController.data.storeSales" style="width: 100%" id="storeSales" disabled></div>
+					<div class="inline-block col-md-5">Months.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default" style="padding-bottom: 10px">
+		<div class="row">
+			<div class="col-md-12">
+
+				<div class="col-md-12">
+					<input class="inline-block" type="checkbox" value="" ng-model="parametersTemplateController.data.receiptsSwitch" id="receiptsSwitch" disabled>
+					<strong class="inline-block">Receipts</strong>
+                    <div class="inline-block glyphicon glyphicon-question-sign pull-right" style="color: blue"
+                         data-toggle="tooltip" title="{{parametersTemplateController.discontinueDefinition.receipts}}">
+                    </div>
+				</div>
+				<div class="col-md-12">
+					<div class="inline-block col-md-4">Last Store Receipt Period</div>
+					<div class="inline-block col-md-3"><input class="form-control" type="text" ng-model="parametersTemplateController.data.storeReceipts" style="width: 100%" id="storeReceipts" disabled></div>
+					<div class="inline-block col-md-3">Months.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default" style="padding-bottom: 10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-12">
+					<strong class="inline-block col-md-4">Inventory</strong>
+					<div class="inline-block col-md-4">Per Store/WHS Qty</div>
+                    <div class="inline-block glyphicon glyphicon-question-sign pull-right" style="color: blue"
+                         data-toggle="tooltip" title="{{parametersTemplateController.discontinueDefinition.inventory}}">
+                    </div>
+				</div>
+				<div class="col-md-12" style="padding-bottom: 5px">
+					<div class="row">
+						<div class="inline-block pull-left col-md-4"><input type="checkbox" value="" ng-model="parametersTemplateController.data.storeUnitSwitch" id="storeUnitSwitch" disabled>
+							At Stores</div>
+						<div class="inline-block col-md-3"><input class="form-control" type="text" ng-model="parametersTemplateController.data.storeUnits" style="width: 95%; margin-left: 5px;" id="storeUnits" disabled></div>
+						<div class="inline-block col-md-3">Units.</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="row">
+						<div class="inline-block pull-left col-md-4"><input type="checkbox" value="" ng-model="parametersTemplateController.data.warehouseUnitSwitch" id="warehouseUnitSwitch" disabled>
+							At Warehouses</div>
+						<div class="inline-block col-md-3"><input class="form-control" type="text" ng-model="parametersTemplateController.data.warehouseUnits" style="width: 95%; margin-left: 5px;" id="warehouseUnits" disabled></div>
+						<div class="inline-block col-md-3">Units.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default" style="padding-bottom: 10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-12">
+					<input class="inline-block" type="checkbox" value="" ng-model="parametersTemplateController.data.newProductSetupSwitch" id="newProductSetupSwitch" disabled>
+					<strong class="inline-block">New Product Setup</strong>
+                    <div class="inline-block glyphicon glyphicon-question-sign pull-right" style="color: blue"
+                         data-toggle="tooltip" title="{{parametersTemplateController.discontinueDefinition.newProductSetup}}">
+                    </div>
+				</div>
+				<div class="col-md-12">
+					<div class="inline-block col-md-4">New Item Period</div>
+					<div class="inline-block col-md-3"><input class="form-control" type="text" ng-model="parametersTemplateController.data.newItemPeriod" style="width: 100%" id="newItemPeriod" disabled></div>
+					<div class="inline-block col-md-5">Months.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default" style="padding-bottom: 10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-12">
+					<input class="inline-block" type="checkbox" value="" ng-model="parametersTemplateController.data.purchaseOrderSwitch" id="purchaseOrderSwitch" disabled>
+					<strong class="inline-block">Purchase Orders</strong>
+                    <div class="inline-block glyphicon glyphicon-question-sign pull-right" style="color: blue"
+                         data-toggle="tooltip" title="{{parametersTemplateController.discontinueDefinition.purchaseOrder}}">
+                    </div>
+				</div>
+				<div class="col-md-12">
+					<div class="inline-block col-md-4">Approved</div>
+					<div class="inline-block col-md-3"><input class="form-control" type="text" ng-model="parametersTemplateController.data.purchaseOrders" style="width: 100%" id="purchaseOrders" disabled></div>
+					<div class="inline-block col-md-5">Months.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

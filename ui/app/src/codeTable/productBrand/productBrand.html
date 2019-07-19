@@ -1,0 +1,83 @@
+<!--
+  ~ productBrand.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn00602
+  @since 2.12.0
+  -->
+<div class="container-fluid" can-view="CT_BRND_02">
+	<!-- Error span -->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!-- Success span -->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<!-- This area displays the table of Product Brands -->
+	<div class="row" style="height: 660px; width: 100%; /*overflow-y: scroll;*/">
+		<div class="col-md-12 margin-top-10">
+			<div style="margin: 10px 15px 25px 0;">
+				<div class="inline-block pull-right" style="font-size: 12px; margin-bottom: 20px;">
+					<label for="ownBrand" style="display: inline; font-weight: bold; width: 100%">Show Own
+						Brand Only</label>
+					<input type="checkbox" ng-model="$ctrl.ownBrand" id="ownBrand"
+						   ng-click="$ctrl.refreshProductBrandTable()">
+				</div>
+				<div class="inline-block pull-right margin-right-10">
+					<button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.doClearFilter()">
+						Clear Filter
+					</button>
+				</div>
+			</div>
+			<table ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped" style="width: 100%;">
+				<thead>
+					<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+						<th style="width: 33%; border-bottom-color: transparent;">Brand
+						</th>
+						<th style="width: 33%; border-bottom-color: transparent;">Brand Tier
+						</th>
+						<th rowspan="2" style="width: 33%;">Show on Web</th>
+					</tr>
+					<tr style="background-color: #00476b; height: 25px; text-align: center;">
+						<th>
+							<input type="text" class="form-control input-group-sm"
+								   data-ng-model="$ctrl.productBrand"
+								   ng-change="$ctrl.refreshProductBrandTable()"
+								   title="Input a Product Brand to filter">
+						</th>
+						<th>
+							<input type="text" class="form-control input-group-sm"
+								   data-ng-model="$ctrl.brandTier"
+								   title="Input a Brand Tier to filter"
+								   ng-change="$ctrl.refreshProductBrandTable()">
+						</th>
+					</tr>
+				</thead>
+					<tbody ng-show="!$ctrl.isWaitingForResponse">
+					<tr ng-repeat="productBrand in $ctrl.productBrands track by $index">
+						<td style="width: 33%;">
+							{{productBrand.displayName}}
+						</td>
+						<td>
+							{{productBrand.productBrandTier.productBrandName}}
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" ng-model="productBrand.showOnWeb" disabled>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="row margin-top-20">
+				<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+				</loading-spinner>
+			</div>
+		</div>
+	</div>
+</div>

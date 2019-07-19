@@ -1,0 +1,29 @@
+<!--
+  ~ productGroupDetailTabs.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div id="pdTabsContainer" style="padding: 0%"  >
+	<ul class="nav nav-pills nav-stacked">
+		<!-- Product tabs -- starts -->
+		<label>Product Group</label>
+		<li class="active">
+			<a data-toggle="pill" href="productGroupDetail/#productGroupInfo" id="productGroupInfo"
+			   ng-click="$ctrl.handleTabChange(this)" >Product Group Info</a>
+		</li>
+		<li>
+			<a data-toggle="pill" href="productGroupDetail/#imageInfo" id="imageInfo"
+			   ng-click="$ctrl.selectedProduct === undefined || $ctrl.handleTabChange(this)" class="btn" ng-class="$ctrl.selectedProduct === undefined?'disabled':''" 
+			   style="text-align: left; box-shadow: none; font-size: 12px;" ng-disabled="$ctrl.selectedProduct === undefined">Image Info</a>
+		</li>
+		<li>
+			<a data-toggle="pill" href="productGroupDetail/#eCommerceView" id="eCommerceView"
+			   ng-click="$ctrl.selectedProduct === undefined || $ctrl.handleTabChange(this)" ng-class="$ctrl.selectedProduct === undefined?'disabled':''"  
+			   class="btn" style="text-align: left; box-shadow: none; font-size: 12px;" ng-disabled="$ctrl.selectedProduct === undefined">eCommerce View</a>
+		</li>
+	</ul>
+</div>

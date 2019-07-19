@@ -1,0 +1,691 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div ng-show="!$ctrl.isLoading">
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-body panel-collapse">
+				<div  class="row col-md-offset-11 col-md-1 pull-right" >
+					<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showOnlineAttrributesAuditInfo()"></div>
+				</div>
+				<!--Tabs-->
+				<ul class="nav nav-tabs nav-pills">
+					<li ng-class="$ctrl.activeOnlineAttributeTabClass">
+						<a data-toggle="tab"  ng-click="$ctrl.chooseTab('onlineAttributes')">Online Attributes</a>
+					</li>
+					<li ng-class="$ctrl.activeTierPricingTabClass">
+						<a data-toggle="tab"  ng-click="$ctrl.chooseTab('tierPricing')">Tier Pricing</a>
+					</li>
+					<li ng-class="$ctrl.activeTagsAndSpecsTabClass">
+						<a data-toggle="tab"  ng-click="$ctrl.chooseTab('tagsAndSpecs')">Tags/Specs</a>
+					</li>
+					<li ng-class="$ctrl.activeRelatedProductTabClass">
+						<a data-toggle="tab"  ng-click="$ctrl.chooseTab('relatedProducts')">Related Products</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<!--Onlilne Attibutes Tab-->
+					<div id="onlineAttributes" ng-class="$ctrl.onlineAttributeTabPaneClass" can-view="PD_OLAT_01">
+						<div class="row">
+							<div class="col-md-1"></div>
+							<!--first column-->
+							<div class="col-md-3" style="padding-right: 5px">
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Serving Size</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 5px">
+										<label view-only="PD_OLAT_01" style="font-weight: normal">{{$ctrl.currentOnlineAttribute.servingSize}}</label>
+										<input can-edit="PD_OLAT_01" class="form-control" type="text" ng-model="$ctrl.currentOnlineAttribute.servingSize" ng-change="ctrl.updateServingSize()">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Totally Texas</label>
+									</div>
+									<!--</div>-->
+									<!--<div class="col-md-3" style="padding-left: 5px">-->
+									<div class="col-md-1" style="padding-left: 5px">
+										<input view-only="PD_OLAT_01" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.totallyTexas" disabled id="totallyTexasView">
+										<input can-edit="PD_OLAT_01" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.totallyTexas"  id="totallyTexasEdit" ng-click="ctrl.updateTotallyTexas()">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>In-Store Production</label>
+									</div>
+								<!--</div>-->
+								<!--<div class="col-md-3" style="padding-left: 5px">-->
+									<div class="col-md-1" style="padding-left: 5px">
+										<input view-only="PD_OLAT_01" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.goodsProduct.inStoreProductionSwitch" disabled id="inStoreProductionSwitchView">
+										<input can-edit="PD_OLAT_01"
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   type="checkbox" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.inStoreProductionSwitch"  
+											   id="inStoreProductionSwitchEdit">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label >Gift Message Required</label>
+									</div>
+										<!--</div>-->
+										<!--<div class="col-md-3" style="padding-left: 5px">-->
+									<div class="col-md-1" style="padding-left: 5px">
+										<input view-only="PD_OLAT_01" style="margin-top: 5px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.giftMessageSwitch" disabled id="giftMessageView">
+										<input can-edit="PD_OLAT_01" style="margin-top: 5px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.giftMessageSwitch"  id="giftMessageEdit">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right">
+										<label>Online Only</label>
+									</div>
+										<!--</div>-->
+										<!--<div class="col-md-3" style="padding-left: 5px">-->
+									<div class="col-md-1" style="padding-left: 5px">
+										<input view-only="PD_OLAT_01" style="margin-top: 0px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.productTrashCan.onlineSaleOnlySw" disabled id="onlineOnlyView">
+										<input can-edit="PD_OLAT_01" style="margin-top: 0px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.currentOnlineAttribute.productTrashCan.onlineSaleOnlySw"  id="onlineOnlyWrapEdit">
+									</div>
+								</div>
+							</div>
+							<!--second column-->
+							<div class="col-md-4" style="padding-left: 5px; padding-right: 5px">
+								<div class="row">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label>Guarantee Image</label>
+									</div>
+									<div class="col-md-8" can-edit="PD_OLAT_01" style="padding-left: 0">
+										<select class="form-control"
+												ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+												ng-model="$ctrl.currentOnlineAttribute.goodsProduct.hebGuaranteeTypeCode.hebGuaranteeTypeCode">
+											<option ng-repeat="guarantee in $ctrl.guaranteeImages" value="{{guarantee.id}}">{{guarantee.description}}</option>
+										</select>
+									</div>
+									<div class="col-md-6" view-only="PD_OLAT_01" style="padding-left: 0">
+										{{$ctrl.currentOnlineAttribute.goodsProduct.hebGuaranteeTypeCode.hebGuaranteeTypeDescription != null ?
+										$ctrl.currentOnlineAttribute.goodsProduct.hebGuaranteeTypeCode.hebGuaranteeTypeDescription : 'None'}}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label>3rd Party Sellable</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">
+										<input view-only="PD_OLAT_01" style="margin-top: 5px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.thirdPartySellable" disabled id="thirdPartySellableView">
+										<input can-edit="PD_OLAT_01" style="margin-top: 5px; margin-bottom: 5px" type="checkbox" ng-model="$ctrl.thirdPartySellable" id="thirdPartySellableEdit">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label>Flex Weight</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">
+										<input view-only="PD_OLAT_01" 
+											   style="margin-top: 0px; margin-bottom: 5px" 
+											   type="checkbox" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.flexWeightSwitch" 
+											   disabled 
+											   id="flexWeightSwitchView">
+										<input can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   style="margin-top: 0px; margin-bottom: 5px" 
+											   type="checkbox" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.flexWeightSwitch"  
+											   id="flexWeightSwitchEdit">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label style="margin-bottom: 2px">Min. Weight</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">
+										<label view-only="PD_OLAT_01" style="font-weight: normal;">{{$ctrl.currentOnlineAttribute.goodsProduct.minWeight | number: 4}}</label>
+										<input class="form-control" 
+											   can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   id="minWeight" 
+											   type="text" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.minWeight"
+											   ng-keypress="$ctrl.validateVariableLengthFloatKeyPress($ctrl.currentOnlineAttribute.goodsProduct.minWeight, 4, $event, 'minWeight')">
+										<br/>
+										<span style="font-weight: bold;color: red">{{$ctrl.minWeightError}}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label style="margin-bottom: 2px">Max. Weight</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">
+										<label view-only="PD_OLAT_01" style="font-weight: normal;">{{$ctrl.currentOnlineAttribute.goodsProduct.maxWeight | number: 4}}</label>
+										<input class="form-control" 
+											   can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   id="maxWeight" 
+											   type="text" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.maxWeight"
+											   ng-keypress="$ctrl.validateVariableLengthFloatKeyPress($ctrl.currentOnlineAttribute.goodsProduct.maxWeight, 4, $event, 'maxWeight')">
+										<br/>
+										<span style="font-weight: bold;color: red">{{$ctrl.maxWeightError}}</span>
+									</div>
+								</div>
+							</div>
+							<!--third column-->
+							<div class="col-md-3" style="padding-left: 0">
+								<div class="row" style="padding-bottom: 10px">
+									<div class="col-md-4 text-right" style="padding-right: 5px">
+										<label>Sold By</label>
+									</div>
+									<div class="col-md-8" style="padding-left: 0">
+										<span view-only="PD_OLAT_01">{{$ctrl.currentOnlineAttribute.goodsProduct.soldBy}}</span>
+										<div can-edit="PD_OLAT_01">
+											<select class="form-control" 
+													ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null"
+													ng-model="$ctrl.currentOnlineAttribute.goodsProduct.soldBy">
+												<option ng-repeat="choice in $ctrl.soldByOptions" value="{{choice.id}}">{{choice.description}}</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-8 text-right" style="padding-right: 5px">
+										<label>Min. Customer Order Quantity</label>
+									</div>
+									<div class="col-md-4" style="padding-left: 0">
+										<span view-only="PD_OLAT_01">{{$ctrl.currentOnlineAttribute.goodsProduct.minCustomerOrderQuantity | number: 2}}</span>
+										<input class="form-control" 
+											   can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   id="minCustomerOrderQuantity" 
+											   type="text" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.minCustomerOrderQuantity"
+											   ng-keypress="$ctrl.validateVariableLengthFloatKeyPress($ctrl.currentOnlineAttribute.goodsProduct.minCustomerOrderQuantity, 2, $event, 'minCustomerOrderQuantity')"
+											   ng-change = "$ctrl.validDecimal($ctrl.currentOnlineAttribute.goodsProduct.minCustomerOrderQuantity, 2)">
+										<br/>
+										<span style="font-weight: bold;color: red">{{$ctrl.minCustomerOrderQuantityError}}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-8 text-right" style="padding-right: 5px">
+										<label style="margin-bottom: 2px">Max. Customer Order Quantity</label>
+									</div>
+									<div class="col-md-4" style="padding-left: 0">
+										<span view-only="PD_OLAT_01">{{$ctrl.currentOnlineAttribute.goodsProduct.maxCustomerOrderQuantity}}</span>
+										<input class="form-control" 
+											   can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   id="maxCustomerOrderQuantity" 
+											   type="text" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.maxCustomerOrderQuantity"
+											   ng-keypress="$ctrl.validateVariableLengthFloatKeyPress($ctrl.currentOnlineAttribute.goodsProduct.maxCustomerOrderQuantity, 2, $event, 'maxCustomerOrderQuantity')">
+										<br/>
+										<span style="font-weight: bold;color: red">{{$ctrl.maxCustomerOrderQuantityError}}</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-8 text-right" style="padding-right: 5px">
+										<label>Order Increments</label>
+									</div>
+									<div class="col-md-4" style="padding-left: 0">
+										<span view-only="PD_OLAT_01">{{$ctrl.currentOnlineAttribute.goodsProduct.customerOrderIncrementQuantity | number: 2}}</span>
+										<input class="form-control" 
+											   can-edit="PD_OLAT_01" 
+											   ng-disabled="$ctrl.currentOnlineAttribute.goodsProduct === null" 
+											   id="customerOrderIncrementQuantity" 
+											   type="text" 
+											   ng-model="$ctrl.currentOnlineAttribute.goodsProduct.customerOrderIncrementQuantity"
+											   ng-keypress="$ctrl.validateVariableLengthFloatKeyPress($ctrl.currentOnlineAttribute.goodsProduct.customerOrderIncrementQuantity, 2, $event, 'customerOrderIncrementQuantity')">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12" style="margin-top: 5px;margin-bottom: 5px; border-top-style: double; border-top-color: darkgray; padding-top: 15px;">
+							<div class="col-md-6">
+								<div class="row">
+									<div ng-show="$ctrl.choiceList.length==0">
+										<label class="col-md-offset-3">Choice List is empty</label>
+									</div>
+									<div ng-show="$ctrl.choiceList.length > 0">
+										<div style="margin-right: 17px">
+											<table class="table-heb table-bordered table-striped" style="width: 100%">
+												<colgroup>
+													<col width="35%" />
+													<col width="50%" />
+													<col width="15%" />
+												</colgroup>
+												<thead>
+												<tr>
+													<th>Choice Type</th>
+													<th>Choice Option</th>
+													<th>Picker (Y/N)</th>
+												</tr>
+												</thead>
+											</table>
+										</div>
+										<div style="overflow-y:scroll; height: 70px">
+											<table class="table-heb table-bordered table-striped" style="width: 100%">
+												<colgroup>
+													<col width="35%" />
+													<col width="50%" />
+													<col width="15%" />
+												</colgroup>
+												<tbody>
+												<tr ng-repeat="choice in $ctrl.choiceList">
+													<td>{{choice.choiceOption.choiceType.description}}</td>
+													<td>{{choice.choiceOption.productChoiceText}}</td>
+													<td>{{choice.productGroupChoiceType.pickerSwitch | boolean_yn}}</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<div ng-show="$ctrl.productGroupsList.length==0">
+										<label class="col-md-offset-3">Product Group List is empty</label>
+									</div>
+									<div ng-show="$ctrl.productGroupsList.length > 0">
+										<div style="margin-right: 17px">
+											<table class="table-heb table-bordered table-striped" style="width: 100%">
+												<colgroup>
+													<col width="25%" />
+													<col width="50%" />
+													<col width="25%" />
+												</colgroup>
+												<thead>
+												<tr>
+													<th>Product Group Id</th>
+													<th>Product Group Name</th>
+													<th>Product Group Type</th>
+												</tr>
+												</thead>
+											</table>
+										</div>
+										<div style="overflow-y:scroll; height: 70px">
+											<table class="table-heb table-bordered table-striped" style="width: 100%">
+												<colgroup>
+													<col width="25%" />
+													<col width="50%" />
+													<col width="25%" />
+												</colgroup>
+												<tbody>
+												<tr ng-repeat="productGroups in $ctrl.productGroupsList">
+													<td>{{productGroups.customerProductGroup.custProductGroupId}}</td>
+													<td>{{productGroups.customerProductGroup.custProductGroupName}}</td>
+													<td>{{productGroups.customerProductGroup.productGroupType.productGroupType}}</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--Tier Pricing Tab-->
+					<div id="tierPricing" ng-class="$ctrl.tierPricingTabPaneClass" can-view="PD_OLAT_03">
+						<div class="row">
+							<div class="col-md-12">
+							<div ng-show="!$ctrl.currentTierPricingList && !$ctrl.showNewTierPricing">
+								<label class="col-md-offset-4">There isn't any Tier Pricing data for this product.</label>
+							</div>
+							<div ng-show="$ctrl.currentTierPricingList || $ctrl.showNewTierPricing">
+								<div view-only="PD_OLAT_03">
+									<table ng-table="$ctrl.tierPricingTableParams"
+										   class="table table-heb table-bordered table-striped">
+										<tr ng-repeat="tierPrice in $ctrl.currentTierPricingList">
+											<td data-title="'Min Order Quantity for Discount'">{{tierPrice.key.discountQuantity}}</td>
+											<td data-title="'Min Order Quantity Discount Type'">{{tierPrice.discountTypeCodeDisplayName}}</td>
+											<td data-title="'Min Order Quantity Discount Value'">$ {{tierPrice.discountValue}}</td>
+											<td data-title="'Effective Date'">{{tierPrice.key.effectiveTimeStamp | date : 'MM/dd/yyyy'}}</td>
+										</tr>
+									</table>
+								</div>
+								<div can-edit="PD_OLAT_03">
+									<table id="tierPricingTable" ng-table="$ctrl.tierPricingTableParams"
+										   class="table table-heb table-bordered table-striped">
+										<thead>
+										<th style="width: 15px"><input  type="checkbox" ng-model="$ctrl.allChecked" ng-click="$ctrl.checkAllRows()"></th>
+										<th>Min Order Quantity for Discount</th>
+										<th>Min Order Quantity Discount Type</th>
+										<th>Min Order Quantity Discount Value</th>
+										<th>Effective Date</th>
+										</thead>
+										<tr ng-repeat="tierPrice in $ctrl.currentTierPricingList">
+											<td data-title="" ng-click="$ctrl.updateDeleteList($index)"><input type="checkbox"></td>
+											<td data-title="'Min Order Quantity for Discount'">{{tierPrice.key.discountQuantity}}</td>
+											<td data-title="'Min Order Quantity Discount Type'">{{tierPrice.discountTypeCodeDisplayName}}</td>
+											<td data-title="'Min Order Quantity Discount Value'">$ {{tierPrice.discountValue}}</td>
+											<td data-title="'Effective Date'">{{tierPrice.key.effectiveTimeStamp | date : 'MM/dd/yyyy'}}</td>
+										</tr>
+										<tr ng-if="$ctrl.showNewTierPricing">
+											<td data-title=""><input ng-model="$ctrl.selectedNewTierPricing" type="checkbox"></td>
+											<td data-title="'Min Order Quantity for Discount'">
+												<input class="form-control"
+													   type="text" ng-keypress="$ctrl.validateIntegerKeyPress($event);"
+													   ng-model="$ctrl.newTierPricing.key.discountQuantity"
+													   value="{{$ctrl.newTierPricing.key.discountQuantity}}" required></td>
+											<td data-title="'Min Order Quantity Discount Type'">
+												<div>
+													<select class="form-control" ng-model="$ctrl.newTierPricing.discountTypeCode" required>
+														<option value="" disabled>--Select Discount Type--</option>
+														<option value="A">Cents Off</option>
+														<option value="P">Percent Off</option>
+													</select>
+												</div>
+											</td>
+											<td data-title="'Min Order Quantity Discount Value'">
+												<input class="form-control"
+													   ng-keypress="$ctrl.validateFloatKeyPress($event);"
+													   ng-model="$ctrl.newTierPricing.discountValue"
+													   value="{{$ctrl.newTierPricing.discountValue}}"
+													   required></td>
+											<td data-title="'Effective Date'">
+												<div class="input-group" style="width: 140px">
+													<input class="form-control date-picker"
+														   type="text"
+														   readonly="true"
+														   uib-datepicker-popup="MM/dd/yyyy"
+														   datepicker-options="$ctrl.options"
+														   is-open="$ctrl.startDatePickerOpened"
+														   ng-model="$ctrl.newTierPricing.key.effectiveTimeStamp"
+														   ng-required="true" close-text="Close">
+													<span class="input-group-btn" >
+														<button type="button" class="btn btn-default"
+																ng-click="$ctrl.openStartDatePicker()">
+															<i class="glyphicon glyphicon-calendar"></i>
+														</button>
+													</span>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+						</div>
+
+						<div class="row" style="margin-right: 15px" can-edit="PD_OLAT_03">
+							<div class="inline-block pull-right">
+								<button class="btn btn-primary dropdown-toggle "
+									ng-click="$ctrl.addNewTierPricing()">
+									Add
+								</button>
+
+								<button class="btn btn-primary dropdown-toggle"
+										ng-click="$ctrl.deleteTierPricingUnits()">
+									Delete
+								</button>
+							</div>
+						</div>
+
+					</div>
+					<!--Tags and Specs Tab-->
+					<div id="tagsAndSpecs" ng-class= "$ctrl.tagsAndSpecsTabPaneClass" can-view="PD_OLAT_04">
+						<loading-spinner ng-show="$ctrl.isWaitingForTagsAndSpecs">
+						</loading-spinner>
+						<!--Add new Tags and Specs-->
+
+						<div ng-show="!$ctrl.isWaitingForTagsAndSpecs">
+							<div class="row" can-edit="PD_OLAT_04">
+								<div class="col-md-1 text-right" style="padding-right: 5px">
+									<label>Attribute</label>
+								</div>
+								<div class="col-md-2" style="padding-left: 0">
+									<ui-select ng-model="$ctrl.currentAttribute" theme="bootstrap"  style="max-width: 200px; margin: 0px" ng-click="$ctrl.filterValues()">
+										<ui-select-match>
+											<span ng-bind="$select.selected.entityAttributeFieldName"></span>
+										</ui-select-match>
+										<ui-select-choices repeat="attribute in $ctrl.filteredAttributes | filter: $select.search" refresh-delay="0">
+											{{attribute.entityAttributeFieldName}}
+										</ui-select-choices>
+									</ui-select>
+								</div>
+								<div ng-if="$ctrl.currentAttribute">
+									<div class="col-md-1 text-right" style="padding-right: 5px" >
+										<label>Value</label>
+									</div>
+									<div class="col-md-2" style="padding-left: 0">
+										<div ng-if="$ctrl.filteredValues.length>0">
+											<div ng-if="$ctrl.currentAttribute.attribute.multipleValueSwitch">
+												<ui-select ng-model="$ctrl.currentValues" theme="bootstrap" multiple style="max-width: 200px; margin: 0px">
+													<ui-select-match>
+														{{$item.attributeCode.attributeValueText}}
+													</ui-select-match>
+													<ui-select-choices repeat="value in $ctrl.filteredValues" refresh-delay="0">
+														{{value.attributeCode.attributeValueText}}
+													</ui-select-choices>
+												</ui-select>
+											</div>
+											<div ng-if="!$ctrl.currentAttribute.attribute.multipleValueSwitch">
+												<ui-select ng-model="$ctrl.currentValue" theme="bootstrap"  style="max-width: 200px; margin: 0px">
+													<ui-select-match>
+														<span ng-bind="$select.selected.attributeCode.attributeValueText"></span>
+													</ui-select-match>
+													<ui-select-choices repeat="value in $ctrl.filteredValues" refresh-delay="0">
+														{{value.attributeCode.attributeValueText}}
+													</ui-select-choices>
+												</ui-select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<button class="btn btn-primary dropdown-toggle pull-left"
+												ng-disabled="false"
+												ng-click="$ctrl.addTagsAndSpecs()">
+											Add
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="divider-horizontal"></div>
+							<div class="col-md-12">
+								<div ng-show="!$ctrl.currentTagsAndSpecsList">
+									<label class="col-md-offset-4">There isn't any Tags/Specs data for this product.</label>
+								</div>
+								<div ng-show="$ctrl.currentTagsAndSpecsList">
+									<div view-only="PD_OLAT_04">
+										<table ng-table="$ctrl.tagsAndSpecsTableParams"
+											   class="table table-heb table-bordered table-striped">
+											<tr ng-repeat="tagsAndSpecs in $ctrl.currentTagsAndSpecsList">
+												<td data-title="'Attribute Name'">{{tagsAndSpecs.attributeName}}</td>
+												<td data-title="'Attribute Value'">{{$ctrl.convertToString(tagsAndSpecs.values)}}</td>
+											</tr>
+										</table>
+									</div>
+									<div can-edit="PD_OLAT_04">
+										<table ng-table="$ctrl.tagsAndSpecsTableParams"
+											   class="table table-heb table-bordered table-striped">
+											<tr ng-repeat="tagsAndSpecs in $ctrl.currentTagsAndSpecsList">
+												<td data-title="'Attribute Name'">{{tagsAndSpecs.attributeName}}</td>
+												<td data-title="'Attribute Value'">
+													<div class="row" >
+														<div ng-if="tagsAndSpecs.values.length===0">
+															<div class="col-md-4">
+																<input class="form-control" type="text" ng-model="tagsAndSpecs.alternativeAttributeCodeText" style="width: 376px">
+															</div>
+														</div>
+														<div ng-if="tagsAndSpecs.values.length >0">
+															<div class="col-md-4" ng-if="tagsAndSpecs.multiValueFlag">
+																<ui-select ng-model="tagsAndSpecs.valuesSelected" theme="bootstrap" multiple style="margin: 0px">
+																	<ui-select-match>
+																		{{$item.name}}
+																	</ui-select-match>
+																	<ui-select-choices repeat="value in tagsAndSpecs.values" refresh-delay="0">
+																		{{value.name}}
+																	</ui-select-choices>
+																</ui-select>
+															</div>
+															<div class="col-md-4" ng-if="!tagsAndSpecs.multiValueFlag">
+																<ui-select ng-model="tagsAndSpecs.valuesSelected" theme="bootstrap"  style="margin: 0px">
+																	<ui-select-match>
+																		<span ng-bind="$select.selected.name"></span>
+																	</ui-select-match>
+																	<ui-select-choices repeat="value in tagsAndSpecs.values" refresh-delay="0">
+																		{{value.name}}
+																	</ui-select-choices>
+																</ui-select>
+															</div>
+															<div class="col-md-1" >
+																<span class="glyphicon glyphicon-remove" title="Delete Attribute" ng-click="$ctrl.deleteTagsAndSpecsAttribute(tagsAndSpecs)" style="font-size: 22px; color: red"></span>
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--Related Products tab-->
+					<div id="relatedProducts" ng-class= "$ctrl.relatedProductTabPaneClass" can-view="PD_OLAT_02">
+						<related-products changed-related-products-list="$ctrl.changedRelatedProductsList" 
+										  current-related-products-list="$ctrl.currentRelatedProductsList"
+										  original-related-products-list="$ctrl.originalRelatedProductsList"
+										  selected-products="$ctrl.selectedProducts"
+										  list-of-products="$ctrl.listOfProducts"
+										  success="$ctrl.success"
+										  error="$ctrl.error"
+										  product-master="$ctrl.productMaster">
+						</related-products>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="inline-block pull-right">
+		<button class="btn btn-primary" can-edit="PD_OLAT_03"
+				ng-disabled="!$ctrl.isDifference($ctrl.currentTab)"
+				ng-click="$ctrl.saveChanges($ctrl.currentTab)">
+			Save
+		</button>
+		<button class="btn btn-default" can-edit="PD_OLAT_03"
+				ng-disabled="!$ctrl.isDifference($ctrl.currentTab)"
+				ng-click="$ctrl.reset($ctrl.currentTab)">
+			Reset
+		</button>
+		<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+	</div>
+</div>
+<div ng-show="!$ctrl.isLoading" class="inline-block pull-left">
+	Created On <b>{{$ctrl.getAddedDate()}}</b>
+	Created By <b>{{$ctrl.getCreateUser()}}</b>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmSaveModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color:#ffffff;">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5 ng-bind-html="$ctrl.confirmMessage"></h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" 
+						class="inline-block btn btn-success btn-sm" 
+						ng-click="$ctrl.agreeSave()">
+					Yes
+				</button>
+				<button type="button" 
+						class="inline-block btn btn-danger btn-sm" 
+						data-dismiss="modal" 
+						ng-click="$ctrl.cancelSave()" >
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmAddThan5TierPricingModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color:#ffffff;">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>A Product can have 5 levels of tier pricing only</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" 
+						class="inline-block btn btn-success btn-sm" 
+						data-dismiss="modal" 
+						ng-click="$ctrl.cancelAddTierPricing()" >
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="tier-pricing-attribute-log">
+	<div id="tier-pricing-attribute-log-modal" class="modal fade">
+		<div class="modal-dialog" style="min-width: 800px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Tier Pricing: Change Log</h5>
+				</div>
+				<div class="modal-body">
+					<div class="row" ng-show="$ctrl.isWaitingGetTierPricingAttributeAudit">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div class="ecommerce-view-log-table" ng-show="!$ctrl.isWaitingGetTierPricingAttributeAudit">
+						<table ng-table="tierPricingAttributeAuditTableParams" 
+							   class="table-heb table-bordered table-striped margin-top-10" 
+							   style="width: 100%;">
+							<thead>
+							<tr style="min-height:25px">
+								<th style="width:15%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+									Attribute Name
+									<input type="text" ng-model="filter.attributeName"
+										   class="form-control" style="height:20px; margin-top:5px">
+								</th>
+								<th style="width:20%; vertical-align: middle;">Created Date</th>
+								<th style="width:15%; vertical-align: middle;">Changed From</th>
+								<th style="width:15%; vertical-align: middle;">Changed To</th>
+								<th style="width:10%; vertical-align: middle;">Action Code</th>
+								<th style="width:15%; vertical-align: middle;" ng-click="$ctrl.changeSort()">
+									Changed On
+									<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+									<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+								</th>
+								<th style="width:25%; vertical-align: middle;">Changed By</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr data-ng-repeat="audit in $data track by $index">
+								<td style="width:15%; padding: 5px;">{{audit.attributeName}}</td>
+								<td style="width:20%" >{{audit.createdDate | date: "MM/dd/yyyy HH:mm:ss:sss"}}</td>
+								<td style="width:15%; padding: 5px;" ng-if="audit.attributeName === 'Effective Date'">{{audit.changedFrom | date: "MM/dd/yyyy"}}</td>
+								<td style="width:15%; padding: 5px;" ng-if="audit.attributeName === 'Effective Date'">{{audit.changedTo | date: "MM/dd/yyyy"}}</td>
+								<td style="width:15%; padding: 5px;" ng-if="audit.attributeName !== 'Effective Date'">{{audit.changedFrom}}</td>
+								<td style="width:15%; padding: 5px;" ng-if="audit.attributeName !== 'Effective Date'">{{audit.changedTo}}</td>
+								<td style="width:10%">{{audit.action}}</td>
+								<td style="width:15%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+								<td style="width:25%">{{audit.changedBy}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button" 
+							class="btn btn-primary" 
+							ng-show="!$ctrl.isWaitingGetTierPricingAttributeAudit && filter.attributeName !==''" 
+							ng-click="filter.attributeName=''">Clear Filter</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

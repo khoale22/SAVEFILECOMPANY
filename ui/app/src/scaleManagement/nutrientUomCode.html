@@ -1,0 +1,306 @@
+<!--
+  ~  nutrientUomCodes.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-cloak="true" ng-controller="NutrientUomCodeController as nutrientUOMCodeController"
+	 ng-init="nutrientUOMCodeController.init()" can-view="SM_CODE_04">
+	<div class="row" data-ng-if="nutrientUOMCodeController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientUOMCodeController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="nutrientUOMCodeController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientUOMCodeController.error}}</span>
+	</div>
+
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Nutrient UOM Code Search
+					<i ng-click="nutrientUOMCodeController.searchPanelVisible = !nutrientUOMCodeController.searchPanelVisible" class="pull-right pointer"
+					   ng-class="{'glyphicon glyphicon-minus': nutrientUOMCodeController.searchPanelVisible, 'glyphicon glyphicon-plus': !nutrientUOMCodeController.searchPanelVisible}">
+					</i>
+				</div>
+				<div ng-show="nutrientUOMCodeController.searchPanelVisible">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<label>
+									<input type="radio" ng-model="nutrientUOMCodeController.selectionType" value="{{nutrientUOMCodeController.NUTRIENT_UOM_CODE}}" />Nutrient Uom Code
+								</label>
+								<label>
+									<input type="radio" ng-model="nutrientUOMCodeController.selectionType" value="{{nutrientUOMCodeController.DESCRIPTION}}" />Description
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<!-- The text box for the user input. -->
+									<div class="col-md-6">
+										<textarea data-ng-model="nutrientUOMCodeController.searchSelection" rows="8"
+												  pattern="{{nutrientUOMCodeController.setPatternForNutrientUomCode()}}"
+												  placeholder="{{nutrientUOMCodeController.getTextPlaceHolder()}}"
+												  class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<!--Buttons to do the search or clear the user input. -->
+											<div class="col-md-6">
+												<button data-ng-click="nutrientUOMCodeController.newSearch()" class="btn btn-primary btn-block" data-ng-disabled="nutrientUOMCodeController.searchSelection == null">Search</button>
+												<button data-ng-click="nutrientUOMCodeController.searchAll()" class="btn btn-primary btn-block">Search All</button>
+											</div>
+											<div class="col-md-6">
+												<button data-ng-click="nutrientUOMCodeController.clearSearch()" class="btn btn-primary btn-block" data-ng-disabled="nutrientUOMCodeController.searchSelection == null">Clear</button>
+												<button data-ng-click="nutrientUOMCodeController.addRow()" class="btn btn-primary btn-block" can-edit="SM_CODE_04">Add</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="nutrientUOMCodeController.isWaiting">
+	</loading-spinner>
+
+	<div id="notFoundModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">
+
+						These are the {{nutrientUOMCodeController.selectionType}}s that weren't
+						found:
+					</div>
+					<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="nutrientUomCodes in nutrientUOMCodeController.missingValues.noMatchList">{{nutrientUomCodes}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="!nutrientUOMCodeController.isWaiting && nutrientUOMCodeController.deleteMessage != null">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientUOMCodeController.deleteMessage}}</span>
+	</div>
+
+	<div class="col-md-12" ng-show="!nutrientUOMCodeController.isWaiting && nutrientUOMCodeController.data != null">
+		<div class="row" data-ng-if="nutrientUOMCodeController.modifyMessage">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientUOMCodeController.modifyMessage}}</span>
+		</div>
+		<div class="row" data-ng-if="nutrientUOMCodeController.modifyError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{nutrientUOMCodeController.modifyError}}</span>
+		</div>
+		<div class="panel-group">
+			<div class="panel panel-primary" ng-show="nutrientUOMCodeController.isNotViewingSinglePlu()">
+				<div class="panel-heading">
+					<div ng-if="!nutrientUOMCodeController.isAddingNutrientUomCode && nutrientUOMCodeController.resultMessage != null">
+						<h4 class="panel-title inline-block"><b>Search Results </b></h4>
+						<h5 class="panel-title inline-block">{{nutrientUOMCodeController.resultMessage}}
+						</h5>
+
+						<div class="inline-block pull-right" ng-if="nutrientUOMCodeController.showMatchCount()">
+							<h5 ng-if="nutrientUOMCodeController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+								{{nutrientUOMCodeController.missingValues.matchCount}}
+								<span ng-if="nutrientUOMCodeController.missingValues.matchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+								<span ng-if="nutrientUOMCodeController.missingValues.matchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+								found</h5>
+							<h5 ng-if="nutrientUOMCodeController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+								class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+								{{nutrientUOMCodeController.missingValues.noMatchCount}}
+								<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+								<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+								not	found</h5>
+						</div>
+					</div>
+					<div ng-if="nutrientUOMCodeController.isAddingNutrientUomCode || nutrientUOMCodeController.resultMessage == null">New Nutrient UOM Code</div>
+				</div>
+				<div class="panel-body">
+					<table ng-table="nutrientUOMCodeController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr ng-repeat="nutrientUomCode in nutrientUOMCodeController.data track by $index">
+							<td data-title="'Nutrient UOM Code'">
+								<a class="pointer ng-binding" ng-click="nutrientUOMCodeController.showUOMAssociations(nutrientUomCode, true)">{{nutrientUomCode.nutrientUomCode}}</a>
+							</td>
+							<td data-title="'Nutrient UOM Code Description'">
+								<input type="text" ng-model="nutrientUomCode.nutrientUomDescription" ng-disabled="(!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing)">
+							</td>
+
+							</td>
+							<td data-title="'Extended Description'">
+								<input type="text" ng-model="nutrientUomCode.extendedDescription" ng-disabled="(!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing)">
+							</td>
+
+							</td>
+							<td data-title="'Type'">
+								<select ng-model="nutrientUomCode.systemOfMeasure" ng-disabled="(!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing)">
+									<option selected="true" ng-if="nutrientUomCode.systemOfMeasure=='M'" value="M">Metric</option>
+									<option selected="true" ng-if="nutrientUomCode.systemOfMeasure=='C'" value="C">Common</option>
+									<option ng-if="nutrientUomCode.systemOfMeasure!='M'" value="M">Metric</option>
+									<option ng-if="nutrientUomCode.systemOfMeasure!='C'" value="C">Common</option>
+								</select>
+							</td>
+
+							</td>
+							<td data-title="'Form'">
+								<select ng-model="nutrientUomCode.form" ng-disabled="(!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing)">
+									<option selected="true" ng-if="nutrientUomCode.form=='A'" value="A">All</option>
+									<option selected="true" ng-if="nutrientUomCode.form=='S'" value="S">Solid</option>
+									<option selected="true" ng-if="nutrientUomCode.form=='L'" value="L">Liquid</option>
+									<option ng-if="nutrientUomCode.form!='A'" value="A">All</option>
+									<option ng-if="nutrientUomCode.form!='S'" value="S">Solid</option>
+									<option ng-if="nutrientUomCode.form!='L'" value="L">Liquid</option>
+								</select>
+							</td>
+							<td data-title="'Last Modified Date'">
+								<div>{{nutrientUomCode.maintenanceDate | date_standard}}</div>
+							</td>
+
+							<td can-edit="SM_CODE_04">
+								<i data-ng-click="nutrientUOMCodeController.editNutrientUomCode($index)" class="glyphicon glyphicon-edit pointer"  ng-if="!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing" style="color: orange; font-size: large"></i>
+								<i data-ng-click="nutrientUOMCodeController.removeNutrientUomCode($index)" class="glyphicon glyphicon-remove pointer"  ng-if="!nutrientUOMCodeController.isAddingNutrientUomCode && !nutrientUomCode.isEditing" style="color: red; font-size: large"></i>
+								<i data-ng-click="nutrientUOMCodeController.nutrientUomCodeChanges()" class="glyphicon glyphicon-floppy-disk pointer"  ng-if="nutrientUOMCodeController.isAddingNutrientUomCode || nutrientUomCode.isEditing" style="color: green; font-size: large"></i>
+								<i data-ng-click="nutrientUOMCodeController.cancel($index)" class="glyphicon glyphicon-ban-circle pointer" ng-if="nutrientUOMCodeController.isAddingNutrientUomCode || nutrientUomCode.isEditing" style="color: red; font-size: large"></i>
+							</td>
+
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<plu-panel current-code="nutrientUOMCodeController.pluNutrientUomCode" code-type="nutrientUOMCodeController.NUTRIENT_UOM_CODE"
+			   ng-show="nutrientUOMCodeController.pluNutrientUomCode != null">
+	</plu-panel>
+
+	<!-- The table with the list of nutrients a selected UOM Code is associated with. -->
+	<loading-spinner ng-show="nutrientUOMCodeController.isWaitingForAssociations()">
+	</loading-spinner>
+
+	<div class="col-md-12" ng-show="nutrientUOMCodeController.isUOMSelectedAndNotWaitingForAssociations()">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div ng-if="nutrientUOMCodeController.selectedUOM">
+					<h4 class="panel-title inline-block"><b>Search Results</b></h4>
+					<h5 class="panel-title inline-block">{{nutrientUOMCodeController.nutrientAssociationResultMessage}}</h5>
+
+					<div class="inline-block pull-right" ng-if="nutrientUOMCodeController.showMatchCount()">
+						<h5 ng-if="nutrientUOMCodeController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+							{{nutrientUOMCodeController.missingValues.matchCount}}
+							<span ng-if="nutrientUOMCodeController.missingValues.matchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+							<span ng-if="nutrientUOMCodeController.missingValues.matchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+							found</h5>
+						<h5 ng-if="nutrientUOMCodeController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+							class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+							{{nutrientUOMCodeController.missingValues.noMatchCount}}
+							<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+							<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+							not	found</h5>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body" ng-class="{'ng-table-pager-none' : nutrientUOMCodeController.noPagination}">
+				<table ng-table="nutrientUOMCodeController.nutrientAssociationTableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+					<tr style="color: white; background-color: #00476b">
+						<th style="min-width: 100px">Nutrient Code</th>
+						<th style="min-width: 100px">Description</th>
+						<th style="min-width: 100px">UOM</th>
+						<th style="min-width: 100px">FED LBL Sequence</th>
+						<th style="min-width: 100px">RDA Activity</th>
+						<th style="min-width: 100px">Percent of DV</th>
+						<th style="min-width: 100px">Last Modified Date</th>
+					</tr>
+					<tr ng-repeat="nutrient in nutrientUOMCodeController.nutrientAssociationData track by $index">
+						<td>{{nutrient.nutrientCode}}</td>
+						<td>
+							{{nutrient.nutrientDescription}}
+						</td>
+						<td>
+							{{nutrient.nutrientUom.displayName}}
+						</td>
+						<td>
+							{{nutrient.fedLblSequence}}
+						</td>
+						<td>
+							{{nutrient.recommendedDailyAmount}}
+						</td>
+						<td>
+							<input disabled="true" type="checkbox" ng-checked="nutrient.usePercentDailyValue" style="max-width: 60px" ng-model="nutrient.usePercentDailyValue" data-ng-change="scaleManagementNutrientsController.convertPercentOfDeviation()">
+						</td>
+						<td>{{nutrient.lstModifiedDate | date: 'MM/dd/yyyy'}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-12" ng-show="nutrientUOMCodeController.isUOMSelectedAndNotWaitingForAssociations()">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div ng-if="nutrientUOMCodeController.selectedUOM">
+					<h4 class="panel-title inline-block"><b>Search Results</b></h4>
+					<h5 class="panel-title inline-block">{{nutrientUOMCodeController.statementAssociationResultMessage}}</h5>
+
+					<div class="inline-block pull-right" ng-if="nutrientUOMCodeController.showMatchCount()">
+						<h5 ng-if="nutrientUOMCodeController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+							{{nutrientUOMCodeController.missingValues.matchCount}}
+							<span ng-if="nutrientUOMCodeController.missingValues.matchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+							<span ng-if="nutrientUOMCodeController.missingValues.matchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+							found</h5>
+						<h5 ng-if="nutrientUOMCodeController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+							class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+							{{nutrientUOMCodeController.missingValues.noMatchCount}}
+							<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount ==  1">{{nutrientUOMCodeController.selectionType}}</span>
+							<span ng-if="nutrientUOMCodeController.missingValues.noMatchCount >  1">{{nutrientUOMCodeController.selectionType}}s</span>
+							not	found</h5>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body" ng-class="{'ng-table-pager-none' : nutrientUOMCodeController.noPagination}">
+				<table ng-table="nutrientUOMCodeController.statementAssociationTableParams"
+					   class="table-heb table-bordered table-striped" style="width: 100%">
+					<tr style="color: white; background-color: #00476b">
+						<th style="min-width: 100px">Statement ID</th>
+						<th style="min-width: 100px">Measure Quantity</th>
+						<th style="min-width: 100px">Metric Quantity</th>
+						<th style="min-width: 100px">Servings Per Container</th>
+						<th style="min-width: 100px">Effective Date</th>
+						<th style="min-width: 100px">Remarks</th>
+					</tr>
+					<tr ng-repeat="nutrientStatement in nutrientUOMCodeController.statementAssociationData track by $index">
+						<td>
+							<div>{{nutrientStatement.nutrientStatementNumber}}</div>
+						</td>
+						<td>
+							<div>{{nutrientStatement.commonDisplayName}}</div>
+						</td>
+						<td>
+							<div>{{nutrientStatement.metricDisplayName}}</div>
+						</td>
+						<td>
+							<div  ng-if="nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}} {{nutrientUOMCodeController.VARIES_LABEL}}</div>
+							<div  ng-if="!nutrientStatement.servingSizeVariable">{{nutrientStatement.servingsPerContainer}}</div>
+						</td>
+						<td>
+							<div>{{nutrientStatement.effectiveDate | date: 'MM/dd/yyyy'}}</div>
+						</td>
+						<td>
+							<div>{{nutrientStatement.remarks}}</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

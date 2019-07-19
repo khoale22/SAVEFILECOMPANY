@@ -1,0 +1,40 @@
+<div class="row" ng-controller="DiscontinueParametersController as parametersController" ng-init="parametersController.init()">
+	<div class="col-md-12">
+		<div class="row" data-ng-if="parametersController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{parametersController.success}}</span>
+		</div>
+		<div class="row" data-ng-if="parametersController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{parametersController.error}}</span>
+		</div>
+		<div class="col-md-6" ng-show="!parametersController.viewingAudit">
+			<div class="panel-group">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title">Product Discontinue Rules</h4>
+					</div>
+					<div class="panel-body">
+						<div class="panel panel-default">
+							<div class="panel-body form-group" disabled>
+								<div ng-include="'src/productDiscontinue/discontinueParametersTemplate.html'"></div>
+							</div>
+						</div>
+						<div class="inline-block pull-right" can-edit="PD_DSCO_02" >
+							<div class="glyphicon glyphicon-floppy-disk pointer" style="color: green; padding-top: 5px; font-size: large" ng-show="parametersController.editOptions" ng-click="parametersController.saveParameters();"></div>
+							<div class="glyphicon glyphicon glyphicon-refresh pointer" style="color: blue; padding-top: 5px; font-size: large" ng-show="parametersController.editOptions" ng-click="parametersController.refresh()"></div>
+							<div class="glyphicon glyphicon-ban-circle pointer" style="color: red; padding-top: 5px; font-size: large" ng-show="parametersController.editOptions" ng-click="parametersController.refresh(); parametersController.setEditing(false);"></div>
+							<div can-view="PD_DSCO_04" class="glyphicon glyphicon-folder-open pointer" style="color: blue; padding-top: 5px; font-size: large; padding-right: 5px" ng-show="!parametersController.editOptions" ng-click="parametersController.showAudit()"></div>
+							<div class="glyphicon glyphicon-edit pointer" style="color: darkorange; padding-top: 5px; font-size: large" ng-show="!parametersController.editOptions" ng-click="parametersController.setEditing(true);"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12" ng-show="parametersController.viewingAudit">
+			<div class="panel panel-group">
+				<div ng-include src="'src/productDiscontinue/discontinueParametersAudit.html'"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+

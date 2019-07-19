@@ -1,0 +1,327 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error && !$ctrl.isLoading">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.success && !$ctrl.isLoading">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<!-- Confirm message--->
+<div id="confirmReActivateModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.headerTitleConfirm}}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+						ng-click="$ctrl.noConfirmAction()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.yesConfirmAction()"
+						ng-show="$ctrl.yesBtnEnable">
+					{{$ctrl.yesBtnLabel}}
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.noConfirmAction()">
+					{{$ctrl.closeBtnLabel}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-show="!$ctrl.isLoading">
+	<div can-view="CP_INFO_01">
+		<div class="row col-md-offset-11 col-md-1 pull-right" >
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showCasePackAuditInfo()"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-4 narrow-left-column">
+						<label>Item Id </label>
+					</div>
+					<div class="col-md-8 narrow-right-column">
+						<div>{{$ctrl.itemMaster.key.itemCode}}</div>
+					</div>
+				</div>
+				<div class="row">
+					<div can-view="CP_INFO_01">
+						<div class="col-md-4 narrow-left-column" style="padding-top: 5px;">
+							<label>Item Type</label>
+						</div>
+						<div class="col-md-8 narrow-right-column">
+							<div style="margin-bottom: 5px" can-edit="CP_INFO_01">
+								<select data-ng-init="$ctrl.getAllItemTypes()" class="form-control"
+										style="width: 66%" ng-model="$ctrl.itemMaster.itemTypeCode">
+									<option ng-repeat="itemType in $ctrl.itemTypeList"
+											value="{{itemType.id}}">
+										{{itemType.displayName}}
+									</option>
+								</select>
+							</div>
+							<div view-only="CP_INFO_01">
+								{{$ctrl.itemMaster.itemType.displayName}}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 text-right" style="padding-right: 5px;padding-top: 5px;">
+						<label style="margin-bottom: 10px" for="casepackDescription">
+							Casepack Description
+						</label>
+					</div>
+					<div class="col-md-8"  style="padding-left: 5px;">
+						<input class="text-uppercase form-control" type="text" maxlength="30" ng-model="$ctrl.itemMaster.description"
+							   id="casepackDescription" style="width: 66%" can-edit="CP_INFO_03">
+						<label view-only="CP_INFO_01" style="width: 66%">
+							{{$ctrl.itemMaster.description}}
+						</label>
+					</div>
+				</div>
+				<div class="row" ng-show="$ctrl.isWarehouse">
+					<div class="col-md-4 text-right" style="padding-right: 5px;padding-top: 5px;">
+						<label>One Touch</label>
+					</div>
+					<div class="col-md-8" style="padding-left: 5px;margin-top: 5px;">
+						<div can-edit="CP_INFO_01" ng-init="$ctrl.getAllOneTouchTypes()">
+							<ui-select class="inline-block"
+									   id="oneTouchType"
+									   theme="bootstrap"
+									   style="width: 60%"
+									   title="One Touch Type"
+									   ng-model="$ctrl.itemMaster.oneTouchTypeCode">
+								<ui-select-match style="width: 110%">{{$select.selected.displayName}}</ui-select-match>
+								<ui-select-choices repeat="oneTouchType.id as oneTouchType in $ctrl.oneTouchTypeList" title="select">
+									{{oneTouchType.displayName}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+						<div view-only="CP_INFO_01">
+							<div>{{$ctrl.itemMaster.oneTouchType.displayName}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div can-view="CP_INFO_01">
+					<div class="well">
+						<div class="row">
+							<div class="col-md-3 narrow-left-column">
+								<label>Case UPC</label>
+							</div>
+							<div class="col-md-9 narrow-right-column">
+								<div can-edit="CP_INFO_01" class="row">
+									<div class="col-md-5 narrow-left-column">
+										<input class="form-control" type="number" maxlength="13" ng-model="$ctrl.itemMaster.caseUpc" ng-change="$ctrl.confirmCheckDigit()" style="width: 100%">
+									</div>
+
+									<div class="col-md-2 narrow-right-column">
+										<input type="number" class="form-control"
+											   ng-model="$ctrl.checkDigit" ng-change="$ctrl.confirmCheckDigit()">
+										<strong ng-if="$ctrl.correctCheckDigit" style="color: green">{{$ctrl.checkDigitMessage}}</strong>
+										<strong ng-if="!$ctrl.correctCheckDigit" style="color: darkorange">{{$ctrl.checkDigitMessage}}</strong>
+									</div>
+									<div class="col-md-1" style="padding-left: 0;">
+										<div class="glyphicon glyphicon-question-sign pointer" style="color: orange"
+											 data-toggle="modal" data-target="#checkDigitModal"
+											 ng-click="$ctrl.showCheckDigitInformation()"></div>
+									</div>
+								</div>
+								<div view-only="CP_INFO_01" class="row">
+									<div class="col-md-6">{{$ctrl.itemMaster.caseUpc}} - {{$ctrl.checkDigit}}
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<label>Associate Selling UPCs</label>
+							<table class="table-heb table-bordered table-striped" style="width: 100%">
+								<tr style="color: white; background-color: #00476b; height: 25px;">
+									<th style="min-width: 100px; text-align: center;">UPC</th>
+									<th style="min-width: 100px; text-align: center;">Size</th>
+									<th style="min-width: 100px; text-align: center;">Case Pack Primary</th>
+								</tr>
+								<tr ng-repeat="associateUpc in $ctrl.associateUpcs track by $index">
+									<td>{{associateUpc.upc}}</td>
+									<td>{{associateUpc.sellingUnit.tagSize}}</td>
+									<td style="text-align: center; width: 30px">
+										<input view-only="CP_INFO_02" type="radio" disabled="disabled"
+											   ng-model="associateUpc.sellingUnit.primaryUpc"
+											   ng-value="$ctrl.valuePrimaryRadioButton(associateUpc.sellingUnit.primaryUpc)">
+										<input can-edit="CP_INFO_02" type="radio" ng-model="associateUpc.sellingUnit.primaryUpc"
+											   ng-value="$ctrl.valuePrimaryRadioButton(associateUpc.sellingUnit.primaryUpc)"
+											   ng-change="$ctrl.itemPrimaryUPCChangedHandle(associateUpc.upc)">
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div ng-show="$ctrl.isWarehouse">
+			<strong style="padding: 5px">Warehouse</strong>
+			<table ng-table="$ctrl.tableParams"
+				   class="table table-heb table-bordered table-striped">
+				<tr ng-repeat="warehouseLocationItem in $ctrl.itemMaster.warehouseLocationItems">
+					<td data-title="'Warehouse'">{{warehouseLocationItem.key.warehouseNumber}}</td>
+					<td data-title="'Purchasing Status'">{{warehouseLocationItem.purchasingStatusCode.description}}</td>
+					<td data-title="'Changed On'">{{warehouseLocationItem.purchaseStatusUpdateTime | date : 'MM/dd/yyyy'}}</td>
+					<td data-title="'Changed By'">{{warehouseLocationItem.purchaseStatusUserId}}</td>
+					<td data-title="'Warehouse Status'">{{warehouseLocationItem.supplierStatusCode}}</td>
+					<td data-title="'Changed On'">{{warehouseLocationItem.supplierStatusUpdateTime | date : 'MM/dd/yyyy'}}</td>
+					<td data-title="'First Received'">{{warehouseLocationItem.warehouseLocationItemExtendedAttributes.firstReceivedDate | date : 'MM/dd/yyyy'}}</td>
+				</tr>
+			</table>
+		</div>
+		<div ng-show="!$ctrl.isWarehouse">
+			<div class="row">
+				<div class="col-md-12">
+					<label>DSD</label>
+					<div class="divider-horizontal"></div>
+					<div class="row">
+						<div class="col-md-4">
+							<div can-edit="CP_INFO_01" class="row">
+								<div class="col-md-6">
+									<label class="pull-right">Discontinue Date</label>
+								</div>
+								<div class="col-md-6">
+									<div class="input-group">
+										<input id="discontinueDate" class="form-control date-picker" type="text" readonly="true"
+											   uib-datepicker-popup="MM/dd/yyyy"
+											   datepicker-options="$ctrl.options"
+											   is-open="$ctrl.discontinueDatePickerOpened"
+											   ng-model="$ctrl.currentDiscontinueDate"
+											   ng-required="false"
+											   ng-change="$ctrl.confirmDiscontinueDate()"
+											   close-text="Close"/>
+										<span class="input-group-btn">
+										<button type="button" class="btn btn-default"
+												ng-click="$ctrl.openDiscontinueDatePicker()">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+									</div>
+								</div>
+							</div>
+							<div view-only="CP_INFO_01" class="row">
+								<div class="col-md-6">
+									<label class="pull-right">Discontinue Date</label>
+								</div>
+								<div class="col-md-6">
+									<div class="pull-left">{{$ctrl.itemMaster.discontinueDate | date: 'MM/dd/yyyy'}}</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div can-edit="CP_INFO_01" class="row" ng-init="$ctrl.getAllDiscontinueReasons()">
+								<div class="col-md-5">
+									<label class="pull-right">Discontinue Reason</label>
+								</div>
+								<div class="col-md-7">
+									<div ng-if="$ctrl.isDiscontinueReasonDisabled">{{$ctrl.itemMaster.discontinueReason.displayName}}</div>
+									<ui-select class="inline-block"
+											   id="discontinueReason"
+											   theme="bootstrap"
+											   append-to-body="true"
+											   title="Discontinue Reason"
+											   ng-model="$ctrl.itemMaster.discontinueReason.id"
+											   ng-if="!$ctrl.isDiscontinueReasonDisabled">
+										<ui-select-match style="width: 110%;">{{$select.selected.displayName}}</ui-select-match>
+										<ui-select-choices repeat="itemData.id as itemData in $ctrl.discontinueReasonList" title="select">
+											{{itemData.displayName}}
+										</ui-select-choices>
+									</ui-select>
+								</div>
+							</div>
+							<div view-only="CP_INFO_01" class="row">
+								<div class="col-md-5">
+									<label class="pull-right">Discontinue Reason</label>
+								</div>
+								<div class="col-md-7">
+									<div class="pull-left">{{$ctrl.itemMaster.discontinueReason.description}}</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="row">
+								<div class="col-md-6">
+									<label class="pull-right">Discontinued By</label>
+								</div>
+								<div class="col-md-6">
+									<div class="pull-left">{{$ctrl.itemMaster.discontinuedByUID}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-show="$ctrl.isReActivateShow" can-edit="CP_INFO_04">
+				<div class="col-md-4">
+					<div class="row">
+						<div class="col-md-6">
+							<label class="pull-right">Re-activate ?</label>
+						</div>
+						<div class="col-md-6">
+							<input type="checkbox"
+								   ng-model="$ctrl.isReActivate"
+								   ng-click="$ctrl.confirmReActivate()">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" >
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+			<div class="inline-block pull-right" >
+				<button class="btn btn-primary" can-edit="CP_INFO_01"
+						ng-disabled="!$ctrl.canReset()"
+						ng-click="$ctrl.reset()">
+					Reset
+				</button>
+				<button
+					class="btn btn-primary" can-edit="CP_INFO_01"
+					ng-disabled="!$ctrl.canSave()"
+					ng-click="$ctrl.saveCasePackInfoChanges()">
+					Save
+				</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="inline-block pull-left">
+	Created On <b>{{$ctrl.getAddedDate()}}</b>
+	Created By <b>{{$ctrl.getCreateUser()}}</b>
+</div>
+<div id="checkDigitModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Case UPC</h5>
+			</div>
+			<div class="modal-body">
+				<div class="row" style="padding: 15px;">
+					<label>Please provide a Case UPC that meets the below criteria.</label>
+					<li>Should not be a selling unit UPC already existing in H-E-B.</li>
+					<li>Should not be a Case UPC already existing in H-E-B.</li>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

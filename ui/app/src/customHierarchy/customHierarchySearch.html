@@ -1,0 +1,113 @@
+<div class="well"
+	 style="overflow-y: auto"
+	 ng-style="{'max-height': getHeight(100, 0)}">
+	<div class="row">
+		<label class="col-md-6" for="hierarchyContextSelected">Select a hierarchy to view:</label>
+	</div>
+	<div class="row" style="padding-bottom: 10px">
+		<div class="col-md-6">
+			<ui-select ng-model="$ctrl.hierarchyContextSelected"
+					   theme="bootstrap"
+					   append-to-body="true"
+					   on-select="$ctrl.selectHierarchyContextRoot($item, true)"
+					   id="hierarchyContextSelected"
+					   title="Choose a custom hierarchy">
+				<ui-select-match>{{$select.selected.description}}</ui-select-match>
+				<ui-select-choices repeat="element in $ctrl.hierarchyContexts | filter: $select.search">{{element.description}}
+				</ui-select-choices>
+			</ui-select>
+		</div>
+		<i class="glyphicon glyphicon-plus"
+		   can-edit="CH_HIER_02"
+		   ng-click="$ctrl.resetAddHierarchyContextModal()"
+		   style="color: green; font-size: large; cursor: pointer"
+		   ng-show="$ctrl.onCustomHierarchyPage"
+		   data-target="#customHierarchyModal" data-toggle="modal">
+		</i>
+	</div>
+	<div class="row" style="padding-bottom: 5px; padding-right: 15px">
+		<div class="col-md-8" style="padding-top: 5px;">
+			<input type="text"
+				   style="width: 100%"
+				   id="customHierarchySearchText"
+				   placeholder="Filter in hierarchy"
+				   ng-disabled="!$ctrl.hierarchyContextSelected"
+				   title="{{$ctrl.hierarchyContextSelected ? $ctrl.customHierarchySearchTitle : $ctrl.customHierarchySearchTitleError}}"
+				   ng-model="$ctrl.customHierarchySearchText">
+		</div>
+		<div class="pull-right">
+			<button class="btn btn-primary"
+					ng-disabled="$ctrl.isEmptyString($ctrl.customHierarchySearchText)"
+					title="{{!$ctrl.hierarchyContextSelected ? $ctrl.customHierarchySearchTitleError : isEmptyString($ctrl.customHierarchySearchText) ? $ctrl.customHierarchySearchTitle : $ctrl.customHierarchySearchButtonTitle}}"
+					ng-click="$ctrl.updateCustomHierarchyViewOnSearch()">Filter</button>
+			<button class="btn btn-default"
+					ng-disabled="$ctrl.isEmptyString($ctrl.customHierarchySearchText)"
+					title="{{!isEmptyString($ctrl.customHierarchySearchText) ? $ctrl.customHierarchySearchClearButtonTitle : null}}"
+					ng-click="$ctrl.clearCustomHierarchySearch()">Clear</button>
+		</div>
+	</div>
+	<div class="panel-group">
+		<strong ng-show="$ctrl.searchingForCustomHierarchy">{{$ctrl.searchingForCustomHierarchyText}}</strong>
+		<div ng-if="!$ctrl.searchingForCustomHierarchy && $ctrl.data.length === 0">{{$ctrl.NO_RESULTS_FOUND_MESSAGE}}</div>
+		<div>
+			<div class="nav nav-list" ng-repeat="hierarchyContext in $ctrl.data"
+				 ng-if="!$ctrl.searchingForCustomHierarchy && $ctrl.data.length > 0">
+				<div class="panel panel-primary">
+					<div class="panel-heading"
+						 ng-click="$ctrl.selectHierarchyContext(hierarchyContext, false, true)">
+						<h4 class="panel-title">
+							<a><strong>{{hierarchyContext.description}}</strong></a>
+							<strong class="pull-right"
+									ng-class="{'fa fa-minus' : !$ctrl.isHierarchyLevelCollapsed(hierarchyContext), 'fa fa-plus' : $ctrl.isHierarchyLevelCollapsed(hierarchyContext)}">
+							</strong>
+						</h4>
+					</div>
+					<loading-spinner ng-if="hierarchyContext.isWaitingForRelationshipResponse"></loading-spinner>
+					<div ng-if="!hierarchyContext.isWaitingForRelationshipResponse">
+						<div ng-if="!$ctrl.isHierarchyLevelCollapsed(hierarchyContext)">
+							<div ng-if="$ctrl.hasChildren(hierarchyContext)">
+								<div ng-repeat="level in hierarchyContext.childRelationships">
+									<div style="padding-left: 15px" ng-include="'src/customHierarchy/miniCustomHierarchy.html'"></div>
+								</div>
+							</div>
+							<div ng-if="!$ctrl.hasChildren(hierarchyContext)">{{$ctrl.NO_RESULTS_FOUND_MESSAGE}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div id="customHierarchyModal" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title inline-block" style="color: #ffffff">Add Custom Hierarchy
+				</div>
+			</div>
+			<div class="modal-body">
+				<div  class="container" style="width: inherit">
+					<div class="row">
+						<label class="text-right">Hierarchy Name</label>
+						<input class="form-control" ng-model="$ctrl.newHierarchyName" type="text"
+							   ng-blur="$ctrl.automaticDefaultHierarchyContextValue()">
+					</div>
+					<div class="row" style="margin-top: 10px">
+						<label class="text-right">Hierarchy Context</label>
+						<input class="form-control" ng-model="$ctrl.newHierarchyContext"
+							   capitalize
+							   type="text" maxlength="5">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-dismiss="modal"
+						ng-click="$ctrl.updateCustomHierarchy()"
+						class="inline-block btn btn-success btn-sm">Save</button>
+				<button type="button" data-dismiss="modal"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

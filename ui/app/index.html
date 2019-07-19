@@ -1,0 +1,358 @@
+<!doctype html>
+<html ng-app="productMaintenanceUiApp" ng-controller="appController as appController">
+<head>
+	<base href="/"/>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<!-- build:css(.) styles/vendor.css -->
+	<!-- bower:css -->
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="bower_components/ng-table/dist/ng-table.min.css" />
+	<link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.default.css" />
+	<link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+	<link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css" />
+	<link rel="stylesheet" href="bower_components/cropperjs/dist/cropper.css" />
+	<!-- endbower -->
+	<!-- endbuild -->
+	<!-- build:css(.tmp) styles/main.css -->
+	<link rel="stylesheet" href="styles/jaf.css">
+	<link rel="stylesheet" href="styles/styles.css">
+	<link rel="stylesheet" href="styles/overrides.css">
+	<link rel="stylesheet" href="styles/executionDetails.css">
+	<link rel="stylesheet" href="src/utils/treeGrid/treeGrid.css" />
+	<!-- endbuild -->
+
+</head>
+<body ng-style="{'height': getHeight(100, 50)}">
+
+<div class="container-fluid" style="padding-right: 0px; padding-left: 0px; ">
+	<!--Show warning message-->
+	<div data-ng-include="'src/warningMessage.html'"></div>
+	<div class="navbar navbar-default">
+		<div data-ng-include="'src/header/header.html'"></div>
+		<div data-ng-include="'src/navbar.html'"></div>
+	</div>
+</div>
+
+<div id="wrap" style="margin: 0;padding: 0;">
+	<confirmation-modal></confirmation-modal>
+	<div ui-view></div>
+</div>
+
+<div id="footer" class="navbar-default navbar-fixed-bottom">
+	<div data-ng-include="'footer.html'"></div>
+</div>
+
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/angular-utils-pagination/dirPagination.js"></script>
+<script src="bower_components/ng-table/dist/ng-table.min.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/ng-csv/build/ng-csv.min.js"></script>
+<script src="bower_components/ng-idle/angular-idle.js"></script>
+<script src="bower_components/sifter/sifter.js"></script>
+<script src="bower_components/microplugin/src/microplugin.js"></script>
+<script src="bower_components/angular-selectize2/dist/angular-selectize.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-ui-select/dist/select.js"></script>
+<script src="bower_components/lodash/lodash.js"></script>
+<script src="bower_components/he/he.js"></script>
+<script src="bower_components/cropperjs/dist/cropper.js"></script>
+<script src="bower_components/angular-bootstrap-contextmenu/contextMenu.js"></script>
+<script src="bower_components/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="src/app.js"></script>
+<script src="src/routing.js"></script>
+<script src="src/error/notFoundController.js"></script>
+<script src="src/header/headerController.js"></script>
+<script src="src/login/authentication.js"></script>
+<script src="src/login/loginController.js"></script>
+<script src="src/status/StatusApi.js"></script>
+<script src="src/utils/modals/modals.js"></script>
+<script src="src/utils/modals/warningModal.js"></script>
+<script src="src/productDiscontinue/productDiscontinueApi.js"></script>
+<script src="src/productDiscontinue/removeFromStoresApi.js"></script>
+<script src="src/productDiscontinue/productDiscontinueController.js"></script>
+<script src="src/home/homeApi.js"></script>
+<script src="src/home/homeController.js"></script>
+<script src="src/permission.js"></script>
+<script src="src/image/imageApi.js"></script>
+<script src="src/utils/loadingSpinner/loadingSpinner.js"></script>
+<script src="src/utils/downloadImageService.js"></script>
+<script src="src/utils/downloadService.js"></script>
+<script src="src/inventory/inventoryApi.js"></script>
+<script src="src/productInfo/productInfoService.js"></script>
+<script src="src/productInfo/productInfoController.js"></script>
+<script src="src/product/productApi.js"></script>
+<script src="src/productDetails/product/kitsComponent.js"></script>
+<script src="src/productDetails/product/kitsService.js"></script>
+<script src="src/productDetails/product/productApi.js"></script>
+<script src="src/productDetails/product/vocabularyApi.js"></script>
+<script src="src/productDetails/product/vocabularyService.js"></script>
+<script src="src/productDetails/product/productShelfAttributesComponent.js"></script>
+<script src="src/productDetails/product/productInfoApi.js"></script>
+<script src="src/productDetails/product/specialAttributeComponent.js"></script>
+<script src="src/customHierarchy/customHierarchyService.js"></script>
+<script src="src/productDetails/productDetailApi.js"></script>
+<script src="src/productDiscontinue/discontinueExceptionParametersController.js"></script>
+<script src="src/productDiscontinue/discontinueParametersTemplateController.js"></script>
+<script src="src/productDiscontinue/discontinueParametersController.js"></script>
+<script src="src/productDiscontinue/discontinueParametersService.js"></script>
+<script src="src/productDiscontinue/discontinueParametersApi.js"></script>
+<script src="src/productDiscontinue/discontinueConstants.js"></script>
+<script src="src/productionSupport/productionSupportApi.js"></script>
+<script src="src/productionSupport/productionSupportController.js"></script>
+<script src="src/productDiscontinue/discontinueParametersAuditController.js"></script>
+<script src="src/productDiscontinue/discontinueParametersAuditService.js"></script>
+<script src="src/upcMaintenance/warehouseToWarehouseController.js"></script>
+<script src="src/upcMaintenance/warehouseToWarehouseSwapController.js"></script>
+<script src="src/upcMaintenance/addAssociateController.js"></script>
+<script src="src/upcMaintenance/upcSwapApi.js"></script>
+<script src="src/upcMaintenance/supportFunctions.js"></script>
+<script src="src/upcMaintenance/dsdToBothController.js"></script>
+<script src="src/upcMaintenance/bothToDsdController.js"></script>
+<script src="src/scaleManagement/scaleManagementCodeAuditController.js"></script>
+<script src="src/scaleManagement/scaleManagementIngredientsController.js"></script>
+<script src="src/scaleManagement/scaleManagementNutrientsController.js"></script>
+<script src="src/scaleManagement/scaleManagementNutrientStatementController.js"></script>
+<script src="src/scaleManagement/NLEA16NutrientStatementController.js"></script>
+<script src="src/scaleManagement/scaleManagementUpcMaintenanceController.js"></script>
+<script src="src/scaleManagement/actionCodesController.js"></script>
+<script src="src/scaleManagement/scaleManagementApi.js"></script>
+<script src="src/scaleManagement/labelFormatsController.js"></script>
+<script src="src/scaleManagement/reportsController.js"></script>
+<script src="src/reports/ingredientsController.js"></script>
+<script src="src/reports/reportsApi.js"></script>
+<script src="src/home/homeSharedService.js"></script>
+<script src="src/search/productSearchCriteriaComponent.js"></script>
+<script src="src/search/byosSearchComponent.js"></script>
+<script src="src/search/productSearchSelectionComponent.js"></script>
+<script src="src/search/productHierarchySearchSelectionComponent.js"></script>
+<script src="src/search/productSearchController.js"></script>
+<script src="src/search/byosController.js"></script>
+<script src="src/search/productSearchService.js"></script>
+<script src="src/search/productSearchCriteriaService.js"></script>
+<script src="src/search/productSearchApi.js"></script>
+<script src="src/scaleManagement/pluPanelDirective.js"></script>
+<script src="src/scaleManagement/singlePluPanelDirective.js"></script>
+<script src="src/scaleManagement/singlePluPanelService.js"></script>
+<script src="src/scaleManagement/ingredientCategoryController.js"></script>
+<script src="src/scaleManagement/scaleMaintenanceStoreUpcInformationController.js"></script>
+<script src="src/productDetails/productSellingUnits/imageInfoComponent.js"></script>
+<script src="src/productDetails/productSellingUnits/imageInfoService.js"></script>
+<script src="src/ngTableDirective.js"></script>
+<script src="src/scaleManagement/graphicsCodeApi.js"></script>
+<script src="src/scaleManagement/graphicsCodeController.js"></script>
+<script src="src/scaleManagement/nutrientUomCodeApi.js"></script>
+<script src="src/scaleManagement/nutrientUomCodeController.js"></script>
+<script src="src/productDetails/productDetailComponent.js"></script>
+<script src="src/productDetails/productCasePacks/productCasePacksComponent.js"></script>
+<script src="src/productDetails/productCasePacks/productCasePackApi.js"></script>
+<script src="src/productDetails/productCasePacks/itemSubstitutionComponent.js"></script>
+<script src="src/productDetails/productCasePacks/mrtInfoComponent.js"></script>
+<script src="src/productDetails/productSellingUnits/productSellingUnitsApi.js"></script>
+<script src="src/productDetails/productCasePacks/vendorInfoComponent.js"></script>
+<script src="src/productDetails/productCasePacks/druInfoComponent.js"></script>
+<script src="src/productDetails/productCasePacks/warehouseComponent.js"></script>
+<script src="src/productDetails/productSellingUnits/productSellingUnitsComponent.js"></script>
+<script src="src/productDetails/product/productInfoComponent.js"></script>
+<script src="src/productDetails/productCasePacks/casePackInfoComponent.js"></script>
+<script src="src/productDetails/productCasePacks/casePackImportComponent.js"></script>
+<script src="src/productDetails/productCasePacks/departmentComponent.js"></script>
+<script src="src/productDetails/productSellingUnits/upcInfoComponent.js"></script>
+<script src="src/productDetails/productDetailAuditModalController.js"></script>
+<script src="src/productDetails/productDetailAuditFactory.js"></script>
+<script src="src/productDetails/product/onlineAttributes/onlineAttributesComponent.js"></script>
+<script src="src/productDetails/product/onlineAttributes/relatedProductsComponent.js"></script>
+<script src="src/scaleManagement/ingredientStatementsController.js"></script>
+<script src="src/utils/commonService.js"></script>
+<script src="src/gdsn/gdsnApi.js"></script>
+<script src="src/gdsn/vendorSubscriptionController.js"></script>
+<script src="src/productHierarchy/productHierarchyApi.js"></script>
+<script src="src/productHierarchy/productHierarchyDefaultsController.js"></script>
+<script src="src/eCommerce/sourcePriorityController.js"></script>
+<script src="src/eCommerce/attributeMaintenanceController.js"></script>
+<script src="src/eCommerce/attributeMaintenanceApi.js"></script>
+<script src="src/eCommerce/attributeMaintenanceDetailsController.js"></script>
+<script src="src/eCommerce/eCommerceApi.js"></script>
+<script src="src/utilities/dictionaryApi.js"></script>
+<script src="src/utilities/dictionaryController.js"></script>
+<script src="src/task/taskSummaryController.js"></script>
+<script src="src/task/taskService.js"></script>
+<script src="src/task/productUpdatesTaskApi.js"></script>
+<script src="src/task/productUpdatesTaskController.js"></script>
+<script src="src/task/nutritionUpdatesTaskApi.js"></script>
+<script src="src/task/nutritionUpdatesTaskController.js"></script>
+<script src="src/task/ecommerceTaskApi.js"></script>
+<script src="src/task/ecommerceTaskSummaryComponent.js"></script>
+<script src="src/task/ecommerceTaskDetailController.js"></script>
+<script src="src/customHierarchy/productCustomHierarchyAssignmentComponent.js"></script>
+<script src="src/task/taskNotesComponent.js"></script>
+<script src="src/task/productNotesComponent.js"></script>
+<script src="src/customHierarchy/customHierarchyApi.js"></script>
+<script src="src/customHierarchy/customHierarchyController.js"></script>
+<script src="src/codeTable/brandCostOwnerT2T/brandCostOwnerT2TComponent.js"></script>
+<script src="src/codeTable/brandCostOwnerT2T/brandCostOwnerT2TApi.js"></script>
+<script src="src/codeTable/brand/brandComponent.js"></script>
+<script src="src/codeTable/brand/brandApi.js"></script>
+<script src="src/batchUpload/batchUploadApi.js"></script>
+<script src="src/directive.js"></script>
+<script src="src/utils/modals/modalFactory.js"></script>
+<script src="src/utils/modals/notificationModalController.js"></script>
+<script src="src/batchUpload/categorySpecific/batchUploadByCategorySpecificAttributesController.js"></script>
+<script src="src/batchUpload/assortment/assortmentController.js"></script>
+<script src="src/batchUpload/assortment/assortmentApi.js"></script>
+<script src="src/batchUpload/utils/batchUploadConfirmationController.js"></script>
+<script src="src/batchUpload/utils/batchUploadResultsController.js"></script>
+<script src="src/batchUpload/eCommerceAttribute/eCommerceAttributeController.js"></script>
+<script src="src/batchUpload/primoPick/batchUploadByPrimoPickController.js"></script>
+<script src="src/batchUpload/nutritionIngredients/batchUploadByNutritionAndIngredientsController.js"></script>
+<script src="src/batchUpload/serviceCaseSigns/batchUploadByServiceCaseSignsController.js"></script>
+<script src="src/batchUpload/earley/earleyUploadController.js"></script>
+<script src="src/batchUpload/relatedProducts/relatedProductsController.js"></script>
+<script src="src/batchUpload/matAttributeValues/matAttributeValuesController.js"></script>
+<script src="src/batchUpload/ebmBda/batchUploadByEbmBdaController.js"></script>
+<script src="src/utilities/checkstatus/trackingDetailDirective.js"></script>
+<script src="src/utilities/checkstatus/checkstatusController.js"></script>
+<script src="src/utilities/checkstatus/checkstatusApi.js"></script>
+<script src="src/codeTable/layoutCodeTableComponent.js"></script>
+<script src="src/codeTable/codeTableApi.js"></script>
+<script src="src/codeTable/wine/wineVarietalComponent.js"></script>
+<script src="src/codeTable/wine/wineVarietalTypeComponent.js"></script>
+<script src="src/codeTable/wine/wineRegionComponent.js"></script>
+<script src="src/codeTable/wine/wineAreaComponent.js"></script>
+<script src="src/codeTable/wine/wineMakerComponent.js"></script>
+<script src="src/codeTable/wineScoringOrganization/wineScoringOrganizationApi.js"></script>
+<script src="src/codeTable/wineScoringOrganization/wineScoringOrganizationComponent.js"></script>
+<script src="src/codeTable/factory/factoryApi.js"></script>
+<script src="src/codeTable/factory/factoryComponent.js"></script>
+<script src="src/codeTable/factory/factoryDetailsComponent.js"></script>
+<script src="src/codeTable/choice/choiceTypeApi.js"></script>
+<script src="src/codeTable/choice/choiceTypeComponent.js"></script>
+<script src="src/codeTable/wicLeb/wicLebApi.js"></script>
+<script src="src/codeTable/wicLeb/wicLebComponent.js"></script>
+<script src="src/codeTable/choice/choiceApi.js"></script>
+<script src="src/codeTable/choice/choiceOptionComponent.js"></script>
+<script src="src/codeTable/choice/choiceOptionDetailsComponent.js"></script>
+<script src="src/codeTable/choice/choiceDetailApi.js"></script>
+<script src="src/codeTable/countryCode/countryCodeComponent.js"></script>
+<script src="src/codeTable/countryCode/countryCodeApi.js"></script>
+<script src="src/codeTable/costOwner/costOwnerApi.js"></script>
+<script src="src/codeTable/costOwner/costOwnerComponent.js"></script>
+<script src="src/codeTable/productBrand/productBrandApi.js"></script>
+<script src="src/codeTable/productBrand/productBrandComponent.js"></script>
+<script src="src/codeTable/productSubBrand/productSubBrandApi.js"></script>
+<script src="src/codeTable/productSubBrand/productSubBrandComponent.js"></script>
+<script src="src/codeTable/productLineBrand/productLineBrandApi.js"></script>
+<script src="src/codeTable/productLineBrand/productLineBrandComponent.js"></script>
+<script src="src/codeTable/stateWarnings/stateWarningsComponent.js"></script>
+<script src="src/codeTable/stateWarnings/stateWarningsApi.js"></script>
+<script src="src/codeTable/productGroupType/productGroupTypeComponent.js"></script>
+<script src="src/codeTable/productGroupType/productGroupTypeDetailsComponent.js"></script>
+<script src="src/codeTable/productGroupType/productGroupTypeDetailsApi.js"></script>
+<script src="src/codeTable/productCategory/productCategoryComponent.js"></script>
+<script src="src/codeTable/tobaccoProductTypeCode/tobaccoProductTypeCodeComponent.js"></script>
+<script src="src/codeTable/tobaccoProductTypeCode/tobaccoProductTypeCodeApi.js"></script>
+<script src="src/codeTable/top2Top/top2TopApi.js"></script>
+<script src="src/codeTable/top2Top/top2TopComponent.js"></script>
+<script src="src/codeTable/tierCode/tierCodeApi.js"></script>
+<script src="src/codeTable/tierCode/tierCodeComponent.js"></script>
+<script src="src/utils/validation/numberValidator.js"></script>
+<script src="src/productDetails/productCasePacksCandidate/casePackInfoCandidateComponent.js"></script>
+<script src="src/productDetails/productCasePacksCandidate/warehouseCandidateComponent.js"></script>
+<script src="src/productDetails/productCasePacksCandidate/vendorInfoCandidateComponent.js"></script>
+<script src="src/productDetails/productCasePacksCandidate/casePackImportCandidateComponent.js"></script>
+<script src="src/productDetails/productCasePacksCandidate/productCasePackCandidateApi.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewDetailsLeftComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewDetailsRightComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewApi.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewNutritionFactsComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewRelatedProductsComponents.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewWarningsComponents.js"></script>
+<script src="src/productDetails/product/eCommerceView/productDescriptionComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewDirectionsComponents.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewDimensionsComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewIngredientsComponents.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewSpecificationsComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/eCommerceViewHierarchyAssignmentComponent.js"></script>
+<script src="src/productGroup/productGroupSearch/productGroupSearchController.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupDetailComponent.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupInfo/productGroupInfoComponent.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupInfo/associatedProductDetail.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupInfo/associatedProductTable.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupInfo/productGroupHierarchyAssignmentComponent.js"></script>
+<script src="src/productGroup/productGroupApi.js"></script>
+<script src="src/productGroup/productGroupDetail/eCommerceView/eCommerceViewComponent.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupImageComponent.js"></script>
+<script src="src/productGroup/productGroupDetail/productGroupService.js"></script>
+<script src="src/imageUpload/imageInfoApi.js"></script>
+<script src="src/utils/returnToListButton/returnToListButton.js"></script>
+<script src="src/productDetails/product/nutritionFacts/nutritionFactsComponent.js"></script>
+<script src="src/productDetails/product/nutritionFacts/nutritionFactsApi.js"></script>
+<script src="src/imageUpload/imageUploadComponent.js"></script>
+<script src="src/imageUpload/imageUploadApi.js"></script>
+<script src="src/productDetails/product/variants/variantsComponent.js"></script>
+<script src="src/productDetails/product/variants/variantsApi.js"></script>
+<script src="src/productDetails/product/variants/addNewVariantsComponent.js"></script>
+<script src="src/customHierarchy/currentLevelPanelComponent.js"></script>
+<script src="src/customHierarchy/allParentPanelComponent.js"></script>
+<script src="src/utilities/caseUPCGenerator/caseUPCGeneratorController.js"></script>
+<script src="src/utilities/caseUPCGenerator/caseUPCGeneratorApi.js"></script>
+<script src="src/utilities/checkDigitCalculator/checkDigitCalculatorApi.js"></script>
+<script src="src/utilities/checkDigitCalculator/checkDigitCalculatorController.js"></script>
+<script src="src/utils/treeGrid/tree-grid-directive.js"></script>
+<script src="src/productDetails/product/breakPack/breakPackApi.js"></script>
+<script src="src/productDetails/product/breakPack/breakPackComponent.js"></script>
+<script src="src/utils/confirm/confirmationModal.directive.js"></script>
+<script src="src/customHierarchy/productPanel.js"></script>
+<script src="src/customHierarchy/productLevelPaths.js"></script>
+<script src="src/customHierarchy/addMoveProductPanelComponents/addMoveComponents.js"></script>
+<script src="src/search/productSearchSelectionMultiPageComponent.js"></script>
+<script src="src/customHierarchy/customHierarchySearchComponent.js"></script>
+<script src="src/customHierarchy/childrenPanelComponent.js"></script>
+<script src="src/user/userApi.js"></script>
+<script src="src/utilities/myAttribute/myAttributeApi.js"></script>
+<script src="src/utilities/myAttribute/myAttributeController.js"></script>
+<script src="src/productDetails/product/taxonomy/taxonomyComponent.js"></script>
+<script src="src/productDetails/product/taxonomy/taxonomyApi.js"></script>
+<script src="src/productDetails/product/taxonomy/productAttributesComponent.js"></script>
+<script src="src/productDetails/product/taxonomy/taxonomyService.js"></script>
+<script src="src/scaleManagement/scaleMaintenanceLoadController.js"></script>
+<script src="src/scaleManagement/scaleMaintenanceApi.js"></script>
+<script src="src/scaleManagement/scaleMaintenanceCheckStatusController.js"></script>
+<script src="src/scaleManagement/scaleMaintenanceStoreDeptController.js"></script> 
+<script src="src/scaleManagement/scaleMaintenancePantryStoresController.js"></script> 
+<script src="src/sourceSystem/sourceSystemApi.js"></script>
+<script src="src/codeTable/generic/genericCodeTableComponent.js"></script>
+<script src="src/taxonomy/attribute/attributeMetaDataApi.js"></script>
+<script src="src/codeTable/generic/genericCodeTableApi.js"></script>
+<script src="src/metadataAttributes/metadataAttributesController.js"></script>
+<script src="src/metadataAttributes/metadataAttributeDetailsController.js"></script>
+<script src="src/taxonomy/applicableTypeApi.js"></script>
+<script src="src/taxonomy/attributeStatusApi.js"></script>
+<script src="src/taxonomy/audienceApi.js"></script>
+<script src="src/authorization/authorizationLayoutComponent.js"></script>
+<script src="src/authorization/authorizeItem/authorizeItemComponent.js"></script>
+<script src="src/authorization/itemSearch/itemSearchComponent.js"></script>
+<script src="src/authorization/authorizationApi.js"></script>
+<script src="src/codeTable/productLine/productLineApi.js"></script>
+<script src="src/codeTable/productLine/productLineComponent.js"></script>
+<script src="src/productDetails/product/eCommerceView/favorItemDescriptionComponent.js"></script>
+<!-- endbuild -->
+</body>
+</html>

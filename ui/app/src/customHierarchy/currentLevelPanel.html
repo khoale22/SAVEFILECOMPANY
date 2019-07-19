@@ -1,0 +1,427 @@
+<div class="container-fluid"
+	 can-view="CH_HIER_01"
+	 ng-cloak="true">
+	<div class="row">
+		<ul id="currentLevelTabs" class="nav nav-tabs nav-pills" style="padding-bottom: 0">
+			<li class="active">
+				<a data-toggle="tab" data-target="#properties" ng-click="$ctrl.setTab($ctrl.PROPERTIES_TAB)">Properties</a>
+			</li>
+			<li ng-if="$ctrl.intermediateView">
+				<a data-toggle="tab" data-target="#imageInfo" ng-click="$ctrl.setTab($ctrl.IMAGES_TAB)">Image Info</a>
+			</li>
+			<li can-view="EC_AMAN_02">
+				<a data-toggle="tab" data-target="#attributes" ng-click="$ctrl.setTab($ctrl.ATTRIBUTES_TAB)">Attributes</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div id="properties" class="tab-pane active">
+				<loading-spinner ng-if="$ctrl.changingContents"></loading-spinner>
+				<div class="well" style="background-color: white; padding: 10px; min-height: 100px; " ng-if="!$ctrl.changingContents">
+					<table style="width: 100%; border-spacing:7px">
+						<thead>
+						<tr>
+							<td style="text-align: center; font-weight: bold">Description</td>
+							<td style="text-align: center; font-weight: bold">Category Number</td>
+							<td style="text-align: center; font-weight: bold" ng-if="$ctrl.intermediateView">Active Online</td>
+							<td style="text-align: center; font-weight: bold" ng-if="$ctrl.intermediateView" colspan="2">Effective Date</td>
+							<td style="text-align: center; font-weight: bold" ng-if="$ctrl.intermediateView" colspan="2">End Date</td>
+							<td style="text-align: center; font-weight: bold" colspan="1" ng-if="$ctrl.intermediateView || $ctrl.checkIfLeafNode()">Lowest Level</td>
+							<td style="text-align: center; font-weight: bold" colspan="1" ng-if="$ctrl.checkIfLeafNode()"></td>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td style="text-align: center">
+								<div ng-if="!$ctrl.intermediateView">
+									<label style="font-weight: normal">{{$ctrl.currentLevel.childDescription.shortDescription}}</label>
+								</div>
+								<div ng-if="$ctrl.intermediateView" >
+									<label style="font-weight: normal" view-only="CH_HIER_01">{{$ctrl.currentLevel.childDescription.shortDescription}}</label>
+									<input class="form-control" type="text" ng-model="$ctrl.currentLevel.childDescription.shortDescription"
+										   ng-change="$ctrl.updateHasChanges()" can-edit="CH_HIER_01">
+								</div>
+							</td>
+							<td style="text-align: center"><label style="font-weight: normal">{{$ctrl.currentLevel.key.childEntityId}}</label></td>
+							<td style="text-align: center" ng-if="$ctrl.intermediateView">
+								<input can-edit="CH_HIER_01" type="checkbox" ng-model="$ctrl.currentLevel.active" ng-change="$ctrl.updateHasChanges()">
+								<input view-only="CH_HIER_01" type="checkbox" ng-model="$ctrl.currentLevel.active" disabled>
+							</td>
+							<td colspan="2" style="text-align: center; max-width:100px" ng-if="$ctrl.intermediateView">
+								<div class="input-group">
+									<input style="text-align: center;" id="effectiveDateCanEdit" class="form-control date-picker" type="text" readonly="true" can-edit="CH_HIER_01"
+										   uib-datepicker-popup="MM/dd/yyyy"
+										   datepicker-options="$ctrl.options"
+										   is-open="$ctrl.effectiveDatePickerOpened"
+										   ng-model="$ctrl.currentLevel.effectiveDate"
+										   ng-change="$ctrl.updateHasChanges()"
+										   close-text="Close"/>
+									<label view-only="CH_HIER_01" style="font-weight: normal">{{$ctrl.currentLevel.effectiveDate | date: 'MM/dd/yyyy'}}</label>
+									<span class="input-group-btn">
+									<button type="button" class="btn btn-default" can-edit="CH_HIER_01"
+											style="margin-right: 5px; margin-left: -8px"
+											ng-click="$ctrl.openEffectiveDatePicker()">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+								</div>
+							</td>
+							<td colspan="2" style="text-align: center; max-width: 100px" ng-if="$ctrl.intermediateView">
+								<div class="input-group">
+									<input style="margin-left: 5px;" id="endDate" class="form-control date-picker" type="text" readonly="true" can-edit="CH_HIER_01"
+										   uib-datepicker-popup="MM/dd/yyyy"
+										   datepicker-options="$ctrl.options"
+										   is-open="$ctrl.endDatePickerOpened"
+										   ng-model="$ctrl.currentLevel.expirationDate"
+										   ng-change="$ctrl.updateHasChanges()"
+										   close-text="Close"/>
+									<label view-only="CH_HIER_01" style="font-weight: normal">{{$ctrl.currentLevel.expirationDate  | date: 'MM/dd/yyyy'}}</label>
+									<span class="input-group-btn">
+									<button type="button" class="btn btn-default" can-edit="CH_HIER_01"
+											style="margin-left: -3px"
+											ng-click="$ctrl.openEndDatePicker()">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+								</div>
+							</td>
+							<td colspan="1" style="text-align: center" ng-if="$ctrl.intermediateView || $ctrl.checkIfLeafNode()">
+								<input type="checkbox" disabled ng-checked="$ctrl.checkIfLeafNode()">
+							</td>
+							<td colspan="1" style="text-align: center; font-weight: bold" ng-if="$ctrl.intermediateView">
+								<div can-edit="CH_HIER_01">
+									<button class="btn btn-primary"
+											ng-click="$ctrl.setMoveType('Link')"
+											data-toggle="modal"
+											ng-if="$ctrl.checkIfLeafNode()"
+											data-target="#linkMoveModal">
+										Link</button>
+									<button class="btn btn-primary"
+											ng-click="$ctrl.setMoveType('Move')"
+											data-toggle="modal"
+											data-target="#linkMoveModal">
+										Move</button>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="imageInfo" class="tab-pane">
+				<loading-spinner ng-if="$ctrl.changingContents"></loading-spinner>
+				<div class="well" style="background-color: white; padding: 10px; min-height: 100px; " ng-if="!$ctrl.changingContents">
+					<div ng-if="$ctrl.currentLevelImages.length===0" style="text-align: center;">
+						<span><label>No images for this hierarchy level</label></span>
+					</div>
+					<div ng-if="$ctrl.currentLevelImages.length>0">
+						<table id="customerHierarchyChildrenTable" class="table-heb table-bordered table-striped"
+							   style="width: 100%">
+							<thead>
+							<tr>
+								<th style="text-align: center; width: 70px">Image</th>
+								<th style="text-align: center; width: 100px">Size</th>
+								<th style="text-align: center; width: 200px">Alt Tag</th>
+								<th style="text-align: center; width: 100px">Category</th>
+								<th style="text-align: center; width: 50px">Primary/Alternate</th>
+								<th style="text-align: center; width: 30px">Active Online</th>
+								<th style="text-align: center; width: 75px">Status</th>
+								<th style="text-align: center; width: 75px">Created Date</th>
+								<th style="text-align: center; width: 75px">Application Source</th>
+								<th style="text-align: center; width: 75px">Image Source</th>
+								<th style="text-align: center">UPC Reference</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr ng-repeat="image in $ctrl.currentLevelImages">
+								<!--Image-->
+								<td style="height: 90px; width: 70px">
+									<div ng-show="$ctrl.isImageUndefined(image)">Loading Image please wait</div>
+									<div  ng-show="!$ctrl.isImageUndefined(image)">
+										<div ng-show="image.useImageData">
+											<image id="'Submittedview-only[{{$index}}]" view-only="CP_IMG_01"  ng-src="{{image.image}}" style="height: auto; width: auto; max-width: 95px"></image>
+											<image
+												ng-src="{{image.image}}"
+												style="height: auto; width: auto; max-width: 95px; cursor: pointer"
+												ng-click="$ctrl.showFullImage(image)">
+											</image>
+										</div>
+										<div ng-show="!image.useImageData">
+											<img data-ng-src="app/images/no_image.png">
+										</div>
+									</div>
+								</td>
+								<!--Image Size-->
+								<td style="text-align: center">{{image.dimensions}}</td>
+								<!--Image Alt Tag-->
+								<td style="text-align: center">
+									<input style="font-weight: normal; width: 100%" ng-model="image.imageAltText" can-edit="CH_HIER_01" ng-change="$ctrl.updateHasChanges()"/>
+									<label style="font-weight: normal" view-only="CH_HIER_01">{{image.imageAltText}}</label>
+								</td>
+								<!--Image category-->
+								<td style="text-align: center">
+									<label style="font-weight: normal" view-only="CH_HIER_01">{{image.imageCategory.description}}</label>
+									<select ng-model="image.imageCategoryCode" can-edit="CH_HIER_01" ng-change="$ctrl.checkCategory(image);$ctrl.updateHasChanges()">
+										<option ng-repeat="category in $ctrl.imageCategories" value="{{category.id}}">{{category.description}}</option>
+									</select>
+								</td>
+								<!--Image Priority-->
+								<td style="text-align: center">
+									<label style="font-weight: normal"  view-only="CH_HIER_01">{{image.imagePriority.description}}</label>
+									<div can-edit="CH_HIER_01">
+										<label ng-if="image.imageCategoryCode ==='SWAT'"
+											   style="font-weight: normal" ng-model="image.imageCategoryCode"
+											   value="'NA'">
+											Not Applicable
+										</label>
+										<select ng-model="image.imagePriorityCode" ng-change="$ctrl.updateHasChanges()" ng-if="image.imageCategoryCode !=='SWAT'">
+											<option ng-repeat="priority in $ctrl.imagePriority" value="{{priority.id}}">{{priority.description}}</option>
+										</select>
+									</div>
+								</td>
+								<!--Active Online-->
+								<td style="text-align: center;">
+									<input view-only="CH_HIER_01" type="checkbox" ng-model="image.activeOnline" disabled>
+									<input can-edit="CH_HIER_01" type="checkbox" ng-model="image.activeOnline" ng-change="$ctrl.updateHasChanges()">
+								</td>
+								<!--Image Status-->
+								<td style="text-align: center">
+									<label style="font-weight: normal" view-only="CH_HIER_01">{{image.imageStatus.description}}</label>
+									<select ng-model="image.imageStatusCode" can-edit="CH_HIER_01" ng-change="$ctrl.updateHasChanges()">
+										<option ng-repeat="status in $ctrl.imageStatus" value="{{status.id}}" ng-show="status.id != ''">{{status.description}}</option>
+									</select>
+								</td>
+								<!--Created Date-->
+								<td style="text-align: center">{{image.createDate | date: "MM/dd/yyyy"}}</td>
+								<!--Source System-->
+								<td style="text-align: center">{{image.sourceSystem.description}}</td>
+								<!--Image Source-->
+								<td style="text-align: center">{{image.imageSourceName}}</td>
+								<!--Image Reference UPC-->
+								<td style="text-align: center">
+									<label class="ng-binding" ng-click="$ctrl.navigateToCustomHierarchy(image.referenceUPC)">
+										<a title="Navigate to Product Details">
+											{{image.referenceUPC}}
+										</a>
+									</label>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="text-left">
+						<div>
+							<button class="btn btn-primary"
+									can-edit="CH_HIER_01"
+									data-toggle="modal"
+									ng-click="$ctrl.resetUploadFields()"
+									data-target="#uploadImageModal">
+								Upload Image</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="attributes" class="tab-pane">
+				<loading-spinner ng-if="$ctrl.changingContents"></loading-spinner>
+				<div class="well" style="background-color: white; padding: 10px; min-height: 100px; " ng-if="!$ctrl.changingContents">
+					<table id="customHierarchyAttributesTable" class="table-heb table-bordered table-striped"
+						   style="width: 100%">
+						<thead>
+						<tr>
+							<th>Name</th>
+							<th>Description</th>
+							<th>Internal ID</th>
+							<th>External ID</th>
+							<th>Inherited?</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="attribute in $ctrl.attributes">
+							<td>
+								<a class="pointer" ng-click="$ctrl.selectAttribute(attribute.attributeId)">{{attribute.attributeName}}</a>
+							</td>
+							<td>{{attribute.attributeDescription}}</td>
+							<td>{{attribute.attributeId}}</td>
+							<td>{{attribute.externalId}}</td>
+							<td>
+								<input type="checkbox" disabled ng-model="attribute.inherited">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="fullImageModal" class="modal fade" role="dialog">
+		<div class="modal-dialog" style="width: 100%;text-align: center">
+			<div style="display: flex; justify-content: center;">
+				<table style="margin-top: 10px;">
+					<tr>
+						<td>
+							<button type="button" class="btn btn-link" title="Close"
+									style="float: right; font-size: medium;color:orange;padding: 0" data-dismiss="modal"
+									aria-label="Close">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+							<button type="button" class="btn btn-link" title="Download"
+									style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+									ng-click="$ctrl.downloadImage()">
+								<span class="glyphicon glyphicon-download-alt"></span>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="uploadImageModal" class="modal" role="dialog" data-backdrop="static" ng-init="$ctrl.initModal()">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!--Modal Header-->
+				<div class="modal-header" style="background-color: #337ab7; height: 70%">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						Custom Hierarchy Image Upload
+					</div>
+				</div>
+				<!--Modal Body-->
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-offset-1 col-md-10">
+							<label>Step 1 Select Item Category</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-3 col-md-8">
+							<select ng-model="$ctrl.uploadImageCategory">
+								<option value="">--Select Image Category--</option>
+								<option ng-repeat="category in $ctrl.imageCategories" value="{{category.id}}">{{category.description}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-1 col-md-10">
+							<label>Step 2 Select Image Source</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-3 col-md-8">
+							<select ng-model="$ctrl.uploadImageSource">
+								<option value="">--Select Image Source--</option>
+								<option ng-repeat="source in $ctrl.imageSource" value="{{source.id}}">{{source.description}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-1 col-md-10">
+							<label>Step 3 Upload Image</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-1 col-md-10" >
+							<i>*JPG, JPEG, and PNG formats only</i>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-offset-3 col-md-4">
+							<input type="file" id="uploadImageData" accept="image/jpg, image/jpeg, image/png">
+						</div>
+						<div class="col-md-4">
+							<span id="invalidSpan" style="color: red; display: none">Invalid file type</span>
+						</div>
+					</div>
+				</div>
+				<!--Modal Footer-->
+				<div class="modal-footer">
+					<div class="inline-block pull-right">
+						<!--can-edit="CP_IMG_01">-->
+						<button id="uploadImageButton" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.uploadImage()" >
+							Upload
+						</button>
+						<button class="btn btn-primary" data-dismiss="modal">
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--This is part of an incomplete feature-->
+	<div id="linkMoveModal" class="modal" role="dialog" data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!--Modal Header-->
+				<div class="modal-header" style="background-color: #337ab7; height: 70%">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						{{$ctrl.moveType}} a Level
+					</div>
+				</div>
+				<!--Modal Body-->
+				<div class="modal-body">
+					<div class="row" data-ng-if="$ctrl.hierarchyEditErrorMessage">
+						<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.hierarchyEditErrorMessage}}</span>
+					</div>
+					<div class="row" data-ng-if="$ctrl.isWaitingForResponse">
+						<span class="alert alert-info col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{$ctrl.waitingForUpdate}}</span>
+					</div>
+					<div style="display: flex;">
+						<div class="well" style="flex-grow: 4; min-width: 200px; overflow-y: auto; overflow-x: hidden; max-height: 250px">
+							<label>Current Level</label>
+							<div class="add-hover-background">
+								<strong>[-]{{$ctrl.sourceHierarchy.description}}</strong>
+							</div>
+							<div style="padding-left: 15px"
+								 ng-repeat="childRelationship in $ctrl.sourceHierarchy.childRelationships"
+								 ng-include="'src/customHierarchy/miniHierarchy.html'">
+							</div>
+						</div>
+						<div style="align-self: center; flex-grow: 1">
+							<div ng-if="!$ctrl.isSourceAndDestinationSelected()" class="glyphicon glyphicon-arrow-right" style="font-size: 75px;color: grey"></div>
+							<div ng-if="$ctrl.isSourceAndDestinationSelected() && !$ctrl.isValidChange()" class="glyphicon glyphicon-arrow-right" style="font-size: 75px;color: red"></div>
+							<div ng-if="$ctrl.isSourceAndDestinationSelected() && $ctrl.isValidChange()" class="glyphicon glyphicon-arrow-right" ng-click="$ctrl.previewHierarchyChange()"
+								 style="font-size: 75px;color: green"></div>
+						</div>
+						<div class="well" style="flex-grow: 4; overflow-y: auto; overflow-x: hidden; max-height: 250px">
+							<label>To Level</label>
+							<label ng-if="$ctrl.hierarchyChangeMessage">(Preview shown)</label>
+							<div ng-repeat="hierarchy in $ctrl.destinationHierarchies">
+								<div class="add-hover-background pointer"
+									 ng-class="{'add-click-background' : hierarchy.isSelected}"
+									 ng-click="$ctrl.selectHierarchyContext(hierarchy)">
+									<strong ng-if="!$ctrl.isHierarchyLevelCollapsed(hierarchy)">[-]</strong>
+									<strong ng-if="$ctrl.isHierarchyLevelCollapsed(hierarchy)">[+]</strong>
+									<strong>{{hierarchy.description}}</strong>
+								</div>
+								<loading-spinner ng-if="hierarchy.isWaitingForRelationshipResponse"></loading-spinner>
+								<div ng-if="!hierarchy.isWaitingForRelationshipResponse">
+									<div style="padding-left: 15px" ng-if="!$ctrl.isHierarchyLevelCollapsed(hierarchy)"
+										 ng-repeat="childRelationship in hierarchy.childRelationships"
+										 ng-include="'src/customHierarchy/miniHierarchySelectable.html'">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--Modal Footer-->
+				<div class="modal-footer">
+					<strong class="dark-green-text pull-left" ng-if="$ctrl.hierarchyChangeMessage">{{$ctrl.hierarchyChangeMessage}}</strong>
+					<button ng-if="!$ctrl.isWaitingForResponse" class="btn btn-primary" ng-disabled="$ctrl.isValidSave()" ng-click="$ctrl.saveHierarchyChanges()">
+						Save
+					</button>
+					<button ng-if="!$ctrl.isWaitingForResponse" class="btn btn-primary" ng-click="$ctrl.resetHierarchyChanges()">
+						Reset
+					</button>
+					<button ng-if="!$ctrl.isWaitingForResponse" class="btn btn-primary" data-dismiss="modal">
+						Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

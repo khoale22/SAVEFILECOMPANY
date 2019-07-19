@@ -1,0 +1,266 @@
+<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+<div class="row" data-ng-if="$ctrl.error">
+	<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+</div>
+<div class="row" data-ng-if="$ctrl.success">
+	<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+</div>
+<!-- Confirm message--->
+<div id="confirmReActivateModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.headerTitleConfirm}}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+						ng-click="$ctrl.noConfirmAction()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.yesConfirmAction()"
+						ng-show="$ctrl.yesBtnEnable">
+					{{$ctrl.yesBtnLabel}}
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.noConfirmAction()">
+					{{$ctrl.closeBtnLabel}}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-show="!$ctrl.isLoading">
+	<div>
+		<div class="row col-md-offset-11 col-md-1 pull-right" >
+			<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showCasePackAuditInfo()"></div>
+		</div>
+		<div class="row" style="margin-bottom: 10px">
+			<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-5">
+						<label class="pull-right">Item Id:</label>
+					</div>
+					<div class="col-md-7">
+						<div class="pull-left" style="font-weight: bold">{{$ctrl.itemMaster.key.itemCode}}</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-5">
+				<div class="row">
+					<div class="col-md-4">
+						<label class="pull-right">Casepack Description:</label>
+					</div>
+					<div class="col-md-8">
+						<!-- <div class="pull-left" style="font-weight: bold">{{$ctrl.itemMaster.description}}</div> -->
+						<input type="text"
+							   maxlength="30"
+							   ng-disabled="$ctrl.isDisabledMode()"
+							   ng-model="$ctrl.itemMaster.description"
+							   class="text-uppercase"
+							   style="width: 100%">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div can-edit="CP_INFO_01" class="row">
+					<div class="col-md-3">
+						<label class="pull-right">Case UPC:</label>
+					</div>
+					<div class="col-md-4">
+						<div style="font-weight: bold">
+							<input type="number"
+								   maxlength="13"
+								   ng-disabled="$ctrl.isDisabledMode()"
+								   ng-model="$ctrl.itemMaster.caseUpc"
+								   ng-change="$ctrl.confirmCheckDigit()"
+								   style="width: 100%">
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="row">
+							<div class="col-md-1"><label>-</label></div>
+							<div class="col-md-5">
+								<input type="number" style="width: 100%"
+									   ng-disabled="$ctrl.isDisabledMode()"
+									   ng-model="$ctrl.checkDigit" ng-change="$ctrl.confirmCheckDigit()">
+								<strong ng-if="$ctrl.correctCheckDigit" style="color: green">{{$ctrl.checkDigitMessage}}</strong>
+								<strong ng-if="!$ctrl.correctCheckDigit" style="color: darkorange">{{$ctrl.checkDigitMessage}}</strong>
+							</div>
+							<div class="col-md-2">
+								<div class="glyphicon glyphicon-question-sign pointer" style="color: orange"
+									 data-toggle="modal" data-target="#checkDigitModal"
+									 ng-click="$ctrl.showCheckDigitInformation()"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div view-only="CP_INFO_01" class="row">
+					<div class="col-md-3">
+						<label class="pull-right">Case UPC:</label>
+					</div>
+					<div class="col-md-3">
+						<div style="font-weight: bold">{{$ctrl.itemMaster.caseUpc}}</div>
+					</div>
+					<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-3"><label>-</label></div>
+							<div class="col-md-6"><div class="pull-left"> {{$ctrl.checkDigit}}</div></div>
+							<div class="glyphicon glyphicon-question-sign pointer" style="color: orange"
+								 data-toggle="modal" data-target="#checkDigitModal"
+								 ng-click="$ctrl.showCheckDigitInformation()"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="margin-bottom: 10px">
+			<div class="col-md-3">
+				<div can-edit="CP_INFO_01" class="row" ng-init = "$ctrl.getAllItemTypes()">
+					<div class="col-md-5"><label class="pull-right">Item Type:</label>
+					</div>
+					<div class="col-md-7">
+						<ui-select class="inline-block"
+								   id="itemType"
+								   theme="bootstrap"
+								   append-to-body="true"
+								   title="Item Type"
+								   ng-model="$ctrl.itemMaster.itemTypeCode"
+								   ng-disabled="true">
+							<ui-select-match style="width: 110%;">{{$select.selected.displayName}}</ui-select-match>
+							<ui-select-choices repeat="itemType.id as itemType in $ctrl.itemTypeList" title="select">
+								{{itemType.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+				<div view-only="CP_INFO_01" class="row">
+					<div class="col-md-5"><label class="pull-right">Item Type:</label>
+					</div>
+					<div class="col-md-7">
+						<div>{{$ctrl.itemMaster.itemTypeCode}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-5" ng-show="$ctrl.isWarehouse">
+				<div can-edit="CP_INFO_01" class="row" ng-init="$ctrl.getAllOneTouchTypes()">
+					<div class="col-md-4"><label class="pull-right">One Touch:</label>
+					</div>
+					<div class="col-md-8">
+						<ui-select class="inline-block"
+								   id="oneTouchType"
+								   theme="bootstrap"
+								   title="One Touch Type"
+								   ng-model="$ctrl.itemMaster.oneTouchTypeCode"
+								   ng-disabled="true">
+							<ui-select-match style="width: 110%">{{$select.selected.displayName}}</ui-select-match>
+							<ui-select-choices repeat="oneTouchType.id as oneTouchType in $ctrl.oneTouchTypeList" title="select">
+								{{oneTouchType.displayName}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+				<div view-only="CP_INFO_01" class="row">
+					<div class="col-md-4">
+						<label class="pull-right">One Touch:</label>
+					</div>
+					<div class="col-md-8">
+						<div class="pull-left">{{$ctrl.itemMaster.oneTouchType.displayName}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<label>Associate Selling UPCs</label>
+				<table class="table-heb table-bordered table-striped" style="width: 90%">
+					<tr style="color: white; background-color: #00476b; height: 25px;">
+						<th style="min-width: 100px; text-align: center;">UPC</th>
+						<th style="min-width: 100px; text-align: center;">Size</th>
+						<th style="min-width: 100px; text-align: center;">Case Pack Primary</th>
+					</tr>
+					<tr ng-repeat="sellingUnit in $ctrl.sellingUnits track by $index">
+						<td>{{sellingUnit.upc}}</td>
+						<td>{{sellingUnit.tagSize}}</td>
+						<td style="text-align: center; width: 30px">
+							<input type="radio" ng-model="sellingUnit.productPrimary" disabled="disabled"
+								   ng-value="$ctrl.valuePrimaryRadioButtion(sellingUnit.productPrimary)">
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div>
+			<strong style="padding: 5px">Warehouse</strong>
+			<table ng-table="$ctrl.tableParams"
+				   class="table table-heb table-bordered table-striped">
+				<tr ng-repeat="warehouseLocationItem in $ctrl.itemMaster.warehouseLocationItems">
+					<td data-title="'Warehouse'">{{warehouseLocationItem.key.warehouseNumber}}</td>
+					<td data-title="'Purchasing Status'">{{warehouseLocationItem.purchasingStatusCode.description}}</td>
+					<td data-title="'Changed On'">{{warehouseLocationItem.purchaseStatusUpdateTime | date : 'MM/dd/yyyy'}}</td>
+					<td data-title="'Changed By'">{{warehouseLocationItem.purchaseStatusUserId}}</td>
+					<td data-title="'Warehouse Status'">{{warehouseLocationItem.supplierStatusCode}}</td>
+					<td data-title="'Changed On'">{{warehouseLocationItem.supplierStatusUpdateTime | date : 'MM/dd/yyyy'}}</td>
+					<td data-title="'First Received'">{{warehouseLocationItem.warehouseLocationItemExtendedAttributes.firstReceivedDate}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+			<div class="inline-block pull-right">
+				<button class="btn btn-primary" disabled>
+					Back
+				</button>
+				<button class="btn btn-primary"
+						ng-click="$ctrl.nextCandidate()">
+					Next
+				</button>
+				<button class="btn btn-primary"
+						ng-click="$ctrl.activateCandidate()">
+					Activate
+				</button>
+				<button class="btn btn-primary"
+						ng-click="$ctrl.confirmRejectCandidate()">
+					Reject
+				</button>
+				<!-- <button class="btn btn-primary"
+						ng-disabled="!$ctrl.canReset()"
+						ng-click="$ctrl.reset()">
+					Reset
+				</button>
+				<button
+					class="btn btn-primary"
+					ng-disabled="!$ctrl.canSave()"
+					ng-click="$ctrl.saveCasePackInfoChanges()">
+					Save
+				</button> -->
+			</div>
+		</div>
+	</div>
+</div>
+<div id="checkDigitModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Case UPC</h5>
+			</div>
+			<div class="modal-body">
+				<div class="row" style="padding: 15px;">
+					<label>Please provide a Case UPC that meets the below criteria.</label>
+					<li>Should not be a selling unit UPC already existing in HEB.</li>
+					<li>Should not be a Case UPC already existing in HEB.</li>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

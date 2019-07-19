@@ -1,0 +1,77 @@
+<div class="container-fluid"
+	 can-view="CH_HIER_01"
+	 ng-cloak="true">
+	<div class="row">
+		<ul id="allParentsTab" class="nav nav-tabs nav-pills" style="padding-bottom: 0">
+			<li class="active">
+				<a data-toggle="tab" data-target="#allParents">All Parents</a>
+			</li>
+		</ul>
+		<div class="well" style="background-color: white; min-height: 100px; padding: 10px">
+			<div class="tab-content">
+				<div id="allParents" class="tab-pane active">
+					<loading-spinner ng-if="$ctrl.changingContents"></loading-spinner>
+					<div ng-if="!$ctrl.changingContents">
+						<div class="col-md-10">
+							<div ng-repeat="data in $ctrl.pathList" ng-include="'src/customHierarchy/pathRenderer.html'" style="padding-bottom: 10px">
+							</div>
+						</div>
+						<div class="text-right" can-edit="MU_UNASN_01">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#unassignProductsModal" ng-click="$ctrl.clearModal()">Unassign Product</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="unassignProductsModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 75%">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<div class="modal-title inline-block" style="color: #ffffff">Unassign a product.
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="panel-group">
+							<product-search-criteria
+								on-update="$ctrl.updateSearchCriteria(searchCriteria)">
+							</product-search-criteria>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="row">
+							<div ng-if="$ctrl.searchCriteria" style="padding-right: 10px">
+								<product-search-selection-multi-page
+									search-criteria="$ctrl.searchCriteria"
+									on-update="$ctrl.updateSelectedCriteria(selectedCriteria)">
+								</product-search-selection-multi-page>
+								<div ng-if="$ctrl.hasRecordsToUpdate()" class="text-left">
+									<strong>You have selected {{$ctrl.selectedCriteria.totalRecordCount}} product(s) to un-assign.</strong>
+									<strong class="text-left" ng-if="$ctrl.isUnAssignProductsDisabled()">Please set a description.</strong>
+								</div>
+								<div ng-if="!$ctrl.hasRecordsToUpdate()" class="text-left">
+									<strong class="text-left">Please select product(s) to un-assign.</strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<strong>Set the Mass Update Description:</strong>
+				<input type="text" ng-model="$ctrl.unassignProductsDescription"
+					   title="{{$ctrl.hasRecordsToUpdate() ? '' : 'Please first select product(s).'}}"
+					   ng-disabled="!$ctrl.hasRecordsToUpdate()">
+				<button type="button" data-dismiss="modal"
+						ng-click="$ctrl.unassignProducts()"
+						ng-disabled="$ctrl.isUnAssignProductsDisabled()"
+						class="inline-block btn btn-success btn-sm">Unassign Product</button>
+				<button type="button" data-dismiss="modal"
+						class="inline-block btn btn-default btn-sm">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

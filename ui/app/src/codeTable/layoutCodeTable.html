@@ -1,0 +1,241 @@
+<!--
+  ~ LayoutCodeTable.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn87351
+  @since 2.12.0
+  -->
+<div class="col-md-3" id="code-table-left-panel">
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="panel panel-primary" >
+				<div class="panel-heading"><strong>Code Table</strong></div>
+				<div class="panel-body" style="min-height: 400px; padding:5px;">
+					<ul style="margin:0;padding:0;">
+						<li can-view="CT_TTOT_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='brandCostOwnerTop2Top'?'active':''"
+														  ng-click="$ctrl.handleTabChange('brand-cost-t2t')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Brand-Cost Owner-Top 2 Top</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_BRND_05"><button class="btn" ng-class="$ctrl.selectedTab.id==='brand'?'active':''"
+														  ng-click="$ctrl.handleTabChange('brand')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Brand</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_COWN_02"><button class="btn" ng-class="$ctrl.selectedTab.id==='costOwner'?'active':''"
+						                                  ng-click="$ctrl.handleTabChange('costOwner')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Cost Owner</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_TTOT_02">
+							<button class="btn" ng-class="$ctrl.selectedTab.id==='top2Top' ? 'active' : ''"
+									ng-click="$ctrl.handleTabChange('top2Top')" style="border-top:1px solid #ccc;width:100%">
+								<h4 class="panel-title">
+									<a><strong class="ng-binding">Top 2 Top</strong></a>
+								</h4>
+							</button>
+						</li>
+						<li can-view="CT_TIERCODE_01">
+							<button class="btn" ng-class="$ctrl.selectedTab.id==='tierCode' ? 'active' : ''"
+									ng-click="$ctrl.handleTabChange('tierCode')" style="border-top:1px solid #ccc;width:100%">
+								<h4 class="panel-title">
+									<a><strong class="ng-binding">Tier Code</strong></a>
+								</h4>
+							</button>
+						</li>
+						<li  can-view="CT_CHOI_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='choice'?'active':''"
+														   ng-click="$ctrl.handleTabChange('choice')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Choice</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_CHOI_02"><button class="btn" ng-class="$ctrl.selectedTab.id==='choiceType' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('choice-type')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Choice Type</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_CNTR_01"><button class="btn" class="btn" ng-class="$ctrl.selectedTab.id==='countryCode'?'active':''"
+														  ng-click="$ctrl.handleTabChange('countryCode')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Country Code</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_FCTR_01"><button class="btn" class="btn" class="btn" ng-class="$ctrl.selectedTab.id==='factory'?'active':''"
+														  ng-click="$ctrl.handleTabChange('factory')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Factory</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_BRND_02"><button class="btn" ng-class="$ctrl.selectedTab.id==='productBrand' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('product-brand')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Product Brand</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_PRDC_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='productCategory'?'active':''"
+														  ng-click="$ctrl.handleTabChange('productCategory')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Product Category</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_PDGT_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='productGroupType' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('product-group-type')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Product Group Type</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_PRLN_01">
+							<button class="btn" ng-class="$ctrl.selectedTab.id==='productLine' ? 'active' : ''"
+									ng-click="$ctrl.handleTabChange('productLine')" style="border-top:1px solid #ccc;width:100%">
+								<h4 class="panel-title">
+									<a><strong class="ng-binding">Product Line (Sub Brand)</strong></a>
+								</h4>
+							</button>
+						</li>
+						<li can-view="CT_BRND_04">
+							<button class="btn" ng-class="$ctrl.selectedTab.id==='productLineBrand' ? 'active' : ''"
+									ng-click="$ctrl.handleTabChange('productLineBrand')" style="border-top:1px solid #ccc;width:100%">
+								<h4 class="panel-title">
+									<a><strong class="ng-binding">Product Line-Brand</strong></a>
+								</h4>
+							</button>
+						</li>
+						<li can-view="CT_SWRN_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='stateWarnings' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('state-warnings')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">State Warnings</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_BRND_03"><button class="btn" ng-class="$ctrl.selectedTab.id==='productSubBrand' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('sub-brand')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Sub-Brand</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_TPTC_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='tobaccoProductTypeCode' ? 'active' : ''"
+														  ng-click="$ctrl.handleTabChange('tobacco-product-group-type-code')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Tobacco Product Type Code</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WICL_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='wicLebComponent'?'active':''"
+														  ng-click="$ctrl.handleTabChange('wic-leb')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">WIC / LEB</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_01"><button class="btn" ng-class="$ctrl.selectedTab.id==='wineScoringOrganizationComponent'?'active':''"
+														  ng-click="$ctrl.handleTabChange('wine-scroring-org')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Scoring Organization</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_02"><button class="btn" ng-class="$ctrl.selectedTab.id==='winevarietal' ? 'active' : ''" ng-click="$ctrl.handleTabChange('wine-varietal')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Varietal</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_06"><button class="btn" ng-class="$ctrl.selectedTab.id==='winevarietalType' ? 'active' : ''" ng-click="$ctrl.handleTabChange('wine-varietal-type')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Varietal Type</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_03"><button class="btn"  ng-class="$ctrl.selectedTab.id==='wineArea' ? 'active' : ''" ng-click="$ctrl.handleTabChange('wine-area')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Wine Area</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_04"><button class="btn" ng-class="$ctrl.selectedTab.id==='wineMaker' ? 'active' : ''" ng-click="$ctrl.handleTabChange('wine-maker')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Wine Maker</strong></a>
+							</h4>
+						</button></li>
+						<li can-view="CT_WINE_05"><button class="btn" ng-class="$ctrl.selectedTab.id==='wineRegion' ? 'active' : ''" ng-click="$ctrl.handleTabChange('wine-region')" style="border-top:1px solid #ccc;width:100%">
+							<h4 class="panel-title">
+								<a><strong class="ng-binding">Wine - Wine Region</strong></a>
+							</h4>
+						</button></li>
+						<li>
+							<hr>
+							<label>Additional Code Tables</label>
+							<ui-select
+									ng-model="$ctrl.genericCodeTableSelected"
+									append-to-body="true"
+									theme="bootstrap"
+									id="codeTableSearchSelection"
+									on-select="$ctrl.handleTabChange($select.selected.name, true)">
+								<ui-select-match
+										placeholder="--Select a code table--">{{$select.selected.name}}
+								</ui-select-match>
+								<ui-select-choices
+										repeat="element in $ctrl.valueList"
+										refresh="$ctrl.getCurrentDropDownResults($select.search)"
+										refresh-delay="0">
+									<div uib-tooltip="{{element.description}}" tooltip-placement="bottom" tooltip-append-to-body="true">{{element.name}}</div>
+								</ui-select-choices>
+							</ui-select>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-9">
+	<div ng-if="$ctrl.error">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade"
+					  role="alert" style="padding: .5%">{{$ctrl.error}}</span>
+	</div>
+</div>
+<div class="col-md-9">
+	<div id="pdRightPanel" >
+		<div id="codeTableDetail">
+			<loading-spinner ng-show="$ctrl.isLoading"></loading-spinner>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<strong>{{$ctrl.selectedTab.title}}</strong>
+				</div>
+				<div class="panel-body" style="min-height: 400px;">
+					<brand-cost-owner-t-2-t-component ng-if="$ctrl.selectedTab.id=='brandCostOwnerTop2Top'" ></brand-cost-owner-t-2-t-component>
+					<cost-owner-component ng-if="$ctrl.selectedTab.id=='costOwner'"></cost-owner-component>
+					<brand-component ng-if="$ctrl.selectedTab.id=='brand'"></brand-component>
+					<wine-scoring-organization-component ng-if="$ctrl.selectedTab.id=='wineScoringOrganizationComponent'" ></wine-scoring-organization-component>
+					<wine-varietal-component ng-if="$ctrl.selectedTab.id=='winevarietal'" ></wine-varietal-component>
+					<wine-varietal-type-component ng-if="$ctrl.selectedTab.id=='winevarietalType'"></wine-varietal-type-component>
+					<wine-area-component ng-if="$ctrl.selectedTab.id=='wineArea'"></wine-area-component>
+					<wine-maker-component ng-if="$ctrl.selectedTab.id=='wineMaker'"></wine-maker-component>
+					<wine-region-component ng-if="$ctrl.selectedTab.id=='wineRegion'"></wine-region-component>
+					<factory ng-if="$ctrl.selectedTab.id=='factory'" on-handle-tab-change =	"$ctrl.handleTabChange(tab)"
+							 sending-data-to-tab="$ctrl.sendingDataToAnotherTab(data, item)" message-sending="$ctrl.messageSending"></factory>
+					<choice-type ng-if="$ctrl.selectedTab.id=='choiceType'"></choice-type>
+					<wic-leb-component ng-if="$ctrl.selectedTab.id=='wicLebComponent'" ></wic-leb-component>
+					<choice-option ng-if="$ctrl.selectedTab.id=='choice'"
+								   on-handle-tab-change="$ctrl.handleTabChange(tab)"
+								   sending-data-to-tab="$ctrl.sendingDataToAnotherTab(data, item)"
+								   message-sending="$ctrl.messageSending">
+					</choice-option>
+					<country-code-component ng-if="$ctrl.selectedTab.id=='countryCode'" ></country-code-component>
+					<product-brand ng-if="$ctrl.selectedTab.id=='productBrand'"></product-brand>
+					<state-warning-component  ng-if="$ctrl.selectedTab.id=='stateWarnings'"></state-warning-component>
+					<product-sub-brand ng-if="$ctrl.selectedTab.id=='productSubBrand'"></product-sub-brand>
+					<product-line-brand-component ng-if="$ctrl.selectedTab.id=='productLineBrand'"></product-line-brand-component>
+					<product-group-type-component ng-if="$ctrl.selectedTab.id=='productGroupType'"></product-group-type-component>
+					<product-category ng-if="$ctrl.selectedTab.id=='productCategory'"></product-category>
+					<tobacco-product-type-code-component ng-if="$ctrl.selectedTab.id=='tobaccoProductTypeCode'"></tobacco-product-type-code-component>
+					<generic-code-table ng-if="$ctrl.showGenericCodeTable" table-selected="$ctrl.genericCodeTableSelected"></generic-code-table>
+					<product-line-component ng-if="$ctrl.selectedTab.id=='productLine'"></product-line-component>
+					<top-2-top-component ng-if="$ctrl.selectedTab.id=='top2Top'"></top-2-top-component>
+					<tier-code-component ng-if="$ctrl.selectedTab.id=='tierCode'"></tier-code-component>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

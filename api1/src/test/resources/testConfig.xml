@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ testConfig.xml
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+		xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+
+		xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+       "
+	>
+
+    <beans profile="!functional-test">
+
+        <jdbc:embedded-database id="h2DataSource" type="H2">
+            <jdbc:script location="classpath*:db/createTables.sql" />
+            <jdbc:script location="classpath*:db/createGdsnTables.sql" />
+            <jdbc:script location="classpath*:db/loadProdDel.sql" />
+            <jdbc:script location="classpath*:db/loadItemMaster.sql" />
+            <jdbc:script location="classpath*:db/loadWhseLocItm.sql" />
+            <jdbc:script location="classpath*:db/loadProdScnCodes.sql" />
+            <jdbc:script location="classpath*:db/loadProductMaster.sql" />
+            <jdbc:script location="classpath*:db/loadProdItem.sql" />
+            <jdbc:script location="classpath*:db/loadPdAssociatedUpc.sql" />
+            <jdbc:script location="classpath*:db/loadPdShipper.sql" />
+			<jdbc:script location="classpath*:db/loadPdUpc.sql" />
+			<jdbc:script location="classpath*:db/loadProductDeletesControlParameters.sql" />
+			<jdbc:script location="classpath*:db/loadProductDeletesExceptionRule.sql" />
+			<jdbc:script location="classpath*:db/loadStrDept.sql" />
+			<jdbc:script location="classpath*:db/loadPdClassCommodity.sql" />
+			<jdbc:script location="classpath*:db/loadPdClsComSubCom.sql" />
+			<jdbc:script location="classpath*:db/loadProdDelExcpAud" />
+			<jdbc:script location="classpath*:db/loadProdDelParmAud" />
+			<jdbc:script location="classpath*:db/loadWhseLocItmExtn.sql" />
+			<jdbc:script location="classpath*:db/loadItmNtDeldRsn.sql" />
+			<jdbc:script location="classpath*:db/loadBdm.sql" />
+			<jdbc:script location="classpath*:db/loadMstDtaExtnAttr.sql" />
+			<jdbc:script location="classpath*:db/loadSrcSystem.sql" />
+			<jdbc:script location="classpath*:db/loadIngredient.sql" />
+			<jdbc:script location="classpath*:db/loadSlScalescan" />
+			<jdbc:script location="classpath*:db/loadSlLabelFormat.sql" />
+            <jdbc:script location="classpath*:db/loadVendSubscription.sql" />
+        </jdbc:embedded-database>
+        
+            <!-- Entity manager -->
+        <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+            <property name="dataSource" ref="h2DataSource" />
+            <property name="jpaVendorAdapter">
+                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+            </property>
+            <property name="packagesToScan">
+                <array>
+                    <value>com.heb.pm</value>
+                    <value>com.heb.util.jpa</value>
+                </array>
+            </property>
+            <property name="jpaProperties">
+                <props>
+                    <prop key="hibernate.dialect">
+                        org.hibernate.dialect.H2Dialect
+                    </prop>
+                    <prop key="hibernate.max_fetch_depth">3</prop>
+                    <prop key="hibernate.jdbc.fetch_size">50</prop>
+                    <prop key="hibernate.jdbc.batch_size">10</prop>
+                    <prop key="hibernate.show_sql">true</prop>
+                    <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+                </props>
+            </property>
+        </bean>
+
+        <!-- Transaction manager -->
+        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+            <property name="entityManagerFactory" ref="emf"/>
+        </bean>
+
+        <!-- Package to search for JPA objects. -->
+        <jpa:repositories base-package="com.heb.pm"
+                          entity-manager-factory-ref="emf"
+                          transaction-manager-ref="transactionManager"/>
+	</beans>
+</beans>

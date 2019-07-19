@@ -1,0 +1,151 @@
+<!--
+  ~ AuthorizeItem.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div id="authorization"  class="container-fluid"  can-edit="AT_JVSS_01">
+	<div ng-show="!$ctrl.isWaiting">
+	<div class="col-lg-2">&nbsp;</div>
+	<div class="col-lg-8">
+		<div class="col-lg-12" style="margin-bottom: 10px;">
+			<div class="col-lg-6" style="padding-top: 10px;">
+				<div class="row">
+					<div class="form-group col-lg-3">
+						<label style="font-weight: bold; width: 100%">UPC</label>
+					</div>
+					<div class="form-group col-lg-9">
+						<label style="font-weight: bold; width: 100%">:&nbsp;&nbsp;{{$ctrl.selectedAuthorizeItem.upc}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-3">
+						<label style="font-weight: bold; width: 100%">Description</label>
+					</div>
+					<div class="form-group col-lg-9">
+						<label style="font-weight: bold; width: 100%">:&nbsp;&nbsp;{{$ctrl.selectedAuthorizeItem.productDescription}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6" style="padding-top: 10px;">
+				<div class="row">
+					<div class="form-group col-lg-3">
+						<label style="font-weight: bold; width: 100%">Vendor ID</label>
+					</div>
+					<div class="form-group col-lg-9">
+						<label style="font-weight: bold; width: 100%">:&nbsp;&nbsp;{{$ctrl.selectedAuthorizeItem.vendorId}}</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-3">
+						<label style="font-weight: bold; width: 100%">Vendor Name</label>
+					</div>
+					<div class="form-group col-lg-9">
+						<label style="font-weight: bold; width: 100%">:&nbsp;&nbsp;{{$ctrl.selectedAuthorizeItem.vendorName}}</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if="$ctrl.flexWeightSwitch == true" class="col-lg-12">
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Unit Size</label>
+				<input  class="form-control" ng-model="$ctrl.selectedAuthorizeItem.quantity"
+					   type="text"  ng-disabled="true"  >
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Unit of Measure</label>
+				<input class="form-control" ng-model="$ctrl.selectedAuthorizeItem.retailUnitOfMeasureDes"
+					   type="text"  ng-disabled="true"  >
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Size</label>
+				<input id="size" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.tagSize"
+					   type="text" ng-disabled="true" />
+			</div>
+		</div>
+		<!-- Cost -->
+		<div class="col-lg-12">
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Unit Cost $</label>
+				<input id="unitCost" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.unitCost"
+					   type="text"   ng-disabled="true"
+					   maxlength="6" />
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Master Pack</label>
+				<input id="masterPack" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.masterPack"
+					   type="text"  ng-disabled="true"
+					   maxlength="4"/>
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">Case List Cost $</label>
+				<input id="caseListCost" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.caseListCost"
+					   type="text" ng-disabled="true"/>
+			</div>
+		</div>
+		<!-- Retail -->
+		<div class="col-lg-12">
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%"><strong>Retail</strong></label>
+				<input id="retail" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.retail"
+					   type="text"  oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+					   maxlength="3" ng-blur="$ctrl.correctRetail()"/>
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%"><strong>for $</strong></label>
+				<input id="retailFor" class="form-control" ng-model="$ctrl.selectedAuthorizeItem.retailFor"
+					   type="text" decimal-only  decimal-places="2"
+					   maxlength="7"/>
+			</div>
+		</div>
+		<!-- Store -->
+		<div class="col-lg-12">
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%"><strong>Stores for Authorization</strong></label>
+				<input class="form-control" ng-model="$ctrl.selectedStore.label"
+					type="text" ng-disabled="true"/>
+			</div>
+			<div class="form-group col-lg-4">
+				<label style="font-weight: bold; width: 100%">&nbsp;</label>
+				<div>
+					<button type="button" class="btn btn-success" style="font-weight: bold" aria-label="Submit"
+							ng-click="$ctrl.submitAuthorizeItem()" data-ng-disabled="$ctrl.isWaiting"> Submit
+					</button>
+
+					<button type="button" class="btn btn-danger" style="font-weight: bold" aria-label="Cancel"
+							ng-click="$ctrl.showItemSearchScreen()"> Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-2">&nbsp;</div>
+	<!-- Confirm message--->
+	<div id="confirmModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.confirmTitle}}</h5>
+				</div>
+				<div class="modal-body">
+					<h5 ng-bind-html="$ctrl.confirmMessage"></h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.confirmYesActionHandle()" >
+						Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+						No
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<loading-spinner ng-show="$ctrl.isWaiting">
+	</loading-spinner>
+</div>

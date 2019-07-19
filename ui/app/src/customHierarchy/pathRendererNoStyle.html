@@ -1,0 +1,5 @@
+<span>{{data.childDescription.shortDescription}}</span>
+<span ng-if="$ctrl.hasHierarchyLevelChildren(data)"> ->
+	<span ng-repeat="data in data.childRelationships" ng-include="'src/customHierarchy/pathRendererNoStyle.html'">
+	 </span>
+</span>

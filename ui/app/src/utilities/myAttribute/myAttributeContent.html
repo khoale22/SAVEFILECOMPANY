@@ -1,0 +1,72 @@
+<!--
+myAttributeContent.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.17.0
+  -->
+<table show-filter="true" ng-table="tableParams"
+	   class="table-heb table-scroll table-bordered table-striped"
+	   style="width: 100%;border-width: 0px;">
+	<thead>
+	<tr>
+		<th style="width:33%;cursor: pointer;border-width: 0px;" ng-style="{width:$ctrl.isModal?'31%':'32%'}" ng-click="$ctrl.sortBy('attributeName')" >Attribute Name
+			<span class="glyphicon glyphicon-triangle-bottom"
+				  ng-show="propertyName === 'attributeName' && reverse == true"></span>
+			<span class="glyphicon glyphicon-triangle-top"
+				  ng-show="propertyName === 'attributeName' && reverse == false"></span>
+		</th>
+		<th style="width:33%;cursor: pointer; border-width: 0px;"  ng-style="{width:$ctrl.isModal?'31%':'32%'}" ng-click="$ctrl.sortBy('existingApplication')" >Existing Application
+			<span class="glyphicon glyphicon-triangle-bottom"
+				  ng-show="propertyName === 'existingApplication' && reverse == true"></span>
+			<span class="glyphicon glyphicon-triangle-top"
+				  ng-show="propertyName === 'existingApplication' && reverse == false"></span>
+		</th>
+		<th style="width:34%;cursor: pointer;border-width: 0px;"  ng-click="$ctrl.sortBy('newScreen')">New Screen
+			<span class="glyphicon glyphicon-triangle-bottom"
+				  ng-show="propertyName === 'newScreen'  && reverse == true"></span>
+			<span class="glyphicon glyphicon-triangle-top"
+				  ng-show="propertyName === 'newScreen' && reverse == false"></span>
+		</th>
+	</tr>
+	<tr>
+		<th style="width:33%;border-width: 0px;" data-ng-disabled="$ctrl.isWaiting" ng-style="{width:$ctrl.isModal?'31%':'32%'}"><input ng-model="filter.attributeName"
+																		 class="form-control"
+																		 title="Input a Attribute Name to filter"
+																		 data-ng-disabled="$ctrl.isWaiting"/></th>
+		<th style="width:33%;border-width: 0px;" data-ng-disabled="$ctrl.isWaiting" ng-style="{width:$ctrl.isModal?'31%':'32%'}"><input ng-model="filter.existingApplication"
+																		 class="form-control"
+																		 title="Input a Existing Application to filter"
+																		 data-ng-disabled="$ctrl.isWaiting"/></th>
+		<th style="width:34%;border-width: 0px;" data-ng-disabled="$ctrl.isWaiting"><input ng-model="filter.newScreen"
+																		 class="form-control"
+																		 title="Input a New Screen to filter"
+																		 data-ng-disabled="$ctrl.isWaiting"/></th>
+	</tr>
+	</thead>
+	<tbody style="max-height: 500px;">
+	<tr ng-repeat="attributeMapping in $data | orderBy : propertyName: reverse: localeSensitiveComparator"
+		ng-if="!$ctrl.isWaiting">
+		<td style="width:33%;border-left-width: 0px;border-bottom-width:0px;">
+			<label>{{attributeMapping.attributeName}}</label>
+		</td>
+		<td style="width:33%;border-bottom-width:0px;">
+			<label>{{attributeMapping.existingApplication}}</label>
+		</td>
+		<td style="width:34%;border-bottom-width:0px;">
+			<label>{{attributeMapping.newScreen}}</label>
+		</td>
+	</tr>
+	<tr ng-if="$ctrl.isWaiting">
+		<td style="border-width: 0px;">
+			<loading-spinner>
+			</loading-spinner>
+		</td>
+	</tr>
+	</tbody>
+</table>

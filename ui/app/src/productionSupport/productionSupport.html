@@ -1,0 +1,42 @@
+<!--
+  ~ productionSupport.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+
+<div class="col-md-12 container-fluid" ng-cloak="true" id="productDeleteDiv"
+	 ng-controller="ProductionSupportController as productionSupportController"
+	 ng-init=productionSupportController.init()>
+
+	<!-- Error panel -->
+	<div class="row" data-ng-if="productionSupportController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+			{{productionSupportController.error}}</span>
+	</div>
+	<!-- Success panel -->
+	<div class="row" data-ng-if="productionSupportController.jobStatus">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">
+			{{productionSupportController.jobStatus}}</span>
+	</div>
+
+	<!-- Job running panel. -->
+	<div class="row">
+
+		<div class="col-md-12" can-edit="IS_JOBS_01">
+			<!-- Dropdown with list of jobs. -->
+			<span>Job to run:</span>
+			<select ng-model="productionSupportController.selectedJob">
+				<option ng-repeat="(job, desc) in productionSupportController.jobList" value="{{job}}">{{desc}}</option>
+			</select>
+
+			<!-- Button to run the job. -->
+			<button ng-click="productionSupportController.runJob();" class="btn btn-primary ">Run Job</button>
+
+		</div>
+
+	</div>
+</div>

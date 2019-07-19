@@ -1,0 +1,48 @@
+<div ng-show="$ctrl.isCollapseSellingUnit" ng-click="$ctrl.expandSellingUnit()">
+	<canvas id="sellingUnitCanvas" width="25" height="100%"
+			class="selling-unit-collapse-button"></canvas>
+</div>
+<div  ng-show="!$ctrl.isCollapseSellingUnit" ng-class="!$ctrl.isCollapseCasePack?'col-md-6':'col-md-12'" style="padding-right: 0px;">
+	<div style="display: inline-block; padding-right: 4px">Selling Units</div>
+	<div data-ng-click="$ctrl.collapseSellingUnit()" class="selling-unit-arrow-button">
+	</div>
+	<div  style="padding-top: 10px" ng-style="$ctrl.getHeaderStyle()">
+	<table class="table-heb table-bordered table-striped"
+		   width="100%">
+		<colgroup>
+			<col width="30%" />
+			<col width="20%" />
+			<col width="20%" />
+			<col width="30%" />
+		</colgroup>
+		<thead>
+		<tr style="border-bottom: hidden !important;">
+			<th style="text-align: center">Selling Unit UPC</th>
+			<th style="text-align: center">Bonus</th>
+			<th style="text-align: center">Size</th>
+			<th style="text-align: center">Product Primary UPC</th>
+		</tr>
+		</thead>
+	</table>
+</div>
+	<div style="height: 65px" id="sellingUnitTable2" ng-style="$ctrl.getGridStyles()">
+		<table class="table-heb table-bordered table-striped"  id="upcTable"
+		   width="100%">
+		<colgroup>
+			<col width="30%" />
+			<col width="20%" />
+			<col width="20%" />
+			<col width="30%" />
+		</colgroup>
+		<tr ng-repeat="sellingUnit in $ctrl.sellingUnits track by $index"
+			ng-class="{'bg-primary row-selected': sellingUnit.isSelected}"
+			data-ng-click="$ctrl.confirmRowSelect(sellingUnit)">
+				<td id="{{'sellingUnit' + $index}}" style="text-align: center">{{sellingUnit.upc}}</td>
+			<td style="text-align: center">{{sellingUnit.bonusSwitch | boolean_yn}}</td>
+			<td style="text-align: center">{{sellingUnit.tagSize}}</td>
+			<td style="text-align: center">{{sellingUnit.productPrimary | boolean_yn}}</td>
+		</tr>
+	</table>
+</div>
+</div>
+

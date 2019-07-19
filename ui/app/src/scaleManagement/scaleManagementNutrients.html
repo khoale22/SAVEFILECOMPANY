@@ -1,0 +1,266 @@
+<div class="col-md-12 container-fluid" ng-controller="ScaleManagementNutrientsController as scaleManagementNutrientsController"
+	 ng-init="scaleManagementNutrientsController.init()">
+	<div class="row">
+		<div class="row" data-ng-if="scaleManagementNutrientsController.success">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.success}}</span>
+		</div>
+		<div class="row" data-ng-if="scaleManagementNutrientsController.error">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.error}}</span>
+		</div>
+		<div class="col-md-8">
+			<div class="panel-group">
+				<div class="panel panel-primary" style="min-width: 1247px" >
+					<div class="panel-heading">Nutrients Search
+						<i ng-click="scaleManagementNutrientsController.searchPanelVisible = !scaleManagementNutrientsController.searchPanelVisible" class="pull-right pointer"
+						   ng-class="{'glyphicon glyphicon-minus': scaleManagementNutrientsController.searchPanelVisible, 'glyphicon glyphicon-plus': !scaleManagementNutrientsController.searchPanelVisible}">
+						</i>
+					</div>
+					<div ng-show="scaleManagementNutrientsController.searchPanelVisible">
+						<div class="panel-body">
+							<div class="row">
+								<!-- Radio buttons for list type (IngredientCode, Ingredient Statement, Description) . -->
+								<div class="col-md-12">
+									<label>
+										<input type="radio" ng-model="scaleManagementNutrientsController.selectionType"
+											   value="{{scaleManagementNutrientsController.NUTRIENT_CODE}}"
+											   ng-click="scaleManagementNutrientsController.selectionTypeChanged()"/>Nutrient Code
+									</label>
+									<label>
+										<input type="radio" ng-model="scaleManagementNutrientsController.selectionType"
+											   value="{{scaleManagementNutrientsController.DESCRIPTION}}"
+											   ng-click="scaleManagementNutrientsController.selectionTypeChanged()"/>Description
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="row">
+										<!-- The text box for the user input. -->
+										<div class="col-md-6" style="min-width: 349px">
+											<textarea data-ng-model="scaleManagementNutrientsController.searchSelection" rows="8" style="min-width: 334px"
+													  placeholder="{{scaleManagementNutrientsController.getTextPlaceHolder()}}" class="col-md-12 noresize">
+											</textarea>
+										</div>
+										<div class="col-md-6">
+											<div class="row">
+												<div class="col-md-6">
+													<button data-ng-click="scaleManagementNutrientsController.newSearch()" class="btn btn-primary btn-block" data-ng-disabled="scaleManagementNutrientsController.searchSelection == null">Search</button>
+													<button data-ng-click="scaleManagementNutrientsController.searchAll()" class="btn btn-primary btn-block">Search All</button>
+												</div>
+												<div class="col-md-6">
+													<button data-ng-click="scaleManagementNutrientsController.clearBasicSearch()" class="btn btn-primary btn-block" data-ng-disabled="scaleManagementNutrientsController.searchSelection == null">Clear</button>
+													<button data-ng-click="scaleManagementNutrientsController.addRow()"
+															class="btn btn-primary btn-block"
+															data-ng-disabled="!scaleManagementNutrientsController.canEditNutrients()">Add</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<loading-spinner ng-show="scaleManagementNutrientsController.isWaiting">
+		</loading-spinner>
+
+		<div id="notFoundModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header" style="background-color: #337ab7">
+						<div class="modal-title inline-block" style="color: #ffffff">
+
+							These are the {{scaleManagementNutrientsController.selectionType}}s that weren't
+							found:
+						</div>
+						<button type="button" class="inline-block pull-right btn btn-default btn-sm" data-dismiss="modal">Close</button>
+					</div>
+					<div class="modal-body">
+						<div ng-repeat="nutrientCodes in scaleManagementNutrientsController.missingValues.noMatchList">{{nutrientCodes}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-12">
+			<div class="row" data-ng-if="!scaleManagementNutrientsController.isWaiting && scaleManagementNutrientsController.deleteMessage != null">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.deleteMessage}}</span>
+			</div>
+			<div class="row" data-ng-if="scaleManagementNutrientsController.modifyMessage">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.modifyMessage}}</span>
+			</div>
+			<div class="row" data-ng-if="scaleManagementNutrientsController.modifyError">
+				<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.modifyError}}</span>
+			</div>
+			<div class="panel-group" ng-show="!scaleManagementNutrientsController.isWaiting && scaleManagementNutrientsController.data != null">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<div ng-if="!scaleManagementNutrientsController.isAddingNutrient && scaleManagementNutrientsController.resultMessage != null">
+							<h4 class="panel-title inline-block"><b>Search Results</b></h4>
+							<h5 class="panel-title inline-block">{{scaleManagementNutrientsController.resultMessage}}</h5>
+
+							<div class="inline-block pull-right" ng-if="scaleManagementNutrientsController.showMatchCount()">
+								<h5 ng-if="scaleManagementNutrientsController.missingValues.matchCount > 0" class="green-text panel-title inline-block">
+									{{scaleManagementNutrientsController.missingValues.matchCount}}
+									<span ng-if="scaleManagementNutrientsController.missingValues.matchCount ==  1">{{scaleManagementNutrientsController.selectionType}}</span>
+									<span ng-if="scaleManagementNutrientsController.missingValues.matchCount >  1">{{scaleManagementNutrientsController.selectionType}}s</span>
+									found</h5>
+								<h5 ng-if="scaleManagementNutrientsController.missingValues.noMatchCount > 0" data-toggle="modal" data-target="#notFoundModal"
+									class="pointer panel-title inline-block pull-right yellow-underline-text-with-padding">
+									{{scaleManagementNutrientsController.missingValues.noMatchCount}}
+									<span ng-if="scaleManagementNutrientsController.missingValues.noMatchCount ==  1">{{scaleManagementNutrientsController.selectionType}}</span>
+									<span ng-if="scaleManagementNutrientsController.missingValues.noMatchCount >  1">{{scaleManagementNutrientsController.selectionType}}s</span>
+									not	found</h5>
+							</div>
+						</div>
+						<div ng-if="scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.resultMessage == null">New Nutrient</div>
+					</div>
+					<div class="panel-body" ng-class="{'ng-table-pager-none' : scaleManagementNutrientsController.noPagination}">
+						<table ng-table="scaleManagementNutrientsController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr style="color: white; background-color: #00476b">
+								<th style="min-width: 100px">Nutrient Code</th>
+								<th style="min-width: 100px">Description</th>
+								<th style="min-width: 100px">UOM</th>
+								<th style="min-width: 100px">FED LBL Sequence</th>
+								<th style="min-width: 100px">RDA Activity</th>
+								<th style="min-width: 100px">Percent of DV</th>
+								<th style="min-width: 100px">Last Modified Date</th>
+								<th can-edit = "SM_NTRN_01" style="min-width: 100px"></th>
+
+							</tr>
+							<tr ng-repeat="nutrient in scaleManagementNutrientsController.data track by $index">
+								<td>
+									<div ng-if="!scaleManagementNutrientsController.isAddingNutrient">
+										<a class="pointer" ng-click="scaleManagementNutrientsController.getRoundingRules(nutrient)">{{nutrient.nutrientCode}}</a>
+									</div>
+									<input type="text" ng-model="nutrient.nutrientCode"
+										   ng-if="scaleManagementNutrientsController.isAddingNutrient"
+										   ng-disabled="(!scaleManagementNutrientsController.isAddingNutrient && !scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))"
+										   ng-change="scaleManagementNutrientsController.isCodeAvailable()">
+									<strong
+										ng-if="scaleManagementNutrientsController.isAddingNutrient">
+										<strong ng-if="scaleManagementNutrientsController.isNutrientCodeAvailable == 'Available'" style="color: green">{{scaleManagementNutrientsController.isNutrientCodeAvailable}}</strong>
+										<strong ng-if="scaleManagementNutrientsController.isNutrientCodeAvailable != 'Available'" style="color: darkorange">{{scaleManagementNutrientsController.isNutrientCodeAvailable}}</strong>
+
+									</strong>
+								</td>
+								<td>
+									<div view-only="SM_NTRN_01">
+										{{nutrient.nutrientDescription}}
+									</div>
+									<div can-edit="SM_NTRN_01">
+										<input type="text" style="max-width: 125px" ng-disabled="!(scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))" ng-model="nutrient.nutrientDescription">
+									</div>
+								</td>
+								<td>
+									<div view-only="SM_NTRN_01">
+										{{nutrient.nutrientUom.displayName}}
+									</div>
+									<div can-edit="SM_NTRN_01">
+										<ui-select ng-model="nutrient.nutrientUom"
+												   theme="bootstrap"
+												   style="width: 176px"
+												   ng-disabled="!(scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))"
+												   id="nutrientUomSelection"
+												   title="Choose a UOM">
+											<ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+											<ui-select-choices repeat="element in scaleManagementNutrientsController.valueList"
+															   refresh="scaleManagementNutrientsController.getCurrentDropDownResults($select.search)"
+															   refresh-delay="0">{{element.displayName}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</td>
+								<td>
+									<div view-only="SM_NTRN_01">
+										{{nutrient.fedLblSequence}}
+									</div>
+									<div can-edit="SM_NTRN_01">
+										<input type="text" style="max-width: 60px" ng-disabled="!(scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))" ng-model="nutrient.fedLblSequence">
+									</div>
+								</td>
+								<td>
+									<div view-only="SM_NTRN_01">
+										{{nutrient.recommendedDailyAmount}}
+									</div>
+									<div can-edit="SM_NTRN_01">
+										<input type="text" style="max-width: 60px" ng-disabled="!(scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))" ng-model="nutrient.recommendedDailyAmount">
+									</div>
+								</td>
+								<td>
+									<input ng-disabled="!(scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index))" type="checkbox" ng-checked="nutrient.usePercentDailyValue" style="max-width: 60px" ng-model="nutrient.usePercentDailyValue" data-ng-change="scaleManagementNutrientsController.convertPercentOfDeviation()">
+								</td>
+								<td>{{nutrient.lstModifiedDate | date: 'MM/dd/yyyy'}}</td>
+								<td can-edit="SM_NTRN_01">
+									<i data-ng-click="scaleManagementNutrientsController.editNutrition($index, nutrient)" class="glyphicon glyphicon-edit pointer" ng-if="!scaleManagementNutrientsController.isAddingNutrient && !scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index)" style="color: orange; font-size: large"></i>
+									<fieldset data-ng-click="scaleManagementNutrientsController.saveNutrition()" class="glyphicon glyphicon-floppy-disk pointer" ng-if="scaleManagementNutrientsController.isAddingNutrient || scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index)"
+											  data-ng-disabled="!scaleManagementNutrientsController.isNutrientCodeAvailable && scaleManagementNutrientsController.isAddingNutrient" style="color: green; font-size: large"
+											  ng-style="{'cursor': !scaleManagementNutrientsController.isNutrientCodeAvailable && scaleManagementNutrientsController.isAddingNutrient ? 'not-allowed': 'pointer'}"></fieldset>
+									<i data-ng-click="scaleManagementNutrientsController.cancelEdit($index)" class="glyphicon glyphicon-ban-circle pointer"  ng-if="scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index)" style="color: red; font-size: large"></i>
+									<i data-ng-click="scaleManagementNutrientsController.deleteNutrient($index)" class="glyphicon glyphicon-remove pointer"  ng-if="!scaleManagementNutrientsController.isAddingNutrient && !scaleManagementNutrientsController.compareEditingIndexToCurrentIndex($index)" style="color: red; font-size: large"></i>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<loading-spinner ng-show="scaleManagementNutrientsController.isWaitingForRoundRules">
+		</loading-spinner>
+		<div class="row" data-ng-if="scaleManagementNutrientsController.roundingRulesSuccess">
+			<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.roundingRulesSuccess}}</span>
+		</div>
+		<div class="row" data-ng-if="scaleManagementNutrientsController.roundingRulesError">
+			<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{scaleManagementNutrientsController.roundingRulesError}}</span>
+		</div>
+		<div class="col-md-12">
+			<div class="panel-group" ng-show="scaleManagementNutrientsController.nutrientCode != null">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h4 class="panel-title inline-block"><b>Rounding Rules</b> for {{scaleManagementNutrientsController.nutrientCode.nutrientDescription}}[{{scaleManagementNutrientsController.nutrientCode.nutrientCode}}]</h4>
+					</div>
+					<div class="panel-body">
+						<table class="table-heb table-bordered table-striped" style="width: 100%">
+							<tr style="color: white; background-color: #00476b">
+								<th style="text-align: center">Beginning Range</th>
+								<th style="text-align: center">Ending Range</th>
+								<th style="text-align: center">Increment Value</th>
+								<th ng-show="scaleManagementNutrientsController.isEditing  && scaleManagementNutrientsController.roundingRulesData.length > 0"></th>
+								<th ng-show="scaleManagementNutrientsController.isBoundaryErrorMessage" style="text-align: center">Error Messages</th>
+							</tr>
+							<tr ng-repeat="roundingRule in scaleManagementNutrientsController.roundingRulesData track by $index">
+								<td>
+									<div ng-if="!scaleManagementNutrientsController.isEditing" ng-model="roundingRule.key.lowerBound">{{roundingRule.key.lowerBound}}</div>
+									<input type="number" ng-if="scaleManagementNutrientsController.isEditing" ng-model="roundingRule.key.lowerBound">
+								</td>
+								<td>
+									<div ng-if="!scaleManagementNutrientsController.isEditing" ng-model="roundingRule.upperBound">{{roundingRule.upperBound}}</div>
+									<input type="number" ng-if="scaleManagementNutrientsController.isEditing" ng-model="roundingRule.upperBound">
+								</td>
+								<td>
+									<div ng-if="!scaleManagementNutrientsController.isEditing" ng-model="roundingRule.incrementQuantity">{{roundingRule.incrementQuantity}}</div>
+									<input type="number" ng-if="scaleManagementNutrientsController.isEditing" ng-model="roundingRule.incrementQuantity">
+								</td>
+								<td ng-show="scaleManagementNutrientsController.isEditing">
+									<i data-ng-click="scaleManagementNutrientsController.removeRoundingRule($index)" class="glyphicon glyphicon-remove pointer" style="color: red; font-size: medium"></i>
+								</td>
+								<td ng-show="scaleManagementNutrientsController.isEditing && scaleManagementNutrientsController.isBoundaryErrorMessage">{{roundingRule.boundaryErrorMessage}}</td>
+							</tr>
+						</table>
+						<div can-edit="SM_NTRN_01" class="inline-block pull-right" style="padding-top: 5px">
+							<div class="glyphicon glyphicon-edit pointer" data-ng-click="scaleManagementNutrientsController.editRoundingRules();" ng-show="!scaleManagementNutrientsController.isEditing" style="color: orange; font-size: large"></div>
+							<div class="glyphicon glyphicon-plus pointer" ng-click="scaleManagementNutrientsController.addRoundingRuleRow()" ng-show="scaleManagementNutrientsController.isEditing" style="color: green; font-size: large"></div>
+							<div class="glyphicon glyphicon-ban-circle pointer"  ng-click="scaleManagementNutrientsController.refresh(); scaleManagementNutrientsController.setEditing(false);" ng-show="scaleManagementNutrientsController.isEditing" style="color: red; font-size: large"></div>
+							<div class="glyphicon glyphicon glyphicon-refresh pointer" data-ng-click="scaleManagementNutrientsController.refresh()" ng-show="scaleManagementNutrientsController.isEditing" style="font-size: large"></div>
+							<div class="glyphicon glyphicon-floppy-disk pointer" data-ng-click="scaleManagementNutrientsController.saveRoundingRules()"  ng-show="scaleManagementNutrientsController.isEditing" style="color: blue; font-size: large"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

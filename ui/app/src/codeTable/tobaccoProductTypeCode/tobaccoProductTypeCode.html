@@ -1,0 +1,99 @@
+<!--
+  ~ tobaccoProductTypeCode.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn75469
+  @since 2.16.0
+  -->
+<div can-view="CT_TPTC_01" ng-init="$ctrl.init()">
+	<div ng-show="!$ctrl.isWaiting">
+		<div class="row" data-ng-if="$ctrl.error" style="display: inline;">
+			<div style="text-align: center;margin-top: 10px;margin-bottom: 10px;">
+				<span class="alert alert-danger text-center myfade" style="padding: 15px !important;" ng-bind-html="$ctrl.error"></span>
+			</div>
+		</div>
+		<div class="row" data-ng-if="$ctrl.success" style="display: inline;">
+			<div style="text-align: center;margin-top: 10px;margin-bottom: 10px;">
+				<span class="alert alert-success text-center myfade">{{$ctrl.success}}</span>
+			</div>
+		</div>
+	</div>
+	<div class="panel-body margin-top-10" style="display: inline-block;width: 100%;">
+		<loading-spinner ng-show="$ctrl.isWaiting">
+		</loading-spinner>
+		<div class="" ng-show="!$ctrl.isWaiting"
+			 style=" min-height:400px; position: relative; float: left; width: 100%; padding: 0;">
+			<table ng-table="tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+				<thead>
+				<tr>
+					<th style="width:30%;">Tobacco Product Type Code</th>
+					<th style="width:30%;">Description</th>
+					<th style="width:30%;">Tax Rate($)</th>
+					<th style="width:10%;">Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="element in $data | orderBy:'tobaccoProductTypeCode'" style="height: 25px">
+					<td data-title="'Tobacco Product Type Code'">
+						{{element.tobaccoProductTypeCode}}
+					</td>
+					<td data-title="'Description'">
+						{{element.description}}
+					</td>
+					<td data-title="'Tax Rate($)'" ng-if="!element.isEditing">
+						{{element.taxRate| number:6}}
+					</td>
+					<td data-title="'Tax Rate($)'" ng-if="element.isEditing">
+						<input class="form-control taxRateInput" type="text" maxlength="10"
+							   onkeypress="return (event.charCode >=48 && event.charCode <=57) || event.charCode === 46"
+							   validation-tax-rate="Tax Rate value must be equal or greater than 0 and less than or equal 999.999999"
+							   empty-valid="Tax Rate is a mandatory field." ng-model="element.taxRate">
+					</td>
+					<td style="text-align: center" can-edit="CT_TPTC_01">
+						<button class="glyphicon glyphicon-edit pointer" title = "Edit" data-ng-disabled="$ctrl.hasOtherRowEditing"
+								ng-if="!element.isEditing" data-ng-click="$ctrl.enableRow(element)"
+								style="{{$ctrl.getButtonStyle(element.tobaccoProductTypeCode)}}">
+						</button>
+						<i title="Save" data-ng-click="$ctrl.saveData(element)"
+						   class="glyphicon glyphicon-floppy-disk pointer" ng-if="element.isEditing" style="color: green; font-size: large"></i>
+						<i class="glyphicon glyphicon-ban-circle pointer" title="Reset" data-ng-click="$ctrl.resetCurrentRow()"
+						   ng-if="element.isEditing" style="color: red; font-size: large"></i>
+					</td>
+					<td style="width:7%;text-align: center" view-only="CT_TPTC_01">
+						<button class="glyphicon glyphicon-edit pointer"  data-ng-disabled="true" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"></button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="confirmationModalSave" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.confirmationMessage}}</h5>
+			</div>
+			<div class="modal-footer" style="min-width: 300px">
+				<div>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							ng-click="$ctrl.saveData($ctrl.findTobaccoProductTypeByCode($ctrl.selectedRowId))">Yes
+					</button>
+					<button type="button" class="inline-block btn btn-danger btn-sm"
+							ng-click="$ctrl.doClosePopupConfirmation()">No
+					</button>
+					<button type="button" class="inline-block btn btn-success btn-sm"
+							data-ng-click="$ctrl.cancelConfirmDialog()">Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

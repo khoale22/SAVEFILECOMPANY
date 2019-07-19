@@ -1,0 +1,314 @@
+<!--
+  ~ productGroupTypeDetails.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn70529
+  @since 2.12.0
+  -->
+<div can-edit="CT_PDGT_01" ng-init="$ctrl.init()" style="margin-top: 10px;">
+	<div class="row">
+		<div class="col-md-12">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+			<!--Error span-->
+			<div class="row" data-ng-if="$ctrl.error" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-danger col-md-6 col-md-push-3 myfade text-center" role="alert" ng-bind-html="$ctrl.error"></span>
+			</div>
+			<!--Success span-->
+			<div class="row" data-ng-if="$ctrl.success" ng-show="!$ctrl.isWaitingForResponse">
+				<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+			</div>
+			<div ng-show="!$ctrl.isWaitingForResponse">
+				<!--Product Group Type Detail-->
+				<div class="product-group-type-details">
+					<div class="row">
+						<div class="col-md-6" style="padding-left: 0px;padding-right: 0px;"><label class="col-md-12">Product
+							Type ID
+							{{$ctrl.productGroupType.productGroupTypeCode}}</label></div>
+						<div class="col-md-6" style="vertical-align: middle;line-height: 25px;padding-left: 0px;padding-right: 0px;">
+							<label class="col-md-4">Product Group Type </label>
+							<div class="col-md-8" ng-class="$ctrl.errorProductGroupType?'has-error':''">
+								<input type="text" id="product-group-type-input" class="form-control" title="{{$ctrl.productGroupType.productGroupType.trim() == ''?'Product Group Type is a mandatory field.':''}}"
+								 ng-change="$ctrl.errorProductGroupType=false" maxlength="30" style="width:100%;height: 26px;" data-ng-trim="false" ng-model="$ctrl.productGroupType.productGroupType">
+							</div>
+						</div>
+					</div>
+					<div class="row margin-top-10">
+						<div class="col-md-6" style="vertical-align: middle;line-height: 25px;padding-left: 0px;padding-right: 0px;">
+							<label class="col-md-2">Department </label>
+							<div class="col-md-9 input-group-sm" ng-class="$ctrl.errorDepartment?'has-error':''" title="{{$ctrl.department.key == undefined?'Department is a mandatory field.':''}}">
+								<ui-select ng-model="$ctrl.department" required ng-change="$ctrl.errorDepartment=false" search-enabled="true" theme="bootstrap"
+								 on-select="$ctrl.selectDepartment($select.selected)">
+									<ui-select-match>
+										{{$select.selected.displayName}}
+									</ui-select-match>
+									<ui-select-choices repeat="department in $ctrl.departments | propsFilter: {displayName: $select.search}">{{department.displayName}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+						<div class="col-md-6" style="vertical-align: middle;line-height: 25px;padding-left: 0px;padding-right: 0px;">
+							<label class="col-md-4">Sub Department </label>
+							<div class="col-md-8 input-group-sm" ng-class="$ctrl.errorSubDepartment?'has-error':''" title="{{$ctrl.subDepartment.key == undefined?'Sub Department is a mandatory field.':''}}">
+								<ui-select ng-model="$ctrl.subDepartment" ng-disabled="$ctrl.isWaitingForLoadSubDepartment" ng-required="true" ng-change="$ctrl.errorSubDepartment=false" search-enabled="true"
+								 theme="bootstrap" ng-click="$ctrl.selectSubDepartment()">
+									<ui-select-match ng-required="true">
+										{{$select.selected.displayName}}
+									</ui-select-match>
+									<ui-select-choices repeat="subDepartment in $ctrl.subDepartments[$ctrl.department.key.department.trim()]" refresh="$ctrl.filterSubDepartment($select.search)"
+									 refresh-delay="0">{{subDepartment.displayName}}
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+					<!--Previous/Next-->
+					<div class="clearfix margin-top-10">
+						<div class=" inline-block pull-right">
+							<button class="btn btn-primary" ng-disabled="$ctrl.isFirstPage" data-ng-click="$ctrl.previousProductGroupType()">Previous</button>
+							<button class="btn btn-primary" ng-disabled="$ctrl.isLastPage" data-ng-click="$ctrl.nextProductGroupType()">Next
+							</button>
+						</div>
+					</div>
+					<!--Applicable Choice Types-->
+					<div class="clearfix margin-top-20">
+						<div class="divider-horizontal"></div>
+						<span style="position: relative;top: -13px; background: white;left: 42%;">Applicable Choice Types</span>
+						<div class="row">
+							<div class="col-md-5">
+								<div style="height: 152px;overflow: auto;margin-top: 10px;" >
+									<table id="product-group-choice-type-table" class="table-heb table-bordered table-striped" style="width: 100%; border: none;">
+										<thead>
+											<tr style="border-bottom: hidden !important;height: 25px;">
+												<th style="text-align: center; width : 10%"><input type="checkbox" ng-checked="$ctrl.checkAllProductGroupChoiceTypeFlag" ng-model="$ctrl.checkAllProductGroupChoiceTypeFlag"
+													 data-ng-change="$ctrl.checkAllProductGroupChoiceType()" /></th>
+												<th style="vertical-align: middle; width : 60%">Choice Type</th>
+												<th style="vertical-align: middle;">(Picker)</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="productGroupChoiceType in $ctrl.productGroupType.productGroupChoiceTypes track by $index " data-ng-click="$ctrl.selectChoiceType(productGroupChoiceType,$index)"
+											 class="{{$ctrl.selectedChoiceTypeIndex === $index?'row-selected white-text':''}}">
+												<td style="text-align: center; width : 10%"><input type="checkbox" ng-checked="choiceType.productGroupChoiceType" ng-model="productGroupChoiceType.isSelected"
+													 data-ng-change="$ctrl.setCheckAllProductGroupChoiceTypeFlag()" /></td>
+												<td style="vertical-align: middle; width : 60%">{{productGroupChoiceType.choiceType.description}}</td>
+												<td style="vertical-align: middle;text-align: center;">
+													<div ng-if="productGroupChoiceType.pickerSwitch">Y</div>
+													<div ng-if="!productGroupChoiceType.pickerSwitch">N</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="margin-top-10">
+									<button can-edit="CT_PDGT_01" class="btn btn-primary" ng-click="$ctrl.showAddChoiceTypeModal()">Add</button>
+									<button can-edit="CT_PDGT_01" class="btn btn-primary" ng-disabled="$ctrl.disabledRemoveChoiceTypeBtn()" ng-click="$ctrl.removeProductGroupChoiceType()">Remove
+									</button>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<span style="position: relative;top: 5px;margin-left: 12px;background: white;" ng-class="$ctrl.productGroupType.productGroupChoiceTypes.length > 0?'padding-left-5 padding-right-5':''">{{$ctrl.productGroupChoiceType.choiceType.description}}</span>
+								<div style="border: 1px solid grey;border-radius: 5px; padding: 12px;height: 160px;">
+									<div class="multiselect" ng-show="$ctrl.productGroupType.productGroupChoiceTypes.length > 0">
+										<label ng-repeat="choiceOption in $ctrl.choiceOptions"><input type="checkbox" data-ng-model="choiceOption.isSelected" data-ng-change="$ctrl.handleChoiceOptionSelected(choiceOption)" name="option[]" value="1"/> {{choiceOption.productChoiceText}}</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--Image List-->
+					<div class="margin-top-20">
+						<table ng-table="custProductGroupTableParams" class="table-heb table-bordered table-striped" style="width: 100%;">
+							<thead>
+								<tr style="border-bottom: hidden !important;height: 25px;">
+									<th class="col-md-1" style="vertical-align: middle;">ID</th>
+									<th class="col-md-1" style="vertical-align: middle;">Thumbnail Image</th>
+									<th class="col-md-3" style="vertical-align: middle;">Product Group Name</th>
+									<th class="col-md-3" style="vertical-align: middle;">Product Group Type</th>
+									<th class="col-md-4" style="vertical-align: middle;">Customer Facing Hierachy</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="product in $data track by $index">
+									<td class="col-md-1" style="vertical-align: middle;">
+										<a class="pointer" ng-click="$ctrl.goToCustProductGroupPage(product.custProductGroupId)">
+											{{product.custProductGroupId}}
+										</a>
+									</td>
+									<td class="col-md-1 text-center" style="vertical-align: middle; height: 45px;">
+										<img data-ng-show="!$ctrl.images[product.custProductGroupId].isLoading"
+											 ng-click="$ctrl.showFullImage(product.custProductGroupId)"
+											 data-ng-src="{{$ctrl.images[product.custProductGroupId.toString()].image}}"
+										 style="height: 40px; width: 40px;" />
+										<div data-ng-show="$ctrl.images[product.custProductGroupId].isLoading">
+											<span class="fa fa-spinner fa-spin" style="font-size:20px;"></span>
+										</div>
+									</td>
+									<td class="col-md-3" style="vertical-align: middle;">{{product.custProductGroupName}}</td>
+									<td class="col-md-3" style="vertical-align: middle;">{{$ctrl.productGroupTypeName}}</td>
+									<td class="col-md-4" style="vertical-align: middle;">
+										<a class="pointer" ng-if="product.lowestEntity" ng-click="$ctrl.goToCustomerHierarchy(product.lowestEntity.id)">
+											<span class="glyphicon glyphicon-arrow-right"></span>
+											{{product.lowestEntity.hierarchyPathDisplay}}
+										</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!--Buttons-->
+				<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+					<!-- View Mode-->
+					<button view-only="CT_PDGT_01" class="btn btn-primary" disabled="true">Save</button>
+					<button view-only="CT_PDGT_01" class="btn btn-primary" disabled="true">Reset
+					</button>
+					<!-- Edit Mode-->
+					<button can-edit="CT_PDGT_01" class="btn btn-primary" ng-click="$ctrl.saveProductGroupType()">Save</button>
+					<button can-edit="CT_PDGT_01" class="btn btn-primary" ng-click="$ctrl.resetData()">Reset
+					</button>
+					<button can-edit="CT_PDGT_01" class="btn btn-primary" data-ng-click="$ctrl.returnToListClick();">Return
+						To List
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="add-choice-type">
+	<!-- Upload File Modal-->
+	<div id="add-choice-type-modal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Choice Type</h5>
+				</div>
+				<div class="modal-body">
+					<div class="form-upload-image" style="margin: 10px 20px 0px 20px;">
+						<div class="form-group row margin-bottom-5">
+							<div class="col-sm-3" style="text-align: right; line-height: 2; font-size: 12px; padding-right: 0px;">Choice Type </div>
+							<div class="col-sm-7">
+								<input type="text" maxlength="30" class="form-control" id="choice-type" ng-model="filter.description" data-ng-change="$ctrl.setCheckAllFlag()">
+								<i class="glyphicon glyphicon-remove" style="float: right; font-size: 13px; margin-top: -19px; right: 5px; color: red;" ng-click="filter.description=''"
+								 ng-show="filter.description !== ''"></i>
+								<!--<i class="glyphicon glyphicon-search" style="float: right; font-size: 14px; color: lightslategrey; margin-top: -20px; right: -17px;"></i>-->
+							</div>
+						</div>
+
+						<div class="choice-type-table" ng-show="!$ctrl.isWaitingLoadChoiceType">
+							<table ng-table="choiceTypeTableParams" class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+								<thead>
+									<tr style="border-bottom: hidden !important;height: 25px;">
+										<th style="width:10%"><input type="checkbox" ng-checked="$ctrl.checkAllFlag" ng-model="$ctrl.checkAllFlag" data-ng-change="$ctrl.checkAllChoiceType()"
+											/></th>
+										<th style="width:25%; vertical-align: middle;">Choice Code</th>
+										<th style="width:35%; vertical-align: middle;">Choice Type</th>
+										<th style="width:30%; vertical-align: middle;">Choice Type (Picker)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="choiceType in $data track by $index">
+										<td style="text-align: center; width:10%; padding-top:6px">
+											<input type="checkbox" style="margin: 0px" ng-checked="choiceType.isSelected" ng-model="choiceType.isSelected" data-ng-change="$ctrl.setCheckAllFlag()"/>
+										</td>
+										<td style="width:25%">{{choiceType.choiceTypeCode}}</td>
+										<td style="width:35%">{{choiceType.description}} </td>
+										<td style="text-align: center; width:30%; padding-top:6px">
+											<input type="checkbox" style="margin: 0px" ng-checked="choiceType.isSelectedPicker" ng-model="choiceType.isSelectedPicker" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<loading-spinner ng-show="$ctrl.isWaitingLoadChoiceType" style="display: flow-root;">
+						</loading-spinner>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button " class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.addChoiceType()">OK</button>
+					<button type="button " class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- Common confirm modal -->
+<div id="common-confirm-modal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<!--					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+-->
+				<h5 class="modal-title" style="color: #ffffff">{{$ctrl.commonConfirmModalTitle}}</h5>
+			</div>
+			<div class="modal-body" style="font-size:14px;">
+				<p>{{$ctrl.commonConfirmModalContent}}</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" ng-show="$ctrl.typeModal == 'deleteChoiceType'" data-dismiss="modal" ng-click="$ctrl.doRemoveProductGroupChoiceType()">Yes</button>
+				<button type="button" class="btn btn-danger" ng-show="$ctrl.typeModal == 'deleteChoiceType'" data-dismiss="modal">No</button>
+
+				<button type="button" class="btn btn-danger" ng-show="$ctrl.typeModal == 'selectDepartment'" data-dismiss="modal">Close</button>
+
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="$ctrl.typeModal == 'changeProductGroupTypeShow'"
+				 ng-click="$ctrl.success = null;$ctrl.error = null; $ctrl.isChangeProductGroupTypeView=true; $ctrl.saveProductGroupType()">Yes</button>
+				<button type="button" class="btn btn-success" ng-show="$ctrl.typeModal == 'changeProductGroupTypeShow'"
+				 ng-click="$ctrl.success = null;$ctrl.error = null; $ctrl.isChangeProductGroupTypeView=true; $ctrl.noSaveData=true;$ctrl.closeModalAndChangeProductGroupTypeView()">No</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal" ng-show="$ctrl.typeModal == 'changeProductGroupTypeShow'"
+				 ng-click="$ctrl.isChangeProductGroupTypeView=false">Cancel</button>
+
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToList'" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.isReturnToList=true; $ctrl.saveProductGroupType()">Yes
+					</button>
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToList'" class="btn btn-success" ng-click="$ctrl.success = null;$ctrl.error = null;$ctrl.closeModalAndReturnToList();">No
+					</button>
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToList'" data-dismiss="modal" class="btn btn-danger" ng-click="$ctrl.isReturnToList = false">
+						Cancel
+				</button>
+
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToTab'" class="btn btn-primary" data-dismiss="modal" ng-click="$ctrl.isReturnToTab=true; $ctrl.saveProductGroupType()">Yes
+					</button>
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToTab'" class="btn btn-success" ng-click="$ctrl.success = null;$ctrl.error = null;$ctrl.isReturnToTab=true;$ctrl.closeModalAndReturnToTab();">No
+					</button>
+				<button type="button" ng-show="$ctrl.typeModal == 'returnToTab'" data-dismiss="modal" class="btn btn-danger" ng-click="$ctrl.isReturnToTab = false">
+						Cancel
+				</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="imageModal" class="modal fade" role="dialog">
+	<div class="modal-dialog" style="width: 100%;text-align: center">
+		<div style="display: flex; justify-content: center;">
+			<table style="margin-top: 10px;">
+				<tr><loading-spinner ng-show="$ctrl.waitingImage"/></tr>
+				<tr ng-show="!$ctrl.waitingImage">
+					<td>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0"
+								data-dismiss="modal" aria-label="Close">
+							<span class="glyphicon glyphicon-remove"></span>
+						</button>
+						<button type="button" class="btn btn-link" style="float: right; font-size: medium;color:orange;padding: 0;margin-right: 10px"
+								ng-click="$ctrl.downloadImage()">
+							<span class="glyphicon glyphicon-download-alt"></span>
+						</button>
+					</td>
+				</tr>
+				<tr ng-show="!$ctrl.waitingImage">
+					<td>
+						<img data-ng-src="{{$ctrl.imageBytes}}" style="max-height: 700px; max-width: 1000px;"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

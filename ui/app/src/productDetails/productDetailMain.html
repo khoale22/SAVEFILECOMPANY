@@ -1,0 +1,29 @@
+<!-- Top Pane - Starts -->
+<div class="col-md-12">
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<!-- Header Panel -- starts -->
+			<div ng-include="'src/productDetails/productDetailHeader.html'"></div>
+			<!-- Header Panel -- Ends -->
+			<!--</div>-->
+			<!-- Top Pane - Ends -->
+			<div class="panel-body">
+				<!-- Left Pane - Starts -->
+				<div class="col-md-2" style="padding: 0%;">
+					<div ng-include="'src/productDetails/productDetailTabs.html'"></div>
+				</div>
+				<!-- Left Pane - Ends -->
+				<!-- Right Pane - Starts -->
+				<div class="col-md-10" style="padding-left: 0.5%; padding-right: 0.5%; ">
+					<!-- Work Area - which comprises case packs data table, selling unit data table and selected tab's work area
+					-  Starts -->
+					<div class="row">
+						<div ng-include="'src/productDetails/productDetailWorkArea.html'"></div>
+					</div>
+					<!-- Work Area - Ends -->
+				</div>
+			<!-- Right Pane - Ends -->
+			</div>
+		</div>
+	</div>
+</div>

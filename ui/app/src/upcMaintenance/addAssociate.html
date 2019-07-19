@@ -1,0 +1,312 @@
+<!--
+  ~ addAssociate.html
+  ~
+  ~ Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12" ng-controller="AddAssociateController as addAssociateController" ng-init="addAssociateController.init()">
+
+	<!-- Panel to show error messages. -->
+	<div class="row" data-ng-if="addAssociateController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{addAssociateController.error}}</span>
+	</div>
+
+	<!-- Panel to show success messages. -->
+	<div class="row" data-ng-if="addAssociateController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{addAssociateController.success}}</span>
+	</div>
+
+
+	<!-- The panel where the user enters the information to add an associate. -->
+	<div class="panel-group" can-edit="PD_SWAP_05" ng-show="!addAssociateController.isWaitingForResponse">
+		<div class="panel panel-primary" ng-if="!addAssociateController.showAfterUpdate">
+			<div class="panel-heading">
+				<h4 class="panel-title">Add Associate</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table-heb table-bordered table-striped table-hover"  style="border-collapse: collapse; width: 100%">
+					<colgroup style="border: solid">
+						<col span="{{addAssociateController.hasSourceError ? 7 : 6}}">
+					</colgroup>
+					<colgroup>
+						<col span="1">
+					</colgroup>
+					<colgroup style="border: solid">
+						<col span="{{addAssociateController.hasDestinationError ? 2 : 1}}">
+					</colgroup>
+					<colgroup>
+						<col span="1">
+					</colgroup>
+					<thead>
+					<!-- The row that groups the columns together. -->
+					<tr>
+						<th colspan="{{addAssociateController.hasSourceError ? 7 : 6}}" style="background: #f1f1f1; color: black">Target Item</th>
+						<th colspan="1" style="background: none; border: none"></th>
+						<th colspan="{{addAssociateController.hasDestinationError ? 2 : 1}}" style="background: #f1f1f1; color: black">To Add</th>
+						<th colspan="1" style="background: none; border: none"></th>
+					</tr>
+					<tr>
+						<!-- Headers for the source side. -->
+						<th style="width: 125px">Product ID</th>
+						<th style="width: 125px">UPC</th>
+						<th style="width: 125px">Item Code</th>
+						<th style="width: 300px">Description</th>
+						<th style="width: 125px">Primary UPC</th>
+						<th style="width: 25px">More Info</th>
+						<th ng-show="addAssociateController.hasSourceError">Message</th>
+
+						<!-- The spacer. -->
+						<th style="width: 5px; background: none; border: none"></th>
+
+						<!-- Headers for the destination side. -->
+						<th style="width: 200px">UPC to Add</th>
+						<th ng-show="addAssociateController.hasDestinationError">Message</th>
+
+						<!-- The delete column. -->
+						<th style="width: 15px; background: none; border: none"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="addAssociate in addAssociateController.addAssociateList track by $index" style="width: 100%">
+						<!-- The source columns. -->
+						<td><a class="pointer" ng-click="addAssociateController.showProductInfo(addAssociate.source.productId)">
+							{{addAssociate.source.productId}}</a></td>
+						<td><input type="text"
+								   ng-model="addAssociate.source.upc"
+								   id="{{'upc' + $index}}"
+								   style="width: 100%"
+								   ng-change="addAssociateController.resetItemCode(addAssociate)"
+								   maxlength="11"
+								   ng-pattern="/^[0-9]+$/"
+								   numbers-only
+						/></td>
+						<td><input type="text"
+								   ng-model="addAssociate.source.itemCode"
+								   id="{{'itemCode' + $index}}"
+								   style="width: 100%"
+								   ng-change="addAssociateController.resetUpc(addAssociate)"
+								   maxlength="7"
+								   ng-pattern="/^[0-9]+$/"
+								   numbers-only
+						/></td>
+						<td>{{addAssociate.source.itemDescription}} {{addAssociate.source.itemSize}}</td>
+						<td>{{addAssociate.source.primaryUpc}}</td>
+						<td>
+							<i class="glyphicon glyphicon-info-sign" style="color: blue"
+							   title="{{addAssociate.sourceInformation}}"
+							   ng-if="addAssociateController.alreadyFetchedDetails(addAssociate)">
+							</i>
+						</td>
+						<td ng-show="addAssociateController.hasSourceError" style="color: red">{{addAssociate.source.errorMessage}}</td>
+
+						<!-- The break between source and destination. -->
+						<td></td>
+
+						<!-- The destination columns. -->
+						<td>
+							<!-- Input box for the UPC to add. -->
+							<input type="text"
+								   ng-model="addAssociate.destination.upc"
+								   id="{{'toAddUpc' + $index}}"
+								   style="width: 75%"
+								   ng-change="addAssociateController.typedUpcToAdd(addAssociate)"
+								   ng-pattern="/^[0-9]+$/"
+								   maxlength="13"
+								   numbers-only
+							/>
+							<!-- Input box for the check digit for the UPC. -->
+							<input type="text"
+								   ng-model="addAssociate.destination.checkDigit"
+								   id="{{'toAddCheckDigit' + $index}}"
+								   ng-pattern="/^[0-9]$/"
+								   maxlength="1"
+								   style="width: 15%"
+								   numbers-only
+							/>
+						</td>
+						<td ng-show="addAssociateController.hasDestinationError" style="color: red">
+							{{addAssociate.destination.errorMessage}}
+						</td>
+
+						<!-- The delete row column. -->
+						<td >
+							<i class="glyphicon glyphicon-remove" style="color: red"
+							   title="Remove row"
+							   ng-click="addAssociateController.removeAddAssociate(addAssociate)"
+							   ng-if="addAssociateController.addAssociateList.length > 1">
+							</i>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<!-- The buttons at the bottom of the table. -->
+				<div class="inline-block pull-right" style="padding-top: 10px">
+					<button class="btn btn-info"
+							ng-click="addAssociateController.clearData()"
+							ng-disabled="addAssociateController.isEmptyData()">Clear
+					</button>
+					<button class="btn btn-info" ng-click="addAssociateController.addEmptyRow()">Add Row</button>
+					<button class="btn btn-info" ng-click="addAssociateController.getAddAssociateDetails()">Fetch Details</button>
+					<button class="btn btn-primary"
+							ng-click="addAssociateController.submitAddAssociate()"
+							ng-disabled="!addAssociateController.canSubmit()">Submit
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-primary" ng-if="addAssociateController.showAfterUpdate">
+
+			<div class="panel-heading">
+				<h4 class="panel-title inline-block">Details after Adding</h4>
+				<div class="inline-block pull-right">
+					<span ng-if="addAssociateController.errorResultList.length > 0" class="inline-block"
+						  style="color: orange; padding-right: 10px">{{addAssociateController.errorResultList.length}} errors (close to redo)</span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="panel panel-default">
+					<table class="table-heb table-bordered table-striped table-hover"  style="border-collapse: collapse; width: 100%">
+						<colgroup style="border: solid">
+							<col span="{{addAssociateController.hasSourceUpdateError ? 7 : 6}}">
+						</colgroup>
+						<colgroup>
+							<col span="1">
+						</colgroup>
+						<colgroup style="border: solid">
+							<col span="{{addAssociateController.hasDestinationUpdateError ? 2 : 1}}">
+						</colgroup>
+						<colgroup>
+							<col span="1">
+						</colgroup>
+						<thead>
+						<!-- The row that groups the columns together. -->
+						<tr>
+							<th colspan="{{addAssociateController.hasSourceUpdateError ? 7 : 6}}" style="background: #f1f1f1; color: black">Target Item</th>
+							<th colspan="1" style="background: none; border: none"></th>
+							<th colspan="{{addAssociateController.hasDestinationUpdateError ? 2 : 1}}" style="background: #f1f1f1; color: black">To Add</th>
+							<th colspan="1" style="background: none; border: none"></th>
+						</tr>
+						<tr>
+							<!-- Headers for the source side. -->
+							<th style="width: 125px">Product ID</th>
+							<th style="width: 125px">UPC</th>
+							<th style="width: 125px">Item Code</th>
+							<th style="width: 300px">Description</th>
+							<th style="width: 125px">Primary UPC</th>
+							<th style="width: 25px">More Info</th>
+							<th ng-show="addAssociateController.hasSourceUpdateError">Message</th>
+
+							<!-- The spacer. -->
+							<th style="width: 5px; background: none; border: none"></th>
+
+							<!-- Headers for the destination side. -->
+							<th style="width: 200px">UPC to Add</th>
+							<th ng-show="addAssociateController.hasDestinationUpdateError">Message</th>
+
+							<!-- The delete column. -->
+							<th style="width: 15px; background: none; border: none"></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="addAssociate in addAssociateController.addAssociateUpdateList track by $index" style="width: 100%">
+							<!-- The source columns. -->
+							<td><a class="pointer" ng-click="addAssociateController.showProductInfo(addAssociate.source.productId)">
+								{{addAssociate.source.productId}}</a></td>
+							<td><input type="text"
+									   ng-model="addAssociate.source.upc"
+									   id="{{'upc' + $index}}"
+									   style="width: 100%"
+									   ng-change="addAssociateController.resetItemCode(addAssociate)"
+									   maxlength="11"
+									   ng-pattern="/^[0-9]+$/"
+									   numbers-only
+							/></td>
+							<td><input type="text"
+									   ng-model="addAssociate.source.itemCode"
+									   id="{{'itemCode' + $index}}"
+									   style="width: 100%"
+									   ng-change="addAssociateController.resetUpc(addAssociate)"
+									   maxlength="7"
+									   ng-pattern="/^[0-9]+$/"
+									   numbers-only
+							/></td>
+							<td>{{addAssociate.source.itemDescription}} {{addAssociate.source.itemSize}}</td>
+							<td>{{addAssociate.source.primaryUpc}}</td>
+							<td>
+								<i class="glyphicon glyphicon-info-sign" style="color: blue"
+								   title="{{addAssociate.sourceInformation}}"
+								   ng-if="addAssociateController.alreadyFetchedDetails(addAssociate)">
+								</i>
+							</td>
+							<td ng-show="addAssociateController.hasSourceUpdateError" style="color: red">{{addAssociate.source.errorMessage}}</td>
+
+							<!-- The break between source and destination. -->
+							<td></td>
+
+							<!-- The destination columns. -->
+							<td>
+								<!-- Input box for the UPC to add. -->
+								<input type="text"
+									   ng-model="addAssociate.destination.upc"
+									   id="{{'toAddUpc' + $index}}"
+									   style="width: 75%"
+									   ng-change="addAssociateController.typedUpcToAdd(addAssociate)"
+									   ng-pattern="/^[0-9]+$/"
+									   maxlength="13"
+									   numbers-only
+								/>
+								<!-- Input box for the check digit for the UPC. -->
+								<input type="text"
+									   ng-model="addAssociate.destination.checkDigit"
+									   id="{{'toAddCheckDigit' + $index}}"
+									   ng-pattern="/^[0-9]$/"
+									   maxlength="1"
+									   style="width: 15%"
+								       numbers-only
+								/>
+							</td>
+							<td ng-show="addAssociateController.hasDestinationUpdateError" style="color: red">
+								{{addAssociate.destination.errorMessage}}
+							</td>
+
+							<!-- The delete row column. -->
+							<td >
+								<i class="glyphicon glyphicon-remove" style="color: red"
+								   title="Remove row"
+								   ng-click="addAssociateController.removeAddAssociate(addAssociate)"
+								   ng-if="addAssociateController.addAssociateList.length > 1">
+								</i>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<!-- The buttons at the bottom of the table. -->
+					<div class="inline-block pull-right" style="padding-top: 10px">
+						<button class="btn btn-info"
+								ng-click="addAssociateController.clearData()"
+								ng-disabled="addAssociateController.isEmptyData()">Clear
+						</button>
+						<button class="btn btn-info" ng-click="addAssociateController.addEmptyRow()">Add Row</button>
+						<button class="btn btn-info" ng-click="addAssociateController.getAddAssociateDetails()">Fetch Details</button>
+						<button class="btn btn-primary"
+								ng-click="addAssociateController.submitAddAssociate()"
+								ng-disabled="!addAssociateController.canSubmit()">Submit
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- The panel that shows proudcut information. -->
+		<div ng-if="addAssociateController.isViewingProductInfo()">
+			<div ng-include src="'src/productInfo/productInfo.html'"></div>
+		</div>
+
+		<!-- Spinner panel for when getting data. -->
+		<loading-spinner ng-show="addAssociateController.isWaitingForResponse">
+		</loading-spinner>
+	</div>

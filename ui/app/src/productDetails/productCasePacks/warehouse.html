@@ -1,0 +1,353 @@
+<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+</loading-spinner>
+<div class="container-fluid" ng-show="!$ctrl.isWaitingForResponse" can-view="CP_WHSE_01">
+	<!--Error span-->
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-left myfade" role="alert"
+			  ng-bind-html="$ctrl.error"></span>
+	</div>
+	<!--Success span-->
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row col-md-offset-11 col-md-1 pull-right" >
+		<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showWarehouseAuditInfo()"></div>
+	</div>
+	<!--This Row holds the item master information like Item code and its description span-->
+	<div class="row">
+		<div class="col-md-1 col-md-offset-1">
+			<label>Item Code </label>
+		</div>
+		<div class="col-md-1">{{$ctrl.itemMaster.key.itemCode}} </div>
+		<div class="col-md-1 col-md-offset-2">
+			<label>Item Description</label>
+		</div>
+		<div class="col-md-2">{{$ctrl.itemMaster.description}}</div>
+	</div>
+	<!--This row holds the list of all the warehouse location items for that selected item-->
+	<div style="overflow-x: scroll">
+		<!--This row holds the list of all the warehouse location items for that selected item-->
+		<div class="panel-primary" id="warehouseList">
+			<div class="panel-body">
+				<table class="table table-condensed table-warehouse">
+					<tr>
+						<th class="col-md-2" >Attribute</th>
+						<th class="col-md-2"  ng-repeat="warehouseItemLocation in $ctrl.data" style="white-space: nowrap">
+							{{warehouseItemLocation.location.displayName}}
+						</th>
+					</tr>
+					<tr>
+						<th class="col-md-2" ></th>
+						<th class="col-md-2"  ng-repeat="warehouseItemLocation in $ctrl.data" style="white-space: nowrap">
+							<a class="pointer ng-binding" ng-click="$ctrl.getCommentsAndRemarks(warehouseItemLocation)"
+							   data-toggle="modal" data-target="#commentAndRemarksModal">
+								Comments and Remarks
+							</a>
+						</th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--Ordering Info Panel-->
+		<div class="panel panel-primary" id="orderingInfoPanel" style="display: inline-block">
+			<div class="panel-heading ng-binding" style="padding: 2px" width="$ctrl.panelWidth"> Ordering Info
+			</div>
+			<div class="panel-body " ng-if="$ctrl.orderingInfoVisibility">
+				<table class="table table-condensed table-warehouse" >
+					<tr>
+						<th class="col-md-2">Order Quantity Type</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							{{warehouseItemLocation.orderQuantityTypeDisplayName}}
+						</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							<select class="form-control" ng-model="warehouseItemLocation.orderQuantityTypeCode">
+								<option ng-repeat="orderQuantityType in $ctrl.orderQuantityTypes"
+										value="{{orderQuantityType.id}}">
+									{{orderQuantityType.orderQuantityTypeDisplay}}
+								</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Expected Weekly Movement</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.expectedWeeklyMovement}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.expectedWeeklyMovement}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Whse Max Ship Qty#</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.whseMaxShipQuantityNumber}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<input class="form-control" style="width: 100px" number-validator="^\d{1,9}?$"
+								   ng-model="warehouseItemLocation.whseMaxShipQuantityNumber"
+								   title="Whse Max Ship Qty must be number, and less than or equal 999999999">
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Unit Factor 1</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.unitFactor1}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<input class="form-control" style="width: 100px" number-validator="^[0-9]{1,5}\.?([0-9]{1,4})?$"
+								   ng-model="warehouseItemLocation.unitFactor1"
+								   title="Unit Factor 1 must be number (#####.####), greater or equal 0 and less than or equal to 99999.9999">
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Unit Factor 2</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.unitFactor2}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<input class="form-control" style="width: 100px" number-validator="^[0-9]{1,5}\.?([0-9]{1,4})?$"
+								   ng-model="warehouseItemLocation.unitFactor2"
+								   title="Unit Factor 2 must be number (#####.####), greater or equal 0 and less than or equal to 99999.9999">
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--Weight panel-->
+		<div class="panel panel-primary" id="weightPanel" style="display: inline-block">
+			<div class="panel-heading ng-binding" style="padding: 2px" >Weight
+			</div>
+			<div class="panel-body " ng-if="$ctrl.weightVisibility">
+				<table class="table table-condensed table-warehouse" >
+					<tr>
+						<th class="col-md-2">Variable Weight</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<input type="checkbox" ng-model="warehouseItemLocation.variableWeight" disabled>
+						</td>
+						<td  class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							<input type="checkbox" ng-model="warehouseItemLocation.variableWeight">
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Catch Weight</th>
+						<td class="col-md-2" view-only="CP_WHSE_02" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<input type="checkbox" ng-model="warehouseItemLocation.catchWeight" disabled>
+						</td>
+						<td  class="col-md-2" can-edit="CP_WHSE_02" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							<input type="checkbox" ng-model="warehouseItemLocation.catchWeight">
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Average Weight</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.averageWeight}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.averageWeight}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--Cost panel-->
+		<div class="panel panel-primary" id="costPanel" style="display: inline-block">
+			<div class="panel-heading ng-binding" style="padding: 2px" >Cost
+			</div>
+			<div class="panel-body " ng-if="$ctrl.costVisibility">
+				<table class="table table-condensed table-warehouse" >
+					<tr>
+						<th class="col-md-2">Billing Cost</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.billCost}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.billCost}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2">Average Cost</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.averageCost}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.averageCost}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2">Last Cost</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.warehouseLocationItemExtendedAttributes.lastCost}}
+						</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.warehouseLocationItemExtendedAttributes.lastCost}}
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2">Prior Last Cost</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.warehouseLocationItemExtendedAttributes.priorLastCost}}
+						</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.warehouseLocationItemExtendedAttributes.priorLastCost}}
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--WHSE Tie Tier and current Slot panel-->
+		<div class="panel panel-primary" id="wHSTieTierSlotPanel" style="display: inline-block">
+			<div class="panel-heading ng-binding" style="padding: 2px"> WHS Tie, Tier, and Slot
+			</div>
+			<div class="panel-body " ng-if="$ctrl.wHSTieTierSlotVisibility">
+				<table class="table table-condensed table-warehouse" >
+					<tr>
+						<th class="col-md-2">Whse Tie</th>
+						<td class="col-md-2" can-view="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.whseTie}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2">Whse Tier</th>
+						<td class="col-md-2" can-view="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.whseTier}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Current Slot #</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.currentSlotNumber}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.currentSlotNumber}}</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Flow Type</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.flowType.description}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							<select class="form-control" ng-model="warehouseItemLocation.flowTypeCode">
+								<option ng-repeat="flowType in $ctrl.flowTypes"
+										value="{{flowType.id}}">
+									{{flowType.description}}
+								</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!--change log panel-->
+		<div class="panel panel-primary" id="changeLogPanel" style="display: inline-block">
+			<div class="panel-heading ng-binding" style="padding: 2px">Change Log
+			</div>
+			<div class="panel-body " ng-if="$ctrl.changeLogVisibility">
+				<table class="table table-condensed table-warehouse" >
+					<tr>
+						<th class="col-md-2">Created On</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.createdOn | date : "MM/dd/yyyy hh:mm"}}
+						</td>
+						<td  class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							{{warehouseItemLocation.createdOn | date : "MM/dd/yyyy hh:mm"}}
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Created By</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.createdBy}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							{{warehouseItemLocation.createdBy}}
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Last Updated On</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.lastUpdatedOn | date :"MM/dd/yyyy hh:mm"}}
+						</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data" >
+							{{warehouseItemLocation.lastUpdatedOn | date :"MM/dd/yyyy hh:mm"}}
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-2" >Last Updated By</th>
+						<td class="col-md-2" view-only="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">{{warehouseItemLocation.lastUpdatedId}}</td>
+						<td class="col-md-2" can-edit="CP_WHSE_01" ng-repeat="warehouseItemLocation in $ctrl.data">
+							{{warehouseItemLocation.lastUpdatedId}}
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!--Footer -- Contain Save, Reset button-->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="divider-horizontal"></div>
+			<div class="inline-block pull-right" >
+				<button class="btn btn-primary" data-ng-disabled="!$ctrl.dataIsChanged()" can-edit="CP_WHSE_01"
+						ng-click="$ctrl.resetWarehouseItemLocation()"> Reset
+				</button>
+				<button class="btn btn-primary" data-ng-disabled="!$ctrl.dataIsChanged()" can-edit="CP_WHSE_01"
+						ng-click="$ctrl.saveWarehouseItemLocation()"> Save
+				</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary"
+						data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+	<!--Comments and Remark modal some edit functionality has been added-->
+	<div id="commentAndRemarksModal" class="modal fade" role="dialog" data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7; height: 70%">
+					<div class="modal-title inline-block" style="color: #ffffff">
+						<h5>Comment and Remarks</h5>
+					</div>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-2 col-md-offset-2">
+							<label>Item Code </label>
+						</div>
+						<div class="col-md-1">{{$ctrl.itemMaster.key.itemCode}} </div>
+						<div class="col-md-2">
+							<label>Warehouse</label>
+						</div>
+						<div class="col-md-3">{{$ctrl.currentLocation}}</div>
+					</div>
+					<loading-spinner ng-show="$ctrl.isWaitingForCommentResponse">
+					</loading-spinner>
+					<div class="row" data-ng-if="$ctrl.commentAndRemarkError">
+						<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade"
+							  role="alert">{{$ctrl.commentAndRemarkError}}</span>
+					</div>
+
+					<div class="row" data-ng-if="$ctrl.commentAndRemarkSuccess">
+						<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+							  role="alert">{{$ctrl.commentAndRemarkSuccess}}</span>
+					</div>
+
+					<div class="row">
+						<table class="table-heb table-bordered fixed col-md-10 col-md-offset-1"
+							   ng-show="!$ctrl.isWaitingForCommentResponse" style="overflow-y: scroll">
+							<thead>
+							<th colspan="2">Comments and Remarks</th>
+							</thead>
+							<tr >
+								<td class="col-md-1" style="font-weight: bold">Line Item Comment</td>
+								<td>
+									<div>
+										<span view-only="CP_WHSE_01">{{$ctrl.currentComment}}</span>
+										<input can-edit="CP_WHSE_01" type="text" class="form-control" maxlength="30" data-ng-model="$ctrl.currentComment">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td id="remarksRow" class="col-md-1" style="font-weight: bold">Remarks</td>
+								<td ng-if="$ctrl.remarkData.length === 0"></td>
+							</tr>
+							<tr  ng-repeat="remark in $ctrl.remarkData">
+								<td>
+									<div>
+										<span view-only="CP_WHSE_01">{{remark.itemCommentContents}}</span>
+										<input can-edit="CP_WHSE_01" type="text" class="form-control" maxlength="80" data-ng-model="remark.itemCommentContents">
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!--Button for the edit-->
+					<div class="col-md-offset-11" style="padding-top: 16px">
+						<button class="btn btn-primary" data-ng-click="$ctrl.addNewRemarkComment()">
+							Add
+						</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<!--Buttons for the edit-->
+					<button can-edit="CP_WHSE_01" class="btn btn-primary" data-ng-click="$ctrl.saveRemarkComment()">
+						Save
+					</button>
+					<button can-edit="CP_WHSE_01" class="btn btn-primary" data-ng-click="$ctrl.resetRemarkComment()" >
+						Reset
+					</button>
+					<button class="btn btn-primary" data-dismiss="modal">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

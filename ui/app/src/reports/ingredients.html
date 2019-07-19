@@ -1,0 +1,83 @@
+<!--
+  ~ ingredients.html
+  ~
+  ~  Copyright (c) 2016 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12 container-fluid" ng-cloak="true" id="ingredientsReportDiv"
+	 ng-controller="IngredientsReportController as ingredientsReportController"
+	 ng-init=ingredientsReportController.init()>
+	<div class="row" data-ng-if="ingredientsReportController.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientsReportController.success}}</span>
+	</div>
+	<div class="row" data-ng-if="ingredientsReportController.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{ingredientsReportController.error}}</span>
+	</div>
+	<div class="col-md-8">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Ingredients Search
+					<i ng-click="ingredientsReportController.searchPanelVisible = !ingredientsReportController.searchPanelVisible" data-toggle="collapse"
+		   				data-target="#searchPanelToggle" class="pull-right pointer"
+		   				ng-class="{'glyphicon glyphicon-minus': ingredientsReportController.searchPanelVisible, 'glyphicon glyphicon-plus': !ingredientsReportController.searchPanelVisible}">
+					</i>
+				</div>
+				<div class="panel-collapse collapse in" id="searchPanelToggle">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-6">
+										<textarea class="form-control" data-ng-model="ingredientsReportController.ingredients" rows="2"
+					  						placeholder="Enter an ingredient" class="col-md-12 noresize">
+										</textarea>
+									</div>
+									<div class="col-md-6">
+										<button data-ng-click="ingredientsReportController.doSearch()" class="btn btn-primary btn-block"
+											data-ng-disabled="ingredientsReportController.ingredients == null">Search</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Waiting spinner. -->
+	<loading-spinner ng-show="ingredientsReportController.isWaiting">
+	</loading-spinner>
+
+	<!-- Report pane. -->
+	<div class="col-md-12" ng-show="ingredientsReportController.data != null">
+		<div class="panel-group">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h4 class="panel-title inline-block"><b>Search Results</b>
+						Result {{ingredientsReportController.startRecord + 1}} -
+						{{ingredientsReportController.startRecord + ingredientsReportController.recordsVisible}} of
+						{{ingredientsReportController.totalRecords}}</h4>
+					<div class="inline-block pull-right glyphicon glyphicon-download-alt pointer" style="color: orange" ng-click="ingredientsReportController.export()"></div>
+					<div class="inline-block pull-right" ng-show="ingredientsReportController.downloading" style="color: orange">Downloading...</div>
+				</div>
+
+				<div class="panel-body">
+					<table ng-table="ingredientsReportController.tableParams" class="table-heb table-bordered table-striped" style="width: 100%">
+						<tr ng-repeat="ingredientsRecord in ingredientsReportController.data track by $index">
+							<td data-title="'Product ID'" style="width: 10%">{{ingredientsRecord.key.key}}</td>
+							<td data-title="'Description'" style="width: 10%">{{ingredientsRecord.productMaster.description}}</td>
+							<td data-title="'Commodity'" style="width: 10%">{{ingredientsRecord.productMaster.classCommodity.displayName}}</td>
+							<td data-title="'Sub-Commodity'" style="width: 10%">{{ingredientsRecord.productMaster.subCommodity.displayName}}</td>
+							<td data-title="'BDM'" style="width: 10%">{{ingredientsRecord.productMaster.classCommodity.bdm.displayName}}</td>
+							<td data-title="'Ingredients'">{{ingredientsRecord.textValue}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

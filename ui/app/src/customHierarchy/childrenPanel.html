@@ -1,0 +1,267 @@
+<div class="container-fluid"
+	 can-view="CH_HIER_01"
+	 ng-cloak="true">
+	<div class="row">
+		<div style="text-align: center">
+			<span data-ng-if="$ctrl.transactionMessage" class="alert alert-info text-center" role="alert">{{$ctrl.transactionMessage}}</span>
+		</div>
+		<ul id="childrenTab" class="nav nav-tabs nav-pills" style="padding-bottom: 0">
+			<li class="active">
+				<a data-toggle="tab" data-target="#allChildren">Children</a>
+			</li>
+		</ul>
+		<div class="well" style="background-color: white; max-height:300px; overflow-y:auto">
+			<div class="tab-content">
+				<div id="allChildren" class="tab-pane active" style="display: flex; position: relative">
+					<div class="col-md-8" ng-if="$ctrl.currentLevel.childRelationships.length > 0">
+						<div class="row">
+							<table id="customerHierarchyChildrenTable" class="table-heb table-bordered table-striped"
+								   style="width: 100%">
+								<thead>
+								<tr>
+									<th style="text-align: center; width: 15px" can-edit="CH_HIER_01">Select</th>
+									<th style="text-align: center">Hierarchy Path</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="childRelationship in $ctrl.currentLevel.childRelationships">
+									<td style="text-align: center" can-edit="CH_HIER_01">
+										<input type="radio" ng-checked="childRelationship.removeSelected" ng-click="$ctrl.setToRemove(childRelationship, $index)">
+									</td>
+									<td height="22px">
+										<div style="text-align: left">
+											<div style="display: inline" ng-show="childRelationship.childRelationships && childRelationship.childRelationships.length > 0">
+												<i data-ng-click="$ctrl.selectChildRelationship(childRelationship)"
+												   class="glyphicon glyphicon-plus pointer"
+												   style="color: black; font-size: smaller"
+												   data-target="#customHierarchyChildrenModal" data-toggle="modal">
+												</i>
+											</div>
+											<div  style="display: inline">
+												<a ng-click="$ctrl.selectChildRelationship(childRelationship)" style="cursor: pointer" data-toggle="modal" data-target="#customHierarchyChildrenModal">{{childRelationship.childDescription.shortDescription}}</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-4" ng-if="!$ctrl.isLowestBranchOrHasNoRelationships($ctrl.currentLevel)">
+						<div class="row text-right">
+							<div can-edit="CH_HIER_01" class="inline-block pull-right" style="position: absolute; bottom: 0; right: 0">
+								<button type="button" data-dismiss="modal"
+										data-target="#addLevelModal"
+										ng-click="$ctrl.clearAddLevelModal()"
+										data-toggle="modal"
+										class="btn btn-success btn-sm">Add Level</button>
+								<button type="button" data-dismiss="modal"
+										class="btn btn-danger btn-sm"
+										ng-disabled="$ctrl.isRemoveValid()"
+										ng-click="$ctrl.removeHierarchyLevel()">Remove Level</button>
+							</div>
+						</div>
+					</div>
+					<div ng-if="$ctrl.isLowestBranchOrHasNoRelationships($ctrl.currentLevel)"
+						 class="col-md-12 inline-block pull-right">
+						<div can-edit="CH_HIER_01" class="row inline-block pull-right">
+							<add-move-component callback="$ctrl.massUpdateSuccess(data)" current-level="$ctrl.currentLevel"></add-move-component>
+							<button class="btn btn-primary btn-sm"
+									ng-click="$ctrl.getAllCustomerProductGroups()"
+									data-toggle="modal"
+									data-target="#viewAllCustomerProductGroupsPanel">Add Product Group(s)</button>
+							<button type="button" data-dismiss="modal"
+									data-target="#addLevelModal"
+									ng-click="$ctrl.clearAddLevelModal()"
+									data-toggle="modal"
+									class="btn btn-success btn-sm">Add Level</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="descriptionModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Update Message.
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="panel-body">
+							<strong>You have selected {{$ctrl.totalUpdates}} record/s for update. Would you like to continue with the update?</strong>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<strong>Mass Update Description:</strong>
+						</div>
+						<div class="col-md-6">
+							<input type="text" ng-model="$ctrl.description" can-edit="CH_HIER_01">
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.massUpdateProductGroups()"
+							class="inline-block btn btn-success btn-sm">Submit</button>
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.clearDescription()"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="viewAllCustomerProductGroupsPanel" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Add Product Groups
+					</div>
+				</div>
+				<div class="modal-body">
+					<div ng-if="!$ctrl.isWaitingForAllProductGroups">
+						<div style="text-align: center">
+							<label for="customerProductGroupsModalSearch">Search</label>
+							<input type="text" id="customerProductGroupsModalSearch" ng-model="customerProductGroupsModalSearch">
+						</div>
+						<div style="overflow-y: auto; max-height: 300px">
+							<table class="table-heb table-bordered table-striped table-hover" style="width: 100%">
+								<thead>
+								<tr>
+									<th>
+										<input
+											id="customProductGroupsCheckAll"
+											type="checkbox"
+											title="(Check/ uncheck all)"
+											style="text-align: center"
+											ng-model="$ctrl.allCustomProductGroupsChecked"
+											ng-click="$ctrl.setAllCustomProductGroups()">
+									</th>
+									<th>Product Group Code</th>
+									<th>Product Group Name</th>
+									<th>Product Group Type</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="customerProductGroup in $ctrl.allCustomerProductGroups | filter : customerProductGroupsModalSearch">
+									<td style="text-align: center">
+										<input
+											id="customerProductGroupSelectedCheckbox"
+											type="checkbox"
+											ng-model="customerProductGroup.isChecked">
+									</td>
+									<td>{{customerProductGroup.custProductGroupId}}</td>
+									<td>{{customerProductGroup.custProductGroupName}}</td>
+									<td>{{customerProductGroup.productGroupType.productGroupType}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<loading-spinner ng-if="$ctrl.isWaitingForAllProductGroups"></loading-spinner>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.addCustomerProductGroups()"
+							data-toggle="modal" data-target="#descriptionModal"
+							class="inline-block btn btn-success btn-sm">Submit</button>
+					<button type="button" data-dismiss="modal"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="customHierarchyChildrenModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title inline-block" style="color: #ffffff">Children of Current Level
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="nav nav-list">
+						<div class="well">
+							<div ng-repeat="data in $ctrl.childData" ng-include="'src/customHierarchy/customHierarchyNonSelectable.html'">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"
+							class="btn btn-default btn-sm">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="addLevelModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<div class="modal-title" style="color: #ffffff">
+						<strong>Add Level</strong>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="container" style="width: inherit">
+						<div class="row">
+							<label class="text-right">Description</label>
+							<input class="form-control" ng-model="$ctrl.addLevelDescription" type="text">
+						</div>
+						<div class="row" style="margin-top: 10px">
+							<label class="text-right">Effective Date</label>
+							<div class="input-group">
+								<input class="date-picker form-control" id="effectiveDateCanEdit" type="text" readonly="true"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.effectiveDatePickerOpened"
+									   ng-model="$ctrl.currentEffectiveDate"
+									   close-text="Close">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default"
+											ng-click="$ctrl.openEffectiveDatePicker()">
+										<i class="column glyphicon glyphicon-calendar"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 10px">
+							<label class="text-right">End Date</label>
+							<div class="input-group">
+								<input class="date-picker form-control" id="endDateCanEdit" type="text" readonly="true"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.endDatePickerOpened"
+									   ng-model="$ctrl.currentEndDate"
+									   close-text="Close">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default"
+											ng-click="$ctrl.openEndDatePicker()">
+										<i class="column glyphicon glyphicon-calendar"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 10px">
+							<label class="text-right">Active Online</label>
+							<input class="float-left" ng-model="$ctrl.addLevelActiveSwitch" type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" ng-disabled="$ctrl.addLevelDescription == null"
+							ng-click="$ctrl.addCustomHierarchy($ctrl.currentEffectiveDate, $ctrl.currentEndDate,
+									 $ctrl.addLevelDescription, $ctrl.addLevelActiveSwitch)"
+							class="inline-block btn btn-success btn-sm">Save</button>
+					<button type="button" data-dismiss="modal"
+							ng-click="$ctrl.clearAddLevelModal()"
+							class="inline-block btn btn-default btn-sm">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

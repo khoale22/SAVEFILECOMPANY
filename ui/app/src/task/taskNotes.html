@@ -1,0 +1,87 @@
+<div id="taskNotesModal" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header pm-modal-header">
+				<div class="row">
+					<div class="col-md-2" style="text-align: left"><h5 class="modal-title">Notes</h5></div>
+					<div class="col-md-8" style="text-align: center">
+						{{$ctrl.task.alertDataTxt}}
+					</div>
+					<div class="col-md-2" style="text-align: right">
+						<span class="close close-white" data-dismiss="modal" aria-hidden="true" style="color: #ffffff">&times;</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-12" ng-show="$ctrl.message" style="margin-bottom: 2%; margin-top: 2% ">
+					<div class="col-md-1" style="" ></div>
+					<div class="col-md-10" style="text-align: center; vertical-align: middle; padding-top: 0.7%;max-height: 200px;">
+						<div>
+							<span ng-class="{'alert' : true,
+							'alert-danger' : $ctrl.isError,
+							'alert-success' : !$ctrl.isError}"
+								  style="padding: 1%" role="alert">{{$ctrl.message}}</span>
+						</div>
+					</div>
+					<div class="col-md-1" style="margin-bottom: 0.5%;text-align: right"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" >
+						<table ng-table="$ctrl.tableParams"
+							   class="table-heb table-bordered table-striped" style="width: 100%; table-layout: fixed; word-break: break-all">
+							<thead>
+							<tr style="text-align: center">
+								<th width="55%">Notes</th>
+								<th width="20%">Date</th>
+								<th width="15%">UserId</th>
+                                <th width="10%">Action</th>
+							</tr>
+							</thead>
+							<tr ng-repeat="comment in $ctrl.comments track by $index" ng-show="!$ctrl.isWaiting"
+								style="text-align: center">
+								<td data-title="'Notes'" width="50%">
+									<div ng-if="!comment.isEditing" ng-model="comment.comment" style="text-align: left">
+										{{comment.comment}}
+									</div>
+									<input type="text" class="form-control" ng-model="comment.comment"
+										   ng-if="comment.isEditing" maxlength="1000" />
+								</td>
+								<td data-title="'Created On'" width="20%">{{comment.createTime | date:"MM/dd/yyyy h:mm:ss"}}</td>
+								<td data-title="'Created By'" width="15%">{{comment.createUserID}}</td>
+                                <td style="text-align: center">
+									<button data-ng-click="$ctrl.enableRow(comment)" class="inline-block glyphicon glyphicon-edit pointer"
+											ng-if="!comment.isEditing" title="Edit"
+											ng-style="{'opacity': $ctrl.hasOtherRowEditing? '0.4' : '1.0','color':'orange','font-size':'large','background':'transparent','border-width':'0px','padding':'0px'}"
+											data-ng-disabled="$ctrl.checkIfHasAnyRowEditing()"></button>
+									<button data-ng-click="$ctrl.deleteTaskNotes(comment)" class="inline-block glyphicon glyphicon-remove pointer"
+											ng-if="!comment.isEditing" title="Delete"
+											ng-style="{'opacity': $ctrl.hasOtherRowEditing? '0.4' : '1.0','color':'red','font-size':'large','background':'transparent','border-width':'0px','padding':'0px'}"
+											data-ng-disabled="$ctrl.checkIfHasAnyRowEditing()">
+									</button>
+									<i title="Save" data-ng-click="$ctrl.save(comment)" class="glyphicon glyphicon-floppy-disk pointer inline-block"
+									   ng-if="comment.isEditing" style="color: green; font-size: large"></i>
+									<i title="Reset" data-ng-click="$ctrl.resetCurrentRow()" class="glyphicon glyphicon glyphicon-repeat pointer inline-block"
+									   ng-if="comment.isEditing && !$ctrl.isAdding" style="color: red; font-size: large"></i>
+									<i title="Cancel" data-ng-click="$ctrl.cancel($index)" class="glyphicon glyphicon-ban-circle pointer"
+									   ng-if="comment.isEditing && $ctrl.isAdding" style="color: red; font-size: large"></i>
+								</td>
+							</tr>
+						</table>
+						<div ng-show="!$ctrl.isWaiting && $ctrl.isNoRecordsFound" style="text-align: center; margin: 3%">
+							No Records found!!
+						</div>
+						<loading-spinner ng-show="$ctrl.isWaiting"></loading-spinner>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" ng-click="$ctrl.addNote()" data-ng-disabled="$ctrl.hasOtherRowEditing">
+							<span class="glyphicon glyphicon-plus"></span> Add</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							<span class="glyphicon glyphicon-remove"></span> Close</button>
+					</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

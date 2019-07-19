@@ -1,0 +1,96 @@
+<!--
+  ~ favorItemDescription.html
+  ~
+  ~  Copyright (c) 2019 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn70529
+  ~	@since 2.31.0
+  -->
+<div class="card card-primary" >
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-5" style="padding-left: 0px;">
+				<span class="inline-block" id="titleIngredients">
+                    <i class="glyphicon glyphicon-text-background"></i>Favor Item Description &nbsp;&nbsp;
+                    <i class="glyphicon glyphicon-question-sign"
+                       title="Favor Item Description will display on mobile devices please limit text."></i>
+				</span>
+                </div>
+                <div class="col-md-7">
+                    <div class="pull-right">
+                        <a view-only="PD_ECOM_01" class="pointer margin-right-10 linkDisabled"
+                           style="{{$ctrl.eCommerceViewDetails.favorItemDescription.differentWithDefaultValue?'color:blue;':''}}font-weight: bold;">
+                            Edit Text</a>
+                        <a can-edit="PD_ECOM_01" class="pointer margin-right-10"
+                           style="{{$ctrl.eCommerceViewDetails.favorItemDescription.differentWithDefaultValue?'color:blue;':''}}font-weight: bold;"
+                           data-ng-click="$ctrl.showEditText()">
+                            Edit Text</a>
+                        <a class="pointer"
+                           style="{{$ctrl.eCommerceViewDetails.favorItemDescription.differentWithDefaultValue?'color:blue;':''}}font-weight: bold;"
+                           data-ng-click="$ctrl.showDescriptionEditSource()">Edit Source</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body" style="min-height: 100px;">
+        <div class="row" ng-show="$ctrl.isWaitingForResponse">
+            <loading-spinner></loading-spinner>
+        </div>
+        <div data-ng-hide="$ctrl.isWaitingForResponse">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-5 ecom-box-title">
+                        <div class="col-md-8" style="padding-left: 0px;">
+                            <div class="pull-left">
+                                <div class="btn-group" ng-show="$ctrl.editableFavorItemDescription"
+                                     can-edit="PD_ECOM_01">
+                                    <button type="button" class="btn btn-default active"
+                                            ng-click="$ctrl.showFormatDescriptionField(false)"
+                                            button-spell-check="!$ctrl.isShowingHtml">Text
+                                    </button>
+                                    <button type="button" class="btn btn-default"
+                                            ng-mousedown="$ctrl.onHtmlTabClicked()"
+                                            data-ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+                                            ng-click="$ctrl.showFormatDescriptionField(true)"
+                                            button-spell-check="$ctrl.isShowingHtml">HTML
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <small-loading-spinner ng-show="$ctrl.isWaitingForCheckSpellingResponse">
+                            </small-loading-spinner>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div view-only="PD_ECOM_01" style="min-height: 30px;text-align: justify;">
+                <div ng-bind-html="$ctrl.favorItemDescriptionContent"></div>
+            </div>
+            <div can-edit="PD_ECOM_01" class="brandDisplayNameRomancy">
+                <div ng-show="!$ctrl.editableFavorItemDescription"
+                     ng-bind-html="$ctrl.favorItemDescriptionContent"></div>
+                <div ng-show="!$ctrl.isShowingHtml && $ctrl.editableFavorItemDescription" id="favorItemDescriptionDiv"
+                     spellcheck="false"
+                     contenteditable="true"
+                     contenteditable-romancy-model
+                     style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+                     data-ng-model="$ctrl.eCommerceViewDetails.favorItemDescription.content"
+                     class="form-control"
+                     ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+                     ng-blur="$ctrl.validateFavorItemDescriptionTextForEdit()"></div>
+                <textarea ng-show="$ctrl.isShowingHtml && $ctrl.editableFavorItemDescription"
+                          data-ng-model="$ctrl.eCommerceViewDetails.favorItemDescription.htmlContent"
+                          class="form-control"
+                          style="height:90px;resize: vertical;"
+                          ng-bind-html="$ctrl.trustAsHtml($ctrl.eCommerceViewDetails.favorItemDescription.htmlContent)"></textarea>
+            </div>
+        </div>
+    </div>
+</div>

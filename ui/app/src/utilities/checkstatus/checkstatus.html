@@ -1,0 +1,165 @@
+<!--
+  ~ checkstatus.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author s753601
+  -->
+<div can-view="BU_STAT_01" class="col-md-12 container-fluid" ng-cloak="true"
+	 ng-controller="checkstatusController as checkstatusController"
+	 ng-init="checkstatusController.init()">
+
+	<div class="col-md-12" >
+		<div class="panel-group" >
+			<div class="panel panel-primary" >
+				<div class="panel-heading" >
+					<h4 class="panel-title inline-block"><b>Mass Update/Upload - Check Status</b></h4>
+					<div class="inline-block pull-right" ng-show="checkstatusController.downloading" style="color: orange; margin-left: 5px">Downloading..</div>
+					<div class="inline-block pull-right glyphicon glyphicon-download-alt pointer" ng-show="!checkstatusController.isWaiting" style="color: orange" ng-click="checkstatusController.export()"></div>
+				</div>
+				<div class="panel-body">
+					<div class="row form-inline form-horizontal" style="padding: 25px">
+
+						<div class="row" data-ng-if="checkstatusController.error" ng-show="!checkstatusController.isWaiting">
+							<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">
+								{{checkstatusController.error}}
+							</span>
+						</div>
+						<div class="row" data-ng-if="checkstatusController.success" ng-show="!checkstatusController.isWaiting">
+							<span class="alert alert-success col-md-6 col-md-push-3 text-center myfade" role="alert">
+								{{checkstatusController.success}}
+							</span>
+						</div>
+						<loading-spinner ng-show="checkstatusController.isWaiting">
+						</loading-spinner>
+
+						<div ng-show="!checkstatusController.isWaiting" class="row" style="padding: 10px 10px 10px 0; margin-left: 0px">
+							<div class="row">
+								<div class="col-md-4 col-sm-6">
+									<label style="margin-right: 10px;"><strong>Request ID</strong></label>
+									<input ng-model="checkstatusController.requestIdFilter" maxlength="22" style="height: 28px;width: 150px;" numbers-only
+										   placeholder="Enter Request ID to search" class="form-control" />
+								</div>
+
+								<div class="col-md-4 col-sm-6">
+									<label style="margin-right: 10px;"><strong>Attribute Selected</strong></label>
+									<input ng-model="checkstatusController.attributeFilter" maxlength="200" style="height: 28px; min-width: 165px;"
+										   placeholder="Enter Attribute Selected to search" class="form-control" />
+								</div>
+
+								<div class="col-md-4 col-sm-6">
+									<label style="margin-right: 10px;"><strong>Description</strong></label>
+									<input ng-model="checkstatusController.descriptionFilter" maxlength="300" style="height: 28px ; min-width: 200px;"
+										   placeholder="Enter Description to search" class="form-control" />
+								</div>
+
+								<div class="col-md-4 col-sm-6" style="margin-top: 15px;">
+									<label style="margin-right: 15px;"><strong> Start Date</strong></label>
+									<div class="input-group" id="startDate" style="width: 150px;">
+										<input class="form-control date-picker"
+											   type="text"
+											   readonly="false"
+											   uib-datepicker-popup = "MM/dd/yyyy"
+											   datepicker-options="checkstatusController.options"
+											   is-open="checkstatusController.startDatePickerOpened"
+											   ng-model="checkstatusController.startDateFilter"
+											   ng-required="false"
+											   close-text="Close"
+										/>
+										<span class="input-group-btn">
+											<button data-ng-click="checkstatusController.startDateFilter = null" ng-show="checkstatusController.startDateFilter != null" class="input-group-btn glyphicon glyphicon-remove pointer" title="Delete"
+													style="z-index: 999; color: #d22d2d; font-size: 11px; margin-left: -13px;;background: transparent; border-width:0px;padding: 0px;">
+											</button>
+										</span>
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="checkstatusController.openDatePicker('startDateFilter')">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+
+								<div class="col-md-4 col-sm-6" style="margin-top: 15px;">
+									<label style="margin-right: 50px;"><strong> End Date</strong></label>
+									<div class="input-group" id="endDate" style="width: 170px;">
+										<input class="form-control date-picker"
+											   type="text"
+											   readonly="false"
+											   uib-datepicker-popup = "MM/dd/yyyy"
+											   datepicker-options="checkstatusController.options"
+											   is-open="checkstatusController.endDatePickerOpened"
+											   ng-model="checkstatusController.endDateFilter"
+											   ng-required="false"
+											   close-text="Close"
+										/>
+										<span class="input-group-btn">
+											<button data-ng-click="checkstatusController.endDateFilter = null" ng-show="checkstatusController.endDateFilter != null" class="input-group-btn glyphicon glyphicon-remove pointer" title="Delete"
+													style="z-index: 999; color: #d22d2d; font-size: 11px; margin-left: -13px;;background: transparent; border-width:0px;padding: 0px;">
+											</button>
+										</span>
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="checkstatusController.openDatePicker('endDateFilter')">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-6"  style="margin-top: 15px;">
+									<label style="margin-right: 40px;"><strong>User</strong></label>
+									<div id="tracking-user-dropdown" class="form-group" style="margin-left: 0px; margin-right: 15px;">
+										<ui-select theme="bootstrap" data-toggle="tooltip" search-enabled="true"
+												   ng-model="checkstatusController.userFilter"
+												   ng-change="checkstatusController.checkIfUserChangeValue()">
+											<ui-select-match placeholder="--Select--">
+												<span style="width: 180px; margin-top: 5px;">{{$select.selected.description}}</span>
+											</ui-select-match>
+											<ui-select-choices repeat="user in checkstatusController.userList | propsFilter: {description: $select.search} | orderBy:'description'">
+												{{user.description}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+								<div class="col-md-1 col-sm-6" style="margin-top: 15px;">
+									<button ng-click="checkstatusController.searchTracking()" class=" btn btn-primary" style="float: right; margin-right: 5px;">Search</button>
+								</div>
+
+							</div>
+						</div>
+
+						<div ng-show="!checkstatusController.isWaiting" class="row pull-right" style="padding: 0px 0px 10px 10px; margin-right: 0px;margin-top: 10px;">
+							<label> <input id="auto-refresh" type="checkbox" ng-click="checkstatusController.checkAutoRefresh()" style="margin-bottom: 4px;"> Auto Refresh </label>
+							<button ng-click="checkstatusController.clearResult()" class=" btn btn-primary ">Clear Result</button>
+							<button ng-click="checkstatusController.manualRefresh()" class=" btn btn-primary ">Manual Refresh</button>
+						</div>
+						<table ng-show="!checkstatusController.isWaiting" ng-table="checkstatusController.tableParams"  show-filter="true" class="table-heb table-bordered table-striped" style="width: 100%">
+							<thead>
+								<tr >
+									<th ng-repeat="column in checkstatusController.columns">{{column.title}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat = "attribute in checkstatusController.data ">
+									<td data-title="'Request ID'" ><a ng-click="checkstatusController.selectTrackingId(attribute)" style="cursor: pointer;"> {{attribute.requestId}}</a></td>
+									<td data-title="'Attribute Selected'">{{attribute.attributeSelected}}</td>
+									<td data-title="'Description'">{{attribute.updateDescription}}</td>
+									<td data-title="'Date & Time of Request'">{{checkstatusController.convertStringToDateTime(attribute.dateTime) | date : 'MM/dd/yyyy HH:mm:ss'}}</td>
+									<td data-title="'Status'">{{attribute.status}}</td>
+									<td data-title="'Result'">{{attribute.result}}</td>
+									<td data-title="'User'">{{attribute.userId}}</td>
+								</tr>
+							</tbody>
+
+						</table>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<tracking-detail-panel ng-if="checkstatusController.showDetail && checkstatusController.selectedItem!==null" selected-item="checkstatusController.selectedItem"></tracking-detail-panel>
+</div>
+

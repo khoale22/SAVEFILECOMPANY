@@ -1,0 +1,116 @@
+<!--
+  ~ checkDigitCalculator.html
+  ~
+  ~  Copyright (c) 2018 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~
+  ~	@author vn75469
+  ~	@since 2.16.0
+  -->
+<div can-view="UT_CKDG_01" class="col-md-12 container-fluid" ng-cloak="true" style="min-width: 700px"
+	 ng-controller="CheckDigitCalculatorController as checkDigitCalculatorController">
+	<div class="col-md-12" >
+		<div class="panel-group">
+			<div class="panel panel-primary" >
+				<div class="panel-heading" >
+					<h4 class="panel-title inline-block"><strong>Check Digit Calculator</strong></h4>
+				</div>
+				<div class="panel-body">
+					<div ng-show="checkDigitCalculatorController.isWaiting" style="height: 300px; padding: 25px">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div class="row" data-ng-if="checkDigitCalculatorController.error" ng-show="!checkDigitCalculatorController.isWaiting" style="display: inline;">
+						<div style="text-align: center;margin-top: 10px;margin-bottom: 10px;">
+							<span class="alert alert-danger text-center myfade" style="padding: 15px !important;"
+					  			ng-bind-html="checkDigitCalculatorController.error"></span>
+						</div>
+					</div>
+					<div class="row form-inline form-horizontal" style="height: 300px; padding: 25px"
+						 ng-show="!checkDigitCalculatorController.isWaiting">
+						<div class="col-md-6 col-md-offset-3">
+							<div class="row">
+								<div class="col-xs-8 col-sm-8 col-md-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2">
+									<span>
+										<strong style="font-size: small"> Enter UPC <span style="color: red">*</span></strong>
+									</span>
+									<span>
+										<input type="text" style="height: 28px; width: 40%; font-size: 14px" numbers-only maxlength="13"
+											   class="form-control"
+											   ng-change="checkDigitCalculatorController.checkDigitResult = ''"
+											   ng-model="checkDigitCalculatorController.upcCode"> -
+										<input type="text" style="height: 28px; width: 8%; font-size: 14px; text-align: center"
+											   class="form-control"
+											   readonly ng-model="checkDigitCalculatorController.checkDigitResult">
+										<button type="button" class="btn btn-primary" title="Calculate"
+												style="width: 20%; margin-bottom: 4px; margin-left: 1px; text-align: center;"
+												ng-click="checkDigitCalculatorController.calculate()">Calculate</button>
+									</span>
+								</div>
+							</div>
+							<table ng-table="tableParams" class="table-heb table-bordered table-striped" style="width: 100%; margin-top: 10px">
+								<thead>
+								<tr>
+									<th style="width:20%;">UPC Type</th>
+									<th style="width:30%;">Item Code</th>
+									<th style="width:50%;">Item Description</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr ng-repeat="element in $data" style="height: 18px">
+									<td data-title="'UPC Type'">{{element.upcType}}</td>
+									<td data-title="'Item Code'">{{element.key.itemCode}}</td>
+									<td data-title="'Item Description">{{element.description}}</td>
+								</tr>
+								</tbody>
+								<tbody ng-init="lstTd=['1','2', '3']">
+								<tr style="height: 18px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr style="height: 18px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								<tr ng-show="checkDigitCalculatorController.itemCodes.length == 0" style="height: 18px;">
+									<td ng-repeat="x in lstTd"></td>
+								</tr>
+								</tbody>
+							</table>
+							<div class="row" style="margin-top: 10px; font-size: 15px">
+								<div class="col-xs-10 col-sm-10 col-md-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1">
+									<p><u>Check Digit Algorithm:</u></p>
+									<p>
+										If the UPC Number is ABCDEFGHIJKLM <br>
+										SUM = (A+C+E+G+I+K+M)x3 + (B+D+F+H+J+L) <br>
+										The Check Digit is the smallest number needed to round SUM up to a multiple of 10.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="popupWarning" class="modal fade" role="dialog" style="z-index: 999999;position: absolute;top: 160px;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Utilities Message</h5>
+				<button type="button" class="close" data-dismiss="modal" title="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h5>Please Enter UPC Number.</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

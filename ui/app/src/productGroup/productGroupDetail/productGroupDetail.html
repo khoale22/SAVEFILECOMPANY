@@ -1,0 +1,28 @@
+<!--
+  ~ productGroupDetailLayout.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  -->
+<div class="col-md-12"  ng-init="$ctrl.init()">
+	<div class="panel-group">
+		<div class="panel">
+			<div class=" panel-primary">
+				<div class=" panel-default" ng-include="'src/productGroup/productGroupDetail/productGroupDetailHeader.html'"></div>
+			</div>
+			<div class="panel-body">
+
+				<div class="col-md-2 pull-left" style="padding: 0%">
+					<div class="panel-default" ng-include="'src/productGroup/productGroupDetail/productGroupDetailTabs.html'"></div>
+				</div>
+				<div class="col-md-10 pull-right" style="    padding-left: 15px;padding-right:0px;">
+					<div class="panel-default" ng-include="'src/productGroup/productGroupDetail/productGroupDetailMain.html'"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

@@ -1,0 +1,214 @@
+<!--
+  ~ stateWarnings.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  @author vn87351
+  @since 2.12.0
+  -->
+<div can-view="CT_SWRN_01"
+	 ng-init="$ctrl.init()">
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert">{{$ctrl.error}}</span>
+	</div>
+	<div class="col-md-12 margin-top-10">
+		<div class="pull-right">
+			<button class="btn btn-sm btn-primary" ng-show="!$ctrl.isWaiting"
+					style="margin-right: 15px;"
+					ng-click="filter.abbreviation=undefined; filter.key.stateCode=undefined; filter.description=undefined">
+				Clear Filter
+			</button>
+		</div>
+		<div class="panel-body margin-top-10" style="display: inline-block;width: 100%;">
+			<loading-spinner ng-show="$ctrl.isWaiting">
+			</loading-spinner>
+			<div class="" ng-show="!$ctrl.isWaiting"
+				 style=" min-height:400px; position: relative; float: left; width: 100%; padding: 0;">
+				<table show-filter="true" ng-table="tableParams" show-filter="true"
+					   class="table-heb table-bordered table-striped" style="width: 100%">
+					<thead>
+					<tr>
+						<th style="width:10%;">Warning name</th>
+						<th style="width:30%;">State</th>
+						<th style="width:49%;">Warning Description</th>
+						<th style="width:11%;">Action</th>
+					</tr>
+					<tr>
+						<th><input ng-model="filter.abbreviation" class="form-control"
+								   title="Input a State Warning Name to filter"/></th>
+						<th><input ng-model="filter.key.stateCode" class="form-control"
+								   title="Input a State Warning Code to filter"/></th>
+						<th><input ng-model="filter.description" class="form-control"
+								   title="Input a State Warning Description to filter"/></th>
+						<th style="width:5%;"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="stateWarning in $data track by $index">
+						<td data-title="'Warning name'">
+							<label ng-if="!stateWarning.isEditing">{{stateWarning.abbreviation.trim()}}</label>
+							<input ng-if="stateWarning.isEditing" type="text" value={{stateWarning.abbreviation.trim()}} style="width: 100%;height: 26px"
+								   ng-model="stateWarning.abbreviation"
+								   maxlength="6"
+								   empty-valid="State Warning Name is a mandatory field."
+								   title="{{stateWarning.abbreviation.length==0?'State Warning Name is a mandatory field.':''}}"
+								   class="{{stateWarning.abbreviation.length==0?stateWarning.addClass:'ng-valid'}}">
+						</td>
+						<td data-title="'State'">
+							<label>{{stateWarning.key.stateCode}}</label>
+						</td>
+						<td data-title="'Warning Description'">
+							<label ng-if="!stateWarning.isEditing">{{stateWarning.description}}</label>
+							<input ng-if="stateWarning.isEditing" type="text" value={{stateWarning.description}} style="width: 100%;height: 26px"
+								   ng-model="stateWarning.description"
+								   empty-valid="Warning Description is a mandatory field."
+								   title="{{stateWarning.description.length==0?'Warning Description is a mandatory field.':''}}"
+								   class="{{stateWarning.description.length==0?stateWarning.addClass:'ng-valid'}}">
+						</td>
+						<td style="text-align: center" can-edit="CT_SWRN_01">
+							<button class="glyphicon glyphicon-edit pointer" title = "{{$ctrl.isEditing?'':'Edit'}}" data-ng-disabled="$ctrl.isEditing" style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"   data-ng-click="$ctrl.editStateWarning(stateWarning)" ng-if="!$ctrl.isAddingActionCode && !stateWarning.isEditing">
+							</button>
+							<button class="glyphicon glyphicon-remove pointer"  title = "{{$ctrl.isEditing?'':'Delete'}}" data-ng-disabled="$ctrl.isEditing" style="{{$ctrl.isEditing?'opacity: 0.5':'opacity: 1'}};border-width:0px;padding: 1px;color: red;background: transparent; font-size: large" data-ng-click="$ctrl.deleteStateWarnings(stateWarning)" ng-if="!$ctrl.isAddingActionCode && !stateWarning.isEditing">
+							</button>
+							<button class="glyphicon glyphicon-floppy-disk pointer"  title = "Save" style="background: transparent;border-width:0px;padding: 0px;color: green; font-size: large" data-ng-click="$ctrl.updateStateWarnings(stateWarning)" ng-if="stateWarning.isEditing">
+							</button>
+							<button class="glyphicon glyphicon-ban-circle pointer" title = "Reset" style="background: transparent;border-width:0px;padding: 0px;color: red; font-size: large" data-ng-click="$ctrl.cancel(stateWarning)" ng-if="stateWarning.isEditing">
+							</button>
+						</td>
+						<td style="text-align: center" view-only="CT_SWRN_01">
+							<button class="glyphicon glyphicon-edit pointer" disabled="disabled" style="opacity: 0.5;color: orange; font-size: large;background: transparent; border-width:0px;padding: 0px;"   data-ng-click="$ctrl.editStateWarning(stateWarning)">
+							</button>
+							<button class="glyphicon glyphicon-remove pointer" data-ng-disabled="$ctrl.isEditing" style="opacity: 0.5;border-width:0px;padding: 1px;color: red;background: transparent; font-size: large" data-ng-click="$ctrl.deleteStateWarnings(stateWarning)">
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div ng-show="!$ctrl.isWaiting" class="inline-block pull-right"  style="padding-top: 10px;">
+				<!-- View Mode-->
+				<button view-only="CT_SWRN_01" class="btn btn-primary" disabled="disabled"> Add</button>
+				<!--Edit mode-->
+				<button can-edit="CT_SWRN_01" data-ng-disabled="$ctrl.isEditing" class="btn btn-primary" ng-click="$ctrl.addNewStateWarnings()"> Add
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add new/Edit modal-->
+<div id="stateWarningsModal" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">
+					{{$ctrl.titleModal}}
+				</h5>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger" data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<form name="addEditForm" id="addEditForm" novalidate>
+					<table ng-table="$ctrl.tableModalParams" class="table-heb table-bordered table-striped"
+						   style="width: 100%;">
+						<thead>
+						<tr style="border-bottom: hidden !important; height: 25px;">
+							<th style="min-width: 100px;text-align: center;">Warning name</th>
+							<th style="min-width: 100px;text-align: center;">State</th>
+							<th style="min-width: 100px;text-align: center;">Warning Description</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="stateWarning in $data track by $index">
+						<td class="has-error-popup"><input type="text" ng-model="stateWarning.abbreviation"
+														   maxlength="6"
+														   trim-space
+														   style="width: 100%;height: 26px;"
+														   empty-valid="State Warning Name is a mandatory field."
+														   title="{{stateWarning.abbreviation.length==0?'State Warning Name is a mandatory field.':''}}"
+														   class="{{stateWarning.abbreviation.length==0?stateWarning.addClass:'ng-valid'}}">
+						</td>
+						<td class="has-error-popup"><input type="text" ng-model="stateWarning.key.stateCode"
+														   maxlength="2"
+														   trim-space
+														   style="width: 100%;height: 26px;"
+														   empty-valid="State is a mandatory field."
+														   title="{{stateWarning.key.stateCode.length==0?'State is a mandatory field.':''}}"
+														   class="{{(stateWarning.key.stateCode==null||stateWarning.key.stateCode.length===0)?stateWarning.addClass:'ng-valid'}}">
+						</td>
+						<td class="has-error-popup"><input type="text" ng-model="stateWarning.description"
+														   trim-space
+														   style="width: 100%;height: 26px;"
+														   empty-valid="State Warning Description is a mandatory field."
+														   title="{{stateWarning.description.length==0?'State Warning Description is a mandatory field.':''}}"
+														   class="{{stateWarning.description.length==0?stateWarning.addClass:'ng-valid'}}">
+						</td>
+						</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.addMoreRowStateWarnings()">Add
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAddStateWarnings()">Save
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm"
+						ng-click="$ctrl.closeModalUnsavedData()">Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirm message--->
+<div id="confirmModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.titleConfirm}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5>{{$ctrl.messageConfirm}}</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" data-ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.updateStateWarningsTabchange()">
+					Yes
+				</button>
+				<button type="button" data-ng-show="$ctrl.isDelete" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doDeleteStateWarnings()" ng-show="$ctrl.showConfirmDelete">
+					Yes
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isDelete&&!$ctrl.isReturnToTab" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doAddStateWarnings()">
+					Yes
+				</button>
+				<button type="button" ng-show="$ctrl.isDelete" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.doCloseModal()">
+					No
+				</button>
+				<button type="button" ng-show="!$ctrl.isDelete&&!$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.doCloseModal()">
+					No
+				</button>
+				<button type="button" ng-show="$ctrl.isReturnToTab" class="inline-block btn btn-danger btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.returnToTab()">
+					No
+				</button>
+				<button type="button" data-ng-show="!$ctrl.isDelete" class="inline-block btn btn-success btn-sm" data-dismiss="modal"
+						ng-click="$ctrl.closeConfirmPopup()">
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

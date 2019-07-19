@@ -1,0 +1,723 @@
+<div class="row">
+    <div can-view="SM_MAINT_02" class="col-md-12 container-fluid" ng-cloak="true">
+        <div class="row" data-ng-if="scaleMaintenanceStoreUpcInformationDirective.error">
+            <span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" style="padding: .5%">{{scaleMaintenanceStoreUpcInformationDirective.error}}</span>
+        </div>
+        <loading-spinner ng-show="scaleMaintenanceStoreUpcInformationDirective.isWaiting">
+        </loading-spinner>
+        <div class="col-md-12" style="margin-bottom: 30px">
+            <div class="panel-group" ng-show="!scaleMaintenanceStoreUpcInformationDirective.isWaiting" ng-init="scaleMaintenanceStoreUpcInformationDirective.init()" can-view="SM_UPCM_01">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="panel-title" >
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b>PLU:</b> {{scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.plu}}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <b>UPC:</b> {{scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.key.upc}}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <b>Store:</b> {{scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.key.store}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div ng-click="scaleMaintenanceStoreUpcInformationDirective.returnToList()" class="inline-block pull-right glyphicon glyphicon-remove pointer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3">
+
+                                <div class="well">
+
+                                    <h4><strong>Retail</strong></h4>
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="retail">Retail:</label>
+                                        <input class="col-md-4" id="retail" name="retail"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.retail"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="weighted">Weighted:</label>
+                                        <input type="checkbox" class="pull-left" id="weighted"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.weighted">
+                                        <input type="checkbox" class="pull-left" id="weighted"
+                                               ng-disabled="true"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.weighted"
+                                               view-only="SM_UPCM_01">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="authorized">Authorized:</label>
+                                        <input type="checkbox" class="pull-left" id="authorized"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.authorized">
+                                        <input type="checkbox" class="pull-left" id="authorized"
+                                               ng-disabled="true"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.authorized"
+                                               view-only="SM_UPCM_01">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="byCountQuantity">By Count Quantity:</label>
+                                        <input class="col-md-4" id="byCountQuantity" name="byCountQuantity"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.byCountQuantity"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="message">Message:</label>
+                                        <input class="col-md-4" id="message" name="message"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.authorizeRetail.message"
+                                               disabled="true">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-9">
+                                <div class="well">
+
+                                    <h4><strong>Ingredient Information</strong></h4>
+                                    <div class="row form-group">
+                                        <label class="col-md-3" for="ingredientStatement">Ingredient Statement:</label>
+                                        <input class="col-md-4" id="ingredientStatement" type="text" readonly="true"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.ingredientStatement"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-3" for="ingredientText">Ingredient Text:</label>
+                                        <textarea rows="5" class="col-md-9" id="ingredientText" type="text" readonly="true"
+                                                  ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.ingredientText"
+                                                  disabled="true">
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="well">
+
+                                    <h4><strong>Nutrient Information</strong></h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row form-group">
+
+                                                <label class="col-md-4" for="nutrientStatementCode">Nutrient Statement Code:</label>
+                                                <input class="col-md-4" id="nutrientStatementCode" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.nutrientStatementCode"
+                                                       disabled="true">
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-md-4" for="servingSizeDescription">Serving Size Description:</label>
+                                                <input class="col-md-4" id="servingSizeDescription" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.servingSizeDescription"
+                                                       disabled="true">
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-md-4" for="servingsPerContainer">Servings Per Container:</label>
+                                                <input class="col-md-4" id="servingsPerContainer" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.nutrientStatement.servingsPerContainer"
+                                                       disabled="true">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <strong>Nutrient</strong>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Amount</strong>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>%DV</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <strong>Nutrient</strong>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Amount</strong>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>%DV</strong>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="ascorbicAcid">Ascorbic Acid:</label>
+                                                <input class="col-md-3" id="ascorbicAcid" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.ascorbicAcid.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="ascorbicAcidPercentPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.ascorbicAcid.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="biotin">Biotin:</label>
+                                                <input class="col-md-3" id="biotin" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.biotin.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="biotinPercentPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.biotin.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="calcium">Calcium:</label>
+                                                <input class="col-md-3" id="calcium" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.calcium.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="calciumPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.calcium.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="calories">Calories:</label>
+                                                <input class="col-md-3" id="calories" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.calories.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="caloriesPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.calories.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="caloriesFromFat">Calories From Fat:</label>
+                                                <input class="col-md-3" id="caloriesFromFat" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.caloriesFromFat.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="caloriesFromFatPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.caloriesFromFat.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="cholesterol">Cholesterol:</label>
+                                                <input class="col-md-3" id="cholesterol" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.cholesterol.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="cholesterolPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.cholesterol.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="copper">Copper:</label>
+                                                <input class="col-md-3" id="copper" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.copper.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="copperPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.copper.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="dietaryFiber">Dietary Fiber:</label>
+                                                <input class="col-md-3" id="dietaryFiber" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.dietaryFiber.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="dietaryFiberPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.dietaryFiber.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="folacin">Folacin:</label>
+                                                <input class="col-md-3" id="folacin" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.folacin.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="folacinPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.folacin.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="folicAcid">Folic Acid:</label>
+                                                <input class="col-md-3" id="folicAcid" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.folicAcid.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="folicAcidPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.folicAcid.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="iodine">Iodine:</label>
+                                                <input class="col-md-3" id="iodine" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.iodine.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="iodinePercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.iodine.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="iron">Iron:</label>
+                                                <input class="col-md-3" id="iron" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.iron.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="ironPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.iron.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="magnesium">Magnesium:</label>
+                                                <input class="col-md-3" id="magnesium" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.magnesium.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="magnesiumPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.magnesium.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="niacin">Niacin:</label>
+                                                <input class="col-md-3" id="niacin" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.niacin.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="niacinPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.niacin.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="pantothenicAcid">Pantothenic Acid:</label>
+                                                <input class="col-md-3" id="pantothenicAcid" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.pantothenicAcid.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="pantothenicAcidPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.pantothenicAcid.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="phosphorus">Phosphorus:</label>
+                                                <input class="col-md-3" id="phosphorus" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.phosphorus.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="phosphorusPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.phosphorus.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="potassium">Potassium:</label>
+                                                <input class="col-md-3" id="potassium" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.potassium.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="potassiumPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.potassium.percent"
+                                                       disabled="true">
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="protein">Protein:</label>
+                                                <input class="col-md-3" id="protein" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.protein.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="proteinPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.protein.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="riboflavin">Riboflavin:</label>
+                                                <input class="col-md-3" id="riboflavin" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.riboflavin.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="riboflavinPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.riboflavin.percent"
+                                                       disabled="true">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="saturatedFat">Saturated Fat:</label>
+                                                <input class="col-md-3" id="saturatedFat" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.saturatedFat.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="saturatedFatPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.saturatedFat.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="sodium">Sodium:</label>
+                                                <input class="col-md-3" id="sodium" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sodium.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="sodiumPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sodium.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="sugar">Sugar:</label>
+                                                <input class="col-md-3" id="sugar" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sugar.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="sugarPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sugar.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="sugarAlcohol">Sugar Alcohol:</label>
+                                                <input class="col-md-3" id="sugarAlcohol" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sugarAlcohol.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="sugarAlcoholPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.sugarAlcohol.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="thiamine">Thiamine:</label>
+                                                <input class="col-md-3" id="thiamine" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.thiamine.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="thiaminePercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.thiamine.percent"
+                                                       disabled="true">
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="totalCarbohydrates">Total Carbohydrates:</label>
+                                                <input class="col-md-3" id="totalCarbohydrates" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.totalCarbohydrates.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="totalCarbohydratesPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.totalCarbohydrates.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="totalFat">Total Fat:</label>
+                                                <input class="col-md-3" id="totalFat" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.totalFat.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="totalFatPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.totalFat.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="transFat">Trans Fat:</label>
+                                                <input class="col-md-3" id="transFat" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.transFat.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="transFatPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.transFat.percent"
+                                                       disabled="true">
+                                            </div>
+
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminA">Vitamin A:</label>
+                                                <input class="col-md-3" id="vitaminA" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminA.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminAPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminA.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminB">Vitamin B:</label>
+                                                <input class="col-md-3" id="vitaminB" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminBPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminC">Vitamin C:</label>
+                                                <input class="col-md-3" id="vitaminC" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminC.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminCPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminC.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminD">Vitamin D:</label>
+                                                <input class="col-md-3" id="vitaminD" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminD.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminDPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminD.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminE">Vitamin E:</label>
+                                                <input class="col-md-3" id="vitaminE" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminE.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminEPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminE.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminB1">Vitamin B1:</label>
+                                                <input class="col-md-3" id="vitaminB1" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB1.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminB1Percent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB1.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminB2">Vitamin B2:</label>
+                                                <input class="col-md-3" id="vitaminB2" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB2.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminB2Percent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB2.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminB6">Vitamin B6:</label>
+                                                <input class="col-md-3" id="vitaminB6" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB6.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminB6Percent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB6.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="vitaminB12">Vitamin B12:</label>
+                                                <input class="col-md-3" id="vitaminB12" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB12.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="vitaminB12Percent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.vitaminB12.percent"
+                                                       disabled="true">
+                                            </div>
+
+                                            <div class="row form-group">
+                                                <label class="col-md-6" for="zinc">Zinc:</label>
+                                                <input class="col-md-3" id="zinc" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.zinc.value"
+                                                       disabled="true">
+                                                <input class="col-md-3" id="zincPercent" type="text" readonly="true"
+                                                       ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.zinc.percent"
+                                                       disabled="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="well">
+
+                                    <h4><strong>PLU Information</strong></h4>
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="shelfLife">Shelf Life Days:</label>
+                                        <input class="col-md-4" id="shelfLife" name="shelfLife"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.shelfLifeDays"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="freezeBy">Freeze By Days:</label>
+                                        <input class="col-md-4" id="freezeBy" name="freezeBy"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.freezeByDays"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="eatByDays">Eat By Days:</label>
+                                        <input class="col-md-4" id="eatByDays" name="eatByDays"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.eatByDays"
+                                               disabled="true">
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="actionCode">Action Code:</label>
+                                        <input class="col-md-4" id="actionCode" name="actionCode"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.actionCode"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="graphicsCode">Graphics Code:</label>
+                                        <input class="col-md-4" id="graphicsCode" name="graphicsCode"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.graphicsCode"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+
+                                        <label class="col-md-4" for="ingredientStatement">Ingredient Statement Number:</label>
+                                        <input class="col-md-4" id="ingredientStatement" name="ingredientStatement"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.ingredientStatement"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="labelFormatOne">Label Format 1:</label>
+                                        <input class="col-md-4" id="labelFormatOne" name="labelFormatOne"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.labelFormatOne"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="labelFormatTwo">Label Format 2:</label>
+                                        <input class="col-md-4" id="labelFormatTwo" name="labelFormatTwo"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.labelFormatTwo"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="prePackTare">Pre-pack Tare:</label>
+                                        <input class="col-md-4" id="prePackTare" name="prePackTare"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.prePackTare"
+                                               disabled="true">
+                                    </div>
+
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="serviceCounterTare">Service Counter Tare:</label>
+                                        <input class="col-md-4" id="serviceCounterTare" name="serviceCounterTare"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.serviceCounterTare"
+                                               disabled="true">
+                                    </div>
+
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="netWeight">Net Weight:</label>
+                                        <input class="col-md-4" id="netWeight" name="netWeight"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.netWeight"
+                                               disabled="true">
+                                    </div>
+
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="forceTare">Force Tare:</label>
+                                        <input type="checkbox" class="pull-left" id="forceTare"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.forceTare">
+                                        <input type="checkbox" class="pull-left" id="forceTare"
+                                               ng-disabled="true"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.forceTare"
+                                               view-only="SM_UPCM_01">
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="priceOverride">Price Override:</label>
+                                        <input type="checkbox" class="pull-left" id="priceOverride"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.priceOverride">
+                                    </div>
+
+
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="englishDescriptionOne">English Description 1:</label>
+                                        <input class="col-md-4" id="englishDescriptionOne" name="englishDescriptionOne"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.englishDescriptionOne"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="englishDescriptionTwo">English Description 2:</label>
+                                        <input class="col-md-4" id="englishDescriptionTwo"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.englishDescriptionTwo"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="englishDescriptionThree">English Description 3:</label>
+                                        <input class="col-md-4" id="englishDescriptionThree"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.englishDescriptionThree"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="englishDescriptionFour">English Description 4:</label>
+                                        <input class="col-md-4" id="englishDescriptionFour"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.englishDescriptionFour"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="spanishDescriptionOne">Spanish Description 1:</label>
+                                        <input class="col-md-4" id="spanishDescriptionOne"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.spanishDescriptionOne"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="spanishDescriptionTwo">Spanish Description 2:</label>
+                                        <input class="col-md-4"  id="spanishDescriptionTwo"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.spanishDescriptionTwo"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="spanishDescriptionThree">English Description 3:</label>
+                                        <input class="col-md-4"  id="spanishDescriptionThree"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.spanishDescriptionThree"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="spanishDescriptionFour">Spanish Description 4:</label>
+                                        <input class="col-md-4" id="spanishDescriptionFour"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.spanishDescriptionFour"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="department">Department:</label>
+                                        <input class="col-md-4" id="department"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.department"
+                                               disabled="true">
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-md-4" for="subDepartment">Sub Department:</label>
+                                        <input class="col-md-4" id="subDepartment"
+                                               ng-model="scaleMaintenanceStoreUpcInformationDirective.scaleMaintenance.scaleMaintenanceUpc.scaleProductAsJson.subDepartment"
+                                               disabled="true">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
