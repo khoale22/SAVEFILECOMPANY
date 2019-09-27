@@ -1,0 +1,41 @@
+application:
+  name: WIC               # Mandatory, global or general application name- from Salesforce registration, HEB provide it.
+  serverGroup: 837        # Server group assigned to the application
+build:
+  type: java_jar          # Type of build to execute, it can be java_war (default), java_jar, angular (2+), angularJS, go, middleware
+  tool: gradle            # Tool that should be used to build, choose from gradle (default), maven, go, angular-cli, gulp, nobuild
+  script: build.gradle    # Build script to execute with the build tool, common choices are: build.gradle (default), pom.xml, main.go, run, some build tools do not require one
+  target: bootJar         # Build tool target to execute, the default changes depending on the build type, java_war = bootWar, java_jar = bootJar, go = main.go, angular = prod
+  javaVersion: '11'       # Default is Java 8, Gradle 2.2
+  batchJob: true
+package:
+  type: rpm               # How to package the app, choices are: rpm (default), docker, combined (rpm + docker, requires special definitions)
+  style: full             # Use full for Jar, plain for war
+service:
+  name: PublishWICItemsToProductMaster_J50X100   # Mandatory, the name of the service to build and package (i.e war name)
+  version: 1.0.0          # Mandatory, version assigned to the build
+  buildDir: build/libs    # Directory where the build artifact will be located after a successful build, defaults to 'build/libs', angular = dist/service-name
+  tagGit: yes             # Should the pipeline tag the git repo with the version plus the build number, defaults to 'yes'
+environment:
+  - name: prod
+    instances:
+      - w2papl0083701.heb.com
+    keyFile: WIC.key  
+    repository: heb-app-releases
+  - name: cert                       # Each environment element defines a deployment environment
+                                    # Appends "_dev" to dev environment rpms, choices are: no (default), yes
+    instances:                      # Only used for RPM packages, ignored otherwise, the list of servers (instances) where the package will be deployed
+      - W2CAPL0083701.heb.com
+    keyFile: WIC.key       # SSH Key or Kubernetes bearer token used by the pipeline to authenticate to the target environment
+    repository: heb-app-releases
+registry:
+  - name: nexus2
+    host: nexus-repo.heb.com
+    type: nexus2
+    repository: releases
+release:                            # Each element defines a service release based on a git branch, every service will be suffixed (tagged) with the name of the release that corresponds to the branch, except for the 'prod' release which will not be suffixed at all, this is independent of the environment, hence an environment can be used to host many service releases (i.e. 'dev', 'dev2', 'int' service releases could all be on the 'dev' environment)
+  - prod:
+    branch: master                  # Name of the branch that is used to match this release
+  - cert:   
+    branch: uat
+

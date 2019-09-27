@@ -1,0 +1,298 @@
+/*
+ * Apply plugins by Id or from a file (locally or remotely)
+ */
+buildscript {
+    ext {
+        baseProjectName = "PublishWICItemsToProductMaster_J50X100"
+        scriptName = 'J50X100.sh'
+        baseVersion = "1.0.0"
+        snapshotVersion = false
+        groovyVersion = '2.3.8'
+        springVersion = '5.0.9.RELEASE'
+        springBootVersion = '2.1.2.RELEASE'
+        springElasticsearchVersion = '3.1.4.RELEASE'
+        fasterXmlJacksonVersion = '2.9.6'
+        codeHausJacksonVersion = '1.9.13'
+        commonsBeanutilsVersion = '1.8.3'
+        commonsIoVersion = '1.3.2'
+        jsoupVersion='1.9.1'
+        jsonSimpleVersion='1.1.1'
+        jcommonJcsVersion='2.2'
+        jsonFlatVersion='0.1.0'
+        jolboxVersion='0.8.0.RELEASE'
+        quartzVersion = '2.2.3'
+        jodatimeVersion='2.9.9'
+        oracleDriver = 'ojdbc7'
+        oracleVersion = '12.1.0.1'
+        h2Version = '1.4.191'
+        sqlServerVersion = '3.0'
+        jacksonjsr310Version='2.9.6'
+        commonslang3Version='3.7'
+        mysqlVersion='5.1.6'
+        axisVersion = '1.4'
+        poiVersion ='3.9'
+        jaxrpcapiVerion='1.1'
+        wsdl4jVersion='1.5.1'
+        commonsDiscoveryVersion='0.5'
+        javaxMailVersion ='1.4'
+        commonsCsvVersion ='1.1'
+        sonarServer = 'http://sonar.heb.com'
+        sonarUser = 'sonar'
+        sonarPassword = 'sonar'
+        sonarProjectName = 'PublishWICItemsToProductMaster_J50X100D'
+        sonarProjectKey = 'PublishWICItemsToProductMaster_J50X100D'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    }
+}
+plugins {
+    id "org.sonarqube" version "2.6.2"
+}
+apply plugin: 'groovy'
+apply plugin: 'jacoco'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'jdepend'
+apply plugin: 'org.sonarqube'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+defaultTasks 'clean', 'test', 'bootJar'
+
+group = "com.heb"
+description = "PublishWICItemsToProductMaster_J50X100"
+version = '1.0.0'
+repositories {
+    mavenLocal()
+    maven {
+        name "H-E-B Nexus Public"
+        url "http://nexus-lib.heb.com/nexus/content/repositories/public"
+    }
+    maven {
+        name "H-E-B Nexus Central"
+        url "http://nexus-lib.heb.com/nexus/content/repositories/central"
+    }
+    maven {
+        name "H-E-B Third Party"
+        url "http://nexus-lib.heb.com/nexus/content/repositories/thirdparty"
+    }
+    maven {
+        name "H-E-B Core"
+        url "http://nexus-lib.heb.com/nexus/content/repositories/HEB-CORE"
+    }
+    maven {
+        name "H-E-B RELEASES"
+        url "http://nexus-lib.heb.com/nexus/content/repositories/releases"
+    }
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    mavenCentral()
+}
+
+/*
+ * Configure additional source sets.
+ */
+sourceSets {
+
+    /*
+     * Functional tests.
+
+    ftest {
+        java {
+            compileClasspath += main.output + test.output + test.compileClasspath
+            runtimeClasspath += main.output + test.output
+        }
+        output.classesDir = 'build/classes/test'
+    }
+    */
+
+}
+/*
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Publish WIC Items To ProductMaster',
+                'Implementation-Version': version,
+                'Main-Class': 'com.heb.ApplicationConfiguration'
+    }
+    baseName = "PublishWICItemsToProductMaster_J50X100"
+    version = "$version"
+}
+*/
+
+bootJar{
+    mainClassName='com.heb.ApplicationConfiguration'
+    baseName = "PublishWICItemsToProductMaster_J50X100"
+    archiveName = baseName + ".jar"
+    //launchScript()
+}
+
+
+/*
+ * Function to copy the shell script that runs the application into the same directory as the jar file for packaging.
+ */
+task copyScript(type: Copy)  {
+    from('.') {
+        include scriptName
+    }
+    into bootJar.destinationDir
+}
+
+// Make the assemble task depend on copyScript so that it will be included in the assembly.
+assemble.dependsOn copyScript
+/*
+ * sonar task configuration.
+ */
+sonarqube {
+    properties {
+        property "sonar.host.url", sonarServer
+        property "sonar.login", sonarUser
+        property "sonar.password", sonarPassword
+        property "sonar.projectKey", sonarProjectKey
+        property "sonar.projectName", sonarProjectName
+        //  property "sonar.exclusions", "com/heb/xmlns/**,com/heb/jaf/**"
+    }
+}
+// Add the build number to the build information available in the running application.
+springBoot {
+    buildInfo {
+        properties {
+            additional = ['appRelease': "$System.env.BUILD_NUMBER".toString()]
+        }
+    }
+}
+/*
+ * Set the new source sets dependencies to extend from test dependencies.
+ */
+configurations {
+    ftestCompilie.extendsFrom testCompile
+    ftestRuntime.extendsFrom testRuntime
+}
+
+/*
+ * Configure Intellij to be aware of the new source sets. Note that the version of IntelliJ we are
+ * using is not that smart in relation to these. This causes some problems when running gradle test tasks
+ * inside intellij.
+ */
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+        testSourceDirs += file('src/test/java')
+        scopes.TEST.plus += [ configurations.ftestCompilie ]
+    }
+}
+
+dependencies {
+    // Spring JMS
+    //  compile "org.springframework.ws:spring-ws-core:$springJmsVersion"
+    //  compile "org.springframework.ws:spring-ws-test:$springJmsVersion"
+    // compile "org.springframework:spring-jms:$springVersion"
+    compile('org.springframework.boot:spring-boot-starter-log4j2')
+    // JDBC Drivers
+    //  compile "com.oracle:$oracleDriver:$oracleVersion"
+    compile("com.oracle:$oracleDriver:$oracleVersion") {
+        exclude module: "sources"
+    }
+    // Spring JPA classes
+    compile("org.springframework.boot:spring-boot-starter-data-jpa") {
+        // Exclude these to use log4j as the slf4j implementation
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    // Spring batch
+    compile("org.springframework.batch:spring-batch-core"){
+        // Exclude these to use log4j as the slf4j implementation
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    compile ("org.springframework.data:spring-data-rest-core"){
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    // Quartz scheduler
+    compile("org.quartz-scheduler:quartz:$quartzVersion")
+    compile("org.springframework:spring-context-support:$springVersion")
+
+    // Spring Elasticsearch
+    compile("org.springframework.data:spring-data-elasticsearch:$springElasticsearchVersion"){
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
+    // Replace the Jackson Mapper. The default does not work with JAF and
+    // with complex JPA objects.
+    compile "com.fasterxml.jackson.core:jackson-annotations:$fasterXmlJacksonVersion"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:$fasterXmlJacksonVersion"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonjsr310Version"
+    compile "org.codehaus.jackson:jackson-core-lgpl:$codeHausJacksonVersion"
+    compile "org.codehaus.jackson:jackson-mapper-lgpl:$codeHausJacksonVersion"
+    compile "org.codehaus.jackson:jackson-mapper-asl:1.9.12"
+
+    /* Testing tools */
+    compile ("org.springframework.boot:spring-boot-starter-test:$springBootVersion"){
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    compile "com.h2database:h2:$h2Version"
+    // dB2Oracle changes vn00907
+    compile "org.apache.commons:commons-dbcp2:2.0"
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: "$commonsBeanutilsVersion"
+    compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
+    compile "org.apache.commons:commons-lang3:$commonslang3Version"
+    compile 'commons-validator:commons-validator:1.4.0'
+    //   compile"mysql:mysql-connector-java:$mysqlVersion"
+   compile "org.apache.axis:axis:$axisVersion"
+    compile "javax.xml:jaxrpc-api:$jaxrpcapiVerion"
+    compile "commons-discovery:commons-discovery:$commonsDiscoveryVersion"
+    compile "wsdl4j:wsdl4j:$wsdl4jVersion"
+    compile("org.apache.poi:poi:$poiVersion"){
+        exclude module: "dom4j"
+    }
+    compile("org.apache.poi:poi-ooxml:$poiVersion"){
+         exclude module: "dom4j"
+     }
+    compile("org.apache.poi:poi-ooxml-schemas:$poiVersion"){
+         exclude module: "dom4j"
+     }
+    compile "javax.mail:mail:$javaxMailVersion"
+    compile "javax.xml.ws:jaxws-api:2.3.1"
+    compile "com.sun.xml.ws:jaxws-rt:2.1.3"
+    compile "javax.xml.soap:javax.xml.soap-api:1.4.0"
+    compile "javax.jws:jsr181-api:1.0-MR1"
+    compile "org.javassist:javassist:3.23.1-GA"
+    compile files("WIC_lib/PublishWICItemsToProductMaster_J50X100D_WS.jar")
+
+}
+/*
+ * Additional customization to the build
+ */
+
+
+allprojects {
+    version = "$baseVersion" + (snapshotVersion ? "-SNAPSHOT" : "")
+}
+
+bootRun {
+    systemProperty "spring.profiles.active", "dev"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint"
+}
+task applicationCodeCoverageReport(type:JacocoReport){
+    executionData test
+    sourceSets sourceSets.main
+}
+compileJava.options.compilerArgs += ["-proc:none"]

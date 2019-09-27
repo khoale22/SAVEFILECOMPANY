@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~application-config.xml
+  ~
+  ~  Copyright (c) 2016 H-E-B
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of H-E-B.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		"
+>
+    <!-- Data source to connect to Oracle -->
+    <bean id="dataSourceOracle" class="org.apache.commons.dbcp2.BasicDataSource"
+          primary="true">
+        <property name="driverClassName" value="${oracle.driver-class-name}" />
+        <property name="url" value="${oracle.url}" />
+        <property name="username" value="${oracle.username}" />
+        <property name="password" value="${oracle.password}" />
+        <property name="maxIdle" value="50" />
+        <property name="maxTotal" value="50" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+</beans>

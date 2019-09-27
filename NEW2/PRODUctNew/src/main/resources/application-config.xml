@@ -1,0 +1,65 @@
+<?mxl version="1.0" encoding="UTF-8"?>
+<!--
+application-config.xml
+  ~
+  ~  Copyright (c) 2018 H-E-B
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of H-E-B.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+>
+    <!-- Load the JPA configuration -->
+    <import resource="jpa-config.xml" />
+    <import resource="elesticsearch-config.xml" />
+    <!-- Load the batch job configuration -->
+    <import resource="job.xml"/>
+   <!-- Scan application directories for beans -->
+    <context:component-scan base-package="com.heb" />
+
+    <beans profile="dev">
+        <import resource="db-config.xml" />
+        <!-- Loads development properties -->
+        <context:property-placeholder
+                location="classpath:application-dev.properties"
+                ignore-unresolvable="true"/>
+    </beans>
+    <beans profile="cert">
+        <import resource="db-config.xml" />
+        <!-- Loads development properties -->
+        <context:property-placeholder
+                location="classpath:application-cert.properties"
+                ignore-unresolvable="true"/>
+    </beans>
+    <beans profile="prod">
+        <import resource="db-config.xml" />
+        <!-- Loads development properties -->
+        <context:property-placeholder
+                location="classpath:application-prod.properties"
+                ignore-unresolvable="true"/>
+    </beans>
+
+    <beans>
+
+        <!-- Add support for localization of messages to the client. -->
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+            <property name="basename" value="messages" />
+            <property name="defaultEncoding" value="UTF-8" />
+        </bean>
+
+        <bean id="applicationEventMulticaster"
+              class="org.springframework.context.event.SimpleApplicationEventMulticaster">
+            <property name="taskExecutor">
+                <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"/>
+            </property>
+        </bean>
+    </beans>
+</beans>

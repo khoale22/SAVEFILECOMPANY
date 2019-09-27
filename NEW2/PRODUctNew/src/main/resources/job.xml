@@ -1,0 +1,194 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:batch="http://www.springframework.org/schema/batch"
+	   xsi:schemaLocation="http://www.springframework.org/schema/batch
+        http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Stores data about the job executions in a DB. -->
+	<beans>
+		<bean id="jobDataSource" class="org.apache.commons.dbcp2.BasicDataSource" >
+			<property name="driverClassName" value="${jobDataSource.driver-class-name}" />
+			<property name="url" value="${jobDataSource.url}" />
+			<property name="username" value="${jobDataSource.username}" />
+			<property name="password" value="${jobDataSource.password}" />
+			<property name="testOnBorrow" value="true" />
+		</bean>
+
+		<bean id="jobTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="jobDataSource" />
+		</bean>
+
+		<batch:job-repository id="jobRepository"
+							  data-source="jobDataSource"
+							  transaction-manager="jobTransactionManager"
+							  table-prefix="${jobDataSource.schemaPrefix}"
+							  isolation-level-for-create="READ_COMMITTED"
+		/>
+	</beans>
+	<beans>
+		<!-- Holds the list of available jobs. -->
+		<bean id="mapJobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+		<!-- Scans for beans that are batch jobs and loads them into mapJobRegistry. -->
+		<bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+			<property name="jobRegistry" ref="mapJobRegistry" />
+		</bean>
+
+		<!-- Runs jobs. -->
+		<bean id="jobLauncher"
+			  class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+			<property name="jobRepository" ref="jobRepository"/>
+		</bean>
+
+		<!-- This bean can be used by other classes to manually kick off jobs. -->
+		<bean id="wicJobLauncher" class="com.heb.batch.wic.WicJobLauncher">
+			<property name="jobLauncher" ref="jobLauncher" />
+			<property name="jobLocator" ref="mapJobRegistry" />
+		</bean>
+
+		<!-- Runs jobs asynchronously. -->
+		<bean id="asyncJobLauncher"
+			  class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+			<property name="jobRepository" ref="jobRepository"/>
+			<property name="taskExecutor">
+				<bean class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+			</property>
+		</bean>
+		<!-- The main job setup for the process data. -->
+		<batch:job id="J50X100D">
+			<!--Read D6 record and save to cache-->
+			<batch:step id="J50X100D-PARSE-TEXASTATE-D6-FILE-STEP-1" next="J50X100D-SYS-WIC-CATEGORY-2">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="texasStateReaderForD6"  writer="texasStateWriterForD6"
+								 processor="texasStateProcessorForD6" commit-interval="100">
+					</batch:chunk>
+				</batch:tasklet>
+			</batch:step>
+			<!--Read WIC CAt and Save to cache-->
+			<batch:step id="J50X100D-SYS-WIC-CATEGORY-2" next="J50X100D-SYS-WIC-SUB-CATEGORY-3">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="wicCategoryReader"  writer="wicCategoryWriter"
+								 processor="wicCategoryProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+			<!--Read WIC SUB CAt and Save to cache-->
+			<batch:step id="J50X100D-SYS-WIC-SUB-CATEGORY-3" next="J50X100D-SYS-BNFT-UNT-DES-TXSTATE-STEP-4">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="wicSubCategoryReader"  writer="wicSubCategoryWriter"
+								 processor="wicSubCategoryProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+			<!--Read Insert/Update benefit unit-->
+			<batch:step id="J50X100D-SYS-BNFT-UNT-DES-TXSTATE-STEP-4" next="J50X100D-PARSE-TEXASTATE-D4-FILE-STEP-5">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="masterDataWrapperReader"  writer="benefitUnitDescriptionWriter"
+								 processor="benefitUnitDescriptionProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!--Read D4 and Save to cache-->
+			<batch:step id="J50X100D-PARSE-TEXASTATE-D4-FILE-STEP-5" next="J50X100D-SYS-PROD-SCAN-CODE-WIC-STEP-6">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="texasStateReader"  writer="texasStateWriter"
+								 processor="texasStateProcessor" commit-interval="100">
+
+					</batch:chunk>
+
+				</batch:tasklet>
+			</batch:step>
+			<batch:step id="J50X100D-SYS-PROD-SCAN-CODE-WIC-STEP-6" next="J50X100D-SYS-MASTERDATA-TXSTATE-STEP-7">
+				<batch:tasklet transaction-manager="jobTransactionManager">
+					<batch:chunk reader="productScanCodeWicReader" writer="productScanCodeWicWriter"
+								 processor="productScanCodeWicProcessor" commit-interval="100"/>
+				</batch:tasklet>
+			</batch:step>
+
+			<!-- check update/insert-->
+            <batch:step id="J50X100D-SYS-MASTERDATA-TXSTATE-STEP-7" next="J50X100D-SYS-PROD-SCAN-CODE-STEP-8">
+                <batch:tasklet transaction-manager="jobTransactionManager">
+                    <batch:chunk reader="masterDataWrapperReader" writer="masterDataWrapperWriter"
+                                 processor="masterDataWrapperProcessor" commit-interval="100"/>
+                </batch:tasklet>
+            </batch:step>
+			<!-- check delete -->
+		<batch:step id="J50X100D-SYS-PROD-SCAN-CODE-STEP-8">
+            <batch:tasklet transaction-manager="jobTransactionManager">
+               <batch:chunk reader="deleteWICAndUpdateProductScanCodesReader" writer="deleteWICAndUpdateProductScanCodesWriter"
+								 processor="deleteWICAndUpdateProductScanCodesProcessor" commit-interval="200"/>
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+		<bean id="texasStateProcessor" class="com.heb.batch.wic.processor.TexasStateProcessor" scope="step" />
+		<!--D6 record-->
+		<bean id="texasStateProcessorForD6" class="com.heb.batch.wic.processor.TexasStateProcessor" scope="step" >
+			<property name="recordType" value="D6"/>
+		</bean>
+		<bean id="texasStateWriter" class="com.heb.batch.wic.writer.TexasStateWriter" scope="step" />
+		<!--D6 record-->
+		<bean id="texasStateWriterForD6" class="com.heb.batch.wic.writer.TexasStateWriter" scope="step">
+			<property name="recordType" value="D6"/>
+		</bean>
+		<bean id="texasStateReader" class="com.heb.batch.wic.reader.TexasStateReader" scope="step" >
+			<!--<property name="resource" value="file:${texasState.fileName}" />-->
+			<property name="lineMapper" ref="lineMapperTexas"/>
+		</bean>
+		<!--D6 record-->
+		<bean id="texasStateReaderForD6" class="com.heb.batch.wic.reader.TexasStateReader" scope="step" >
+			<!--<property name="resource" value="file:${texasState.fileName}" />-->
+			<property name="lineMapper" ref="lineMapperTexasForD6"/>
+		</bean>
+		<bean id="productScanCodeWicReader" class="com.heb.batch.wic.reader.ProductScanCodeWicReader" scope="step"/>
+		<bean id="productScanCodeWicProcessor" class="com.heb.batch.wic.processor.ProductScanCodeWicProcessor" scope="step"/>
+		<bean id="productScanCodeWicWriter" class="com.heb.batch.wic.writer.ProductScanCodeWicWriter" scope="step"/>
+
+		<bean id="wicCategoryReader" class="com.heb.batch.wic.reader.WicCategoryReader" scope="step"/>
+		<bean id="wicCategoryProcessor" class="com.heb.batch.wic.processor.WicCategoryProcessor" scope="step"/>
+		<bean id="wicCategoryWriter" class="com.heb.batch.wic.writer.WicCategoryWriter" scope="step"/>
+
+		<bean id="wicSubCategoryReader" class="com.heb.batch.wic.reader.WicSubCategoryReader" scope="step"/>
+		<bean id="wicSubCategoryProcessor" class="com.heb.batch.wic.processor.WicSubCategoryProcessor" scope="step"/>
+		<bean id="wicSubCategoryWriter" class="com.heb.batch.wic.writer.WicSubCategoryWriter" scope="step"/>
+		<!--Benefit unit description-->
+		<bean id="benefitUnitDescriptionProcessor" class="com.heb.batch.wic.processor.BenefitUnitDescriptionProcessor" scope="step"/>
+		<bean id="benefitUnitDescriptionWriter" class="com.heb.batch.wic.writer.BenefitUnitDescriptionWriter" scope="step"/>
+
+		<bean id="fixedLengthLineTokenizer"
+			  class="org.springframework.batch.item.file.transform.FixedLengthTokenizer">
+			<property name="names" value="${texasState.mapping.name}" />
+			<property name="columns" value="${texasState.mapping.position}" />
+			<property name="strict" value="false"/>
+		</bean>
+		<!--FixedLengthTokenizer for D6-->
+		<bean id="fixedLengthLineTokenizerForD6"
+			  class="org.springframework.batch.item.file.transform.FixedLengthTokenizer">
+			<property name="names" value="${texasState.d6.mapping.name}" />
+			<property name="columns" value="${texasState.d6.mapping.position}" />
+			<property name="strict" value="false"/>
+		</bean>
+		<bean id="lineMapperTexas" class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+			<property name="lineTokenizer" ref="fixedLengthLineTokenizer"/>
+			<property name="fieldSetMapper" ref="texasStateFieldSetMapper"/>
+		</bean>
+		<!--DefaultLineMapper for D6-->
+		<bean id="lineMapperTexasForD6" class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+			<property name="lineTokenizer" ref="fixedLengthLineTokenizerForD6"/>
+			<property name="fieldSetMapper" ref="texasStateFieldSetMapperForD6"/>
+		</bean>
+
+		<bean id="texasStateFieldSetMapper" class="com.heb.batch.wic.reader.TexasStateFieldSetMapper"/>
+		<!--DefaultLineMapper for D6-->
+		<bean id="texasStateFieldSetMapperForD6" class="com.heb.batch.wic.reader.TexasStateFieldSetMapper">
+			<property name="recordType" value="D6"/>
+		</bean>
+
+        <bean id="masterDataWrapperReader" class="com.heb.batch.wic.reader.MasterDataWrapperReader" scope="step"/>
+        <bean id="masterDataWrapperProcessor" class="com.heb.batch.wic.processor.MasterDataWrapperProcessor" scope="step"/>
+        <bean id="masterDataWrapperWriter" class="com.heb.batch.wic.writer.MasterDataWrapperWriter" scope="step"/>
+        		
+		<bean id="deleteWICAndUpdateProductScanCodesReader" class="com.heb.batch.wic.reader.DeleteScanCodesWICAndUpdateScanCodesReader" scope="step"/>
+		<bean id="deleteWICAndUpdateProductScanCodesProcessor" class="com.heb.batch.wic.processor.DeleteScanCodesWICAndUpdateScanCodesProcessor" scope="step"/>
+		<bean id="deleteWICAndUpdateProductScanCodesWriter" class="com.heb.batch.wic.writer.DeleteScanCodesWICAndUpdateScanCodesWriter" scope="step"/>
+	
+    </beans>
+</beans>

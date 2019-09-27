@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xsi:schemaLocation="http://www.springframework.org/schema/data/elasticsearch http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <elasticsearch:repositories base-package="com.heb.batch.wic.index.repository"/>
+
+    <!-- <elasticsearch:node-client id="client" local="true" path-home="elasticsearch_home_test" path-data="elasticsearch_home_test" http-enabled="false" />-->
+    <elasticsearch:node-client id="client" local="true" cluster-name="#{T(java.util.UUID).randomUUID().toString()}"
+                               http-enabled="true" path-data="build/elasticsearch_home_test" path-home="build/elasticsearch_home_test"
+                               path-configuration="node-client-configuration.yml"/>
+
+    <bean name="elasticsearchTemplate" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
+        <constructor-arg ref="client"/>
+        <!--<constructor-arg ref="customEntityMapper"/>-->
+    </bean>
+
+   <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+         <property name="locations">
+             <list>
+                 <value>classpath:sql-test.properties</value>
+             </list>
+         </property>
+     </bean>
+</beans>

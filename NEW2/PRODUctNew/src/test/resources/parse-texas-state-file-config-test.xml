@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<import resource="elesticsearch-config-test.xml" />
+	<import resource="h2-jpa-config-test.xml" />
+	<import resource="component-scan-config-test.xml" />
+
+	<bean id="fixedLengthLineTokenizer" class="org.springframework.batch.item.file.transform.FixedLengthTokenizer">
+		<property name="names" value="ID-CODE,SEQUENCE-NBR,MESSAGE-ID,APL-PREFIX,UPC-KEY,CHECK-DIGIT,DESC,CATEGORY-CD,CATEGORY-DESC,SUBCATEGORY-CD,SUBCATEGORY-DESC,UNIT-OF-MEASURE,PACKAGE-SIZE,BENEFIT-QTY,BENEFIT-UNIT,ITEM-PRICE,PRICE-TYPE,CARD-ID-CD,EFF-DATE,END-DATE" />
+		<property name="columns" value="1-2,3-8,9-12,13-13,14-28,29-29,30-79,80-81,82-131,132-134,135-184,185-194,195-199,200-204,205-254,255-260,261-262,263-277,278-285,286-293" />
+		<property name="strict" value="false" />
+	</bean>
+	<bean id="texasStateFieldSetMapper" class="com.heb.batch.wic.reader.TexasStateFieldSetMapper" />
+	
+	<bean id="lineMapperTexas" class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+		<property name="lineTokenizer" ref="fixedLengthLineTokenizer" />
+		<property name="fieldSetMapper" ref="texasStateFieldSetMapper" />
+	</bean>
+	
+	<bean id="texasStateReader" class="com.heb.batch.wic.reader.TexasStateReader">
+		<property name="lineMapper" ref="lineMapperTexas"/>
+	</bean>
+	<bean id="texasStateProcessor" class="com.heb.batch.wic.processor.TexasStateProcessor" />
+	<bean id="texasStateWriter" class="com.heb.batch.wic.writer.TexasStateWriter" />
+	
+	<bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="org.springframework.batch.item.file.transform.Range[]" value="org.springframework.batch.item.file.transform.RangeArrayPropertyEditor" />
+			</map>
+		</property>
+	</bean>
+</beans>
