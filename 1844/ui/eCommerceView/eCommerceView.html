@@ -1,0 +1,424 @@
+<div class="well" style="padding: 10px">
+	<div class="row" data-ng-if="$ctrl.error">
+		<span class="alert alert-danger col-md-4 col-md-push-4 text-center myfade" role="alert" ng-bind-html="$ctrl.error"></span>
+	</div>
+	<div class="row" data-ng-if="$ctrl.success">
+		<span class="alert alert-success col-md-4 col-md-push-4 text-center myfade"
+			  role="alert">{{$ctrl.success}}</span>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="ecom-menu">
+				<uib-tabset active="active" id="ecom-view-tabs">
+					<uib-tab index="$index" ng-repeat="tab in $ctrl.domainTabBarDataProvider track by $index"
+							 select="$ctrl.tabSelected(tab)"
+							 deselect="$ctrl.tabDeselect($event,$selectedIndex)">
+						<uib-tab-heading>{{tab.displayName}}</uib-tab-heading>
+					</uib-tab>
+				</uib-tabset>
+			</div>
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+			<div class="col-md-12"  ng-show="!($ctrl.isWaitingForResponse)"
+				 style="margin-top: 0.5%; padding-left: 2px; padding-right: 2px;">
+				<div class="col-md-8">
+					<div class="row" style="margin-right: 1%">
+						<e-commerce-view-details-left current-tab="$ctrl.currentTab" product-master="$ctrl.productMaster"
+													  e-commerce-view-details="$ctrl.eCommerceViewDetails"
+													  is-edit-text="$ctrl.isEditText"
+													  stop-waiting-loading = "$ctrl.stopWaitingLoading(status)"
+													  change-spell-check-status = "$ctrl.changeSpellCheckStatus(status)"
+													  get-e-commerce-view-data-source="$ctrl.getECommerceViewDataSource(productId, scanCodeId, attributeId, salesChannel, headerTitle, typeSource)"
+													  callbackfunction-after-spell-check="$ctrl.callbackfunctionAfterSpellCheck">
+						</e-commerce-view-details-left>
+						<product-description-component current-tab="$ctrl.currentTab"
+													   product-master="$ctrl.productMaster"
+													   is-edit-text="$ctrl.isEditText"
+													   e-commerce-view-details="$ctrl.eCommerceViewDetails"
+													   change-spell-check-status = "$ctrl.changeSpellCheckStatus(status)"
+													   data-ng-show="$ctrl.currentTab.id!='Google'"
+													   callbackfunction-after-spell-check="$ctrl.callbackfunctionAfterSpellCheck">
+						</product-description-component>
+						<favor-item-description-component current-tab="$ctrl.currentTab" ng-if="$ctrl.currentTab.id === 'Favor'"
+													   product-master="$ctrl.productMaster"
+													   is-edit-text="$ctrl.isEditText"
+													   e-commerce-view-details="$ctrl.eCommerceViewDetails"
+													   change-spell-check-status = "$ctrl.changeSpellCheckStatus(status)"
+													   callbackfunction-after-spell-check="$ctrl.callbackfunctionAfterSpellCheck">
+						</favor-item-description-component>
+						<e-commerce-view-ingredient current-tab="$ctrl.currentTab"
+													product-master="$ctrl.productMaster"
+													success="$ctrl.success"
+													error="$ctrl.error"
+													e-commerce-view-details="$ctrl.eCommerceViewDetails" is-editing-ingredient="$ctrl.isEditingIngredient" data-ng-show="$ctrl.currentTab.id!='Google'"></e-commerce-view-ingredient>
+						<e-commerce-view-specifications current-tab="$ctrl.currentTab"
+														product-master="$ctrl.productMaster"
+														e-commerce-view-details="$ctrl.eCommerceViewDetails" data-ng-show="$ctrl.currentTab.id!='Google'"></e-commerce-view-specifications>
+						<e-commerce-view-dimensions current-tab="$ctrl.currentTab"
+													success="$ctrl.success"
+													error="$ctrl.error"
+													product-master="$ctrl.productMaster"
+													data-ng-show="$ctrl.currentTab.id!='Google'"
+						></e-commerce-view-dimensions>
+						<e-commerce-view-direction current-tab="$ctrl.currentTab"
+												   product-master="$ctrl.productMaster"
+												   is-edit-text="$ctrl.isEditText"
+												   e-commerce-view-details="$ctrl.eCommerceViewDetails" data-ng-show="$ctrl.currentTab.id!='Google'"
+												   get-e-commerce-view-data-source
+													   ="$ctrl.getECommerceViewDataSource(productId, scanCodeId, attributeId, salesChannel, headerTitle, typeSource)">
+						</e-commerce-view-direction>
+						<e-commerce-view-warning current-tab="$ctrl.currentTab"
+												 product-master="$ctrl.productMaster"
+												 is-edit-text="$ctrl.isEditText"
+												 e-commerce-view-details="$ctrl.eCommerceViewDetails" data-ng-show="$ctrl.currentTab.id!='Google'"
+												 get-e-commerce-view-data-source
+													 ="$ctrl.getECommerceViewDataSource(productId, scanCodeId, attributeId, salesChannel, headerTitle, typeSource)"></e-commerce-view-warning>
+						<e-commerce-view-related-product current-tab="$ctrl.currentTab"
+														 product-master="$ctrl.productMaster" data-ng-show="$ctrl.currentTab.id!='Google'"
+						></e-commerce-view-related-product>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<e-commerce-view-details-right current-tab="$ctrl.currentTab" product-master="$ctrl.productMaster"
+												   e-commerce-view-details="$ctrl.eCommerceViewDetails">
+					</e-commerce-view-details-right>
+					<e-commerce-view-nutrition-facts current-tab="$ctrl.currentTab"
+													 success="$ctrl.success"
+													 error="$ctrl.error"
+													 product-master="$ctrl.productMaster"  e-commerce-view-details="$ctrl.eCommerceViewDetails" data-ng-show="$ctrl.currentTab.id!='Google'">
+					</e-commerce-view-nutrition-facts>
+					<!--hebGuaranteeTypeDescription-->
+					<div class="row card card-primary" style="margin-bottom: 5px;"
+						 ng-show="$ctrl.hebGuaranteeTypeCode !=undefined && $ctrl.hebGuaranteeTypeCode != '' && $ctrl.currentTab.id!='Google'">
+						<div class="card-header">
+							<i class="glyphicon glyphicon-certificate"></i>Guarantee Image
+						</div>
+						<div class="col-md-12 card-body" style="padding-bottom: 12px;">
+							<div data-ng-if="$ctrl.hebGuaranteeImage && $ctrl.hebGuaranteeTypeDescription.length > 0" style="text-align:center;">
+								<img ng-src="{{$ctrl.hebGuaranteeImage}}" style="max-width:70%; max-height: 90%;">
+							</div>
+							<div data-ng-if="!$ctrl.hebGuaranteeImage && $ctrl.hebGuaranteeTypeDescription.length > 0" style="text-align:center;">
+								{{$ctrl.hebGuaranteeTypeDescription}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12"  data-ng-show="$ctrl.isWaitingForResponse == false">
+			<!--Edit mode-->
+			<div class="inline-block pull-right" style="margin-top: 20px;margin-bottom: 10px;">
+				<button can-edit="PD_ECOM_01" class="btn btn-primary" data-ng-click="$ctrl.save()" ng-disabled="$ctrl.isSpellCheck" ng-mousedown="$ctrl.savePressing()">Save</button>
+				<button can-edit="PD_ECOM_01" class="btn btn-primary" data-ng-click="$ctrl.reset()" ng-disabled="$ctrl.isSpellCheck">Reset</button>
+				<button can-edit="PD_ECOM_02" class="btn btn-primary" data-ng-click="$ctrl.publish()" data-ng-disabled="$ctrl.isGoogleTab() || $ctrl.isSpellCheck" ng-mousedown="$ctrl.publishPressing()">Publish</button>
+				<button data-ng-disabled="$ctrl.disableReturnToList" class="btn btn-primary" data-ng-click="$ctrl.returnToList()">Return To List</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Confirm message--->
+<div id="confirmPublishModal" class="modal fade" role="dialog" style="z-index: 999999;">
+	<div class="modal-dialog  ">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color:#ffffff;">{{$ctrl.confirmTitle}}</h5>
+			</div>
+			<div class="modal-body">
+				<h5 class="text-center" ng-bind-html="$ctrl.confirmMessage"></h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="inline-block btn btn-success btn-sm" ng-click="$ctrl.agreePublish()">
+					Yes
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"  data-dismiss="modal">
+					No
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--Data source popup design type 1-->
+<div id="dataSourceModalType1" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">{{$ctrl.dataSourceTitle}}</h5>
+				<span class="glyphicon glyphicon-question-sign" style="font-size:12px;color:orange;margin-right:10px;"
+					  ng-click="$ctrl.findAttributeMappingByLogicalAttribute($ctrl.currentAttributeId)"></span>
+			</div>
+			<loading-spinner ng-show="$ctrl.isWaitingForResponsePopup"></loading-spinner>
+			<div  ng-show="$ctrl.isWaitingForCheckSpellingResponse || $ctrl.vocabularyService.isWaitingForResponse" style="position: relative;left: 50%;">
+				<small-loading-spinner></small-loading-spinner></div>
+			<div class="modal-body row" ng-if="!$ctrl.isWaitingForResponsePopup">
+				<div class="alert alert-danger col-md-6 col-md-push-3 text-center"
+					 data-ng-if="$ctrl.errorPopup" ng-bind-html="$ctrl.errorPopup"></div>
+				<div class="col-md-9">
+					<table class="table-heb table-bordered table-striped"
+						   style="width: 100%;">
+						<thead>
+						<tr style="height: 25px;">
+							<th style="width: 10%;">Select</th>
+							<th style="width: 25%;">Source</th>
+							<th style="width: 15%;">Created Date</th>
+							<th style="width: 50%;">Value</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr
+							ng-repeat="eCommerceViewPriorityDetails in $ctrl.eCommerceViewAttributePriority.eCommerceViewAttributePriorityDetails track by $index"
+						>
+							<td ng-class="eCommerceViewPriorityDetails.selected?'selected':''" style="text-align: center;">
+								<input type="radio" ng-model="eCommerceViewPriorityDetails.selected"
+									   ng-value="$ctrl.valueSourceSelectedRadioButton(eCommerceViewPriorityDetails.selected)"
+									   ng-change="$ctrl.dataSourceSelectedChangedHandle($index)">
+							</td>
+							<td ng-class="eCommerceViewPriorityDetails.selected?'selected':''">
+								<img ng-show="eCommerceViewPriorityDetails.sourceDefault" style="width: 15px;"
+									 src="images/star-icon.png">
+								<div>{{eCommerceViewPriorityDetails.sourceDescription}}</div>
+							</td>
+							<td ng-class="eCommerceViewPriorityDetails.selected?'selected':''">{{eCommerceViewPriorityDetails.createdDate | date : 'MM/dd/yyyy'}}</td>
+							<td ng-class="eCommerceViewPriorityDetails.selected?'selected':''" style="text-align: justify">
+								<div data-ng-if="$ctrl.currentAttributeId == $ctrl.LOG_ATTR_ID_WARNING || $ctrl.currentAttributeId == $ctrl.LOG_ATTR_ID_DIRECTION">
+									<!--DIRECTION && WARNING-->
+									<div ng-show="!eCommerceViewPriorityDetails.sourceEditable || !$ctrl.isEBM"
+										 ng-bind-html="eCommerceViewPriorityDetails.content.content | limitTo:eCommerceViewPriorityDetails.numLimit"
+										 data-ng-model="eCommerceViewPriorityDetails.content.content"></div>
+									<a  class="pointer margin-right-10"
+										ng-show="(!eCommerceViewPriorityDetails.sourceEditable && eCommerceViewPriorityDetails.content.content.length > $ctrl.MIN_LENGTH_READ && eCommerceViewPriorityDetails.isReadMore) || (!$ctrl.isEBM && eCommerceViewPriorityDetails.content.content.length > $ctrl.MIN_LENGTH_READ && eCommerceViewPriorityDetails.isReadMore)"
+										ng-click="$ctrl.readMore(eCommerceViewPriorityDetails)">
+										Read More
+									</a>
+									<a  class="pointer margin-right-10"
+										ng-show="(!eCommerceViewPriorityDetails.sourceEditable && eCommerceViewPriorityDetails.isReadLess) || (!$ctrl.isEBM && eCommerceViewPriorityDetails.isReadLess)"
+										ng-click="$ctrl.readLess(eCommerceViewPriorityDetails)">
+										Read Less
+									</a>
+									<div ng-show="eCommerceViewPriorityDetails.sourceEditable && $ctrl.isEBM">
+										<div ng-show="$ctrl.isSpellCheckAttributeId()"
+											 contenteditable="true"
+											 contenteditable-model
+											 maxlength="{{$ctrl.MAX_LENGTH}}"
+											 style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+											 data-ng-model="eCommerceViewPriorityDetails.content.content"
+											 class="form-control"
+											 spellcheck="false"
+											 ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+											 ng-blur="$ctrl.validateSpellCheck()"></div>
+										<textarea ng-show="!$ctrl.isSpellCheckAttributeId()"
+												  class="form-control"
+												  maxlength="{{$ctrl.MAX_LENGTH}}"
+												  style="text-align: justify; height: 90px; resize: vertical;"
+												  ng-bind-html="eCommerceViewPriorityDetails.content.content"
+												  data-ng-model="eCommerceViewPriorityDetails.content.content"
+												  spellcheck="false"
+												  ng-change="$ctrl.isDisableSelectForHebComButton(eCommerceViewPriorityDetails)"></textarea>
+									</div>
+								</div>
+								<div data-ng-if="$ctrl.currentAttributeId != $ctrl.LOG_ATTR_ID_WARNING && $ctrl.currentAttributeId != $ctrl.LOG_ATTR_ID_DIRECTION">
+									<!--Other-->
+									<div ng-show="!eCommerceViewPriorityDetails.sourceEditable"
+										 ng-bind-html="eCommerceViewPriorityDetails.content.content | limitTo:eCommerceViewPriorityDetails.numLimit"
+										 data-ng-model="eCommerceViewPriorityDetails.content.content"></div>
+									<a  class="pointer margin-right-10"
+										ng-show="!eCommerceViewPriorityDetails.sourceEditable && eCommerceViewPriorityDetails.content.content.length > $ctrl.MIN_LENGTH_READ && eCommerceViewPriorityDetails.isReadMore"
+										ng-click="$ctrl.readMore(eCommerceViewPriorityDetails)">
+										Read More
+									</a>
+									<a  class="pointer margin-right-10"
+										ng-show="!eCommerceViewPriorityDetails.sourceEditable && eCommerceViewPriorityDetails.isReadLess"
+										ng-click="$ctrl.readLess(eCommerceViewPriorityDetails)">
+										Read Less
+									</a>
+									<div ng-show="eCommerceViewPriorityDetails.sourceEditable">
+										<div ng-if="$ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_ROMANCE_COPY && $ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_DISPLAY_NAME && $ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_BRAND  && $ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION ">
+											<div ng-show="$ctrl.isSpellCheckAttributeId()"
+												 contenteditable="true"
+												 contenteditable-model
+												 maxlength="{{$ctrl.MAX_LENGTH}}"
+												 style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+												 data-ng-model="eCommerceViewPriorityDetails.content.content"
+												 class="form-control"
+												 spellcheck="false"
+												 ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+												 ng-blur="$ctrl.validateSpellCheck()"></div>
+											<textarea ng-show="!$ctrl.isSpellCheckAttributeId()"
+													  class="form-control"
+													  maxlength="{{$ctrl.MAX_LENGTH}}"
+													  style="text-align: justify; height: 90px; resize: vertical;"
+													  ng-bind-html="eCommerceViewPriorityDetails.content.content"
+													  data-ng-model="eCommerceViewPriorityDetails.content.content"
+													  spellcheck="false"
+													  ng-change="$ctrl.isDisableSelectForHebComButton(eCommerceViewPriorityDetails)"></textarea>
+										</div>
+										<!--Brand, Display Name, Romance Copy -->
+										<div ng-if="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_DISPLAY_NAME || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_BRAND || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_ROMANCE_COPY  || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION"
+											 class="brandDisplayNameRomancy">
+											<div class="btn-group">
+												<button type="button" class="btn btn-default active"
+														button-spell-check="!$ctrl.htmlMode"
+														ng-click="$ctrl.changeHTMLMode(false)">Text</button>
+												<button type="button" class="btn btn-default" button-spell-check="$ctrl.htmlMode"
+														ng-mousedown="$ctrl.htmlTabClick()"
+														data-ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+														ng-click="$ctrl.changeHTMLMode(true)">HTML</button>
+											</div>
+											<!--For Brand, Display Name-->
+											<div
+												ng-if="$ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_ROMANCE_COPY && $ctrl.currentAttributeId !== $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION"
+												ng-show="!$ctrl.htmlMode"
+												spellcheck="false"
+												contenteditable="true"
+												contenteditable-model
+												style="height: 90px;width: 100%;text-align: justify;resize: vertical;
+												overflow-y: auto;"
+												data-ng-model="eCommerceViewPriorityDetails.content.content"
+												class="form-control"
+												ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+												ng-blur="$ctrl.validateSpellCheck()"
+											    ng-change="$ctrl.isDisableSelectForHebComButton(eCommerceViewPriorityDetails)"></div>
+											<!--For Romance Copy -->
+											<div
+												ng-if="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_ROMANCE_COPY || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION"
+												ng-show="!$ctrl.htmlMode"
+												spellcheck="false" id="romanceCopyPopupDiv"
+												contenteditable="true"
+												contenteditable-romancy-model
+												style="height: 90px;width: 100%;text-align: justify;resize: vertical; overflow-y: auto;"
+												data-ng-model="eCommerceViewPriorityDetails.content.content"
+												class="form-control"
+												ng-disabled="$ctrl.isWaitingForCheckSpellingResponse"
+												ng-blur="$ctrl.validateSpellCheckRomanceCopy()"
+												ng-change="$ctrl.isDisableSelectForHebComButton(eCommerceViewPriorityDetails)"></div>
+											<!-- HTML Show -->
+											<textarea
+												ng-show="$ctrl.htmlMode"
+												class="form-control"
+										  		style="height:90px;"
+												data-ng-model="eCommerceViewPriorityDetails.htmlContent.content"
+												ng-change="$ctrl.isDisableSelectForHebComButton(eCommerceViewPriorityDetails)"
+											></textarea>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-3">
+					<div class="margin-top-10" style="text-align: center">
+						HEB.com
+					</div>
+					<div data-ng-if="$ctrl.LOG_ATTR_ID_TAG != $ctrl.eCommerceViewAttributePriority.attributeId" class="margin-top-20">
+						<b>Posted Date</b>
+						{{$ctrl.eCommerceViewAttributePriority.masterDataExtensionAttribute.attributeValueTime | date : 'MM/dd/yyyy'}}
+					</div>
+					<div data-ng-if="$ctrl.LOG_ATTR_ID_TAG != $ctrl.eCommerceViewAttributePriority.attributeId" class="margin-top-10" style="text-align: justify"
+						 ng-bind-html="$ctrl.eCommerceViewAttributePriority.masterDataExtensionAttribute.attributeValueText"></div>
+					<div data-ng-if="$ctrl.LOG_ATTR_ID_TAG == $ctrl.eCommerceViewAttributePriority.attributeId" class="margin-top-10" style="text-align: justify"
+						 ng-bind-html="$ctrl.eCommerceViewAttributePriority.mainContent.content"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button view-only="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						disabled="true">Select for HEB.com
+				</button>
+				<button can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.saveDataAttributePriorities()"
+						ng-mousedown="$ctrl.saveHebComPressing()"
+						ng-disabled="$ctrl.isWaitingForCheckSpellingResponse || $ctrl.isWaitingForResponsePopup || $ctrl.isDisableHebComButton">Select for HEB.com
+				</button>
+				<button data-ng-show="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_ROMANCE_COPY || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION"
+						view-only="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm">Check Errors
+				</button>
+				<button data-ng-show="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_ROMANCE_COPY || $ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_FAVOR_ITEM_DESCRIPTION"
+						can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.checkErrors()"
+						ng-disabled="$ctrl.isWaitingForCheckSpellingResponse || $ctrl.isWaitingForResponsePopup || $ctrl.htmlMode">Check Errors
+				</button>
+
+				<button data-ng-show="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_DISPLAY_NAME"
+						view-only="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm">Check Aa
+				</button>
+				<button data-ng-show="$ctrl.currentAttributeId === $ctrl.LOG_ATTR_ID_DISPLAY_NAME"
+						can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.doValidateCamelCaseDisplayName()"
+						ng-disabled="$ctrl.isWaitingForCheckSpellingResponse || $ctrl.isWaitingForResponsePopup || $ctrl.htmlMode">Check Aa
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.resetDataAttributePriorities()"
+						ng-disabled="$ctrl.isWaitingForCheckSpellingResponse || $ctrl.isWaitingForResponsePopup">Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--Attribute Mapping popup design-->
+<div id="attributeMapping" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Attribute Mapping</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<loading-spinner ng-show="$ctrl.isWaitingForResponsePopupAttr"></loading-spinner>
+			<div class="modal-body row" style="margin: 0px;" ng-show="!$ctrl.isWaitingForResponsePopupAttr">
+				<div class="alert alert-danger col-md-6 col-md-push-3 text-center"
+					 data-ng-if="$ctrl.errorPopupAttr" ng-bind-html="$ctrl.errorPopupAttr"></div>
+				<div class="col-md-12">
+					<table class="table-heb table-bordered table-striped"
+						   style="width: 100%;">
+						<thead>
+						<tr style="height: 25px;">
+							<th style="width: 10%;">Source</th>
+							<th style="width: 25%;">Attribute Name</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr
+							ng-repeat="attributeMapping in $ctrl.attributeMappingDataProvider track by $index">
+							<td>{{attributeMapping.sourceSystemName}}</td>
+							<td>{{attributeMapping.key.relationshipGroupTypeCode=='GRP'?attributeMapping.relationshipGroup.relationshipGroupDescription:attributeMapping.attributeMapping.attributeName}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="ecommerceViewConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Confirmation</h5>
+			</div>
+			<div class="modal-body">
+				<h5>Unsaved data will be lost. Do you want to save the changes before continuing?</h5>
+			</div>
+			<div class="modal-footer">
+				<button type="button"
+						class="inline-block btn btn-success btn-sm"
+						data-dismiss="modal"
+						ng-click="$ctrl.yesConfirmModal()">Yes</button>
+				<button type="button"
+						class="inline-block btn btn-danger btn-sm"
+						data-dismiss="modal"
+						ng-click="$ctrl.noConfirmModal()">No</button>
+				<button type="button"
+						class="inline-block btn btn-success btn-sm"
+						data-dismiss="modal"
+						ng-click="$ctrl.cancelConfirmModal()">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,157 @@
+<div class="card card-primary">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-5" style="padding-left: 0px;">
+					<span class="inline-block" id="titleSpecifications"
+						  style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+					<i class="glyphicon glyphicon-list-alt"></i>Specifications</span>
+				</div>
+				<div class="col-md-7">
+					<div class="pull-right">
+						<a class="pointer" 
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.showEditSourcePopup()">
+							Edit Source
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body" style="min-height: 30px;">
+		<div class="row" ng-show="$ctrl.isWaitingForResponse">
+			<loading-spinner></loading-spinner>
+		</div>
+		<div class="margin-top-10" style="width: 100%;" ng-show="!$ctrl.isWaitingForResponse">
+			<div>
+				<table data-ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped"
+					   ng-if="$ctrl.specificationList != null && $ctrl.specificationList.length > 0" style="width: 100%;">
+					<thead>
+					<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+						<th style="width: 30%;">Name</th>
+						<th style="width: 30%;">Details</th>
+						<th style="width: 40%;">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="item in $ctrl.specificationList track by $index">
+						<td>
+							{{item.name}}
+						</td>
+						<td>
+							{{item.details}}
+						</td>
+						<td>
+							{{item.description}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--Data source popup design type 1-->
+<div id="dataSourceModalTypeForSpecification" class="modal fade" role="dialog" maxlength="500px;">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #337ab7">
+				<h5 class="modal-title inline-block" style="color: #ffffff">Specifications</h5>
+				<span class="glyphicon glyphicon-question-sign" style="font-size:12px;color:orange;margin-right:10px;"
+					  ng-click="$ctrl.findAttributeMappingByLogicalAttribute()"></span>
+			</div>
+			<loading-spinner ng-show="$ctrl.isWaitingForResponsePopup"></loading-spinner>
+			<div class="modal-body row" ng-show="!$ctrl.isWaitingForResponsePopup" style="padding-top: 0px;padding-bottom: 0px;">
+				<div class="col-md-12"
+					 data-ng-if="$ctrl.errorPopup" >
+					<div class="alert alert-danger col-md-8 col-md-push-2 text-center"
+						 ng-bind-html="$ctrl.errorPopup"></div></div>
+				<div class="{{$ctrl.eCommerceViewAttributePriority.mainContent != null && $ctrl.eCommerceViewAttributePriority.mainContent.content.length > 0?'col-md-6':'col-md-9'}}">
+					<div class="row">
+						<div class="col-md-12" style="height: 100px;width: max-content;">
+							<div style="display:inline;float:left;margin-right: 10px;" ng-repeat="item in $ctrl.eCommerceViewAttributePriority.eCommerceViewAttributePriorityDetails track by $index">
+								<h5 ng-if="item.sourceDefault && item.targetSystemAttributePriority.dataSource!=0">
+									<img style="width: 15px;" src="images/star-icon.png">
+								</h5>
+								<h5 ng-if="!item.sourceDefault || item.targetSystemAttributePriority.dataSource==0" style="margin-top: 12px;">&nbsp;</h5>
+								<h6>{{item.sourceDescription}}</h6>
+								<h5><input type="radio" name="sourceSystem"
+										   ng-model="item.selected"
+										   ng-value="$ctrl.valueSourceSelectedRadioButton(item)"
+										   ng-change="$ctrl.changeSourceSystemData($index)"></h5>
+							</div>
+						</div>
+					</div>
+					<br>
+					<table class="table-heb table-bordered table-striped"
+						   ng-if="$ctrl.specificationListPopup != null && $ctrl.specificationListPopup.length > 0" style="width: 100%;margin-bottom: 10px;">
+						<thead>
+						<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+							<th style="width: 30%;">Name</th>
+							<th style="width: 30%;">Details</th>
+							<th style="width: 40%;">Description</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="item in $ctrl.specificationListPopup track by $index">
+							<td>
+								{{item.name}}
+							</td>
+							<td>
+								{{item.details}}
+							</td>
+							<td>
+								{{item.description}}
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="{{$ctrl.eCommerceViewAttributePriority.mainContent != null && $ctrl.eCommerceViewAttributePriority.mainContent.content.length > 0?'col-md-6':'col-md-3'}}" style="border-left: 1px solid #e5e5e5;">
+					<div style="text-align: center;height: 113px;vertical-align: middle;line-height: 96px;">
+						HEB.com
+					</div>
+					<table class="table-heb table-bordered table-striped"
+						   ng-if="$ctrl.eCommerceViewAttributePriority.mainContent != null && $ctrl.eCommerceViewAttributePriority.mainContent.content.length > 0" style="width: 100%;margin-bottom: 10px;">
+						<thead>
+						<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+							<th style="width: 30%;">Name</th>
+							<th style="width: 30%;">Details</th>
+							<th style="width: 40%;">Description</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="item in $ctrl.eCommerceViewAttributePriority.mainContent.content track by $index">
+							<td>
+								{{item.name}}
+							</td>
+							<td>
+								{{item.details}}
+							</td>
+							<td>
+								{{item.description}}
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button view-only="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						disabled="true">Select for HEB.com
+				</button>
+				<button can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.saveDataAttributePriorities()" data-ng-disabled="$ctrl.isWaitingForResponsePopup">Select for HEB.com
+				</button>
+				<button type="button" class="inline-block btn btn-success btn-sm"
+						ng-click="$ctrl.resetEditSourcePopup()">Reset
+				</button>
+				<button type="button" class="inline-block btn btn-danger btn-sm" data-dismiss="modal">Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+

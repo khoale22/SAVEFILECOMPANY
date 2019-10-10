@@ -1,0 +1,589 @@
+<div>
+	<div class="row card card-danger" ng-show="$ctrl.showECommerceViewErrorMessages() || $ctrl.updateReasonDescription">
+		<div class="card-body">
+			<div ng-show="$ctrl.showECommerceViewErrorMessages()">
+				<div class="text-warning">
+					<i class="glyphicon glyphicon-warning-sign"></i>&nbsp;Please correct the followings to publish:
+				</div>
+				<div class="col-md-12" ng-repeat="errorMessage in $ctrl.eCommerceViewDetails.errorMessages">
+					<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+						<span class="glyphicon glyphicon-triangle-right"></span>
+						{{errorMessage}}
+					</div>
+				</div>
+				<div class="col-md-12" ng-repeat="errorMessage in $ctrl.eCommerceViewDetails.romanceCopyErrorMessages">
+					<div class="text-danger" style="padding: 0px; margin-bottom: 5px;">
+						<span class="glyphicon glyphicon-triangle-right"></span>
+						{{errorMessage}}
+					</div>
+				</div>
+			</div>
+			<div ng-show="$ctrl.updateReasonDescription">
+				<div class="text-warning">
+					<i class="glyphicon glyphicon-warning-sign"></i>&nbsp;Updated Reason:
+				</div>
+				<div class="col-md-12">
+					<div class="" style="padding: 0px; margin-bottom: 5px;">
+						<span class="glyphicon glyphicon-triangle-right"></span>
+						{{$ctrl.updateReasonDescription}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row card card-body" data-ng-show="$ctrl.currentTab.id!='Google'">
+		<div class="col-md-12 card-inline">
+			<span class="glyphicon glyphicon-flash text-info pull-left">&nbsp;UPC </span>
+			<span class="pull-right">{{$ctrl.productMaster.productPrimaryScanCodeId}}</span>
+		</div>
+		<div class="col-md-12 card-inline">
+			<span class="glyphicon glyphicon-flash text-info pull-left">&nbsp;SSA Count </span>
+			<span class="pull-right">{{$ctrl.eCommerceViewDetails.storeCount}}</span>
+		</div>
+		<div class="col-md-12 card-inline">
+			<span class="glyphicon glyphicon-flash text-info pull-left">&nbsp;Last Published On</span>
+			<span class="pull-right">{{$ctrl.eCommerceViewDetails.publishedDateString}}</span>
+		</div>
+		<div class="col-md-12 card-inline">
+			<span class="glyphicon glyphicon-flash text-info pull-left">&nbsp;Last Published By</span>
+			<span class="pull-right">{{$ctrl.eCommerceViewDetails.publishedBy}}</span>
+		</div>
+	</div>
+	<div class="row card card-primary" ng-show="$ctrl.currentTab.id!='Google'">
+		<form class="form-inline form-group">
+			<div class="card-header">
+				<i class="glyphicon glyphicon-eye-open" ng-show="$ctrl.eCommerceViewDetails.showOnSite"></i>
+				<i class="glyphicon glyphicon glyphicon-eye-close" ng-show="!$ctrl.eCommerceViewDetails.showOnSite"></i>
+				Show On Site &nbsp;
+				<div class="form-group">
+					<input can-edit="PD_ECOM_01"
+						   class="input-group"
+						   type="checkbox"
+						   style="margin-right: 5px;"
+						   ng-show="!$ctrl.eCommerceViewDetails.productPublished"
+						   ng-disabled="!$ctrl.eCommerceViewDetails.productPublished">
+					<input can-edit="PD_ECOM_01"
+						   class="input-group"
+						   type="checkbox"
+						   style="margin-right: 5px;"
+						   ng-show="$ctrl.eCommerceViewDetails.productPublished"
+						   ng-checked="$ctrl.eCommerceViewDetails.showOnSite"
+						   data-ng-click="$ctrl.changeCheckShowOnSite()"
+						   ng-model="$ctrl.eCommerceViewDetails.showOnSite">
+					<input view-only="PD_ECOM_01"
+						   class="input-group"
+						   type="checkbox"
+						   style="margin-right: 5px;"
+						   ng-checked="$ctrl.eCommerceViewDetails.showOnSite"
+						   ng-model="$ctrl.eCommerceViewDetails.showOnSite"
+						   disabled>
+				</div>
+			</div>
+			<div class="col-md-12 card-body"
+				 ng-form="showOnSiteForm">
+					<div class="row">
+						<div class="col-md-4 col-md-offset-3" style="text-align: center">Start Date</div>
+						<div class="col-md-4" style="text-align: center">End Date</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-md-offset-3 form-group" style="text-align: center">
+							<div can-edit="PD_ECOM_01"
+								 class="input-group"
+								 ng-show="!$ctrl.eCommerceViewDetails.showOnSite">
+								<input class="form-control date-picker-ecommerceview"
+									   type="text"
+									   readonly="true"
+									   ng-disabled="!$ctrl.eCommerceViewDetails.showOnSite"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteStartDateOpen"
+									   name="showOnSiteStartDate"
+									   ng-blur="$ctrl.changeShowOnSiteStartDate(this, showOnSiteForm.showOnSiteStartDate.$invalid)"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteStartDate"
+									   ng-required="false"
+									   ng-class="{red: $ctrl.eCommerceViewDetails.isStartDateErrorMgs}"
+									   close-text="Close"/>
+								<span class="input-group-btn">
+										<button type="button"
+												class="btn btn-default"
+												ng-disabled="!$ctrl.eCommerceViewDetails.showOnSite"
+												ng-click="$ctrl.openDatePicker('showOnSiteStartDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+							<div can-edit="PD_ECOM_01"
+								 class="input-group"
+								 ng-show="$ctrl.eCommerceViewDetails.showOnSite">
+								<input class="form-control date-picker-ecommerceview"
+									   title="{{$ctrl.eCommerceViewDetails.startDateErrorMgs}}"
+									   type="text"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteStartDateOpen"
+									   name="showOnSiteStartDate"
+									   ng-blur="$ctrl.changeShowOnSiteStartDate(this, showOnSiteForm.showOnSiteStartDate.$invalid)"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteStartDate"
+									   ng-required="false"
+									   ng-class="{red: $ctrl.eCommerceViewDetails.isStartDateErrorMgs}"
+									   close-text="Close"/>
+								<span class="input-group-btn">
+										<button type="button"
+											    class="btn btn-default"
+												ng-click="$ctrl.openDatePicker('showOnSiteStartDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+							<div view-only="PD_ECOM_01"
+								 class="input-group">
+								<input class="form-control date-picker-ecommerceview"
+									   title="{{$ctrl.eCommerceViewDetails.startDateErrorMgs}}"
+									   type="text"
+									   readonly="true"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteStartDateOpen"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteStartDate"
+									   ng-required="false"
+									   close-text="Close"
+									   disabled/>
+								<span class="input-group-btn">
+										<button type="button"
+											    class="btn btn-default"
+											    disabled
+												ng-click="$ctrl.openDatePicker('showOnSiteStartDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+						</div>
+						<div class="col-md-4 form-group" style="text-align: center">
+							<div can-edit="PD_ECOM_01" class="input-group" ng-show="!$ctrl.eCommerceViewDetails.showOnSite">
+								<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+									   ng-disabled="!$ctrl.eCommerceViewDetails.showOnSite"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   ng-class="{red: $ctrl.eCommerceViewDetails.isEndDateErrorMgs}"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteEndDateOpen"
+									   name="showOnSiteEndDate"
+									   ng-blur="$ctrl.changeShowOnSiteEndDate(this, showOnSiteForm.showOnSiteEndDate.$invalid)"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteEndDate"
+									   ng-required="false" close-text="Close"/>
+								<span class="input-group-btn">
+										<button type="button" class="btn btn-default"
+												ng-disabled="!$ctrl.eCommerceViewDetails.showOnSite"
+												ng-click="$ctrl.openDatePicker('showOnSiteEndDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+							<div can-edit="PD_ECOM_01" class="input-group" ng-show="$ctrl.eCommerceViewDetails.showOnSite">
+								<input class="form-control date-picker-ecommerceview" type="text"
+									   title="{{$ctrl.eCommerceViewDetails.endDateErrorMgs}}"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   ng-class="{red: $ctrl.eCommerceViewDetails.isEndDateErrorMgs}"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteEndDateOpen"
+									   name="showOnSiteEndDate"
+									   ng-blur="$ctrl.changeShowOnSiteEndDate(this, showOnSiteForm.showOnSiteEndDate.$invalid)"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteEndDate"
+									   ng-required="false" close-text="Close"/>
+								<span class="input-group-btn">
+										<button type="button" class="btn btn-default"
+												ng-click="$ctrl.openDatePicker('showOnSiteEndDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+							<div view-only="PD_ECOM_01" class="input-group">
+								<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+									   title="{{$ctrl.eCommerceViewDetails.endDateErrorMgs}}"
+									   uib-datepicker-popup="MM/dd/yyyy"
+									   ng-class="{red: $ctrl.eCommerceViewDetails.isEndDateErrorMgs}"
+									   datepicker-options="$ctrl.options"
+									   is-open="$ctrl.eCommerceViewDetails.showOnSiteEndDateOpen"
+									   ng-model="$ctrl.eCommerceViewDetails.showOnSiteEndDate"
+									   ng-required="false" close-text="Close" disabled/>
+								<span class="input-group-btn">
+										<button type="button" class="btn btn-default" disabled
+												ng-click="$ctrl.openDatePicker('showOnSiteEndDate')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</div>
+						</div>
+						<div></div>
+					</div>
+			</div>
+		</form>
+	</div>
+	<div class="row card card-primary" style="margin-bottom: 5px;">
+		<div class="card-header">
+			<i class="glyphicon glyphicon-move"></i>Fulfillment Program
+		</div>
+		<div class="col-md-12 card-body">
+			<div class="col-md-3">
+				Choose
+			</div>
+			<div can-edit="PD_ECOM_01" class="col-md-5" style="padding-left: 0px; padding-right: 5px;">
+				<ui-select theme="bootstrap" title="Choose a Fulfillment"
+						   search-enabled="false"
+						   ng-model="$ctrl.eCommerceViewDetails.currentProductFulfillment">
+					<ui-select-match allow-clear="false" placeholder="--Select--">
+						{{$select.selected.description}}
+					</ui-select-match>
+					<ui-select-choices
+						repeat="fulfillment in $ctrl.eCommerceViewDetails.fulfillmentChannels"
+						refresh-delay="0">{{fulfillment.description}}
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div view-only="PD_ECOM_01" class="col-md-5" style="padding-left: 0px; padding-right: 5px;">
+				<ui-select theme="bootstrap" title="Choose a Fulfillment" disabled="true"
+						   search-enabled="false"
+						   ng-model="$ctrl.eCommerceViewDetails.currentProductFulfillment">
+					<ui-select-match allow-clear="false" placeholder="--Select--" disabled="true">
+						{{$select.selected.description}}
+					</ui-select-match>
+					<ui-select-choices disabled="true"
+						repeat="fulfillment in $ctrl.eCommerceViewDetails.fulfillmentChannels"
+						refresh-delay="0">{{fulfillment.description}}
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="col-md-3" style="padding-left: 0px; padding-right: 5px;">
+				<button can-edit="PD_ECOM_01" type="button" class="inline-block btn btn-primary btn-sm" ng-click="$ctrl.apply()">
+					Apply
+				</button>
+				<button view-only="PD_ECOM_01" type="button" class="inline-block btn btn-primary btn-sm" disabled>
+					Apply
+				</button>
+			</div>
+		</div>
+		<div class="col-md-12" style="margin-top: 5px;margin-bottom: 5px;">
+			<div class="col-md-3"></div>
+			<div class="col-md-4" style="padding-left: 0px">Effective Date</div>
+			<div class="col-md-4" style="padding-left: 0px">End Date</div>
+			<div class="row pull-right" style="margin-bottom: 5px;margin-right: 5px">
+				<div class="glyphicon glyphicon-folder-open pointer" style="color: blue; font-size: small; padding-bottom: 5px; float: right;" ng-click="$ctrl.showFulfillmentAttributeLog()"></div>
+			</div>
+		</div>
+		<div can-edit="PD_ECOM_01" class="col-md-12"
+			 ng-repeat="productFulfillment in $ctrl.eCommerceViewDetails.productFullfilmentChanels"
+			 ng-form="fulfillmentForm"
+			 style="padding-right: 0px;padding-left: 0px;">
+			<div class="col-md-12" style="margin-bottom: 5px;padding: 0px;">
+				<div class="col-md-3"
+					 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+					{{productFulfillment.fulfillmentChannel.description}}
+					<span style="color: red;" ng-show="productFulfillment.showStar">*</span>
+				</div>
+				<div class="col-md-3"
+					 style="color: red"
+					 ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+					{{productFulfillment.fulfillmentChannel.description}}
+					<span style="color: red;" ng-show="productFulfillment.showStar">*</span>
+				</div>
+				<div class="col-md-4" style="padding-left: 0px; padding-right: 5px;">
+					<div class="input-group"
+						 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+						<input class="form-control date-picker-ecommerceview {{productFulfillment.effectDateErrorCss}}"
+							   type="text"
+							   uib-datepicker-popup="MM/dd/yyyy"
+							   datepicker-options="$ctrl.options"
+							   is-open="productFulfillment.effectDateOpen"
+							   ng-blur="$ctrl.changeEffectDate(this, fulfillmentForm.fulfillmentEffectDate)"
+							   name="fulfillmentEffectDate"
+							   ng-model="productFulfillment.effectDate"
+							   ng-required="false"
+							   close-text="Close"
+							   title="{{productFulfillment.effectDateErrorMsg}}"/>
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+									ng-click="$ctrl.openDatePickerForFulfillment(productFulfillment, true)">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+					</div>
+					<div ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+						N/A
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-left: 0px; padding-right: 5px;">
+					<div class="input-group"
+						 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+						<input class="form-control date-picker-ecommerceview {{productFulfillment.expirationDateErrorCss}}"
+							   type="text"
+							   uib-datepicker-popup="MM/dd/yyyy"
+							   datepicker-options="$ctrl.options"
+							   is-open="productFulfillment.expirationDateOpen"
+							   ng-blur="$ctrl.changeExpirationDate(this, fulfillmentForm.fulfillmentExpirationDate)"
+							   name="fulfillmentExpirationDate"
+							   ng-model="productFulfillment.expirationDate"
+							   ng-required="false"
+							   close-text="Close"
+							   title="{{productFulfillment.expirationDateErrorMsg}}"/>
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+									ng-click="$ctrl.openDatePickerForFulfillment(productFulfillment, false)">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+					</div>
+					<div ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+						N/A
+					</div>
+				</div>
+				<div class="col-md-1" style="padding: 0px; margin-top: 10px" data-ng-click="$ctrl.removeProductFullfilmentChanel(productFulfillment)">
+					<span class="glyphicon glyphicon-trash"></span>
+				</div>
+			</div>
+		</div>
+		<div view-only="PD_ECOM_01" class="col-md-12" ng-repeat="productFulfillment in $ctrl.eCommerceViewDetails.productFullfilmentChanels"
+			 style="padding-right: 0px;padding-left: 0px;">
+			<div class="col-md-12" style="margin-bottom: 5px;padding: 0px;">
+				<div class="col-md-3"
+					 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+					{{productFulfillment.fulfillmentChannel.description}}
+					<span style="color: red;" ng-show="productFulfillment.showStar">*</span>
+				</div>
+				<div class="col-md-3"
+					 style="color: red"
+					 ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+					{{productFulfillment.fulfillmentChannel.description}}
+					<span style="color: red;" ng-show="productFulfillment.showStar">*</span>
+				</div>
+				<div class="col-md-4" style="padding-left: 0px; padding-right: 5px;">
+					<div class="input-group {{productFulfillment.effectDateErrorCss}}"
+						 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+						<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+							   uib-datepicker-popup="MM/dd/yyyy"
+							   datepicker-options="$ctrl.options"
+							   is-open="productFulfillment.effectDateOpen"
+							   ng-model="productFulfillment.effectDate"
+							   ng-required="false" close-text="Close" disabled/>
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" disabled
+									ng-click="$ctrl.openDatePickerForFulfillment(productFulfillment, true)">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+					</div>
+					<div ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+						N/A
+					</div>
+				</div>
+				<div class="col-md-4" style="padding-left: 0px; padding-right: 5px;">
+					<div class="input-group {{productFulfillment.expirationDateErrorCss}}"
+						 ng-if="productFulfillment.key.fullfillmentChanelCode !== '08'">
+						<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+							   uib-datepicker-popup="MM/dd/yyyy"
+							   datepicker-options="$ctrl.options"
+							   is-open="productFulfillment.expirationDateOpen"
+							   ng-model="productFulfillment.expirationDate"
+							   ng-required="false" close-text="Close" disabled/>
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" disabled
+									ng-click="$ctrl.openDatePickerForFulfillment(productFulfillment, false)">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
+					</div>
+					<div ng-if="productFulfillment.key.fullfillmentChanelCode === '08'">
+						N/A
+					</div>
+				</div>
+				<div class="col-md-1" style="padding: 0px; margin-top: 10px" disabled="true">
+					<span class="glyphicon glyphicon-trash"></span>
+				</div>
+			</div>
+		</div>
+		</div>
+	<div class="row card card-primary" ng-show="$ctrl.currentTab.saleChannel.id != '07   ' && $ctrl.currentTab.id!='Google'">
+		<div class="card-header">
+			<i class="glyphicon glyphicon-th"></i>PDP Template
+		</div>
+		<div class="col-md-12 card-body">
+			<div class="col-md-3">
+				Choose
+			</div>
+			<div can-edit="PD_ECOM_01" class="col-md-5" style="padding-left: 0px; padding-right: 5px;">
+				<ui-select theme="bootstrap" title="Choose a PDP Template"
+						   search-enabled="false"
+						   ng-model="$ctrl.eCommerceViewDetails.pdpTemplateId" data-ng-change="$ctrl.checkChangePdpTemplate()">
+					<ui-select-match allow-clear="false" placeholder="--Select--">
+						{{$select.selected.description}}
+					</ui-select-match>
+					<ui-select-choices
+						repeat="pdpTemplate.description as pdpTemplate in $ctrl.pdpTemplates"
+						refresh-delay="0">{{pdpTemplate.description}}
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div view-only="PD_ECOM_01" class="col-md-5" style="padding-left: 0px; padding-right: 5px;">
+				<ui-select theme="bootstrap" title="Choose a PDP Template" disabled="true"
+						   search-enabled="false"
+						   ng-model="$ctrl.eCommerceViewDetails.pdpTemplateId">
+					<ui-select-match allow-clear="false" disabled="true" placeholder="--Select--">
+						{{$select.selected.description}}
+					</ui-select-match>
+					<ui-select-choices disabled="true"
+						repeat="pdpTemplate.description as pdpTemplate in $ctrl.pdpTemplates"
+						refresh-delay="0">{{pdpTemplate.description}}
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+	</div>
+	<div class="row card card-primary" style="margin-bottom: 5px;" ng-show="$ctrl.currentTab.saleChannel.id != '07   ' && $ctrl.currentTab.id!='Google'">
+		<div class="col-md-12 card-header">
+			<form class="form-inline">
+				<div class="form-group">
+					<i class="fa fa-rss"></i>Subscription Eligible
+					<input can-edit="PD_ECOM_01"class="input-group" type="checkbox" style="margin-right: 5px;"
+						   ng-checked="$ctrl.eCommerceViewDetails.subscription"
+						   ng-model="$ctrl.eCommerceViewDetails.subscription"
+						   data-ng-click="$ctrl.checkChangeSubEligible()">
+					<input view-only="PD_ECOM_01"class="input-group" type="checkbox" style="margin-right: 5px;"
+						   ng-checked="$ctrl.eCommerceViewDetails.subscription"
+						   ng-model="$ctrl.eCommerceViewDetails.subscription" disabled>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-12 card-body">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-3">
+					<div class="form-group">
+						<label>Start Date</label>
+						<div can-edit="PD_ECOM_01" class="input-group">
+							<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.eCommerceViewDetails.subscriptionStartDateOpen"
+								   ng-model="$ctrl.eCommerceViewDetails.subscriptionStartDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+									<button type="button" class="btn btn-default"
+											ng-disabled = "!$ctrl.eCommerceViewDetails.subscription"
+											ng-click="$ctrl.openDatePicker('subscriptionStartDate')">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+						</div>
+						<div view-only="PD_ECOM_01" class="input-group">
+							<input class="form-control date-picker-ecommerceview" type="text" readonly="true" disabled
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.eCommerceViewDetails.subscriptionStartDateOpen"
+								   ng-model="$ctrl.eCommerceViewDetails.subscriptionStartDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+									<button type="button" class="btn btn-default" disabled
+											ng-disabled="!$ctrl.eCommerceViewDetails.subscription"
+											ng-click="$ctrl.openDatePicker('subscriptionStartDate')">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label >End Date</label>
+						<div can-edit="PD_ECOM_01" class="input-group">
+							<input class="form-control date-picker-ecommerceview" type="text" readonly="true"
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.eCommerceViewDetails.subscriptionEndDateOpen"
+								   ng-model="$ctrl.eCommerceViewDetails.subscriptionEndDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+									<button type="button" class="btn btn-default"
+											ng-click="$ctrl.openDatePicker('subscriptionEndDate')"
+											ng-disabled = "!$ctrl.eCommerceViewDetails.subscription">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+						</div>
+						<div view-only="PD_ECOM_01" class="input-group" disabled="true">
+							<input class="form-control date-picker-ecommerceview" type="text" readonly="true" disabled
+								   uib-datepicker-popup="MM/dd/yyyy"
+								   datepicker-options="$ctrl.options"
+								   is-open="$ctrl.eCommerceViewDetails.subscriptionEndDateOpen"
+								   ng-model="$ctrl.eCommerceViewDetails.subscriptionEndDate"
+								   ng-required="false" close-text="Close"/>
+							<span class="input-group-btn">
+									<button type="button" class="btn btn-default" disabled
+											ng-click="$ctrl.openDatePicker('subscriptionEndDate')">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="fulfillment-attribute-log">
+	<div id="fulfillment-attribute-log-modal" class="modal fade">
+		<div class="modal-dialog" style="min-width: 800px;">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #337ab7">
+					<h5 class="modal-title" style="color: #ffffff">Fulfillment Program: Change Log</h5>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Product ID  <b>&nbsp; &nbsp; {{$ctrl.productMaster.prodId}}</b>
+							</div>
+
+						</div>
+						<div class="col-md-8">
+							<div style="margin-bottom: 20px; margin-top: -5px; font-size: 12px;">Display Name  <b>&nbsp; &nbsp;{{$ctrl.eCommerceViewDetails.displayName.content}}</b>
+							</div>
+						</div>
+					</div>
+					<div class="row" ng-show="$ctrl.isWaitingGetFulfillmentAttributeAudit">
+						<loading-spinner></loading-spinner>
+					</div>
+					<div class="ecommerce-view-log-table" ng-show="!$ctrl.isWaitingGetFulfillmentAttributeAudit">
+						<table ng-table="fulfillmentAttributeAuditTableParams"  class="table-heb table-bordered table-striped margin-top-10" style="width: 100%;">
+							<thead>
+							<tr style="min-height:25px">
+								<th style="width:15%; vertical-align: middle; padding-top: 6px; padding-bottom: 6px;">
+									Fulfillment Program
+								</th>
+								<th style="width:15%; vertical-align: middle;">Start Date</th>
+								<th style="width:15%; vertical-align: middle;">End Date</th>
+								<!--<th style="width:15%; vertical-align: middle;">Changed To</th>-->
+								<th style="width:15%; vertical-align: middle;">Action Code</th>
+								<th style="width:15%; vertical-align: middle;" ng-click="$ctrl.changeSort()">
+									Changed On
+									<span ng-if="sorting.changedOn === 'desc'" class="glyphicon glyphicon-triangle-bottom" style="top: 3px;"></span>
+									<span ng-if="sorting.changedOn === 'asc'" class="glyphicon glyphicon-triangle-top" style="top: 3px;"></span>
+								</th>
+								<th style="width:25%; vertical-align: middle;">Changed By</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr data-ng-repeat="audit in $data track by $index">
+								<td style="width:15%; padding: 5px;">{{audit.fulfillmentProgram}}</td>
+								<td style="width:15%" >{{audit.startDate == null? "N/A" : audit.startDate | date : 'MM/dd/yyyy'}}</td>
+								<td style="width:15%">{{audit.endDate == null? "N/A" : audit.endDate | date : 'MM/dd/yyyy'}}</td>
+								<td style="width:15%">{{audit.action}}</td>
+								<td style="width:15%" sortable="'changedOn'">{{audit.changedOn | date: "MM/dd/yyyy HH:mm:sss"}}</td>
+								<td style="width:25%">{{audit.changedBy}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer ">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

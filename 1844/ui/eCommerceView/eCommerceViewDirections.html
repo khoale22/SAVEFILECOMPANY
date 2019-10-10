@@ -1,0 +1,65 @@
+<!--
+ eCommerceViewDirections.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn00602
+  ~  @since 2.14.0
+  -->
+<div class="card card-primary">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-5" style="padding-left: 0px;">
+					<span class="inline-block" id="titleDirections"
+						  style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+						<i class="glyphicon glyphicon-transfer"></i>Directions</span>
+				</div>
+				<div class="col-md-7">
+					<div class="pull-right">
+						<span  view-only="PD_ECOM_04">
+						<a view-only="PD_ECOM_01" class="pointer margin-right-10 linkDisabled"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}" >
+							Edit Text
+						</a>
+						</span>
+						<a can-edit="PD_ECOM_01" class="pointer margin-right-10"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-show="$ctrl.hasPermission"
+						   ng-click="$ctrl.editTextDirection()">
+							Edit Text
+						</a>
+						<a class="pointer"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.editSourceHandle($ctrl.DIRECTION_ATTRIBUTE_ID, 'Directions')">
+							Edit Source
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body" style="min-height: 30px;">
+		<div class="row">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+		</div>
+		<!-- This area displays the Directions -->
+		<div style="padding: 5px 0; width: 100%; text-align: justify" ng-show="!$ctrl.isWaitingForResponse">
+			<div view-only="PD_ECOM_01"
+				 ng-show="!$ctrl.hasPermission"
+				 data-ng-model="$ctrl.eCommerceViewDetails.directions.content"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.directions.content"></div>
+			<div can-edit="PD_ECOM_01" ng-show="!$ctrl.isEditingDirection || !$ctrl.hasPermission"
+				 data-ng-model="$ctrl.eCommerceViewDetails.directions.content"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.directions.content"></div>
+			<textarea can-edit="PD_ECOM_01" ng-show="$ctrl.isEditingDirection && $ctrl.hasPermission" maxlength="{{$ctrl.MAX_LENGTH}}"
+					  class="form-control" style="text-align: justify; height: 90px; resize: vertical;" data-ng-change="$ctrl.checkChangeDirection($ctrl.eCommerceViewDetails.directions,$ctrl.eCommerceViewDetailsOrg.directions)"
+					  data-ng-model="$ctrl.eCommerceViewDetails.directions.content"
+					  ng-bind-html="$ctrl.eCommerceViewDetails.directions.content"></textarea>
+		</div>
+	</div>
+</div>

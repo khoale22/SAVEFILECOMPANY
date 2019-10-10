@@ -1,0 +1,58 @@
+<!--
+ eCommerceViewRelatedProducts.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn00602
+  ~  @since 2.14.0
+  -->
+<div class="card card-primary">
+	<div class="card-header">
+		<span class="inline-block">
+			<i class="glyphicon glyphicon-random"></i>Related Products</span>
+	</div>
+	<div class="card-body" style="min-height: 30px;">
+		<div class="row">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+		</div>
+		<!-- This area displays the table of Product Relationships -->
+		<div class="margin-top-10" style="width: 100%;" ng-show="$ctrl.showTable">
+			<table data-ng-table="$ctrl.tableParams" class="table-heb table-bordered table-striped"
+				   ng-show="!$ctrl.isWaitingForResponse" style="width: 100%;">
+				<thead>
+				<tr style="color: white; font-size: 12px; background-color: #00476b; height: 25px; text-align: center;">
+					<th style="width: 10%;">Product ID</th>
+					<th style="width: 40%;">Product Description</th>
+					<th style="width: 15%;">Product Primary UPC</th>
+					<th style="width: 10%;">Add on Sellable</th>
+					<th style="width: 25%;">Relationship Type</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="relatedProduct in $ctrl.relatedProducts track by $index">
+					<td>
+						{{relatedProduct.relatedProduct.prodId}}
+					</td>
+					<td>
+						{{relatedProduct.relatedProduct.description}}
+					</td>
+					<td>
+						{{relatedProduct.relatedProduct.productPrimaryScanCodeId}}
+					</td>
+					<td style="text-align: center;">
+						<input type="checkbox" ng-model="relatedProduct.relatedProduct.goodsProduct.sellableProduct"
+							   ng-show="relatedProduct.isDisplayAddon" disabled>
+					</td>
+					<td>
+						{{relatedProduct.productRelationshipDescription}}
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

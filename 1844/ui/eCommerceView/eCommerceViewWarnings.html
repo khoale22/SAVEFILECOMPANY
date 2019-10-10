@@ -1,0 +1,64 @@
+<!--
+ eCommerceViewWarnings.html
+  ~
+  ~  Copyright (c) 2017 HEB
+  ~  All rights reserved.
+  ~
+  ~  This software is the confidential and proprietary information
+  ~  of HEB.
+  ~  @author vn00602
+  ~  @since 2.14.0
+  -->
+<div class="card card-primary">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-5" style="padding-left: 0px;">
+					<span class="inline-block" id="titleWarnings"
+						  style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+						<i class="glyphicon glyphicon-warning-sign"></i>Warnings</span>
+				</div>
+				<div class="col-md-7">
+					<div class="pull-right">
+						<span  view-only="PD_ECOM_05">
+						<a view-only="PD_ECOM_01" class="pointer margin-right-10 linkDisabled"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}">
+							Edit Text
+						</a>
+						</span>
+						<a can-edit="PD_ECOM_01" class="pointer margin-right-10" ng-show="$ctrl.hasPermission"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.editTextWarning()">
+							Edit Text
+						</a>
+						<a class="pointer"
+						   style="{{$ctrl.differentWithDefaultValue?'color:blue;':''}}"
+						   ng-click="$ctrl.editSourceHandle($ctrl.WARNING_ATTRIBUTE_ID, 'Warnings')">
+							Edit Source
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-body" style="min-height: 30px;">
+		<div class="row">
+			<loading-spinner ng-show="$ctrl.isWaitingForResponse">
+			</loading-spinner>
+		</div>
+		<!-- This area displays the Warnings -->
+		<div style="padding: 5px 0; width: 100%; text-align: justify" ng-show="!$ctrl.isWaitingForResponse">
+			<div view-only="PD_ECOM_01" ng-show="!$ctrl.hasPermission"
+				 data-ng-model="$ctrl.eCommerceViewDetails.warnings.content"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.warnings.content"></div>
+			<div can-edit="PD_ECOM_01" ng-show="!$ctrl.isEditingWarning || !$ctrl.hasPermission"
+				 data-ng-model="$ctrl.eCommerceViewDetails.warnings.content"
+				 ng-bind-html="$ctrl.eCommerceViewDetails.warnings.content"></div>
+			<textarea can-edit="PD_ECOM_01" ng-show="$ctrl.isEditingWarning && $ctrl.hasPermission" class="form-control" maxlength="{{$ctrl.MAX_LENGTH}}"
+					  style="text-align: justify; height: 90px; resize: vertical;"
+					  class="form-control"
+					  data-ng-model="$ctrl.eCommerceViewDetails.warnings.content"
+					  ng-bind-html="$ctrl.eCommerceViewDetails.warnings.content"></textarea>
+		</div>
+	</div>
+</div>
